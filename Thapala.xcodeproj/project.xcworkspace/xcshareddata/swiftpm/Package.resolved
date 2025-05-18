@@ -1,0 +1,51 @@
+{
+  "originHash" : "4cd2bd99eb713e3ae978806a0f733ff5d51d634fdebf3d4a88bd5cb18c8db1bf",
+  "pins" : [
+    {
+      "identity" : "clocktimepicker",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/workingDog/ClockTimePicker.git",
+      "state" : {
+        "revision" : "f243b7ae34e1b3bcafbf3d63f588413ee39b7b90",
+        "version" : "1.1.0"
+      }
+    },
+    {
+      "identity" : "cryptoswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/krzyzanowskim/CryptoSwift",
+      "state" : {
+        "revision" : "729e01bc9b9dab466ac85f21fb9ee2bc1c61b258",
+        "version" : "1.8.4"
+      }
+    },
+    {
+      "identity" : "socket.io-client-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/socketio/socket.io-client-swift",
+      "state" : {
+        "branch" : "master",
+        "revision" : "42da871d9369f290d6ec4930636c40672143905b"
+      }
+    },
+    {
+      "identity" : "starscream",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/daltoniam/Starscream",
+      "state" : {
+        "revision" : "c6bfd1af48efcc9a9ad203665db12375ba6b145a",
+        "version" : "4.0.8"
+      }
+    },
+    {
+      "identity" : "swiftdate",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/malcommac/SwiftDate.git",
+      "state" : {
+        "revision" : "5d943224c3bb173e6ecf27295611615eba90c80e",
+        "version" : "7.0.0"
+      }
+    }
+  ],
+  "version" : 3
+}

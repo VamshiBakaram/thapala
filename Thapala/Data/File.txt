@@ -1,0 +1,70 @@
+{
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        // General Questions Section
+                        DisclosureGroup(
+                            isExpanded: Binding(
+                                get: { expandedSections.contains("General Questions") },
+                                set: { expanded in
+                                    if expanded { expandedSections.insert("General Questions") }
+                                    else { expandedSections.remove("General Questions") }
+                                }
+                            ),
+                            content: {
+                                FAQItem(question: "What is the tCode?", answer: "A unique 10-digit identifier used as both a digital and physical delivery address.")
+                                FAQItem(question: "How do I navigate the interface?")
+                                FAQItem(question: "What is the tContacts?")
+                                // Add more questions...
+                            },
+                            label: {
+                                Text("General Questions")
+                                    .foregroundColor(Color.black)
+                                    .font(.headline)
+                            }
+                        )
+
+                        // Email Management Section
+                        DisclosureGroup(
+                            isExpanded: Binding(
+                                get: { expandedSections.contains("Email Management") },
+                                set: { expanded in
+                                    if expanded { expandedSections.insert("Email Management") }
+                                    else { expandedSections.remove("Email Management") }
+                                }
+                            ),
+                            content: {
+                                FAQItem(question: "How do I archive emails?")
+                                FAQItem(question: "What is tChat?")
+                                // Add more questions...
+                            },
+                            label: {
+                                Text("Email Management")
+                                    .foregroundColor(Color.black)
+                                    .font(.headline)
+                            }
+                        )
+
+                        // Blueprint and Templates Section
+                        DisclosureGroup(
+                            isExpanded: Binding(
+                                get: { expandedSections.contains("Blueprint and Templates") },
+                                set: { expanded in
+                                    if expanded { expandedSections.insert("Blueprint and Templates") }
+                                    else { expandedSections.remove("Blueprint and Templates") }
+                                }
+                            ),
+                            content: {
+                                FAQItem(question: "How do I create a new template?")
+                                FAQItem(question: "What are tCards?")
+                                // Add more questions...
+                            },
+                            label: {
+                                Text("Blueprint and Templates")
+                                    .foregroundColor(Color.black)
+                                    .font(.headline)
+                            }
+                        )
+                    }
+                    .padding(.horizontal)
+                }
+            }
