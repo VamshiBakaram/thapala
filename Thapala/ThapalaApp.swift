@@ -11,11 +11,6 @@ import SwiftUI
 struct ThapalaApp: App {
     
     @StateObject var sessionManager = SessionManager()
-//    @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-//    @ObservedObject var homeDirectoryViewModel = HomeDirectoryViewModel()
-//    @State private var isDiaryupdateVisible = true
-//    @State private var selectedNames: [String] = []
-//    @State private var selectedID = 370
     
     
     var body: some Scene {

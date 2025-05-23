@@ -9,9 +9,17 @@ import Foundation
 import SwiftUI
 
 struct CustomProgressView: View {
+    @ObservedObject var themesviewModel = themesViewModel()
+    
     var body: some View {
-        ProgressView()
-            .tint(.themeColor)
-            .scaleEffect(1.5)
+        ZStack {
+            Color.clear // optional background
+            ProgressView()
+                .tint(themesviewModel.currentTheme.iconColor)
+                .scaleEffect(1.5)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.clear)
     }
 }
+

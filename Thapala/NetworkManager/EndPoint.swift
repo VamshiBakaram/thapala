@@ -55,6 +55,7 @@ struct EndPoint {
     // Home awaiting
     
     static let snoozedmail = "emails/snooze-by-id/"
+    static let trash = "emails/clear-draft" // draft trash
     
     //Note
     static let historySchedule = "planner/get-planner-history/" // history bottom sheet

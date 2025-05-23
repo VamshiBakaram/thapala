@@ -117,14 +117,12 @@ struct ComposeEmailEncripted: View {
                     }, label: {
                         Text("Confirm")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
-                            .padding(.trailing , 16)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .background(themesviewModel.currentTheme.colorPrimary)
+                            .cornerRadius(10)
                     })
-                    .padding()
                     .padding(.trailing , 16)
-                    .background(themesviewModel.currentTheme.colorPrimary)
-                    .cornerRadius(10)
-                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                    .padding(.bottom,20)
                 }
                 Spacer()
             }

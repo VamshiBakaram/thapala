@@ -20,7 +20,6 @@ struct CountData: Decodable {
 }
 
 struct PostboxDataModel: Decodable,Identifiable,Hashable {
-    var idm = UUID()
     let id: Int?
     let firstname, lastname: String?
     let threadID: Int?

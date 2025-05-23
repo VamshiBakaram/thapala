@@ -163,26 +163,29 @@ struct CountryCodes: Decodable, Hashable {
     let code: String
 }
 
-struct CountryData: Codable {
-    let countries: [SingleCountry]
+struct CountryData: Codable, Equatable {
+    var countries: [SingleCountry]
 
     enum CodingKeys: String, CodingKey {
         case countries = "Countries"
     }
 }
 
-struct SingleCountry: Codable {
-    let states: [States]
+struct SingleCountry: Codable, Identifiable, Hashable {
+    var id = UUID()
+    var countryName: String
+    var states: [States]
 
     enum CodingKeys: String, CodingKey {
+        case countryName = "CountryName"
         case states = "States"
     }
 }
 
-struct States: Codable, Identifiable {
-    var id: UUID { UUID() }
-    let stateName: String
-    let cities: [String]
+struct States: Codable, Identifiable, Hashable {
+    var id = UUID()
+    var stateName: String
+    var cities: [String]
 
     enum CodingKeys: String, CodingKey {
         case stateName = "StateName"

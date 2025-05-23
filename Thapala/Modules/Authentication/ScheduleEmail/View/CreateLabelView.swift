@@ -62,7 +62,7 @@ struct CreateLabelView: View {
                     
                     List(favoriteEmails, id: \.self) { email in
                         HStack{
-                            Image("Check")
+                            Image("unchecked")
                             Text(email)
                                 .padding(.leading,10)
                         }

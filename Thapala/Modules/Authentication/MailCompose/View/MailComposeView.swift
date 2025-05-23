@@ -432,29 +432,57 @@ struct MailComposeView: View {
             }
             .toast(message: $mailComposeViewModel.error)
             .onAppear {
-                mailComposeViewModel.getFullEmail(emailId: id) { result in
-                    switch result {
-                    case .success(let response):
-                        emailByIdData = response
-                        let stringValue = response.email?.first?.body ?? ""
-                        composeText = (convertHTMLToAttributedString(html: stringValue))?.string ?? ""
-                        mailComposeViewModel.composeEmail = composeText
-                        mailComposeViewModel.subject = response.email?.first?.parentSubject ?? ""
-                        attachmentsData = response.email?.first?.attachments ?? []
-//                        mailComposeViewModel.to = (response.email?.first?.recipients?.first?.user?.tCode ?? "")
-                        if let recipients = response.email?.first?.recipients {
-                                        if let toRecipient = recipients.first(where: { $0.type == "to" }) {
-                                            mailComposeViewModel.to = toRecipient.user?.tCode ?? ""
-                                            print("emailByIdData.to \(mailComposeViewModel.to))")
-                                        }
-                                    }
-//
-                        
-                    case .failure(let error):
-                        self.errorMessage = error.localizedDescription
-                    }
-                }
+//                if mailComposeViewModel.detailedEmailData.isEmpty {
+//                    print("getFullEmail(emailId: id)")
+//                    mailComposeViewModel.getFullEmail(emailId: id)
+//                }
+//                
+//                // Safely handle any logic without mutating `selectedID`
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+//                    if let diary = mailComposeViewModel.detailedEmailData.first(where: { $0.threadID == id }) {
+//                        let stringValue = diary.body
+//                        composeText = (convertHTMLToAttributedString(html: stringValue ?? ""))?.string ?? ""
+//                        mailComposeViewModel.composeEmail = composeText
+//                        mailComposeViewModel.subject = diary.subject ?? ""
+//                        attachmentsData = diary.attachments ?? []
+//                        print("composeText \(composeText)")
+//                        print("subject \(mailComposeViewModel.subject)")
+//                        print("attachmentsData \(attachmentsData)")
+//                        //                    selectedIconIndex = diary.theme
+//                        if let recipients = diary.recipients {
+//                            if let toRecipient = recipients.first(where: { $0.type == "to" }) {
+//                                mailComposeViewModel.to = toRecipient.user?.tCode ?? ""
+//                                print("emailByIdData.to \(mailComposeViewModel.to))")
+//                            }
+//                            
+//                        }
+//                    }
+//                }
             }
+//            .onAppear {
+//                mailComposeViewModel.getFullEmail(emailId: id) { result in
+//                    switch result {
+//                    case .success(let response):
+//                        emailByIdData = response
+//                        let stringValue = response.email?.first?.body ?? ""
+//                        composeText = (convertHTMLToAttributedString(html: stringValue))?.string ?? ""
+//                        mailComposeViewModel.composeEmail = composeText
+//                        mailComposeViewModel.subject = response.email?.first?.parentSubject ?? ""
+//                        attachmentsData = response.email?.first?.attachments ?? []
+////                        mailComposeViewModel.to = (response.email?.first?.recipients?.first?.user?.tCode ?? "")
+//                        if let recipients = response.email?.first?.recipients {
+//                                        if let toRecipient = recipients.first(where: { $0.type == "to" }) {
+//                                            mailComposeViewModel.to = toRecipient.user?.tCode ?? ""
+//                                            print("emailByIdData.to \(mailComposeViewModel.to))")
+//                                        }
+//                                    }
+////
+//                        
+//                    case .failure(let error):
+//                        self.errorMessage = error.localizedDescription
+//                    }
+//                }
+//            }
             
             if mailComposeViewModel.isSchedule {
                 Color.black

@@ -8,6 +8,7 @@ import SwiftUI
 
 struct ConsoleView: View {
     @ObservedObject var consoleViewModel = ConsoleViewModel()
+    @ObservedObject var homeNavigatorViewModel = HomeNavigatorViewModel()
     @ObservedObject var themesviewModel = themesViewModel()
     @Environment(\.presentationMode) var presentationMode
     @State private var isQuickAccessVisible = false
@@ -59,6 +60,7 @@ struct ConsoleView: View {
                         // Go to Console Button
                         Button(action: {
                             print("before cosole click")
+                            self.homeNavigatorViewModel.selectedOption = .controlPanel
                             isNavigating = true
                             print("after cosole click")
                         }, label: {
@@ -194,6 +196,7 @@ struct ConsoleView: View {
             NavigationLink(destination: HomeNavigatorView(imageUrl: ""), isActive: $isNavigating) {
                 EmptyView()
             }
+            
             .hidden()
         }
     }

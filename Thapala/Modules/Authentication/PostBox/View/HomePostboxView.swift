@@ -9,9 +9,11 @@ import SwiftUI
 
 struct HomePostboxView: View {
     @State private var isMenuVisible = false
-    @ObservedObject var homePostboxViewModel = HomePostboxViewModel()
-    @ObservedObject private var homeAwaitingViewModel = HomeAwaitingViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @StateObject private var homePostboxViewModel = HomePostboxViewModel()
+    @StateObject private var homeAwaitingViewModel = HomeAwaitingViewModel()
+    @StateObject var mailComposeViewModel = MailComposeViewModel()
+    @StateObject var themesviewModel = themesViewModel()
+    @State private var emailStarred: Int = 0
     @State private var isSheetVisible = false
     @State private var isStarred: Bool = false // Track starred state
     @State private var isQuickAccessVisible = false
@@ -20,6 +22,7 @@ struct HomePostboxView: View {
     let imageUrl: String
     @State private var conveyedView: Bool = false
     @State private var PostBoxView: Bool = false
+    @State private var SnoozedView: Bool = false
     @Environment(\.presentationMode) var presentationMode
     var body: some View {
         GeometryReader{ reader in
@@ -189,28 +192,7 @@ struct HomePostboxView: View {
                         .background(themesviewModel.currentTheme.tabBackground)
                         
 
-                        
-//                        HStack{
-//                            Spacer()
-//                            if let selectedOption = homePostboxViewModel.selectedOption {
-//                                switch selectedOption {
-//                                case .emails:
-//                                    Text("\(homePostboxViewModel.postboxEmailCounaData?.totalCount ?? 0) Emails")
-//                                        .foregroundColor(Color(red: 69/255, green: 86/255, blue: 225/255))
-//                                        .font(.custom(.poppinsMedium, size: 10, relativeTo: .title))
-//                                   
-//                                case .print:
-//                                    Text("\(12) Prints")
-//                                        .foregroundColor(Color(red: 69/255, green: 86/255, blue: 225/255))
-//                                        .font(.custom(.poppinsMedium, size: 10, relativeTo: .title))
-//                                case .chatbox:
-//                                    Text("4 Chats")
-//                                        .foregroundColor(Color(red: 69/255, green: 86/255, blue: 225/255))
-//                                        .font(.custom(.poppinsMedium, size: 10, relativeTo: .title))
-//                                }
-//                            }
-//                        }
-//                        .padding()
+
 
                           
                         if let selectedOption = homePostboxViewModel.selectedOption {
@@ -230,7 +212,7 @@ struct HomePostboxView: View {
                                 Spacer()
                                 Text("\(2) Selected")
                                     .font(.custom(.poppinsRegular, size: 16))
-                                    .foregroundColor(Color(red: 51/255, green: 51/255, blue: 51/255))
+                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
                                 
                                 Spacer()
                                 
@@ -239,24 +221,19 @@ struct HomePostboxView: View {
 //                                    homeAwaitingViewModel.selectedThreadIDs.removeAll()
                                 } label: {
                                     Text("Cancel")
-                                        .foregroundColor(Color.themeColor)
+                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
                                 }
                                 .padding(.trailing,15)
                             }
                             
                             HStack{
-//                                Image(homeAwaitingViewModel.selectedThreadIDs.count != 0 ? "checkbox" : "Check")
-//                                    .resizable()
-//                                    .frame(width: 24,height: 24)
-//                                    .padding([.trailing,.leading],5)
-//                                    .onTapGesture {
-//                                        selectAllEmails()
-//                                    }
                                 Image("person")
                                 Image("dropdown")
+                                    .renderingMode(.template)
+                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
                                 Text("Select All")
                                     .font(.custom(.poppinsRegular, size: 14))
-                                    .foregroundColor(Color(red: 112/255, green: 112/255, blue: 112/255))
+                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
                                     .onTapGesture {
                                        // selectAllEmails()
                                     }
@@ -264,34 +241,13 @@ struct HomePostboxView: View {
                             }
                             .padding(.leading,15)
                             
-                            if let selectedOption = homePostboxViewModel.selectedOption {
-                                switch selectedOption {
-                                case .emails:
-                                    emailsView
-                                case .print:
-                                    printView
-                                case .chatbox:
-                                    chatView
-                                }
-                            }
                         }
                     }
                 
                                         
                     Spacer()
-//                    HStack{
-//                        Spacer()
-//                        Button(action: {
-//                            homePostboxViewModel.isPlusBtn = true
-//                        }) {
-//                            Image("plus")
-//                                .font(Font.title.weight(.medium))
-//                                .foregroundColor(Color.white)
-//                        }
-//                        .padding(.trailing,15)
-//                    }
+
                     VStack {
-        //                        Spacer().frame(height: 100)
                          HStack {
                              Spacer()
                              RoundedRectangle(cornerRadius: 30)
@@ -327,15 +283,12 @@ struct HomePostboxView: View {
                 }
                 .background(themesviewModel.currentTheme.windowBackground)
                 .onAppear {
-                    // First, fetch settings data
-                    if homePostboxViewModel.ContactsList.isEmpty {
+                    DispatchQueue.main.async {
+                        print("Fetching getPostEmailData()...")
                         homePostboxViewModel.getPostEmailData()
                         homePostboxViewModel.getContactsList()
-                        print("Fetching getContactsList()...")
-                        
-
                     }
-                    
+
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                         if let settings = homePostboxViewModel.ContactsList.first {
                             firstName = settings.firstname
@@ -343,6 +296,7 @@ struct HomePostboxView: View {
                         }
                     }
                 }
+
                 if isMenuVisible{
                     HomeMenuView(isSidebarVisible: $isMenuVisible)
                 }
@@ -421,7 +375,7 @@ struct HomePostboxView: View {
 //                if homePostboxViewModel.passwordHint != nil{
 //                    PasswordProtectedAccessView(isPasswordProtected: $homePostboxViewModel.isEmailScreen, emailId: homePostboxViewModel.selectedID ?? 0,passwordHint: homePostboxViewModel.passwordHint ?? "").toolbar(.hidden)
 //                }else{
-                MailFullView(conveyedView: $conveyedView, PostBoxView: $PostBoxView, emailId: homePostboxViewModel.selectedID ?? 0, passwordHash: "").toolbar(.hidden)
+                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, emailId: homePostboxViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $emailStarred).toolbar(.hidden)
 //                }
             }
            //
@@ -431,12 +385,17 @@ struct HomePostboxView: View {
     
     var emailsView:some View{
         VStack{
-            if homePostboxViewModel.postBoxEmailData.count == 0{
+            if homePostboxViewModel.isLoading {
+                CustomProgressView()
+                    
+            }
+            else if homePostboxViewModel.postBoxEmailData.isEmpty{
                 Text("No Mails Found.")
+                    .foregroundColor(themesviewModel.currentTheme.textColor)
                     .font(.custom(.poppinsMedium, size: 25, relativeTo: .title))
             }else{
                 VStack{
-                    List($homePostboxViewModel.postBoxEmailData){ $data in
+                    List(homePostboxViewModel.postBoxEmailData, id: \.id) { data in
                         HStack{
                             Image("person")
                                 .padding([.trailing,.leading],5)
@@ -512,6 +471,9 @@ struct HomePostboxView: View {
                                 homePostboxViewModel.passwordHint = data.passwordHint
                                 homePostboxViewModel.isEmailScreen = true
                             PostBoxView = true
+                            homePostboxViewModel.starEmail = emailStarred
+                            emailStarred = data.starred ?? 0
+                            print("homePostboxViewModel.starEmail0 \(emailStarred)")
                         }
                     }
                     .listStyle(PlainListStyle())
@@ -624,9 +586,9 @@ struct HomePostboxView: View {
     }
 }
 
-#Preview {
-    HomePostboxView( imageUrl: "")
-}
+//#Preview {
+//    HomePostboxView( starredEmail: $starredEmail, imageUrl: "")
+//}
 
 struct ChatBubble: View {
     var message: Message

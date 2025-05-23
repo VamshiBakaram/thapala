@@ -22,13 +22,15 @@ struct DetailedEmailData: Decodable,Identifiable {
     let recipients: [Recipient]?
     let attachments: [Attachment]?
     let parentSubject:String?
+    let snoozeAtThread: Int?
+    let snoozeThread: Int?
 
     enum CodingKeys: String, CodingKey {
         case threadID = "threadId"
         case replyToID = "replyToId"
         case subject, body, passwordProtected, passwordHash, passwordHint, scheduledTime, scheduledStatus, draft, sentAt
         case emailID = "emailId"
-        case recipients, attachments,parentSubject
+        case recipients, attachments,parentSubject , snoozeAtThread , snoozeThread
     }
 }
 

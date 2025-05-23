@@ -69,11 +69,13 @@ struct ReplyEmailView: View {
                     .padding(.trailing, 8)
                 
                 Image("contacts")
+                    .renderingMode(.template)
                     .foregroundColor(themesviewModel.currentTheme.iconColor)
                 Button(action: {
                     replyEmailViewModel.isArrow.toggle()
                 }) {
                     Image(replyEmailViewModel.isArrow ? "dropup" : "dropdown")
+                        .renderingMode(.template)
                         .foregroundColor(themesviewModel.currentTheme.iconColor)
                         .frame(width: 35, height: 35)
                 }
@@ -128,6 +130,7 @@ struct ReplyEmailView: View {
                         HStack {
                             Spacer()
                             Image("contacts")
+                                .renderingMode(.template)
                                 .foregroundColor(themesviewModel.currentTheme.iconColor)
                                 .padding(.trailing, 40)
                                 .onTapGesture {
@@ -205,29 +208,54 @@ struct ReplyEmailView: View {
             }
             
             // Subject
-            HStack {
-                Text("\(replyEmailViewModel.subSubject):")
-                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                TextField("", text: $replyEmailViewModel.subject)
-                    .font(.custom(.poppinsSemiBold, size: 14))
-                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                    .frame(height: 40)
-                Spacer()
-            }
-            .padding(.horizontal)
-            Rectangle()
-                .frame(maxWidth: .infinity)
-                .frame(height: 1)
-                .foregroundColor(themesviewModel.currentTheme.strokeColor)
-                .padding([.leading,.trailing], 20)
-                .padding(.top, -10)
-            
-            TextEditor(text: $replyEmailViewModel.messageBody)
-                .scrollContentBackground(.hidden)
-                .background(.clear)
-                .font(.custom(.poppinsRegular, size: 14))
-                .foregroundColor(themesviewModel.currentTheme.textColor)
+            VStack {
+                HStack {
+                    Text("\(replyEmailViewModel.subSubject):")
+                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                    TextField("", text: $replyEmailViewModel.subject)
+                        .font(.custom(.poppinsSemiBold, size: 14))
+                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                        .frame(height: 40)
+                    Spacer()
+                }
                 .padding(.horizontal)
+                Rectangle()
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 1)
+                    .foregroundColor(themesviewModel.currentTheme.strokeColor)
+                    .padding([.leading,.trailing], 20)
+                    .padding(.top, -10)
+            }
+//            Rectangle()
+//                .frame(maxWidth: .infinity)
+//                .frame(height: 1)
+//                .foregroundColor(themesviewModel.currentTheme.strokeColor)
+//                .padding([.leading,.trailing], 20)
+//                .padding(.top, -10)
+            
+//            TextEditor(text: $replyEmailViewModel.messageBody)
+//                .scrollContentBackground(.hidden)
+//                .background(.clear)
+//                .font(.custom(.poppinsRegular, size: 14))
+//                .foregroundColor(themesviewModel.currentTheme.textColor)
+//                .padding(.horizontal)
+            
+            ZStack(alignment: .topLeading) {
+                TextEditor(text: $replyEmailViewModel.messageBody)
+                    .scrollContentBackground(.hidden)
+                    .background(themesviewModel.currentTheme.windowBackground)
+                    .foregroundColor(Color.blue)
+                    .padding(4)
+                    .font(.custom(.poppinsLight, size: 14))
+                if replyEmailViewModel.composeEmail.isEmpty {
+                    Text("Compose email")
+                        .font(.custom(.poppinsLight, size: 14))
+                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                        .padding(.horizontal, 4)
+                        .padding(.vertical, 8)
+//                        .frame(maxWidth: .infinity, alignment: .topTrailing)
+                }
+            }
             
             Spacer()
 
@@ -261,6 +289,7 @@ struct ReplyEmailView: View {
             }
             .padding()
         }
+        .padding([.leading, .top, .bottom], 20)
         .background(themesviewModel.currentTheme.windowBackground)
         .sheet(isPresented: $isInsertTcode, content: {
             InsertTCodeView(isInsertVisible: $isInsertTcode, onInsert: { tCodes, ccCodes, bccCodes in

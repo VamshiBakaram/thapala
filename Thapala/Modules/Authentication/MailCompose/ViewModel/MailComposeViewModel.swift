@@ -47,9 +47,12 @@ class MailComposeViewModel:ObservableObject{
     @Published var isInsertFromRecords:Bool = false
     @Published var selectedFiles: [URL] = []
     @Published var attachmentDataIn: [AttachmentDataModel] = []
-    
+    @Published var detailedEmailData: [DetailedEmailData] = []
+    @Published var trashMessage: String = ""
     // created at 17/11/2024
     @Published var EmailUserdata : EmailUser?
+    @Published var mailFullView: Bool = false
+    @Published var mailStars: Int = 0
     
 //    @Published var SenderUserData : EmailUser? // for thread id
         
@@ -328,17 +331,44 @@ class MailComposeViewModel:ObservableObject{
 //            }
 //        }
     
-    func getFullEmail(emailId: Int, completion: @escaping (Result<EmailsByIdModel, NetworkError>) -> Void) {
+//    func getFullEmail(emailId: Int, completion: @escaping (Result<EmailsByIdModel, NetworkError>) -> Void) {
+//        self.isLoading = true
+//        let endUrl = "\(EndPoint.emailsById)\(emailId)"
+//        NetworkManager.shared.request(type: EmailsByIdModel.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { result in
+//            DispatchQueue.main.async {
+//                self.isLoading = false
+//                completion(result)
+//            }
+//        }
+//    }
+    
+    func getFullEmail(emailId: Int) {
         self.isLoading = true
         let endUrl = "\(EndPoint.emailsById)\(emailId)"
-        NetworkManager.shared.request(type: EmailsByIdModel.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { result in
-            DispatchQueue.main.async {
-                self.isLoading = false
-                completion(result)
+        NetworkManager.shared.request(type: EmailsByIdModel.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let response):
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    self.detailedEmailData = response.email ?? []
+//                    print("suggested t code response \(response)")
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    switch error {
+                    case .error(error: let error):
+                        DispatchQueue.main.async {
+                            self.error = error
+                        }
+                    case .sessionExpired(error: _):
+                        self.error = "Please try again later"
+                    }
+                }
             }
         }
     }
-    
 //    //on click of draft mail
 //
 //    func emaildraftdata(threadID : Int) {  // created at 17/11/2024 
@@ -392,6 +422,38 @@ class MailComposeViewModel:ObservableObject{
                         DispatchQueue.main.async {
                             self.error = error
                         }
+                    case .sessionExpired(error: _):
+                        self.error = "Please try again later"
+                    }
+                }
+            }
+        }
+    }
+    
+    // bottom Draft Trash
+    func Drafttrash(EmailID: Int) {
+        self.isLoading = true
+        let url = "\(EndPoint.trash)"
+        
+        // Create the request body using the struct
+        let requestBody = ClearDraftRequest(emailId: EmailID)
+        
+        NetworkManager.shared.request(type: DraftClearResponse.self, endPoint: url,httpMethod: .put,parameters: requestBody,isTokenRequired: true) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let response):
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        self.trashMessage = response.message
+                    }
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    switch error {
+                    case .error(error: let error):
+                        self.error = error
                     case .sessionExpired(error: _):
                         self.error = "Please try again later"
                     }

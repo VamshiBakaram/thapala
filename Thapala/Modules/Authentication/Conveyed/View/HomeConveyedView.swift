@@ -9,13 +9,15 @@ import SwiftUI
 
 struct HomeConveyedView: View {
     @State private var isMenuVisible = false
-    @ObservedObject var homeConveyedViewModel = HomeConveyedViewModel()
+    @StateObject var homeConveyedViewModel = HomeConveyedViewModel()
+    @StateObject var mailComposeViewModel = MailComposeViewModel()
     @ObservedObject var themesviewModel = themesViewModel()
     @State private var isSheetVisible = false
     @State private var isStarred: Bool = false // Track starred state
     @State private var isQuickAccessVisible = false
     @State private var conveyedView: Bool = false
     @State private var PostBoxView: Bool = false
+    @State private var SnoozedView: Bool = false
     let imageUrl: String
     @Environment(\.presentationMode) var presentationMode
     var body: some View {
@@ -212,7 +214,7 @@ struct HomeConveyedView: View {
                             .padding(.leading,15)
                             
                             HStack{
-                                Image("Check")
+                                Image("unchecked")
                                 Image("dropdown")
                                 Text("Select All")
                                     .font(.custom(.poppinsRegular, size: 14))
@@ -320,20 +322,15 @@ struct HomeConveyedView: View {
                         .padding([.bottom, .trailing], 20)
                     }
                 }
-
-
-
-
-                
             }
+            
             .navigationDestination(isPresented: $homeConveyedViewModel.isComposeEmail) {
                 MailComposeView().toolbar(.hidden)
             }
-//            .navigationDestination(isPresented: $homeResidenceViewModel.isDetailedData) {
-//                ResidenceUserProfileView().toolbar(.hidden)
-//            }
+
+            
             .navigationDestination(isPresented: $homeConveyedViewModel.isEmailScreen) {
-                MailFullView(conveyedView: $conveyedView, PostBoxView: $PostBoxView, emailId: homeConveyedViewModel.selectedID ?? 0, passwordHash: "").toolbar(.hidden)
+                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, emailId: homeConveyedViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars).toolbar(.hidden)
             }
             .sheet(isPresented: $isSheetVisible, content: {
                 EmailOptionsView( replyAction: {
