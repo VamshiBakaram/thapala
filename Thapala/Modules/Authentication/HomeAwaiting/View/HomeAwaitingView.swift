@@ -8,8 +8,9 @@
 import SwiftUI
 struct HomeAwaitingView: View {
     @State private var isMenuVisible = false
-    @ObservedObject private var homeAwaitingViewModel = HomeAwaitingViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @StateObject private var homeAwaitingViewModel = HomeAwaitingViewModel()
+    @StateObject var mailComposeViewModel = MailComposeViewModel()
+    @StateObject var themesviewModel = themesViewModel()
     @State private var isSheetVisible = false
     @State private var isMultiSelectionSheetVisible = false
     @State private var isMoveToFolder = false
@@ -23,13 +24,15 @@ struct HomeAwaitingView: View {
     @State private var conveyedView: Bool = false
     @State private var PostBoxView: Bool = false
     @Environment(\.presentationMode) var presentationMode
-    
+    @State private var SnoozedView: Bool = false
+    @State private var beforeLongPress = true
+    @State private var selectedTab = "awaited"
     var body: some View {
         GeometryReader{ reader in
             ZStack{
                 themesviewModel.currentTheme.windowBackground
                 VStack{
-                    if homeAwaitingViewModel.beforeLongPress{
+//                    if homeAwaitingViewModel.beforeLongPress{
                         VStack {
                             HStack{
                                 AsyncImage(url: URL(string: imageUrl)) { phase in
@@ -237,78 +240,104 @@ struct HomeAwaitingView: View {
                                     Text("")
                                 case .outline:
                                     Spacer()
-                                    HStack{
-                                        RoundedRectangle(cornerRadius: 25)
-                                            .fill(self.homeAwaitingViewModel.isDraftsSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
-                                            .frame(height: 50)
-                                            .onTapGesture {
-                                                self.homeAwaitingViewModel.outlineSelectedOption = .draft
-                                                self.homeAwaitingViewModel.isDraftsSelected = true
-                                                self.homeAwaitingViewModel.istDraftselected = false
-                                                self.homeAwaitingViewModel.isScheduledSelected = false
-                                                self.homeAwaitingViewModel.getDraftsData()
-                                            }
-                                            .overlay(
-                                                Group{
-                                                    HStack{
-                                                        VStack{
-                                                            Text("Drafts")
-                                                                .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                                .foregroundColor(self.homeAwaitingViewModel.isDraftsSelected ? themesviewModel.currentTheme.textColor:themesviewModel.currentTheme.inverseTextColor)
-                                                        }
-                                                    }
+                                    
+                                    ScrollView(.horizontal, showsIndicators: false) {
+                                        HStack(spacing: 12) { // Adjust spacing as needed
+                                            RoundedRectangle(cornerRadius: 25)
+                                                .fill(self.homeAwaitingViewModel.isDraftsSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
+                                                .frame(width: 100, height: 50) // Add fixed width for consistent layout
+                                                .onTapGesture {
+                                                    self.homeAwaitingViewModel.outlineSelectedOption = .draft
+                                                    self.homeAwaitingViewModel.isDraftsSelected = true
+                                                    self.homeAwaitingViewModel.istDraftselected = false
+                                                    self.homeAwaitingViewModel.isScheduledSelected = false
+                                                    self.homeAwaitingViewModel.istLetersSelected = false
+                                                    self.homeAwaitingViewModel.istCardsSelected = false
+                                                    self.homeAwaitingViewModel.getDraftsData()
                                                 }
-                                            )
-                                        RoundedRectangle(cornerRadius: 25)
-                                            .fill(self.homeAwaitingViewModel.istDraftselected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
-                                            .frame(height: 50)
-                                            .onTapGesture {
-                                                self.homeAwaitingViewModel.outlineSelectedOption = .tDraft
-                                                self.homeAwaitingViewModel.isDraftsSelected = false
-                                                self.homeAwaitingViewModel.istDraftselected = true
-                                                self.homeAwaitingViewModel.isScheduledSelected = false
-                                                self.homeAwaitingViewModel.getTDraftsData()
-                                                
-                                            }
-                                            .overlay(
-                                                Group{
-                                                    HStack{
-                                                        VStack{
-                                                            Text("tDrafts")
-                                                                .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                                .foregroundColor(self.homeAwaitingViewModel.istDraftselected ? themesviewModel.currentTheme.textColor:themesviewModel.currentTheme.inverseTextColor)
-                                                        }
-                                                    }
+                                                .overlay(
+                                                    Text("Drafts")
+                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                        .foregroundColor(self.homeAwaitingViewModel.isDraftsSelected ? themesviewModel.currentTheme.textColor : themesviewModel.currentTheme.inverseTextColor)
+                                                )
+
+                                            RoundedRectangle(cornerRadius: 25)
+                                                .fill(self.homeAwaitingViewModel.istDraftselected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
+                                                .frame(width: 100, height: 50)
+                                                .onTapGesture {
+                                                    self.homeAwaitingViewModel.outlineSelectedOption = .tDraft
+                                                    self.homeAwaitingViewModel.isDraftsSelected = false
+                                                    self.homeAwaitingViewModel.istDraftselected = true
+                                                    self.homeAwaitingViewModel.isScheduledSelected = false
+                                                    self.homeAwaitingViewModel.istLetersSelected = false
+                                                    self.homeAwaitingViewModel.istCardsSelected = false
+                                                    self.homeAwaitingViewModel.getTDraftsData()
                                                 }
-                                            )
-                                        
-                                        RoundedRectangle(cornerRadius: 25)
-                                            .fill(self.homeAwaitingViewModel.isScheduledSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
-                                            .frame(height: 50)
-                                            .onTapGesture {
-                                                self.homeAwaitingViewModel.outlineSelectedOption = .schedule
-                                                self.homeAwaitingViewModel.isDraftsSelected = false
-                                                self.homeAwaitingViewModel.istDraftselected = false
-                                                self.homeAwaitingViewModel.isScheduledSelected = true
-                                                self.homeAwaitingViewModel.getScheduleEmailsData()
-                                                
-                                            }
-                                            .overlay(
-                                                Group{
-                                                    HStack{
-                                                        VStack{
-                                                            Text("Scheduled")
-                                                                .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                                                    .foregroundColor(self.homeAwaitingViewModel.isScheduledSelected ? themesviewModel.currentTheme.textColor : themesviewModel.currentTheme.inverseTextColor)
-                                                        }
-                                                    }
+                                                .overlay(
+                                                    Text("tDrafts")
+                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                        .foregroundColor(self.homeAwaitingViewModel.istDraftselected ? themesviewModel.currentTheme.textColor : themesviewModel.currentTheme.inverseTextColor)
+                                                )
+
+                                            RoundedRectangle(cornerRadius: 25)
+                                                .fill(self.homeAwaitingViewModel.isScheduledSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
+                                                .frame(width: 100, height: 50)
+                                                .onTapGesture {
+                                                    self.homeAwaitingViewModel.outlineSelectedOption = .schedule
+                                                    self.homeAwaitingViewModel.isDraftsSelected = false
+                                                    self.homeAwaitingViewModel.istDraftselected = false
+                                                    self.homeAwaitingViewModel.isScheduledSelected = true
+                                                    self.homeAwaitingViewModel.istLetersSelected = false
+                                                    self.homeAwaitingViewModel.istCardsSelected = false
+                                                    self.homeAwaitingViewModel.getScheduleEmailsData()
                                                 }
-                                            )
+                                                .overlay(
+                                                    Text("Scheduled")
+                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                        .foregroundColor(self.homeAwaitingViewModel.isScheduledSelected ? themesviewModel.currentTheme.textColor : themesviewModel.currentTheme.inverseTextColor)
+                                                )
+
+                                            RoundedRectangle(cornerRadius: 25)
+                                                .fill(self.homeAwaitingViewModel.istLetersSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
+                                                .frame(width: 100, height: 50)
+                                                .onTapGesture {
+                                                    self.homeAwaitingViewModel.outlineSelectedOption = .schedule
+                                                    self.homeAwaitingViewModel.isDraftsSelected = false
+                                                    self.homeAwaitingViewModel.istDraftselected = false
+                                                    self.homeAwaitingViewModel.isScheduledSelected = false
+                                                    self.homeAwaitingViewModel.istLetersSelected = true
+                                                    self.homeAwaitingViewModel.istCardsSelected = false
+                                                    self.homeAwaitingViewModel.getScheduleEmailsData()
+                                                }
+                                                .overlay(
+                                                    Text("tLetters")
+                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                        .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                                )
+
+                                            RoundedRectangle(cornerRadius: 25)
+                                                .fill(self.homeAwaitingViewModel.istCardsSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
+                                                .frame(width: 100, height: 50)
+                                                .onTapGesture {
+                                                    self.homeAwaitingViewModel.outlineSelectedOption = .schedule
+                                                    self.homeAwaitingViewModel.isDraftsSelected = false
+                                                    self.homeAwaitingViewModel.istDraftselected = false
+                                                    self.homeAwaitingViewModel.isScheduledSelected = false
+                                                    self.homeAwaitingViewModel.istLetersSelected = false
+                                                    self.homeAwaitingViewModel.istCardsSelected = true
+                                                    self.homeAwaitingViewModel.getScheduleEmailsData()
+                                                }
+                                                .overlay(
+                                                    Text("tCards")
+                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                        .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                                )
+                                        }
+                                        .padding(.horizontal)
                                     }
-                                    // .padding()
                                     .background(themesviewModel.currentTheme.tabBackground)
                                     .cornerRadius(25)
-                                    
+
                                 }
                             }
                         }
@@ -381,7 +410,6 @@ struct HomeAwaitingView: View {
                                                         .frame(width: 14, height: 14)
                                                         .foregroundColor(Color.red)
                                                         .onTapGesture {
-                                                            // Safely unwrap data.threadID
                                                             if let threadID = data.threadID,
                                                                let index = homeAwaitingViewModel.emailData.firstIndex(where: { $0.threadID == threadID }) {
                                                                 print("thread id:", threadID)
@@ -392,22 +420,6 @@ struct HomeAwaitingView: View {
                                                                 print("threadID is nil")
                                                             }
                                                         }
-//                                                    Image(data.isStarred ? "star" : "emptystar")
-//                                                        .resizable()
-//                                                        .frame(width: 14, height: 14)
-//                                                        .foregroundColor(.black)
-//                                                        .onTapGesture {
-//                                                            // Safely unwrap data.threadID
-//                                                            if let threadID = data.threadID,
-//                                                               let index = homeAwaitingViewModel.emailData.firstIndex(where: { $0.threadID == threadID }) {
-//                                                                print("thread id:", threadID)
-//                                                                homeAwaitingViewModel.emailData[index].isStarred.toggle()
-//                                                                homeAwaitingViewModel.getStarredEmail(selectedEmail: threadID)
-//                                                            } else {
-//                                                                print("threadID is nil")
-//                                                            }
-//                                                        }
-
                                                 }
                                                     .frame(height: 34)
                                             }
@@ -436,7 +448,6 @@ struct HomeAwaitingView: View {
                                                     homeAwaitingViewModel.selectedThreadIDs.append(data.threadID ?? 0)
                                                     homeAwaitingViewModel.deleteEmailFromAwaiting()
                                                 } label: {
-                                                    
                                                     deleteIcon
                                                         .foregroundStyle(.white)
                                                 }
@@ -458,30 +469,6 @@ struct HomeAwaitingView: View {
                                 }
                             case .print:
                                 VStack{
-                                    /*
-                                     List(printData) { data in
-                                     HStack{
-                                     Image(data.image)
-                                     .padding([.trailing,.leading],5)
-                                     .frame(width: 34,height: 34)
-                                     .clipShape(Circle())
-                                     VStack(alignment: .leading){
-                                     Text(data.title)
-                                     .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
-                                     Text(data.subTitle)
-                                     .font(.custom(.poppinsRegular, size: 14,relativeTo: .title))
-                                     .lineLimit(1)
-                                     }
-                                     Spacer()
-                                     Text(data.time)
-                                     }
-                                     .listRowBackground(Color(red:246/255, green: 246/255, blue: 251/255))
-                                     }
-                                     .listStyle(PlainListStyle())
-                                     .scrollContentBackground(.hidden)
-                                     */
-//                                    Text("Coming Soon")
-//                                        .font(.custom(.poppinsMedium, size: 25, relativeTo: .title))
                                     ZStack {
                                         Color.clear // Background to help center the image
                                         Image("coming soon") // Replace with the actual image name
@@ -492,100 +479,208 @@ struct HomeAwaitingView: View {
                                             .frame(width: 160, height: 111.02)
                                     }
                                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                    
-//                                    .alignmentGuide(.center); // Align both horizontally and vertically to the center
-//                                           .opacity(0) // Set opacity to 0 if you want it to be invisible; adjust if needed
-//                                           .position(x: 107 + 160 / 2, y: 350 + 111.02 / 2) // Position the image based on top and left constraints
-
-                                    
                                 }
                             case .outline:
                                 if homeAwaitingViewModel.isDraftsSelected{
-                                    if homeAwaitingViewModel.draftsData.count == 0{
+                                    if homeAwaitingViewModel.isLoading {
+                                        CustomProgressView()
+                                    }
+                                    else if homeAwaitingViewModel.draftsData.count == 0{
                                         Text("No Mails Found.")
                                             .font(.custom(.poppinsMedium, size: 25, relativeTo: .title))
                                             .foregroundColor(themesviewModel.currentTheme.textColor)
-                                    }else{
-                                        VStack{
-                                            List($homeAwaitingViewModel.draftsData,id: \.self) { $data in
-                                                HStack{
-                                                    Image("person")
-                                                        .padding([.trailing,.leading],5)
-                                                        .frame(width: 34,height: 34)
-                                                        .clipShape(Circle())
-                                                    HStack {
-                                                        VStack(alignment: .leading){
-                                                            if data.status?.rawValue ?? "" == "draft"{
-                                                                Text(data.firstName ?? "")
-                                                                    .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
-                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    }else {
+                                        if beforeLongPress {
+                                            VStack{
+                                                List($homeAwaitingViewModel.draftsData,id: \.self) { $draftData in
+                                                    HStack{
+                                                        Image("unchecked")
+                                                            .renderingMode(.template)
+                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                            .padding([.trailing,.leading],5)
+                                                            .frame(width: 34,height: 34)
+                                                            .clipShape(Circle())
+                                                        HStack {
+                                                            VStack(alignment: .leading){
+                                                                if draftData.status?.rawValue ?? "" == "draft"{
+                                                                    if let recipient = draftData.recipients.first(where: { $0.type == "to" }) {
+                                                                        Text(recipient.user.firstname ?? "")
+                                                                            .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                            .onTapGesture {
+                                                                                print("recipient.user.firstname \(recipient.user.firstname ?? "")")
+                                                                            }
+                                                                    }
+                                                                    
+                                                                    else {
+                                                                        Text("(no recipient)")
+                                                                            .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                    }
+                                                                }
                                                                 
+                                                                if let subject = draftData.subject {
+                                                                    Text(subject)
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .lineLimit(1)
+                                                                }
                                                             }
-                                                            if let subject = data.parentSubject {
-                                                                Text(subject)
-                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                                    .lineLimit(1)
-                                                            }
-                                                            
+                                                            Text("Draft")
+                                                                .foregroundColor(Color.red)
                                                         }
-                                                        Text("Draft")
-                                                            .foregroundColor(Color.red)
                                                     }
+                                                    .listRowBackground(themesviewModel.currentTheme.windowBackground)
+                                                    .onTapGesture {
+                                                        if homeAwaitingViewModel.beforeLongPress {
+                                                            homeAwaitingViewModel.selectedID = draftData.threadID
+                                                            homeAwaitingViewModel.passwordHint = draftData.passwordHint
+                                                            homeAwaitingViewModel.isdraftEmail = true
+                                                        }
+                                                    }
+                                                    .gesture(
+                                                        LongPressGesture(minimumDuration: 1.0)
+                                                            .onEnded { _ in
+                                                                withAnimation {
+                                                                    beforeLongPress = false
+                                                                }
+                                                            }
+                                                    )
                                                 }
-                                                .listRowBackground(themesviewModel.currentTheme.windowBackground)
-                                                .onTapGesture {
-                                                    if homeAwaitingViewModel.beforeLongPress {
-                                                        homeAwaitingViewModel.selectedID = data.threadID
-                                                        homeAwaitingViewModel.passwordHint = data.passwordHint
-                                                        homeAwaitingViewModel.isdraftEmail = true
-                                                    }
+                                                .refreshable{
+                                                    homeAwaitingViewModel.getDraftsData()
                                                 }
                                                 
+                                                .listStyle(PlainListStyle())
+                                                .scrollContentBackground(.hidden)
                                             }
-                                            
-                                            .listStyle(PlainListStyle())
-                                            .scrollContentBackground(.hidden)
+                                        }
+                                        else {
+                                            VStack{
+                                                List($homeAwaitingViewModel.draftsData,id: \.self) { $draftData in
+                                                    HStack{
+                                                        Image("Checked")
+                                                            .renderingMode(.template)
+                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                            .padding([.trailing,.leading],5)
+                                                            .frame(width: 34,height: 34)
+                                                            .clipShape(Circle())
+                                                        HStack {
+                                                            VStack(alignment: .leading){
+                                                                if draftData.status?.rawValue ?? "" == "draft"{
+                                                                    if let recipient = draftData.recipients.first(where: { $0.type == "to" }) {
+                                                                        Text(recipient.user.firstname ?? "")
+                                                                            .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                            .onTapGesture {
+                                                                                print("recipient.user.firstname \(recipient.user.firstname ?? "")")
+                                                                            }
+                                                                    }
+                                                                    
+                                                                    else {
+                                                                        Text("(no recipient)")
+                                                                            .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                    }
+                                                                }
+                                                                
+                                                                if let subject = draftData.subject {
+                                                                    Text(subject)
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .lineLimit(1)
+                                                                }
+                                                            }
+                                                            Text("Draft")
+                                                                .foregroundColor(Color.red)
+                                                        }
+                                                    }
+                                                    .listRowBackground(themesviewModel.currentTheme.windowBackground)
+                                                    .onTapGesture {
+                                                        if homeAwaitingViewModel.beforeLongPress {
+                                                            homeAwaitingViewModel.selectedID = draftData.threadID
+                                                            homeAwaitingViewModel.passwordHint = draftData.passwordHint
+                                                        }
+                                                    }
+                                                }
+                                                .refreshable{
+                                                    homeAwaitingViewModel.getDraftsData()
+                                                }
+                                                
+                                                .listStyle(PlainListStyle())
+                                                .scrollContentBackground(.hidden)
+                                            }
                                         }
                                     }
                                 }else if homeAwaitingViewModel.istDraftselected{
-                                    if homeAwaitingViewModel.tDraftsData.count == 0{
+                                    if homeAwaitingViewModel.isLoading {
+                                        CustomProgressView()
+                                    }
+                                    else if homeAwaitingViewModel.tDraftsData.count == 0{
                                         Text("No Mails Found.")
                                             .font(.custom(.poppinsMedium, size: 25, relativeTo: .title))
                                             .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
                                     }else{
                                         VStack{
-                                            List($homeAwaitingViewModel.tDraftsData,id: \.self) { $data in
+                                            List($homeAwaitingViewModel.tDraftsData,id: \.self) { $tdraftData in
                                                 HStack{
-                                                    Image("person")
+                                                    Image("unchecked")
+                                                        .renderingMode(.template)
+                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                         .padding([.trailing,.leading],5)
                                                         .frame(width: 34,height: 34)
                                                         .clipShape(Circle())
+                                                       
                                                     VStack(alignment: .leading){
-                                                        if data.status?.rawValue ?? "" == "draft"{
-                                                            Text("Draft")
-                                                                .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
-                                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                        if tdraftData.status?.rawValue ?? "" == "draft"{
+                                                            if let recipient = tdraftData.recipients.first(where: { $0.type == "to" }) {
+                                                                Text(recipient.user.firstname ?? "")
+                                                                    .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                    .onTapGesture {
+                                                                        print("recipient.user.firstname \(recipient.user.firstname ?? "")")
+                                                                    }
+                                                            }
+
+                                                            else {
+                                                                Text("(no recipient)")
+                                                                    .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                            }
                                                         }
-                                                        
-                                                        //                                                        Text(data.subject ?? "")
-                                                        //                                                            .font(.custom(.poppinsRegular, size: 14,relativeTo: .title))
-                                                        //                                                            .lineLimit(1)
-                                                        if let subject = data.subject, !subject.isEmpty {
-                                                            Text(subject)
-                                                                .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                                .lineLimit(1)
-                                                        } else{
-                                                            Text("No Subject")
-                                                                .font(.custom(.poppinsRegular, size: 14,relativeTo: .title))
-                                                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                                .lineLimit(1)
+                                                        HStack {
+                                                            if let subject = tdraftData.subject, !subject.isEmpty,
+                                                               let body = tdraftData.body, !body.isEmpty {
+                                                                Text(subject)
+                                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                    .lineLimit(1)
+                                                                
+                                                                Text("- \(body)")
+                                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                    .lineLimit(1)
+                                                            } else if let subject = tdraftData.subject, !subject.isEmpty {
+                                                                Text(subject)
+                                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                    .lineLimit(1)
+                                                            } else if let body = tdraftData.body, !body.isEmpty {
+                                                                Text("- \(body)")
+                                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                    .lineLimit(1)
+                                                            } else {
+                                                                Text("No subject")
+                                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                            }
                                                         }
+
                                                         
                                                     }
                                                     Spacer()
-                                                    let unixTimestamp = data.createdAt ?? ""
+                                                    let unixTimestamp = tdraftData.createdAt ?? ""
                                                     if let istDateStringFromISO = convertToIST(dateInput: unixTimestamp) {
                                                         Text(istDateStringFromISO)
                                                             .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
@@ -597,11 +692,19 @@ struct HomeAwaitingView: View {
                                                 .listRowBackground(themesviewModel.currentTheme.windowBackground)
                                                 .onTapGesture {
                                                     if homeAwaitingViewModel.beforeLongPress {
-                                                        homeAwaitingViewModel.selectedID = data.threadID
-                                                        homeAwaitingViewModel.passwordHint = data.passwordHint
+                                                        homeAwaitingViewModel.selectedID = tdraftData.threadID
+                                                        homeAwaitingViewModel.passwordHint = tdraftData.passwordHint
                                                         homeAwaitingViewModel.isdraftEmail = true
                                                     }
                                                 }
+                                                .gesture(
+                                                    LongPressGesture(minimumDuration: 1.0)
+                                                        .onEnded { _ in
+                                                            withAnimation {
+                                                                beforeLongPress = false
+                                                            }
+                                                        }
+                                                )
                                                 
                                             }
                                             .listStyle(PlainListStyle())
@@ -610,48 +713,98 @@ struct HomeAwaitingView: View {
                                         }
                                     }
                                 }else if homeAwaitingViewModel.isScheduledSelected{
-                                    if homeAwaitingViewModel.scheduleData.count == 0{
+                                    if homeAwaitingViewModel.isLoading {
+                                        CustomProgressView()
+                                    }
+                                    else if homeAwaitingViewModel.scheduleData.count == 0{
                                         Text("No Mails Found.")
                                             .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
                                             .font(.custom(.poppinsMedium, size: 25, relativeTo: .title))
                                     }else{
                                         VStack{
-                                            List($homeAwaitingViewModel.scheduleData,id: \.self) { $data in
+                                            List($homeAwaitingViewModel.scheduleData,id: \.self) { $scheduleddata in
                                                 HStack{
-                                                    Image("person")
+                                                    Image("unchecked")
+                                                        .renderingMode(.template)
+                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                         .padding([.trailing,.leading],5)
                                                         .frame(width: 34,height: 34)
                                                         .clipShape(Circle())
                                                     VStack(alignment: .leading){
-                                                        if data.status?.rawValue ?? "" == "scheduled"{
-                                                            Text("Scheduled")
-                                                                .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
-                                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                        if scheduleddata.status?.rawValue ?? "" == "scheduled"{
+                                                            if let recipient = scheduleddata.recipients.first(where: { $0.type == "to" }) {
+                                                                Text(recipient.user.firstname ?? "")
+                                                                    .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                    .onTapGesture {
+                                                                        print("recipient.user.firstname \(recipient.user.firstname ?? "")")
+                                                                    }
+                                                            }
+
+                                                            else {
+                                                                Text("(no recipient)")
+                                                                    .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                            }
                                                         }
+                                                        HStack {
+                                                            if let subject = scheduleddata.subject, !subject.isEmpty,
+                                                               let body = scheduleddata.body, !body.isEmpty {
+                                                                Text(subject)
+                                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                    .lineLimit(1)
+                                                                
+                                                                Text("- \(body)")
+                                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                    .lineLimit(1)
+                                                            } else if let subject = scheduleddata.subject, !subject.isEmpty {
+                                                                Text(subject)
+                                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                    .lineLimit(1)
+                                                            } else if let body = scheduleddata.body, !body.isEmpty {
+                                                                Text("- \(body)")
+                                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                    .lineLimit(1)
+                                                            } else {
+                                                                Text("No subject")
+                                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                            }
+                                                        }
+
                                                         
-                                                        Text(data.subject ?? "")
-                                                            .font(.custom(.poppinsRegular, size: 14,relativeTo: .title))
-                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                            .lineLimit(1)
                                                     }
                                                     Spacer()
-                                                    let unixTimestamp = data.createdAt ?? ""
-                                                    if let istDateStringFromISO = convertToIST(dateInput: unixTimestamp) {
+                                                    if let unixTimestamp = scheduleddata.scheduledTime,
+                                                       let istDateStringFromISO = convertToIST(dateInput: unixTimestamp) {
                                                         Text(istDateStringFromISO)
                                                             .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
                                                             .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                                    .padding(.top, 0) // Adds 5 points of padding from the top
-                                                                    .frame(maxWidth: .infinity, alignment: .topTrailing)
+                                                            .padding(.top, 0)
+                                                            .frame(maxWidth: .infinity, alignment: .topTrailing)
                                                     }
+
                                                 }
                                                 .listRowBackground(themesviewModel.currentTheme.windowBackground)
                                                 .onTapGesture {
                                                     if homeAwaitingViewModel.beforeLongPress {
-                                                        homeAwaitingViewModel.selectedID = data.threadID
-                                                        homeAwaitingViewModel.passwordHint = data.passwordHint
+                                                        homeAwaitingViewModel.selectedID = scheduleddata.threadID
+                                                        homeAwaitingViewModel.passwordHint = scheduleddata.passwordHint
                                                         homeAwaitingViewModel.isScheduleEmail = true
                                                     }
                                                 }
+                                                .gesture(
+                                                    LongPressGesture(minimumDuration: 1.0)
+                                                        .onEnded { _ in
+                                                            withAnimation {
+                                                                beforeLongPress = false
+                                                            }
+                                                        }
+                                                )
                                                 
                                             }
                                             .listStyle(PlainListStyle())
@@ -659,103 +812,147 @@ struct HomeAwaitingView: View {
                                         }
                                     }
                                 }
+                                else if homeAwaitingViewModel.istLetersSelected{
+                                    if homeAwaitingViewModel.isLoading {
+                                        CustomProgressView()
+                                    }
+                                    else{
+                                        VStack{
+                                            ZStack {
+                                                Color.clear // Background to help center the image
+                                                Image("coming soon") // Replace with the actual image name
+                                                    .resizable()
+                                                    .renderingMode(.template)
+                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                    .scaledToFit()
+                                                    .frame(width: 160, height: 111.02)
+                                            }
+                                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                        }
+                                    }
+                                }
+                                
+                                else if homeAwaitingViewModel.istCardsSelected{
+                                    if homeAwaitingViewModel.isLoading {
+                                        CustomProgressView()
+                                    }
+                                    else{
+                                        VStack{
+                                            ZStack {
+                                                Color.clear // Background to help center the image
+                                                Image("coming soon") // Replace with the actual image name
+                                                    .resizable()
+                                                    .renderingMode(.template)
+                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                    .scaledToFit()
+                                                    .frame(width: 160, height: 111.02)
+                                            }
+                                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                        }
+                                    }
+                                }
+                                
                                 
                             }
                         }
                         
-                    }else{
-                        VStack{
-                            HStack{
-                                Spacer()
-                                Text("\(homeAwaitingViewModel.selectedThreadIDs.count) Selected")
-                                    .font(.custom(.poppinsRegular, size: 16))
-                                    .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                                
-                                Spacer()
-                                
-                                Button {
-                                    homeAwaitingViewModel.beforeLongPress.toggle()
-                                    homeAwaitingViewModel.selectedThreadIDs.removeAll()
-                                } label: {
-                                    Text("Cancel")
-                                        .foregroundColor(Color.themeColor)
-                                }
-                                .padding(.trailing,15)
-                            }
-                            
-                            HStack{
-                                Image(homeAwaitingViewModel.selectedThreadIDs.count != 0 ? "checkbox" : "Check")
-                                    .resizable()
-                                    .frame(width: 24,height: 24)
-                                    .padding([.trailing,.leading],5)
-                                    .onTapGesture {
-                                        selectAllEmails()
-                                    }
-                                Image("dropdown")
-                                Text("Select All")
-                                    .font(.custom(.poppinsRegular, size: 14))
-                                    .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                                    .onTapGesture {
-                                        selectAllEmails()
-                                    }
-                                Spacer()
-                            }
-                            .padding(.leading,15)
-                        }
-                    
-                        VStack{
-
-                            
-                            HStack(spacing:50) {
-                                Button(action: {
-                                    homeAwaitingViewModel.deleteEmailFromAwaiting()
-                                }) {
-                                    Image(systemName: "trash")
-                                        .frame(width: 25, height: 25)
-                                        .foregroundColor(Color(red: 39/255, green: 50/255, blue: 64/255))
-                                }
-                                
-                                
-                                Button(action: {
-                                    homeAwaitingViewModel.toggleReadStatusForSelectedEmails()
-                                }) {
-                                    Image(systemName: homeAwaitingViewModel.shouldDisplayOpenEnvelope ? "envelope" : "envelope.open")
-                                        .frame(width: 25, height: 25)
-                                        .foregroundColor(Color(red: 39/255, green: 50/255, blue: 64/255))
-                                }
-                                
-                                
-                                Button(action: {
-                                    isMoveToFolder = true
-                                }) {
-                                    Image(systemName: "folder")
-                                        .frame(width: 25, height: 25)
-                                        .foregroundColor(Color(red: 39/255, green: 50/255, blue: 64/255))
-                                }
-                                
-                                Button(action: {
-                                    isCreateLabel = true
-                                }) {
-                                    Image(systemName: "tag")
-                                        .frame(width: 25, height: 25)
-                                        .foregroundColor(Color(red: 39/255, green: 50/255, blue: 64/255))
-                                }
-                                
-                                Button(action: {
-                                    //  isSheetVisible = true
-                                    emailSelectionSheetOptions()
-                                }) {
-                                    Image(systemName: "ellipsis")
-                                        .frame(width: 25, height: 25)
-                                        .foregroundColor(Color(red: 39/255, green: 50/255, blue: 64/255))
-                                }
-                                
-                            }
-                            .padding([.leading,.trailing], 20)
-                            
-                        }
-                        
-                    }
+//                    }
+//                    else{
+//                        VStack{
+//                            HStack{
+//                                Spacer()
+//                                Text("\(homeAwaitingViewModel.selectedThreadIDs.count) Selected")
+//                                    .font(.custom(.poppinsRegular, size: 16))
+//                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+//                                
+//                                Spacer()
+//                                
+//                                Button {
+//                                    homeAwaitingViewModel.beforeLongPress.toggle()
+//                                    homeAwaitingViewModel.selectedThreadIDs.removeAll()
+//                                } label: {
+//                                    Text("Cancel")
+//                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+//                                }
+//                                .padding(.trailing,15)
+//                            }
+//                            
+//                            HStack{
+//                                Image(homeAwaitingViewModel.selectedThreadIDs.count != 0 ? "checkbox" : "Check")
+//                                    .resizable()
+//                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+//                                    .frame(width: 24,height: 24)
+//                                    .padding([.trailing,.leading],5)
+//                                    .onTapGesture {
+//                                        selectAllEmails()
+//                                    }
+//                                Image("dropdown")
+//                                    .renderingMode(.template)
+//                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+//                                Text("Select All")
+//                                    .font(.custom(.poppinsRegular, size: 14))
+//                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+//                                    .onTapGesture {
+//                                        selectAllEmails()
+//                                    }
+//                                Spacer()
+//                            }
+//                            .padding(.leading,15)
+//                        }
+//                    
+//                        VStack{
+//
+//                            
+//                            HStack(spacing:50) {
+//                                Button(action: {
+//                                    homeAwaitingViewModel.deleteEmailFromAwaiting()
+//                                }) {
+//                                    Image(systemName: "trash")
+//                                        .frame(width: 25, height: 25)
+//                                        .foregroundColor(Color(red: 39/255, green: 50/255, blue: 64/255))
+//                                }
+//                                
+//                                
+//                                Button(action: {
+//                                    homeAwaitingViewModel.toggleReadStatusForSelectedEmails()
+//                                }) {
+//                                    Image(systemName: homeAwaitingViewModel.shouldDisplayOpenEnvelope ? "envelope" : "envelope.open")
+//                                        .frame(width: 25, height: 25)
+//                                        .foregroundColor(Color(red: 39/255, green: 50/255, blue: 64/255))
+//                                }
+//                                
+//                                
+//                                Button(action: {
+//                                    isMoveToFolder = true
+//                                }) {
+//                                    Image(systemName: "folder")
+//                                        .frame(width: 25, height: 25)
+//                                        .foregroundColor(Color(red: 39/255, green: 50/255, blue: 64/255))
+//                                }
+//                                
+//                                Button(action: {
+//                                    isCreateLabel = true
+//                                }) {
+//                                    Image(systemName: "tag")
+//                                        .frame(width: 25, height: 25)
+//                                        .foregroundColor(Color(red: 39/255, green: 50/255, blue: 64/255))
+//                                }
+//                                
+//                                Button(action: {
+//                                    //  isSheetVisible = true
+//                                    emailSelectionSheetOptions()
+//                                }) {
+//                                    Image(systemName: "ellipsis")
+//                                        .frame(width: 25, height: 25)
+//                                        .foregroundColor(Color(red: 39/255, green: 50/255, blue: 64/255))
+//                                }
+//                                
+//                            }
+//                            .padding([.leading,.trailing], 20)
+//                            
+//                        }
+//                        
+//                    }
                     
                     if homeAwaitingViewModel.beforeLongPress{
                         Spacer()
@@ -958,15 +1155,14 @@ struct HomeAwaitingView: View {
                 if homeAwaitingViewModel.passwordHint != nil{
                     PasswordProtectedAccessView(isPasswordProtected: $homeAwaitingViewModel.isEmailScreen, emailId: homeAwaitingViewModel.selectedID ?? 0,passwordHint: homeAwaitingViewModel.passwordHint ?? "").toolbar(.hidden)
                 }else{
-                    MailFullView(conveyedView: $conveyedView, PostBoxView: $PostBoxView, emailId: homeAwaitingViewModel.selectedID ?? 0, passwordHash: "").toolbar(.hidden)
+                    MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, emailId: homeAwaitingViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars ).toolbar(.hidden)
                 }
-                
             }
             .navigationDestination(isPresented: $homeAwaitingViewModel.isComposeEmail) {
                 MailComposeView(id:homeAwaitingViewModel.selectedID ?? 0).toolbar(.hidden)
             }
             .navigationDestination(isPresented: $homeAwaitingViewModel.isdraftEmail) {
-                draftView(id:homeAwaitingViewModel.selectedID ?? 0).toolbar(.hidden)
+                draftView(isdraftViewVisible: $homeAwaitingViewModel.draftView, id:homeAwaitingViewModel.selectedID ?? 0).toolbar(.hidden)
             }
             .navigationDestination(isPresented: $homeAwaitingViewModel.isScheduleEmail) {
                 ScheduleView(id:homeAwaitingViewModel.selectedID ?? 0).toolbar(.hidden)
@@ -980,6 +1176,7 @@ struct HomeAwaitingView: View {
             
         }
     }
+    
     
     private func selectEmail(data: HomeEmailsDataModel) {
         if let index = homeAwaitingViewModel.emailData.firstIndex(where: { $0.threadID == data.threadID }) {

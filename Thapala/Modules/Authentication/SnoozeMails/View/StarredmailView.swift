@@ -449,7 +449,7 @@ struct StarredmailView: View {
                         }
                     VStack {
                         Spacer() // Pushes the sheet to the bottom
-                        CreateTagLabel(isTagSheetVisible: $isTagsheetvisible, isActive: $isactive, selectedNewDiaryTag: $selectednewDiaryTag, selectedNames: $selectednames, selectedID: selectedid, isclicked: $isClicked)
+                        CreateTagLabel(isTagSheetVisible: $isTagsheetvisible, isActive: $isactive, selectedNewBottomTag: $selectednewDiaryTag, selectedNames: $selectednames, selectedID: selectedid, isclicked: $isClicked)
                             .transition(.move(edge: .bottom))
                             .animation(.easeInOut, value: isTagsheetvisible)
                     }

@@ -9,11 +9,13 @@ import SwiftUI
 
 struct PasswordProtectedAccessView: View {
     @Binding var isPasswordProtected: Bool
+    @StateObject var mailComposeViewModel = MailComposeViewModel()
     @ObservedObject private var passwordProtectedAccessViewModel = PasswordProtectedAccessViewModel()
     let emailId:Int
     @State var passwordHint:String
     @State private var conveyedView: Bool = false
     @State private var PostBoxView: Bool = false
+    @State private var SnoozedView: Bool = false
     var body: some View {
         ZStack{
             Color(red: 0, green: 0, blue: 0)
@@ -75,7 +77,7 @@ struct PasswordProtectedAccessView: View {
             .padding(.horizontal, 25)
         }
         .navigationDestination(isPresented: $passwordProtectedAccessViewModel.isPasswordProtected) {
-            MailFullView(conveyedView: $conveyedView, PostBoxView: $PostBoxView, emailId: emailId, passwordHash: passwordProtectedAccessViewModel.password).toolbar(.hidden)
+            MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView, conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, emailId: emailId, passwordHash: passwordProtectedAccessViewModel.password, StarreEmail: $mailComposeViewModel.mailStars).toolbar(.hidden)
         }
         .toast(message: $passwordProtectedAccessViewModel.error)
     }

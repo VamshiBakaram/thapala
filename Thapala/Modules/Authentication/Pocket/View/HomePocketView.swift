@@ -16,6 +16,8 @@ struct HomePocketView: View {
     var body: some View {
         GeometryReader{ reader in
             ZStack{
+                themesviewModel.currentTheme.windowBackground
+                    .ignoresSafeArea()
                 VStack {
                     VStack{
                         HStack(spacing:20){
@@ -119,7 +121,6 @@ struct HomePocketView: View {
                                              .foregroundColor(themesviewModel.currentTheme.iconColor)
                                              .onTapGesture {
                                                  isQuickAccessVisible = true
-                                                 
                                              }
                                      }
                                  )
@@ -128,42 +129,37 @@ struct HomePocketView: View {
                          }
                      }
                     
-                    if isMenuVisible{
-                        HomeMenuView(isSidebarVisible: $isMenuVisible)
-                    }
-                }
-                .background(themesviewModel.currentTheme.windowBackground)
+                    TabViewNavigator()
+                        .frame(height: 40)
 
+                }
+                
+
+                
+                if isMenuVisible{
+                    HomeMenuView(isSidebarVisible: $isMenuVisible)
+                }
+
+                
+                if isQuickAccessVisible {
+                        Color.white.opacity(0.8) // Optional: semi-transparent background
+                            .ignoresSafeArea()
+                            .blur(radius: 10) // Blur effect for the background
+                        QuickAccessView(isQuickAccessVisible: $isQuickAccessVisible)
+                            .background(Color.white) // Background color for the Quick Access View
+                            .cornerRadius(10)
+                            .shadow(radius: 10)
+                            .padding()
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing) // Align at the bottom right
+                            .padding([.bottom, .trailing], 20)
+                    }
             }
             .navigationDestination(isPresented: $homePocketViewModel.isComposeEmail) {
                     MailComposeView().toolbar(.hidden)
                 }
             .toast(message: $homePocketViewModel.error)
-            
-
-
         }
-        
-
-
-        
-        TabViewNavigator()
-            .frame(height: 40)
-        
-        if isQuickAccessVisible {
-                Color.white.opacity(0.8) // Optional: semi-transparent background
-                    .ignoresSafeArea()
-                    .blur(radius: 10) // Blur effect for the background
-                QuickAccessView(isQuickAccessVisible: $isQuickAccessVisible)
-                    .background(Color.white) // Background color for the Quick Access View
-                    .cornerRadius(10)
-                    .shadow(radius: 10)
-                    .padding()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing) // Align at the bottom right
-                    .padding([.bottom, .trailing], 20)
-            }
     }
-    
 }
 
 #Preview {

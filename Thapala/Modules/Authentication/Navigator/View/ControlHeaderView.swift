@@ -94,18 +94,19 @@ struct ControlHeaderView: View {
                         }
                         .frame(height: 50)
                         .padding(.horizontal, 16)
-                        
+
                         // Settings List - Show different items based on selected tab
                         if (selectedTab == 0) || (selectedTab == 1) || (selectedTab == 2) {
                             VStack(spacing: 0) {
                                 ForEach(getTabItems().indices, id: \.self) { index in
                                     let itemTitle = getTabItems()[index]
                                     let itemIcon = getTabIcons()[index]
-                                    
                                     VStack(spacing: 0) {
                                         HStack {
+                                            
                                             if selectedTab == 1{
                                                 Image(itemIcon)
+                                                    .renderingMode(.template)
                                                     .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                     .frame(width: 24, height: 24)
                                             }
@@ -625,7 +626,6 @@ struct ControlHeaderView: View {
                         .edgesIgnoringSafeArea(.top)
                         .navigationBarBackButtonHidden(true)
                         .onAppear {
-                            print("on Appears of DirectoryView \(themesviewModel.selectedTheme)")
                             // First, fetch settings data
                             if ConsoleviewModel.GetUserSettings.isEmpty {
                                 ConsoleviewModel.getUserSettings()

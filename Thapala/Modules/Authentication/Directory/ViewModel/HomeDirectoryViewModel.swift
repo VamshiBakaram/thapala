@@ -32,11 +32,15 @@ class HomeDirectoryViewModel: ObservableObject {
     @Published var DirectoryUpdate : Bool = false
     @Published var beforeLongPress: Bool = true
     @Published var isComposeEmail: Bool = false
-    @Published var countryCodes: [CountryData] = []
-    @Published var selectedCountryCode: CountryData?
+    @Published var countryCodes: [SingleCountry] = []
+    @Published var selectedCountryIndex: Int? = nil
+    
     @Published var allStates: [States] = []
-    @Published var selectedState: States?
+    @Published var selectedStateIndex: Int? = nil
+    
     @Published var citiesInSelectedState: [String] = []
+    @Published var selectedCityIndex: Int? = nil
+
 
     func GetDirectoryList() {
         self.isLoading = true
@@ -149,6 +153,7 @@ class HomeDirectoryViewModel: ObservableObject {
         }
     }
 
+
     func getStatesAndCities() {
         guard let fileURL = Bundle.main.url(forResource: "countriesToCities", withExtension: "json") else {
             print("❌ countriesToCities.json not found")
@@ -157,42 +162,55 @@ class HomeDirectoryViewModel: ObservableObject {
 
         do {
             let jsonData = try Data(contentsOf: fileURL)
-            print("✅ JSON loaded, size: \(jsonData.count) bytes")
-
             let decoded = try JSONDecoder().decode(CountryData.self, from: jsonData)
-
             DispatchQueue.main.async {
-                guard let firstCountry = decoded.countries.first else {
-                    print("⚠️ No countries found in JSON")
-                    return
-                }
-
-                self.allStates = firstCountry.states
-                print("📍 States loaded: \(self.allStates.map { $0.stateName })")
-
-                if let firstState = self.allStates.first {
-                    self.selectedState = firstState
-                    self.citiesInSelectedState = firstState.cities
-                    print("✅ Selected state: \(firstState.stateName)")
-                    print("🏙️ Cities: \(firstState.cities)")
+                self.countryCodes = decoded.countries
+                print("getStatesAndCities function calls")
+                
+                // Select first country and its states by default
+                if let _ = self.countryCodes.first {
+                    self.selectCountry(at: -1)
                 }
             }
         } catch {
             print("❌ Failed to decode JSON: \(error.localizedDescription)")
         }
     }
-
-    func selectState(_ state: States) {
-        DispatchQueue.main.async {
-            self.selectedState = state
-            self.citiesInSelectedState = state.cities
-            print("🔁 State changed to: \(state.stateName)")
-            print("🏙️ Cities: \(state.cities)")
+    
+    func selectCountry(at index: Int) {
+        guard index >= 0 && index < countryCodes.count else { return }
+        selectedCountryIndex = index
+        
+        let selectedCountry = countryCodes[index]
+        allStates = selectedCountry.states
+        
+        if let firstState = selectedCountry.states.first,
+           let firstStateIndex = selectedCountry.states.firstIndex(where: { $0.id == firstState.id }) {
+            selectState(at: -1)
+        } else {
+            selectedStateIndex = nil
+            citiesInSelectedState = []
+            selectedCityIndex = nil
         }
     }
-
-
-
-
     
+    func selectState(at index: Int) {
+        guard index >= 0 && index < allStates.count else { return }
+        selectedStateIndex = index
+        
+        let selectedState = allStates[index]
+        citiesInSelectedState = selectedState.cities
+        
+        if !citiesInSelectedState.isEmpty {
+            selectCity(at: -1)
+        } else {
+            selectedCityIndex = nil
+        }
+    }
+    
+    func selectCity(at index: Int) {
+        guard index >= 0 && index < citiesInSelectedState.count else { return }
+        selectedCityIndex = index
+    }
 }
+

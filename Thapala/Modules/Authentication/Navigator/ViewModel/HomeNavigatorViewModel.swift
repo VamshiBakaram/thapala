@@ -17,7 +17,7 @@ class HomeNavigatorViewModel:ObservableObject{
     @Published var state = ""
     @Published var zipcode = ""
     @Published var country = ""
-    @Published var selectedOption: NavigatorOptions? = .adobe
+    @Published var selectedOption: NavigatorOptions? = .controlPanel
     @Published var adobeSelectedOption: AdobeOptions? = .primary
     @Published var controlPanelSelectedOption: ControlPanelOptions? = .acDetails
     @Published var isPrimarySelected = true

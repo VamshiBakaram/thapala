@@ -26,6 +26,7 @@ class ReplyEmailViewModel:ObservableObject{
     @Published var backToscreen = false
     @Published var replyToId: String = ""
     @Published var threadId: String = ""
+    @Published var composeEmail: String = ""
     
     init(to: String, cc: String, bcc: String, subject: String, body: String,replyToId:String,threadId:String,subSubject:String) {
            self.toAddress = to

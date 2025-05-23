@@ -51,3 +51,12 @@ struct SenderUserData: Decodable {
         case status, readReceiptStatus, timeOfRead, updatedAt, createdAt
     }
 }
+
+// Draft View delete trash bottom button
+struct DraftClearResponse: Codable {
+    let message: String
+}
+
+struct ClearDraftRequest: Codable {
+    let emailId: Int
+}

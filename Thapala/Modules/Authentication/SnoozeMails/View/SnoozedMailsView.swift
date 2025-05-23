@@ -8,6 +8,7 @@ import SwiftUI
 
 struct SnoozedMailsView:View{
     @ObservedObject var snoozedMailsViewModel = SnoozedMailsViewModel()
+    @StateObject var mailComposeViewModel = MailComposeViewModel()
     @ObservedObject var themesviewModel = themesViewModel()
     @State private var selectedTab = "Queue"
     @State private var beforeLongPress = true
@@ -16,6 +17,9 @@ struct SnoozedMailsView:View{
     @State private var isMenuVisible = false
     @State private var conveyedView: Bool = false
     @State private var PostBoxView: Bool = false
+    @State private var SnoozedView: Bool = false
+    
+    
     var body: some View {
         VStack{
             HStack{
@@ -177,6 +181,7 @@ struct SnoozedMailsView:View{
         if isMenuVisible{
             HomeMenuView(isSidebarVisible: $isMenuVisible)
         }
+
     }
     
     var QueueSnoozedMailsView: some View {
@@ -222,6 +227,7 @@ struct SnoozedMailsView:View{
                         snoozedMailsViewModel.passwordHint = email.passwordHint
                         snoozedMailsViewModel.isEmailScreen = true
                     }
+                    .listRowBackground(themesviewModel.currentTheme.windowBackground)
                     .gesture(
                         LongPressGesture(minimumDuration: 1.0)
                             .onEnded { _ in
@@ -262,6 +268,7 @@ struct SnoozedMailsView:View{
     //                        .padding(.top,-30)
     //                    Spacer()
                     }
+                    .listRowBackground(themesviewModel.currentTheme.windowBackground)
                     .gesture(
                         LongPressGesture(minimumDuration: 1.0)
                             .onEnded { _ in
@@ -312,9 +319,9 @@ struct SnoozedMailsView:View{
         }
         .navigationDestination(isPresented: $snoozedMailsViewModel.isEmailScreen) {
             if $snoozedMailsViewModel.passwordHint != nil{
-                MailFullView(conveyedView: $conveyedView, PostBoxView: $PostBoxView, emailId: snoozedMailsViewModel.selectedID ?? 0, passwordHash: "").toolbar(.hidden)
+                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, emailId: snoozedMailsViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars).toolbar(.hidden)
             }else{
-                MailFullView(conveyedView: $conveyedView, PostBoxView: $PostBoxView, emailId: snoozedMailsViewModel.selectedID ?? 0, passwordHash: "").toolbar(.hidden)
+                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, emailId: snoozedMailsViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars).toolbar(.hidden)
             }
         }
     }
@@ -357,15 +364,14 @@ struct SnoozedMailsView:View{
 
      
                 }
-                .gesture(
-                    LongPressGesture(minimumDuration: 1.0)
-                        .onEnded { _ in
-                            withAnimation {
-                                beforeLongPress = false
-                                
-                            }
-                        }
-                )
+                .listRowBackground(themesviewModel.currentTheme.windowBackground)
+                .onTapGesture {
+                    print("snoozed postbox clicked")
+                    snoozedMailsViewModel.selectedID = email.emailId
+                    snoozedMailsViewModel.passwordHint = email.passwordHint
+                    snoozedMailsViewModel.isEmailScreen = true
+                    SnoozedView = true
+                }
             }
             .listStyle(PlainListStyle())
             .scrollContentBackground(.hidden)
@@ -375,6 +381,7 @@ struct SnoozedMailsView:View{
                 HStack{
                     Image("checkbox")
                         .resizable()
+                        .renderingMode(.template)
                         .foregroundColor(themesviewModel.currentTheme.iconColor)
                         .frame(width: 24,height: 24)
                         .padding([.trailing,.leading],5)
@@ -402,6 +409,7 @@ struct SnoozedMailsView:View{
 //                        .padding(.top,-30)
 //                    Spacer()
                 }
+                .listRowBackground(themesviewModel.currentTheme.windowBackground)
                 .gesture(
                     LongPressGesture(minimumDuration: 1.0)
                         .onEnded { _ in
@@ -465,6 +473,9 @@ struct SnoozedMailsView:View{
 
             }
         }
+        .navigationDestination(isPresented: $snoozedMailsViewModel.isEmailScreen) {
+            MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, emailId: snoozedMailsViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars ).toolbar(.hidden)
+           }
     }
     
     var conveyedMailsView: some View {
@@ -506,6 +517,7 @@ struct SnoozedMailsView:View{
 
      
                 }
+                .listRowBackground(themesviewModel.currentTheme.windowBackground)
                 .gesture(
                     LongPressGesture(minimumDuration: 1.0)
                         .onEnded { _ in
@@ -551,6 +563,7 @@ struct SnoozedMailsView:View{
 //                        .padding(.top,-30)
 //                    Spacer()
                 }
+                .listRowBackground(themesviewModel.currentTheme.windowBackground)
                 .gesture(
                     LongPressGesture(minimumDuration: 1.0)
                         .onEnded { _ in

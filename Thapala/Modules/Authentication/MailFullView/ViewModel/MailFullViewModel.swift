@@ -23,7 +23,9 @@ class MailFullViewModel: ObservableObject {
     @Published var isReplyAll: Bool = false
     @Published var isForward: Bool = false
     @Published var replyViewModel: ReplyEmailViewModel? = nil
-
+    @Published var detailedEmailData: [DetailedEmailData] = []
+    @Published var  selectedDateTime: Date? = nil
+    
     func getFullEmail(emailId: Int, passwordHash: String, completion: @escaping (Result<EmailsByIdModel, NetworkError>) -> Void) {
         self.isLoading = true
         let endUrl = "\(EndPoint.emailsById)\(emailId)"

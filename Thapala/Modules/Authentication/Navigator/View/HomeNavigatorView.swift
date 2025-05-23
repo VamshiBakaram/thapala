@@ -220,7 +220,7 @@ struct HomeNavigatorView: View {
 //                    }
                     
                     VStack {
-        //                        Spacer().frame(height: 100)
+        //          Spacer().frame(height: 100)
                          HStack {
                              Spacer()
                              RoundedRectangle(cornerRadius: 30)
@@ -256,7 +256,13 @@ struct HomeNavigatorView: View {
                     }
                     
                 }
+                .navigationBarBackButtonHidden(true)
                 .background(themesviewModel.currentTheme.windowBackground)
+                .onAppear{
+                    print("homeNavigatorViewModel.isControlSelected = true")
+                    self.homeNavigatorViewModel.selectedOption = .controlPanel
+                    self.homeNavigatorViewModel.isControlSelected = true
+                }
                 if isMenuVisible{
                     HomeMenuView(isSidebarVisible: $isMenuVisible)
                 }

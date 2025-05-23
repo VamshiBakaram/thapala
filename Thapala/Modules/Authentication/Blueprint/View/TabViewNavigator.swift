@@ -10,6 +10,7 @@ import SwiftUI
 struct TabViewNavigator: View {
     @ObservedObject var consoleViewModel = ConsoleViewModel()
     @ObservedObject var themesviewModel = themesViewModel()
+    @StateObject var mailComposeViewModel = MailComposeViewModel()
     @State private var isMailViewActive = false
     @State private var isBluePrintViewActive = false
     @State private var isQuickAccessViewActive = false
@@ -17,7 +18,7 @@ struct TabViewNavigator: View {
     @State private var isConsoleViewActive = false
     @State private var conveyedView: Bool = false
     @State private var PostBoxView: Bool = false
-    
+    @State private var SnoozedView: Bool = false
     var body: some View {
             VStack {
                 Spacer()
@@ -88,7 +89,7 @@ struct TabViewNavigator: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.leading, 20)
                     .navigationDestination(isPresented: $isQuickAccessViewActive) {
-                        MailFullView(conveyedView: $conveyedView, PostBoxView: $PostBoxView, emailId: 0, passwordHash: "")
+                        MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView, conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, emailId: 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars)
                     }
 
                     VStack(alignment: .leading, spacing: 5) {

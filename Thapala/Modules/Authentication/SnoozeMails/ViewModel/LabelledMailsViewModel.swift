@@ -9,16 +9,16 @@ import SwiftUI
 class LabelledMailsViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var error: String?
-    
+    @Published var selectedLabelID: [Int] = [] // bottom tag
+    @Published var selectedLabelNames: [String] = []
     @Published var labelledMailsDataModel:[LabelledMailsDataModel] = []
     
-    init() {
-        self.getLabelledEmailData()
-    }
+//    init() {
+//        self.getLabelledEmailData()
+//    }
     
     func getLabelledEmailData() {
         self.isLoading = true
-        
         let endUrl = "\(EndPoint.labelledEmails)"
         NetworkManager.shared.request(type: LabelledMailsModel.self, endPoint: endUrl, httpMethod: .get,isTokenRequired: true) { [weak self]result in
             guard let self = self else { return }

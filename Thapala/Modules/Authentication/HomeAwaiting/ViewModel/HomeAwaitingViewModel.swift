@@ -16,15 +16,15 @@ class HomeAwaitingViewModel: ObservableObject {
     @Published var isDraftsSelected: Bool = true
     @Published var istDraftselected: Bool = false
     @Published var isScheduledSelected: Bool = false
+    @Published var istLetersSelected: Bool = false
+    @Published var istCardsSelected: Bool = false
     @Published var outlineSelectedOption: OutlineOption? = .draft
     @Published var emailData: [HomeEmailsDataModel] = []
     @Published var emailFullData: HomeEmailsModel?
     @Published var starredemail: [StarredModel] = []
     @Published var selectedThreadIDs: [Int] = []
-
     @Published var draftsData: [HomeDraftsDataModel] = []
     @Published var draftsFullData: HomeDraftsModel?
-    
     @Published var tDraftsData: [HomeDraftsDataModel] = []
     @Published var scheduleData: [HomeDraftsDataModel] = []
     @Published var snoozedmail: [SnoozeResponse] = []
@@ -48,6 +48,7 @@ class HomeAwaitingViewModel: ObservableObject {
     @Published var bcc = ""
     @Published var subject = ""
     @Published var body = ""
+    @Published var draftView: Bool = false
     
     
 //    init() {

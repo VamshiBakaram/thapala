@@ -12,7 +12,6 @@ class SnoozedMailsViewModel: ObservableObject {
     @Published var passwordHint: String? = ""
     @Published var selectedID: Int? = nil
     @Published var snoozedMailsDataModel:[SnoozedMailsDataModel] = []
-    
     init() {
         self.getSnoozedEmailData(selectedTabItem : "awaited")
     }

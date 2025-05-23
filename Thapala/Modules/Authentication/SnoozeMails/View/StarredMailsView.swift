@@ -9,6 +9,7 @@ import SwiftUI
 
 struct StarredMailsView: View {
     @ObservedObject var themesviewModel = themesViewModel()
+    @StateObject var mailComposeViewModel = MailComposeViewModel()
     @State private var selectedTab = "awaited"
     @State private var beforeLongPress = true
     @State private var isMultiSelectionSheetVisible: Bool = false
@@ -16,6 +17,7 @@ struct StarredMailsView: View {
     @State private var isMenuVisible = false
     @State private var conveyedView: Bool = false
     @State private var PostBoxView: Bool = false
+    @State private var SnoozedView: Bool = false
     
     @ObservedObject var starredEmailViewModel = StarredEmailViewModel()
     
@@ -196,7 +198,7 @@ struct StarredMailsView: View {
                 List($starredEmailViewModel.starredEmailData, id: \.id) { $email in
                     HStack {
                         Image("checkbox")
-                            .resizable()
+                            .renderingMode(.template)
                             .foregroundColor(themesviewModel.currentTheme.iconColor)
                             .frame(width: 24,height: 24)
                             .padding([.trailing,.leading],5)
@@ -216,11 +218,14 @@ struct StarredMailsView: View {
                             Text(istDateStringFromTimestamp)
                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                                 .padding(.top, -30)
-                                .font(.custom(.poppinsLight, size: 10, relativeTo: .title))
+                                .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
                         }
                         Image("emptystar")
+                            .renderingMode(.template)
+                            .foregroundColor(themesviewModel.currentTheme.iconColor)
                         Spacer()
                     }
+                    .listRowBackground(themesviewModel.currentTheme.windowBackground)
                     .gesture(
                         LongPressGesture(minimumDuration: 1.0)
                             .onEnded { _ in
@@ -272,9 +277,9 @@ struct StarredMailsView: View {
         
         .navigationDestination(isPresented: $starredEmailViewModel.isEmailScreen) {
             if $starredEmailViewModel.passwordHint != nil{
-                MailFullView(conveyedView: $conveyedView, PostBoxView: $PostBoxView, emailId: starredEmailViewModel.selectedID ?? 0, passwordHash: "").toolbar(.hidden)
+                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, emailId: starredEmailViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars).toolbar(.hidden)
             }else{
-                MailFullView(conveyedView: $conveyedView, PostBoxView: $PostBoxView, emailId: starredEmailViewModel.selectedID ?? 0, passwordHash: "").toolbar(.hidden)
+                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, emailId: starredEmailViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars).toolbar(.hidden)
             }
         }
     }
@@ -367,6 +372,7 @@ struct StarredMailsView: View {
                         Image(systemName: "star")
                         Spacer()
                     }
+                    .listRowBackground(themesviewModel.currentTheme.windowBackground)
                     .gesture(
                         LongPressGesture(minimumDuration: 1.0)
                             .onEnded { _ in
@@ -418,9 +424,9 @@ struct StarredMailsView: View {
         
         .navigationDestination(isPresented: $starredEmailViewModel.isEmailScreen) {
             if $starredEmailViewModel.passwordHint != nil{
-                MailFullView(conveyedView: $conveyedView, PostBoxView: $PostBoxView, emailId: starredEmailViewModel.selectedID ?? 0, passwordHash: "").toolbar(.hidden)
+                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, emailId: starredEmailViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars).toolbar(.hidden)
             }else{
-                MailFullView(conveyedView: $conveyedView, PostBoxView: $PostBoxView, emailId: starredEmailViewModel.selectedID ?? 0, passwordHash: "").toolbar(.hidden)
+                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, emailId: starredEmailViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars).toolbar(.hidden)
             }
         }
     }
@@ -513,6 +519,7 @@ struct StarredMailsView: View {
                         Image(systemName: "star")
                         Spacer()
                     }
+                    .listRowBackground(themesviewModel.currentTheme.windowBackground)
                     .gesture(
                         LongPressGesture(minimumDuration: 1.0)
                             .onEnded { _ in
@@ -563,9 +570,9 @@ struct StarredMailsView: View {
         }
         .navigationDestination(isPresented: $starredEmailViewModel.isEmailScreen) {
             if $starredEmailViewModel.passwordHint != nil{
-                MailFullView(conveyedView: $conveyedView, PostBoxView: $PostBoxView, emailId: starredEmailViewModel.selectedID ?? 0, passwordHash: "").toolbar(.hidden)
+                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView, conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, emailId: starredEmailViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars).toolbar(.hidden)
             }else{
-                MailFullView(conveyedView: $conveyedView, PostBoxView: $PostBoxView, emailId: starredEmailViewModel.selectedID ?? 0, passwordHash: "").toolbar(.hidden)
+                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, emailId: starredEmailViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars).toolbar(.hidden)
             }
         }
     }

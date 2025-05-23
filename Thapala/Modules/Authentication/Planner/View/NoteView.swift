@@ -1442,7 +1442,6 @@ struct HistoryView: View {
         return formatter.string(from: date)
     }
 }
-
 struct DeleteNoteAlert: View {
     @ObservedObject var themesviewModel = themesViewModel()
     @Binding var isPresented: Bool

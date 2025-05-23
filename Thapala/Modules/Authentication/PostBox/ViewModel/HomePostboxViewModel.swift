@@ -27,6 +27,7 @@ class HomePostboxViewModel:ObservableObject{
     @Published var isChatBoxScreen: Bool = false
     @Published var selectID: Int = 0
     @Published var roomid: String = ""
+    @Published var starEmail: Int = 0
     
     
 //    init(){

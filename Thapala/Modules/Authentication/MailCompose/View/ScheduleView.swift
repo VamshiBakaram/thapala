@@ -117,12 +117,13 @@ struct ScheduleView: View {
                                                         .resizable()
                                                         .frame(width: 12, height: 8)
                                                         .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                        .onTapGesture {
+                                                            showEditProfileDialog.toggle()
+                                                            }
                                                     Spacer()
                                                 }
                                                 .padding([.leading, .top], 10)
-                                                        .onTapGesture {
-                                                            showEditProfileDialog.toggle()
-                                                }
+
                                             Spacer()
                                                 
 
@@ -337,46 +338,46 @@ struct ScheduleView: View {
                      .padding()
                      */
                     
-                    HStack (spacing:0){
-                        Button(action: {
-                            self.presentationMode.wrappedValue.dismiss()
-                        }) {
-                            Image(systemName: "trash")
-                                .renderingMode(.template)
-                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                .padding(.leading , 16)
-                        }
-                        Spacer()
-                        
-                        Button(action: {
-                            isMoveSheetvisible.toggle()
-                        }) {
-                            Image(systemName: "folder")
-                                .renderingMode(.template)
-                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-                        }
-                        Spacer()
-                        
-                        Button(action: {
-                            isTagsheetvisible.toggle()
-//                            BottomsheetviewModel.isLabelView = true
-//                            mailComposeViewModel.isInsertFromRecords = true
-                        }) {
-                            Image("Tags")
-                                .renderingMode(.template)
-                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-                        }
-                        Spacer()
-                        
-                        Button(action: {
-                            isMoreSheetvisible.toggle()
-                        }) {
-                            Image("threeDots")
-                                .renderingMode(.template)
-                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-                        }
-                        Spacer()
-                    }
+//                    HStack (spacing:0){
+//                        Button(action: {
+//                            self.presentationMode.wrappedValue.dismiss()
+//                        }) {
+//                            Image(systemName: "trash")
+//                                .renderingMode(.template)
+//                                .foregroundColor(themesviewModel.currentTheme.iconColor)
+//                                .padding(.leading , 16)
+//                        }
+//                        Spacer()
+//                        
+//                        Button(action: {
+//                            isMoveSheetvisible.toggle()
+//                        }) {
+//                            Image(systemName: "folder")
+//                                .renderingMode(.template)
+//                                .foregroundColor(themesviewModel.currentTheme.iconColor)
+//                        }
+//                        Spacer()
+//                        
+//                        Button(action: {
+//                            isTagsheetvisible.toggle()
+////                            BottomsheetviewModel.isLabelView = true
+////                            mailComposeViewModel.isInsertFromRecords = true
+//                        }) {
+//                            Image("Tags")
+//                                .renderingMode(.template)
+//                                .foregroundColor(themesviewModel.currentTheme.iconColor)
+//                        }
+//                        Spacer()
+//                        
+//                        Button(action: {
+//                            isMoreSheetvisible.toggle()
+//                        }) {
+//                            Image("threeDots")
+//                                .renderingMode(.template)
+//                                .foregroundColor(themesviewModel.currentTheme.iconColor)
+//                        }
+//                        Spacer()
+//                    }
 //                    .padding([.leading,.trailing],20)
                     
                 }
@@ -402,128 +403,128 @@ struct ScheduleView: View {
                 }
                 .toast(message: $mailComposeViewModel.error)
                 .onAppear {
-                    mailComposeViewModel.saveDraftData()
-                    mailComposeViewModel.getFullEmail(emailId: id) { result in
-                        switch result {
-                        case .success(let response):
-                            emailByIdData = response
-                            let stringValue = response.email?.first?.body ?? ""
-                            composeText = (convertHTMLToAttributedString(html: stringValue))?.string ?? ""
+                    if mailComposeViewModel.detailedEmailData.isEmpty {
+                        print("getFullEmail(emailId: id)")
+                        mailComposeViewModel.getFullEmail(emailId: id)
+                    }
+                    
+                    // Safely handle any logic without mutating `selectedID`
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        if let diary = mailComposeViewModel.detailedEmailData.first(where: { $0.threadID == id }) {
+                            let stringValue = diary.body
+                            composeText = (convertHTMLToAttributedString(html: stringValue ?? ""))?.string ?? ""
                             mailComposeViewModel.composeEmail = composeText
-                            subject = response.email?.first?.subject ?? ""
-                            attachmentsData = response.email?.first?.attachments ?? []
-                            scheduledtime = String(response.email?.first?.scheduledTime ?? 0)
+                            subject = diary.subject ?? ""
+                            attachmentsData = diary.attachments ?? []
+                            scheduledtime = String(diary.scheduledTime ?? 0)
                             image = homeNavigatorViewModel.BioData.first?.profile ?? "person"
-                                
-//                                        if let toRecipient = recipients.first(where: { $0.type == "from" }),
-//                                           let profile = toRecipient.user?.profile, !profile.isEmpty {
-//                                            image = profile
-//                                        }
-//                                else {
-//                                            // Provide a default image URL or leave `image` empty to trigger the .failure case
-//                                            image = "https://example.com/default-profile.png"
-//                                        }
-                            
-                            if let recipients = response.email?.first?.recipients {
+                            print("composeText \(composeText)")
+                            print("subject \(subject)")
+                            print("attachmentsData \(attachmentsData)")
+                            //                    selectedIconIndex = diary.theme
+                            if let recipients = diary.recipients {
                                 if let toRecipient = recipients.first(where: { $0.type == "from" }) {
                                     firstname = toRecipient.user?.firstname ?? ""
+                                    print("firstname \(firstname)")
                                 }
                             }
-                            if let recipients = response.email?.first?.recipients {
+                            if let recipients = diary.recipients {
                                 if let toRecipient = recipients.first(where: { $0.type == "from" }) {
                                     lastname = toRecipient.user?.lastname ?? ""
+                                    print("lastname \(lastname)")
                                 }
                             }
-                            if let recipients = response.email?.first?.recipients {
+                            if let recipients = diary.recipients {
                                 if let toRecipient = recipients.first(where: { $0.type == "from" }) {
                                     usertcode = toRecipient.user?.tCode ?? ""
+                                    print("usertcode \(usertcode)")
                                 }
                             }
-                            //                        mailComposeViewModel.to = (response.email?.first?.recipients?.first?.user?.tCode ?? "")
-                            if let recipients = response.email?.first?.recipients {
+                            if let recipients = diary.recipients {
                                 if let toRecipient = recipients.first(where: { $0.type == "to" }) {
                                     receipienttcode = toRecipient.user?.tCode ?? ""
+                                    print("receipienttcode \(receipienttcode)")
                                 }
                             }
-                            if let recipients = response.email?.first?.recipients {
+                            if let recipients = diary.recipients {
                                 if let toRecipient = recipients.first(where: { $0.type == "to" }) {
                                     receipientfirstname = toRecipient.user?.firstname ?? ""
+                                    print("receipientfirstname \(receipientfirstname)")
                                 }
                             }
-                            if let recipients = response.email?.first?.recipients {
+                            if let recipients = diary.recipients {
                                 if let toRecipient = recipients.first(where: { $0.type == "to" }) {
                                     receipientlastname = toRecipient.user?.lastname ?? ""
+                                    print("receipientlastname \(receipientlastname)")
                                 }
                             }
-                            
-
-                            
-                        case .failure(let error):
-                            self.errorMessage = error.localizedDescription
                         }
                     }
-                }
-                if isTagsheetvisible {
-                    ZStack {
-                        // Tappable background
-                        Rectangle()
-                            .fill(Color.black.opacity(0.3))
-                            .edgesIgnoringSafeArea(.all)
-                            .onTapGesture {
-                                withAnimation {
-                                    print("Tapped isTagsheetvisible")
-                                    isTagsheetvisible = false
-                                }
-                            }
-                        VStack {
-                            Spacer() // Pushes the sheet to the bottom
-                            CreateTagLabel(isTagSheetVisible: $isTagsheetvisible, isActive: $isactive, selectedNewDiaryTag: $selectednewDiaryTag, selectedNames: $selectednames, selectedID: selectedid, isclicked: $isClicked)
-                                .transition(.move(edge: .bottom))
-                                .animation(.easeInOut, value: isTagsheetvisible)
-                        }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        mailComposeViewModel.saveDraftData()
                     }
                 }
-            
-                if isMoveSheetvisible {
-                    ZStack {
-                        // Tappable background
-                        Rectangle()
-                            .fill(Color.black.opacity(0.3))
-                            .edgesIgnoringSafeArea(.all)
-                            .onTapGesture {
-                                withAnimation {
-                                    print("Tapped isMoveSheetvisible")
-                                    isMoveSheetvisible = false
-                                }
-                            }
-                        VStack {
-                            Spacer() // Pushes the sheet to the bottom
-                            MoveTo(isMoveToSheetVisible: $isMoveSheetvisible)
-                                .transition(.move(edge: .bottom))
-                                .animation(.easeInOut, value: isMoveSheetvisible)
-                        }
-                    }
-                }
-                if isMoreSheetvisible {
-                    ZStack {
-                        // Tappable background
-                        Rectangle()
-                            .fill(Color.black.opacity(0.3))
-                            .edgesIgnoringSafeArea(.all)
-                            .onTapGesture {
-                                withAnimation {
-                                    print("Tapped isMoreSheetvisible")
-                                    isMoreSheetvisible = false
-                                }
-                            }
-                        VStack {
-                            Spacer() // Pushes the sheet to the bottom
-                            MoreSheet(isMoreSheetVisible: $isMoreSheetvisible)
-                                .transition(.move(edge: .bottom))
-                                .animation(.easeInOut, value: isMoreSheetvisible)
-                        }
-                    }
-                }
+//                if isTagsheetvisible {
+//                    ZStack {
+//                        // Tappable background
+//                        Rectangle()
+//                            .fill(Color.black.opacity(0.3))
+//                            .edgesIgnoringSafeArea(.all)
+//                            .onTapGesture {
+//                                withAnimation {
+//                                    print("Tapped isTagsheetvisible")
+//                                    isTagsheetvisible = false
+//                                }
+//                            }
+//                        VStack {
+//                            Spacer() // Pushes the sheet to the bottom
+//                            CreateTagLabel(isTagSheetVisible: $isTagsheetvisible, isActive: $isactive, selectedNewDiaryTag: $selectednewDiaryTag, selectedNames: $selectednames, selectedID: selectedid, isclicked: $isClicked)
+//                                .transition(.move(edge: .bottom))
+//                                .animation(.easeInOut, value: isTagsheetvisible)
+//                        }
+//                    }
+//                }
+//            
+//                if isMoveSheetvisible {
+//                    ZStack {
+//                        // Tappable background
+//                        Rectangle()
+//                            .fill(Color.black.opacity(0.3))
+//                            .edgesIgnoringSafeArea(.all)
+//                            .onTapGesture {
+//                                withAnimation {
+//                                    print("Tapped isMoveSheetvisible")
+//                                    isMoveSheetvisible = false
+//                                }
+//                            }
+//                        VStack {
+//                            Spacer() // Pushes the sheet to the bottom
+//                            MoveTo(isMoveToSheetVisible: $isMoveSheetvisible)
+//                                .transition(.move(edge: .bottom))
+//                                .animation(.easeInOut, value: isMoveSheetvisible)
+//                        }
+//                    }
+//                }
+//                if isMoreSheetvisible {
+//                    ZStack {
+//                        // Tappable background
+//                        Rectangle()
+//                            .fill(Color.black.opacity(0.3))
+//                            .edgesIgnoringSafeArea(.all)
+//                            .onTapGesture {
+//                                withAnimation {
+//                                    print("Tapped isMoreSheetvisible")
+//                                    isMoreSheetvisible = false
+//                                }
+//                            }
+//                        VStack {
+//                            Spacer() // Pushes the sheet to the bottom
+//                            MoreSheet(isMoreSheetVisible: $isMoreSheetvisible)
+//                                .transition(.move(edge: .bottom))
+//                                .animation(.easeInOut, value: isMoreSheetvisible)
+//                        }
+//                    }
+//                }
     
         
             

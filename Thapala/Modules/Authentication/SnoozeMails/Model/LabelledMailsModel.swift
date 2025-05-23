@@ -7,19 +7,19 @@
 import SwiftUI
 import Foundation
 
-struct LabelledMailsModel: Decodable {
-    let message: String?
-    let data: [LabelledMailsDataModel]?
+
+
+// Top-level response
+struct LabelledMailsModel: Codable {
+    let message: String
+    let data: [LabelledMailsDataModel]
 }
 
-struct LabelledMailsDataModel: Decodable,Identifiable {
-    let id = UUID()
-    let labelID: Int?
-    let labelName: String?
+struct LabelledMailsDataModel: Codable, Identifiable {
+    let labelId: Int
+    let labelName: String
+    var isChecked: Bool = false
 
-    enum CodingKeys: String, CodingKey {
-        case labelID = "labelId"
-        case labelName
-    }
+    var id: Int { labelId }
 }
 

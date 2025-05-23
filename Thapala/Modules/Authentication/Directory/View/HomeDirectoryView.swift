@@ -186,6 +186,7 @@ struct HomeDirectoryView: View {
                             .frame(width: 24, height: 24)
                             .padding(.leading, 12)
                             .onTapGesture {
+                                homeDirectoryViewModel.getStatesAndCities()
                                 isSearchDialogVisible = true
                             }
                         
@@ -497,15 +498,15 @@ struct HomeDirectoryView: View {
                 
             .edgesIgnoringSafeArea(.top)
             .onAppear {
-                print("✅ View appeared")
-                homeDirectoryViewModel.getStatesAndCities()
-//                if homeDirectoryViewModel.DirectoryData.isEmpty {
-//                    homeDirectoryViewModel.GetDirectoryList()
-//                    if homeDirectoryViewModel.groupList.isEmpty {
-//                        print("GetGroupList Data")
-//                        homeDirectoryViewModel.GetGroupList()
-//                    }
-//                }
+                    print("✅ View appeared")
+                    homeDirectoryViewModel.getStatesAndCities()
+                if homeDirectoryViewModel.DirectoryData.isEmpty {
+                    homeDirectoryViewModel.GetDirectoryList()
+                    if homeDirectoryViewModel.groupList.isEmpty {
+                        print("GetGroupList Data")
+                        homeDirectoryViewModel.GetGroupList()
+                    }
+                }
 
                 // Delay execution to ensure data is loaded before processing
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { // 500ms delay
@@ -583,29 +584,64 @@ struct HomeDirectoryView: View {
                         VStack {
 //                            FloatingTextField(text: $homeDirectoryViewModel.country, placeHolder: "Country", allowedCharacter: .defaultType)
 //                                .padding(.horizontal, 10)
-//                            Menu {
-//                                ForEach(homeDirectoryViewModel.countryCodes, id: \.code) { country in
-//                                    Button(action: {
-//                                        homeDirectoryViewModel.selectedCountryCode = country
-//                                        homeDirectoryViewModel.country = country.name
-//                                    }) {
-//                                        Text("\(country.name) (\(country.dial_code))")
-//                                    }
-//                                }
-//                            } label: {
-//                                FloatingTextField(
-//                                    text: $homeDirectoryViewModel.country,
-//                                    placeHolder: "Country",
-//                                    allowedCharacter: .defaultType
-//                                )
-//                                .padding(.horizontal, 10)
-//                                .disabled(true) // Makes it non-editable, since selection comes from Menu
-//                            }
-
-                            FloatingTextField(text: $homeDirectoryViewModel.state, placeHolder: "State", allowedCharacter: .defaultType)
-                                .padding(.horizontal, 10)
-                            FloatingTextField(text: $homeDirectoryViewModel.city, placeHolder: "City", allowedCharacter: .defaultType)
-                                .padding(.horizontal, 10)
+                            Menu {
+                                ForEach(homeDirectoryViewModel.countryCodes.indices, id: \.self) { index in
+                                    Button {
+                                        homeDirectoryViewModel.selectCountry(at: index)
+                                    } label: {
+                                        Text(homeDirectoryViewModel.countryCodes[index].countryName)
+                                    }
+                                }
+                            } label: {
+                                Text(homeDirectoryViewModel.selectedCountryIndex != nil ?
+                                     homeDirectoryViewModel.countryCodes[homeDirectoryViewModel.selectedCountryIndex!].countryName :
+                                     "Select Country")
+                                    .padding()
+                                    .frame(maxWidth: .infinity)
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .background(themesviewModel.currentTheme.colorPrimary)
+                                    .cornerRadius(8)
+                            }
+                            
+                            // State menu
+                            Menu {
+                                ForEach(homeDirectoryViewModel.allStates.indices, id: \.self) { index in
+                                    Button {
+                                        homeDirectoryViewModel.selectState(at: index)
+                                    } label: {
+                                        Text(homeDirectoryViewModel.allStates[index].stateName)
+                                    }
+                                }
+                            } label: {
+                                Text(homeDirectoryViewModel.selectedStateIndex != nil ?
+                                     homeDirectoryViewModel.allStates[homeDirectoryViewModel.selectedStateIndex!].stateName :
+                                     "Select State")
+                                    .padding()
+                                    .frame(maxWidth: .infinity)
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .background(themesviewModel.currentTheme.colorPrimary)
+                                    .cornerRadius(8)
+                            }
+                            
+                            // City menu
+                            Menu {
+                                ForEach(homeDirectoryViewModel.citiesInSelectedState.indices, id: \.self) { index in
+                                    Button {
+                                        homeDirectoryViewModel.selectCity(at: index)
+                                    } label: {
+                                        Text(homeDirectoryViewModel.citiesInSelectedState[index])
+                                    }
+                                }
+                            } label: {
+                                Text(homeDirectoryViewModel.selectedCityIndex != nil ?
+                                     homeDirectoryViewModel.citiesInSelectedState[homeDirectoryViewModel.selectedCityIndex!] :
+                                     "Select City")
+                                    .padding()
+                                    .frame(maxWidth: .infinity)
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .background(themesviewModel.currentTheme.colorPrimary)
+                                    .cornerRadius(8)
+                            }
                             HStack {
                                 Spacer()
                                 Button(action: {
@@ -614,8 +650,8 @@ struct HomeDirectoryView: View {
                                     Text("Reset")
                                         .font(.headline)
                                         .padding()
-                                        .foregroundColor(.black)
-                                        .background(Color.white)
+                                        .foregroundColor(themesviewModel.currentTheme.windowBackground)
+                                        .background(themesviewModel.currentTheme.colorControlNormal)
                                         .cornerRadius(10)
                                         .overlay(
                                             RoundedRectangle(cornerRadius: 10)
@@ -630,8 +666,8 @@ struct HomeDirectoryView: View {
                                     Text("Search")
                                         .font(.headline)
                                         .padding()
-                                        .foregroundColor(.white)
-                                        .background(Color.blue)
+                                        .foregroundColor(themesviewModel.currentTheme.colorControlNormal)
+                                        .background(themesviewModel.currentTheme.colorPrimary)
                                         .cornerRadius(10)
                                 }
                                 .padding(.trailing, 16)
@@ -639,12 +675,17 @@ struct HomeDirectoryView: View {
 
                         }
                         .padding(20)
-                        .background(Color.white)
+                        .background(themesviewModel.currentTheme.windowBackground)
                         .cornerRadius(12)
                         .shadow(radius: 10)
                         .padding(.horizontal, 16)
                     }
                     .zIndex(1) // Ensure this is on top of other views
+                    .onTapGesture {
+                        print("zstack prints")
+                        homeDirectoryViewModel.getStatesAndCities()
+                        
+                    }
                 }
                 
                 
@@ -722,6 +763,11 @@ struct HomeDirectoryView: View {
         }
             
             .zIndex(0)
+            .onTapGesture {
+                print("main view zstack clicked")
+                isSearchDialogVisible = false
+                homeDirectoryViewModel.getStatesAndCities()
+            }
             .navigationDestination(isPresented: $homeDirectoryViewModel.isComposeEmail) {
                 MailComposeView().toolbar(.hidden)
             }

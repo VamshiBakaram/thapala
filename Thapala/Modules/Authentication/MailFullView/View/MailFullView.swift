@@ -9,9 +9,11 @@ import SwiftUI
 
 struct MailFullView: View {
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var mailFullViewModel = MailFullViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @StateObject var mailFullViewModel = MailFullViewModel()
+    @StateObject var mailComposeViewModel = MailComposeViewModel()
+    @StateObject var themesviewModel = themesViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
+    @Binding var isMailFullViewVisible: Bool
     @State private var emailData: EmailsByIdModel?
     @State private var attachmentsData: [Attachment] = []
     @State private var emailBodies: [String] = [] // Store bodies for each email
@@ -31,8 +33,18 @@ struct MailFullView: View {
     @State private var isClicked:Bool = false
     @Binding var conveyedView: Bool
     @Binding var PostBoxView: Bool
+    @Binding var SnoozedView: Bool
+    @State private var showingDeleteAlert = false
+    @State private var isreplyView = false
     let emailId: Int
     let passwordHash: String
+    @State var id:Int = 0
+    @State private var fullmailView: Bool = false
+    @Binding var StarreEmail: Int
+    @State private var EmailStarred : Int = 0
+    @State private var snoozeTime : Int = 0
+    @State private var snoozeatThread: String = ""
+    
     var body: some View {
         ZStack {
             VStack {
@@ -59,12 +71,30 @@ struct MailFullView: View {
                             let email = emailList[index]
                             
                             VStack(alignment: .leading, spacing: 20) {
+                                if SnoozedView {
+                                    VStack {
+                                        HStack(spacing: 10) {
+                                            Image("timer")
+                                                .renderingMode(.template)
+                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                            
+                                            Text("Snoozed Until \(snoozeatThread)")
+                                                .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
+                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                        }
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .padding(.leading, 16)
+                                        Rectangle()
+                                            .frame(maxWidth: .infinity)
+                                            .frame(height: 2)
+                                            .foregroundColor(themesviewModel.currentTheme.attachmentBGColor)
+                                            .padding([.trailing], 20)
+                                    }
+                                }
                                 HStack {
                                     let image = email.recipients?.first?.user?.profile ?? ""
                                     AsyncImage(url: URL(string: image)) { phase in
                                         switch phase {
-                                            //                                    case .empty:
-                                            //                                        ProgressView()
                                         case .success(let image):
                                             image
                                                 .resizable()
@@ -81,30 +111,51 @@ struct MailFullView: View {
                                             EmptyView()
                                         }
                                     }
-                                    //                                email.recipients?.first?.user?.firstname == "to"
+                                    //email.recipients?.first?.user?.firstname == "to"
                                     VStack(alignment: .leading) {
-                                        Text("\(email.recipients?.first?.user?.firstname ?? "") \(email.recipients?.first?.user?.lastname ?? "")")
-                                            .foregroundColor(themesviewModel.currentTheme.textColor)
-                                            .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
-                                        Text(email.recipients?.first?.user?.tCode ?? "")
-                                            .font(.custom(.poppinsLight, size: 10, relativeTo: .title))
-                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                        HStack {
+                                            Text("\(email.recipients?.first?.user?.firstname ?? "") \(email.recipients?.first?.user?.lastname ?? "")")
+                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
+                                                .fontWeight(.bold)
+                                            Spacer()
+                                            let senderDate: TimeInterval = TimeInterval(email.sentAt ?? 0)
+                                            let finalDate = convertToDateTime(timestamp: senderDate)
+                                            Text(finalDate)
+                                                .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
+                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                .padding(.trailing , 20)
+                                        }
+                                        HStack {
+                                            Text(email.recipients?.first?.user?.tCode ?? "")
+                                                .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
+                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                            
+                                            Spacer()
+                                            Button {
+                                                print("dots clicked")
+                                                isreplyView = true
+                                            } label: {
+                                                Image("mailreply")
+                                                    .renderingMode(.template)
+                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                            }
+                                           
+                                            Spacer()
+                                                .frame(width: 10)
+                                            
+                                            Button {
+                                                print("dots clicked")
+                                                isMoreSheetvisible.toggle()
+                                            } label: {
+                                                Image("maildots")
+                                                    .renderingMode(.template)
+                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                            }
+                                            .padding([.trailing], 20)
+                                            
+                                        }
                                     }
-                                    Spacer()
-                                    let senderDate: TimeInterval = TimeInterval(email.sentAt ?? 0)
-                                    let finalDate = convertToDateTime(timestamp: senderDate)
-                                    Text(finalDate)
-                                        .font(.custom(.poppinsLight, size: 10, relativeTo: .title))
-                                        .foregroundColor(themesviewModel.currentTheme.textColor)
-                                    
-                                    Button {
-                                        print("dots clicked")
-                                    } label: {
-                                        Image("dots")
-                                            .renderingMode(.template)
-                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                    }
-                                    .padding([.trailing], 12)
                                 }
                                 
                                 // Use the email body for the corresponding row
@@ -124,8 +175,8 @@ struct MailFullView: View {
                                     }
                                 ))
                                 .scrollContentBackground(.hidden)
-                                .background(Color.clear)
-                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                .background(themesviewModel.currentTheme.colorControlNormal)
+                                .foregroundColor(themesviewModel.currentTheme.AllBlack)
                                 .padding(.leading, 10)
                                 .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
                                 .padding(.trailing, 10)
@@ -190,16 +241,9 @@ struct MailFullView: View {
                                 if index == emailList.indices.last {
                                     HStack {
                                         Button {
-                                            let to = to
-                                            let cc = ""
-                                            let bcc = ""
-                                            let subject = subject
-                                            let emailBody = ""
-                                            let replyToId = replyToId
-                                            let threadId = threadId
-                                            let replyViewModel = ReplyEmailViewModel(to: to, cc: cc, bcc: bcc, subject: subject,body:emailBody, replyToId: "\(replyToId)", threadId: "\(threadId)", subSubject: "Re")
-                                            mailFullViewModel.isReply = true
-                                            mailFullViewModel.replyViewModel = replyViewModel
+                                            isreplyView = true
+//                                            mailFullViewModel.isReply = true
+//                                            mailFullViewModel.replyViewModel = replyViewModel
                                             
                                         } label: {
                                             Text("Reply")
@@ -239,17 +283,18 @@ struct MailFullView: View {
 //                                        .cornerRadius(10)
                                         
                                         Button {
-                                            let to = ""
-                                            let cc = ""
-                                            let bcc = ""
-                                            let subject = subject
-                                            let emailBody = emailBody
-                                            let replyToId = replyToId
-                                            let threadId = threadId
-                                            
-                                            let replyViewModel = ReplyEmailViewModel(to: to, cc: cc, bcc: bcc, subject: subject,body:emailBody,replyToId: "\(replyToId)", threadId: "\(threadId)", subSubject: "Frwd")
-                                            mailFullViewModel.isForward = true
-                                            mailFullViewModel.replyViewModel = replyViewModel
+//                                            let to = ""
+//                                            let cc = ""
+//                                            let bcc = ""
+//                                            let subject = subject
+//                                            let emailBody = emailBody
+//                                            let replyToId = replyToId
+//                                            let threadId = threadId
+//                                            
+//                                            let replyViewModel = ReplyEmailViewModel(to: to, cc: cc, bcc: bcc, subject: subject,body:emailBody,replyToId: "\(replyToId)", threadId: "\(threadId)", subSubject: "Frwd")
+//                                            mailFullViewModel.isForward = true
+//                                            mailFullViewModel.replyViewModel = replyViewModel
+                                            isreplyView = true
                                         } label: {
                                             Text("Forward")
                                                 .font(.custom(.poppinsLight, size: 16, relativeTo: .title))
@@ -284,8 +329,8 @@ struct MailFullView: View {
                 if conveyedView{
                     HStack(spacing: 50){
                         Button(action: {
+                            showingDeleteAlert = true
                             print("click on delete icon")
-                            mailFullViewModel.deleteEmailFromAwaiting(emailId: emailId)
                         }) {
                             Image(systemName: "trash")
                                 .frame(width: 25, height: 25)
@@ -312,7 +357,7 @@ struct MailFullView: View {
                     HStack(spacing: 50){
                         Button(action: {
                             print("click on delete icon")
-                            mailFullViewModel.deleteEmailFromAwaiting(emailId: emailId)
+                            showingDeleteAlert = true
                         }) {
                             Image(systemName: "trash")
                                 .frame(width: 25, height: 25)
@@ -335,6 +380,8 @@ struct MailFullView: View {
                         Button(action: {
                             isMoreSheetvisible.toggle()
                             print("ellipsis clicked")
+                            EmailStarred = StarreEmail
+                            print("post box EmailStarred \(EmailStarred)")
                         }) {
                             Image("threeDots")
                                 .renderingMode(.template)
@@ -347,7 +394,7 @@ struct MailFullView: View {
                 else {
                     HStack (spacing:0){
                         Button(action: {
-                            self.presentationMode.wrappedValue.dismiss()
+                            showingDeleteAlert = true
                         }) {
                             Image(systemName: "trash")
                                 .renderingMode(.template)
@@ -393,12 +440,14 @@ struct MailFullView: View {
             .navigationBarBackButtonHidden(true)
             
             .onAppear {
+                
                 if conveyedView{
                     print("conveyedView is true")
                 }
                 if PostBoxView{
                     print("PostBoxView is true")
                 }
+                
                 mailFullViewModel.getFullEmail(emailId: emailId, passwordHash: passwordHash) { result in
                     switch result {
                     case .success(let response):
@@ -412,60 +461,28 @@ struct MailFullView: View {
                         self.replyToId = response.email?.last?.replyToID ?? 0
                         self.threadId = response.email?.last?.threadID ?? 0
                         let emailBodyData = response.email?.last?.body ?? ""
+                        
                         self.emailBody = (convertHTMLToAttributedString(html: emailBodyData))?.string ?? ""
+                        if let snoozeTimestamp = response.email?.first?.snoozeAtThread {
+                            let senderDate: TimeInterval = TimeInterval(snoozeTimestamp) ?? 0
+                            let finalDate = convertToDateTime(timestamp: senderDate)
+                            print("finalDate \(finalDate)")
+                            snoozeatThread = finalDate
+                            print("snoozeatThread \(snoozeatThread)")
+                        }
+
+                        
                     case .failure(let error):
                         self.error = error.localizedDescription
                     }
                 }
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    if let diary = mailFullViewModel.detailedEmailData.first(where: { $0.threadID == id }) {
+                        id = diary.threadID ?? 0
+                    }
+                }
             }
-            
-//            .sheet(isPresented: $mailFullViewModel.isEmailOptions, content: {
-//                EmailOptionsView( replyAction: {
-//                    //                mailFullViewModel.isReply = true
-//                    print("Reply tapped")
-//                    //                dismissSheet()
-//                },
-//                                  replyAllAction: {
-//                    print("Reply all tapped")
-//                    /*dismissSheet*/()
-//                },
-//                                  forwardAction: {
-//                    print("Forward tapped")
-//                    //                dismissSheet()
-//                },
-//                                  markAsReadAction: {
-//                    print("read")
-//                    //                dismissSheet()
-//                },
-//                                  markAsUnReadAction: {
-//                    print("unread")
-//                    //                dismissSheet()
-//                },
-//                                  createLabelAction: {
-//                    print("label")
-//                    //                dismissSheet()
-//                },
-//                                  moveToFolderAction: {
-//                    print("move folder")
-//                    //                dismissSheet()
-//                },
-//                                  starAction: {
-//                    print("star")
-//                    //                dismissSheet()
-//                },
-//                                  snoozeAction: {
-//                    print("snooze")
-//                    //                dismissSheet()
-//                },
-//                                  trashAction: {
-//                    print("trash acti")
-//                    //                dismissSheet()
-//                }
-//                )
-//                //            .toolbar(.hidden)
-//                .presentationDetents([.medium])
-//                .presentationDragIndicator(.hidden)
-//            })
             if isTagsheetvisible {
                 ZStack {
                     // Tappable background
@@ -480,7 +497,7 @@ struct MailFullView: View {
                         }
                     VStack {
                         Spacer() // Pushes the sheet to the bottom
-                        CreateTagLabel(isTagSheetVisible: $isTagsheetvisible, isActive: $isactive, selectedNewDiaryTag: $selectednewDiaryTag, selectedNames: $selectednames, selectedID: selectedid, isclicked: $isClicked)
+                        CreateTagLabel(isTagSheetVisible: $isTagsheetvisible, isActive: $isactive, selectedNewBottomTag: $selectednewDiaryTag, selectedNames: $selectednames, selectedID: selectedid, isclicked: $isClicked)
                             .transition(.move(edge: .bottom))
                             .animation(.easeInOut, value: isTagsheetvisible)
                     }
@@ -501,7 +518,7 @@ struct MailFullView: View {
                         }
                     VStack {
                         Spacer() // Pushes the sheet to the bottom
-                        MoreSheet(isMoreSheetVisible: $isMoreSheetvisible)
+                        MoreSheet(snoozetime: $snoozeTime, isMoreSheetVisible: $isMoreSheetvisible, emailId: emailId, passwordHash: passwordHash, isTagsheetvisible: $isTagsheetvisible, StarreEmail: $EmailStarred)
 //                        postBoxMoreSheet(isMoreSheetVisible: $isMoreSheetvisible, conveyedView: $conveyedView)
                             .transition(.move(edge: .bottom))
                             .animation(.easeInOut, value: isMoreSheetvisible)
@@ -531,7 +548,52 @@ struct MailFullView: View {
                 }
             }
             
+            if showingDeleteAlert {
+                ZStack {
+                    Color.gray.opacity(0.5) // Dimmed background
+                        .ignoresSafeArea()
+                        .transition(.opacity)
+
+                    // Centered DeleteNoteAlert
+                    DeleteTrashAlert(isPresented: $showingDeleteAlert) {
+                        mailComposeViewModel.Drafttrash(EmailID: id)
+                        self.isMailFullViewVisible = false
+                        print("Note deleted")
+                    }
+                    .transition(.scale)
+                }
+            }
+            if isreplyView {
+                ZStack {
+                    Rectangle()
+                        .fill(Color.black.opacity(0.3))
+                        .ignoresSafeArea()
+                    let to = to
+                    let cc = ""
+                    let bcc = ""
+                    let subject = subject
+                    let emailBody = ""
+                    let replyToId = replyToId
+                    let threadId = threadId
+                    let replyViewModel = ReplyEmailViewModel(
+                        to: to,
+                        cc: cc,
+                        bcc: bcc,
+                        subject: subject,
+                        body: emailBody,
+                        replyToId: "\(replyToId)",
+                        threadId: "\(threadId)",
+                        subSubject: "Re"
+                    )
+                    ReplyEmailView(replyEmailViewModel: replyViewModel)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color.white)
+                        .transition(.move(edge: .bottom))
+                        .animation(.easeInOut, value: isreplyView)
+                }
+            }
         }
+
         .navigationDestination(isPresented: $mailFullViewModel.backToAwaiting) {
             if mailFullViewModel.backToAwaiting {
                 HomeAwaitingView( imageUrl: "").toolbar(.hidden)
@@ -543,21 +605,21 @@ struct MailFullView: View {
         .navigationDestination(isPresented: $mailFullViewModel.isCreateLabel) {
             CreateLabelView().toolbar(.hidden)
         }
-        .navigationDestination(isPresented: $mailFullViewModel.isReply) {
-            if let replyViewModel = mailFullViewModel.replyViewModel {
-                ReplyEmailView(replyEmailViewModel: replyViewModel).toolbar(.hidden)
-            }
-        }
+//        .navigationDestination(isPresented: $mailFullViewModel.isReply) {
+//            if let replyViewModel = mailFullViewModel.replyViewModel {
+//                ReplyEmailView(replyEmailViewModel: replyViewModel).toolbar(.hidden)
+//            }
+//        }
         .navigationDestination(isPresented: $mailFullViewModel.isReplyAll) {
             if let replyViewModel = mailFullViewModel.replyViewModel {
                 ReplyEmailView(replyEmailViewModel: replyViewModel).toolbar(.hidden)
             }
         }
-        .navigationDestination(isPresented: $mailFullViewModel.isForward) {
-            if let replyViewModel = mailFullViewModel.replyViewModel {
-                ReplyEmailView(replyEmailViewModel: replyViewModel).toolbar(.hidden)
-            }
-        }
+//        .navigationDestination(isPresented: $mailFullViewModel.isForward) {
+//            if let replyViewModel = mailFullViewModel.replyViewModel {
+//                ReplyEmailView(replyEmailViewModel: replyViewModel).toolbar(.hidden)
+//            }
+//        }
         .toast(message: $mailFullViewModel.error)
         
     }
