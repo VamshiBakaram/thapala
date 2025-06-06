@@ -89,6 +89,7 @@ struct LoginView: View {
                             CustomProgressView()
                         }else{
                             Button(action: {
+                                print("sessionManager.password \(loginViewModel.password)")
                                 UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                                 loginViewModel.validate {
                                     sessionManager.isShowLogin = false

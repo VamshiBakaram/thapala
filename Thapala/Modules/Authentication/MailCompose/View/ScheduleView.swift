@@ -392,15 +392,15 @@ struct ScheduleView: View {
                     .presentationDetents([.medium])
                     .presentationDragIndicator(.hidden)
                 })
-                .fileImporter(isPresented: $isFilePickerPresented, allowedContentTypes: [.image, .pdf, .plainText], allowsMultipleSelection: true) { result in
-                    switch result {
-                    case .success(let urls):
-                        mailComposeViewModel.selectedFiles.append(contentsOf: urls)
-                        mailComposeViewModel.uploadFiles(fileURLs: urls)
-                    case .failure(let error):
-                        print("Failed to select files: \(error.localizedDescription)")
-                    }
-                }
+//                .fileImporter(isPresented: $isFilePickerPresented, allowedContentTypes: [.image, .pdf, .plainText], allowsMultipleSelection: true) { result in
+//                    switch result {
+//                    case .success(let urls):
+//                        mailComposeViewModel.selectedFiles.append(contentsOf: urls)
+//                        mailComposeViewModel.uploadFiles(fileURLs: urls)
+//                    case .failure(let error):
+//                        print("Failed to select files: \(error.localizedDescription)")
+//                    }
+//                }
                 .toast(message: $mailComposeViewModel.error)
                 .onAppear {
                     if mailComposeViewModel.detailedEmailData.isEmpty {
@@ -548,12 +548,6 @@ struct ScheduleView: View {
             .navigationDestination(isPresented: $mailComposeViewModel.backToscreen) {
                 HomeAwaitingView(imageUrl: "").toolbar(.hidden)
             }
-//            .navigationDestination(isPresented: $mailComposeViewModel.isInsertFromRecords) {
-//                InsertFileFromRecordsView().toolbar(.hidden)
-//            }
-//            .navigationDestination(isPresented: $BottomsheetviewModel.isLabelView) {
-//                CreateTagLabel(isTagSheetVisible: $isTagsheetvisible, isActive: $isactive, selectedNewDiaryTag: $selectednewDiaryTag, selectedNames: $selectednames, selectedID: selectedid, isclicked: $isClicked).toolbar(.hidden)
-//            }
             
         }
         

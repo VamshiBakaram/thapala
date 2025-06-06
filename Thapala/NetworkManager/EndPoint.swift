@@ -102,6 +102,13 @@ struct EndPoint {
     
     // Records Module
     static let getRecords = "get-main-records"
+    static let records = "subfolders"
+    static let bottomDelete = "record/delete?pin=undefined&password=undefined&"
+    static let downloadFiles = "download"
+    static let renamefile = "record/"
+    static let createFolder = "record"
+    static let attachments = "attachments?"
+    static let uploadfile = "upload-file"
     
     // Navigator
     

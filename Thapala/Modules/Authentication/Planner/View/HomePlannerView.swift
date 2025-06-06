@@ -406,7 +406,7 @@ struct HomePlannerView: View {
                  .edgesIgnoringSafeArea(.all)
                 DiaryView(isDiaryVisible: $homePlannerViewModel.Diarytask, DiarynotificationTime: $homePlannerViewModel.DiaryNotificationNotetime, isDiaryTagActive: $homePlannerViewModel.isDiaryTagActive, selectedNames: selectedNames)
                  .transition(.opacity)
-//                 .padding(.bottom,330 )
+//                 .padding(.bottom,330)
             }
             if homePlannerViewModel.Notetask {
 //                PlannerAddTaskView(isAddTaskVisible: $homePlannerViewModel.addtask)

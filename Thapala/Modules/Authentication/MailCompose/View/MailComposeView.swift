@@ -421,15 +421,15 @@ struct MailComposeView: View {
                     .presentationDetents([.medium])
                     .presentationDragIndicator(.hidden)
             })
-            .fileImporter(isPresented: $isFilePickerPresented, allowedContentTypes: [.image, .pdf, .plainText], allowsMultipleSelection: true) { result in
-                switch result {
-                case .success(let urls):
-                    mailComposeViewModel.selectedFiles.append(contentsOf: urls)
-                    mailComposeViewModel.uploadFiles(fileURLs: urls)
-                case .failure(let error):
-                    print("Failed to select files: \(error.localizedDescription)")
-                }
-            }
+//            .fileImporter(isPresented: $isFilePickerPresented, allowedContentTypes: [.image, .pdf, .plainText], allowsMultipleSelection: true) { result in
+//                switch result {
+//                case .success(let urls):
+//                    mailComposeViewModel.selectedFiles.append(contentsOf: urls)
+//                    mailComposeViewModel.uploadFiles(fileURLs: urls)
+//                case .failure(let error):
+//                    print("Failed to select files: \(error.localizedDescription)")
+//                }
+//            }
             .toast(message: $mailComposeViewModel.error)
             .onAppear {
 //                if mailComposeViewModel.detailedEmailData.isEmpty {

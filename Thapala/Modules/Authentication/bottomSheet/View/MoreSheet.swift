@@ -173,6 +173,7 @@ struct MoreSheet: View {
                     .frame(maxWidth: .infinity, alignment: .leading)  // stretch HStack full-width
                     .padding(.leading, 10)
                     .onAppear{
+                        print("isMoreSheetVisible more sheet \(isMoreSheetVisible)")
                         StarEmail = StarreEmail
                         print("StarEmail  \(StarEmail)")
                         print("homePostboxViewModel.starEmail \(homePostboxViewModel.starEmail)")

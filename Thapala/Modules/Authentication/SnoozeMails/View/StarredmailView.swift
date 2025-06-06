@@ -73,8 +73,8 @@ struct StarredmailView: View {
                                     let image = email.recipients?.first?.user?.profile ?? ""
                                     AsyncImage(url: URL(string: image)) { phase in
                                         switch phase {
-                                            //                                    case .empty:
-                                            //                                        ProgressView()
+                                        case .empty:
+                                            ProgressView()
                                         case .success(let image):
                                             image
                                                 .resizable()

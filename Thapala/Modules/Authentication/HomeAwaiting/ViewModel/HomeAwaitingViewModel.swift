@@ -9,10 +9,10 @@ import Foundation
 import SwiftUI
 
 class HomeAwaitingViewModel: ObservableObject {
-    @Published var isEmailSelected: Bool = false
-    @Published var isPrintSelected: Bool = true
+    @Published var isEmailSelected: Bool = true
+    @Published var isPrintSelected: Bool = false
     @Published var isOntlineSelected: Bool = false
-    @Published var selectedOption: Option? = .print
+    @Published var selectedOption: Option? = .email
     @Published var isDraftsSelected: Bool = true
     @Published var istDraftselected: Bool = false
     @Published var isScheduledSelected: Bool = false
@@ -418,4 +418,22 @@ func convertToTimestamp(dateString: String, timeString: String) -> Double? {
         }
     }
 
+func convertToTimeDate(dateInput: Any) -> String? {
+    let date: Date?
 
+    if let timestamp = dateInput as? Int {
+        date = Date(timeIntervalSince1970: TimeInterval(timestamp))
+    } else if let dateString = dateInput as? String {
+        let isoDateFormatter = ISO8601DateFormatter()
+        isoDateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        date = isoDateFormatter.date(from: dateString)
+    } else {
+        return nil
+    }
+
+    guard let date = date else { return nil }
+    let dateFormatter = DateFormatter()
+    dateFormatter.timeZone = TimeZone(identifier: "Asia/Kolkata")
+    dateFormatter.dateFormat = "dd-MMM-yyyy h:mm a"
+    return dateFormatter.string(from: date)
+}

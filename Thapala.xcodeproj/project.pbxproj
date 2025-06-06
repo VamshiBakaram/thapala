@@ -70,6 +70,8 @@
 		D32FD1052BFF72B4004D8AA0 /* ResetForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32FD1042BFF72B4004D8AA0 /* ResetForgotPasswordView.swift */; };
 		D32FD1072BFF7310004D8AA0 /* ResetForgotPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32FD1062BFF7310004D8AA0 /* ResetForgotPasswordViewModel.swift */; };
 		D33094212C00C6630016F32F /* SecurityAnswerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33094202C00C6630016F32F /* SecurityAnswerModel.swift */; };
+		D33271EF2DE42E5A0058AA4C /* RecordsModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33271EE2DE42E5A0058AA4C /* RecordsModelData.swift */; };
+		D33271F22DE4806C0058AA4C /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = D33271F12DE4806C0058AA4C /* Kingfisher */; };
 		D333A9852CEB612B00081062 /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D333A9842CEB612B00081062 /* ScheduleView.swift */; };
 		D3391E1E2DB0EC4900135836 /* themesConsoleModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3391E1D2DB0EC4900135836 /* themesConsoleModelData.swift */; };
 		D3391E222DB0ED1A00135836 /* ConsoleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3391E212DB0ED1A00135836 /* ConsoleViewModel.swift */; };
@@ -110,6 +112,8 @@
 		D368BB372C21B19700AE2C7F /* HomeResidenceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D368BB362C21B19700AE2C7F /* HomeResidenceViewModel.swift */; };
 		D368BB392C21C74A00AE2C7F /* ResidenceUserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D368BB382C21C74A00AE2C7F /* ResidenceUserProfileView.swift */; };
 		D368BB3B2C21CE5A00AE2C7F /* ResidenceUserProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D368BB3A2C21CE5A00AE2C7F /* ResidenceUserProfileViewModel.swift */; };
+		D369637E2DE5BF5E0034F3E9 /* RecordsThreeDotsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D369637D2DE5BF5E0034F3E9 /* RecordsThreeDotsView.swift */; };
+		D36963802DE5CFC90034F3E9 /* threeDotsModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D369637F2DE5CFC90034F3E9 /* threeDotsModelData.swift */; };
 		D374BE142C784B2400317058 /* HomeMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D374BE132C784B2400317058 /* HomeMenuViewModel.swift */; };
 		D374BE162C7871E600317058 /* MoveToFolderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D374BE152C7871E600317058 /* MoveToFolderView.swift */; };
 		D374BE182C7897DC00317058 /* MoveToFolderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D374BE172C7897DC00317058 /* MoveToFolderViewModel.swift */; };
@@ -259,6 +263,7 @@
 		D32FD1042BFF72B4004D8AA0 /* ResetForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetForgotPasswordView.swift; sourceTree = "<group>"; };
 		D32FD1062BFF7310004D8AA0 /* ResetForgotPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetForgotPasswordViewModel.swift; sourceTree = "<group>"; };
 		D33094202C00C6630016F32F /* SecurityAnswerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityAnswerModel.swift; sourceTree = "<group>"; };
+		D33271EE2DE42E5A0058AA4C /* RecordsModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsModelData.swift; sourceTree = "<group>"; };
 		D333A9842CEB612B00081062 /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
 		D3391E1D2DB0EC4900135836 /* themesConsoleModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = themesConsoleModelData.swift; sourceTree = "<group>"; };
 		D3391E212DB0ED1A00135836 /* ConsoleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleViewModel.swift; sourceTree = "<group>"; };
@@ -299,6 +304,8 @@
 		D368BB362C21B19700AE2C7F /* HomeResidenceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeResidenceViewModel.swift; sourceTree = "<group>"; };
 		D368BB382C21C74A00AE2C7F /* ResidenceUserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResidenceUserProfileView.swift; sourceTree = "<group>"; };
 		D368BB3A2C21CE5A00AE2C7F /* ResidenceUserProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResidenceUserProfileViewModel.swift; sourceTree = "<group>"; };
+		D369637D2DE5BF5E0034F3E9 /* RecordsThreeDotsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsThreeDotsView.swift; sourceTree = "<group>"; };
+		D369637F2DE5CFC90034F3E9 /* threeDotsModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = threeDotsModelData.swift; sourceTree = "<group>"; };
 		D374BE132C784B2400317058 /* HomeMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HomeMenuViewModel.swift; path = Thapala/Modules/Authentication/MailCompose/View/HomeMenuViewModel.swift; sourceTree = SOURCE_ROOT; };
 		D374BE152C7871E600317058 /* MoveToFolderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveToFolderView.swift; sourceTree = "<group>"; };
 		D374BE172C7897DC00317058 /* MoveToFolderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveToFolderViewModel.swift; sourceTree = "<group>"; };
@@ -389,6 +396,7 @@
 				D3CCD5132DB273B4007700B9 /* CryptoSwift in Frameworks */,
 				D3283AEA2CFF08CA0036F139 /* ClockTimePicker in Frameworks */,
 				D3CCD5102DB236F2007700B9 /* SocketIO in Frameworks */,
+				D33271F22DE4806C0058AA4C /* Kingfisher in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -534,8 +542,8 @@
 				D32A21AE2C22EC0300765A23 /* Pocket */,
 				D32A21A22C22B3F700765A23 /* Record */,
 				D368BB2E2C21A33000AE2C7F /* Residence */,
-				D38241B32C133877001CFF9E /* ScheduleEmail */,
 				D38241C42C13496E001CFF9E /* MailCompose */,
+				D38241B32C133877001CFF9E /* ScheduleEmail */,
 				D36222452C11863800D3B222 /* MailFullView */,
 				D37CA8F32C05E764000DE3C5 /* Navigator */,
 				D37CA8E92C05E650000DE3C5 /* HomeAwaiting */,
@@ -834,7 +842,7 @@
 		D32A21A22C22B3F700765A23 /* Record */ = {
 			isa = PBXGroup;
 			children = (
-				D32A21A52C22B42300765A23 /* Model */,
+				D33271ED2DE42E470058AA4C /* ModelData */,
 				D32A21A42C22B41D00765A23 /* ViewModel */,
 				D32A21A32C22B41700765A23 /* View */,
 			);
@@ -846,6 +854,7 @@
 			children = (
 				D32A21A62C22B43300765A23 /* HomeRecordsView.swift */,
 				D32A21AA2C22E08C00765A23 /* CreateNewFolderView.swift */,
+				D369637D2DE5BF5E0034F3E9 /* RecordsThreeDotsView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -857,13 +866,6 @@
 				D32A21AC2C22E0B700765A23 /* CreateNewFolderViewModel.swift */,
 			);
 			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		D32A21A52C22B42300765A23 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		D32A21AE2C22EC0300765A23 /* Pocket */ = {
@@ -905,6 +907,15 @@
 				D33094202C00C6630016F32F /* SecurityAnswerModel.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		D33271ED2DE42E470058AA4C /* ModelData */ = {
+			isa = PBXGroup;
+			children = (
+				D33271EE2DE42E5A0058AA4C /* RecordsModelData.swift */,
+				D369637F2DE5CFC90034F3E9 /* threeDotsModelData.swift */,
+			);
+			path = ModelData;
 			sourceTree = "<group>";
 		};
 		D34AAD672C2A93EA006C2507 /* Blueprint */ = {
@@ -1693,6 +1704,7 @@
 				D37614CD2D142FD800951686 /* SwiftDate */,
 				D3CCD50F2DB236F2007700B9 /* SocketIO */,
 				D3CCD5122DB273B4007700B9 /* CryptoSwift */,
+				D33271F12DE4806C0058AA4C /* Kingfisher */,
 			);
 			productName = Thapala;
 			productReference = 7B22B3532BD6CAB700020111 /* Thapala.app */;
@@ -1727,6 +1739,7 @@
 				D37614CC2D142FD800951686 /* XCRemoteSwiftPackageReference "SwiftDate" */,
 				D3CCD50E2DB236F2007700B9 /* XCRemoteSwiftPackageReference "socket" */,
 				D3CCD5112DB273B4007700B9 /* XCRemoteSwiftPackageReference "CryptoSwift" */,
+				D33271F02DE4806C0058AA4C /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = 7B22B3542BD6CAB700020111 /* Products */;
 			projectDirPath = "";
@@ -1782,6 +1795,7 @@
 				D36888F02CC66686002897EA /* StarredEmailModel.swift in Sources */,
 				D37CA8FA2C05E7BD000DE3C5 /* NavigatorEditView.swift in Sources */,
 				D32A21A72C22B43300765A23 /* HomeRecordsView.swift in Sources */,
+				D33271EF2DE42E5A0058AA4C /* RecordsModelData.swift in Sources */,
 				7B22B3572BD6CAB700020111 /* ThapalaApp.swift in Sources */,
 				D3795D792C3452E400763373 /* BioModelData.swift in Sources */,
 				D3B75F5D2BFDCA1E008DA18C /* ResetPasswordView.swift in Sources */,
@@ -1830,6 +1844,7 @@
 				D333A9852CEB612B00081062 /* ScheduleView.swift in Sources */,
 				D3A0489E2C7F0E5C0091B35A /* ReplyEmailView.swift in Sources */,
 				D3283ADE2C36BE0B00CA88FB /* SaveEmailToDraftsModel.swift in Sources */,
+				D369637E2DE5BF5E0034F3E9 /* RecordsThreeDotsView.swift in Sources */,
 				7B22B3872BD7433200020111 /* FontExtensions.swift in Sources */,
 				D33094212C00C6630016F32F /* SecurityAnswerModel.swift in Sources */,
 				7B1852B02BE10D9800FE61FC /* MainView.swift in Sources */,
@@ -1901,6 +1916,7 @@
 				D3E75B992CEF479C00038827 /* DiaryView.swift in Sources */,
 				D38F3BF72CC8CB70004FCB0C /* HomeDirectoryViewModel.swift in Sources */,
 				D38241BD2C1343D9001CFF9E /* ComposeEmailEncripted.swift in Sources */,
+				D36963802DE5CFC90034F3E9 /* threeDotsModelData.swift in Sources */,
 				7BCFC74D2BDF803700839D05 /* VerifyOTPViewModel.swift in Sources */,
 				D398A6642CB557F80069CCD7 /* InfoView.swift in Sources */,
 				D36222482C1187AB00D3B222 /* MailFullView.swift in Sources */,
@@ -2162,6 +2178,14 @@
 				minimumVersion = 1.1.0;
 			};
 		};
+		D33271F02DE4806C0058AA4C /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.3.2;
+			};
+		};
 		D37614CC2D142FD800951686 /* XCRemoteSwiftPackageReference "SwiftDate" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/malcommac/SwiftDate.git";
@@ -2193,6 +2217,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D3283AE82CFF08CA0036F139 /* XCRemoteSwiftPackageReference "ClockTimePicker" */;
 			productName = ClockTimePicker;
+		};
+		D33271F12DE4806C0058AA4C /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D33271F02DE4806C0058AA4C /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 		D37614CD2D142FD800951686 /* SwiftDate */ = {
 			isa = XCSwiftPackageProductDependency;

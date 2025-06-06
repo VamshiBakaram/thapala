@@ -519,7 +519,6 @@ struct MailFullView: View {
                     VStack {
                         Spacer() // Pushes the sheet to the bottom
                         MoreSheet(snoozetime: $snoozeTime, isMoreSheetVisible: $isMoreSheetvisible, emailId: emailId, passwordHash: passwordHash, isTagsheetvisible: $isTagsheetvisible, StarreEmail: $EmailStarred)
-//                        postBoxMoreSheet(isMoreSheetVisible: $isMoreSheetvisible, conveyedView: $conveyedView)
                             .transition(.move(edge: .bottom))
                             .animation(.easeInOut, value: isMoreSheetvisible)
                     }

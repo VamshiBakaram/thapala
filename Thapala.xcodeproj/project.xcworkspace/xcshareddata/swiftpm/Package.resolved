@@ -1,5 +1,5 @@
 {
-  "originHash" : "3dd59514518be8c3cd5d74dbed99f352579d76585439bc416616eaf6154a43b9",
+  "originHash" : "918d3f5a4a846de81617b7b37734a29a8c153a91dcccc984a066239a5499517c",
   "pins" : [
     {
       "identity" : "clocktimepicker",
@@ -17,6 +17,15 @@
       "state" : {
         "revision" : "729e01bc9b9dab466ac85f21fb9ee2bc1c61b258",
         "version" : "1.8.4"
+      }
+    },
+    {
+      "identity" : "kingfisher",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/onevcat/Kingfisher.git",
+      "state" : {
+        "revision" : "7deda23bbdca612076c5c315003d8638a08ed0f1",
+        "version" : "8.3.2"
       }
     },
     {
