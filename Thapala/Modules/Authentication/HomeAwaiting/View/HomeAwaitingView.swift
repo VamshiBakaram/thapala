@@ -26,13 +26,15 @@ struct HomeAwaitingView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var SnoozedView: Bool = false
     @State private var beforeLongPress = true
-    @State private var selectedTab = "awaited"
+    @State private var AppBar = true
+    @State private var selectedCheck = false
     var body: some View {
         GeometryReader{ reader in
             ZStack{
                 themesviewModel.currentTheme.windowBackground
+                    .ignoresSafeArea()
                 VStack{
-//                    if homeAwaitingViewModel.beforeLongPress{
+                    if AppBar{
                         VStack {
                             HStack{
                                 AsyncImage(url: URL(string: imageUrl)) { phase in
@@ -182,10 +184,10 @@ struct HomeAwaitingView: View {
                                         Group{
                                             HStack{
                                                 Image("printIcon")
-                                                   .frame(width: 20, height: 20)
-                                                   .background(themesviewModel.currentTheme.tabBackground)
-                                                   .foregroundColor(themesviewModel.currentTheme.iconColor)
-
+                                                    .frame(width: 20, height: 20)
+                                                    .background(themesviewModel.currentTheme.tabBackground)
+                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                
                                                 VStack{
                                                     Text("Print")
                                                         .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
@@ -233,10 +235,10 @@ struct HomeAwaitingView: View {
                                 switch selectedOption {
                                 case .email:
                                     Spacer()
-                             
+                                    
                                     Text("")
                                 case .print:
-                             
+                                    
                                     Text("")
                                 case .outline:
                                     Spacer()
@@ -260,7 +262,7 @@ struct HomeAwaitingView: View {
                                                         .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
                                                         .foregroundColor(self.homeAwaitingViewModel.isDraftsSelected ? themesviewModel.currentTheme.textColor : themesviewModel.currentTheme.inverseTextColor)
                                                 )
-
+                                            
                                             RoundedRectangle(cornerRadius: 25)
                                                 .fill(self.homeAwaitingViewModel.istDraftselected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
                                                 .frame(width: 100, height: 50)
@@ -278,7 +280,7 @@ struct HomeAwaitingView: View {
                                                         .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
                                                         .foregroundColor(self.homeAwaitingViewModel.istDraftselected ? themesviewModel.currentTheme.textColor : themesviewModel.currentTheme.inverseTextColor)
                                                 )
-
+                                            
                                             RoundedRectangle(cornerRadius: 25)
                                                 .fill(self.homeAwaitingViewModel.isScheduledSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
                                                 .frame(width: 100, height: 50)
@@ -296,7 +298,7 @@ struct HomeAwaitingView: View {
                                                         .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
                                                         .foregroundColor(self.homeAwaitingViewModel.isScheduledSelected ? themesviewModel.currentTheme.textColor : themesviewModel.currentTheme.inverseTextColor)
                                                 )
-
+                                            
                                             RoundedRectangle(cornerRadius: 25)
                                                 .fill(self.homeAwaitingViewModel.istLetersSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
                                                 .frame(width: 100, height: 50)
@@ -314,7 +316,7 @@ struct HomeAwaitingView: View {
                                                         .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
                                                         .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
                                                 )
-
+                                            
                                             RoundedRectangle(cornerRadius: 25)
                                                 .fill(self.homeAwaitingViewModel.istCardsSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
                                                 .frame(width: 100, height: 50)
@@ -337,11 +339,48 @@ struct HomeAwaitingView: View {
                                     }
                                     .background(themesviewModel.currentTheme.tabBackground)
                                     .cornerRadius(25)
-
+                                    
                                 }
                             }
                         }
                         .padding()
+                    }
+                    else {
+                        VStack{
+                            HStack{
+                                Spacer()
+                                Text("\(2) Selected")
+                                    .font(.custom(.poppinsRegular, size: 16))
+                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                
+                                Spacer()
+                                
+                                Button {
+                                    beforeLongPress = true
+                                    AppBar = true
+                                } label: {
+                                    Text("Cancel")
+                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                }
+                                .padding(.trailing,15)
+                            }
+                            
+                            HStack{
+                                Image("unchecked")
+                                    .renderingMode(.template)
+                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                Text("Select All")
+                                    .font(.custom(.poppinsRegular, size: 14))
+                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                    .onTapGesture {
+                                       // selectAllEmails()
+                                    }
+                                Spacer()
+                            }
+                            .padding(.leading,15)
+                            
+                        }
+                    }
                         
                         if let selectedOption = homeAwaitingViewModel.selectedOption {
                             switch selectedOption {
@@ -494,12 +533,16 @@ struct HomeAwaitingView: View {
                                             VStack{
                                                 List($homeAwaitingViewModel.draftsData,id: \.self) { $draftData in
                                                     HStack{
-                                                        Image("unchecked")
-                                                            .renderingMode(.template)
-                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                            .padding([.trailing,.leading],5)
-                                                            .frame(width: 34,height: 34)
-                                                            .clipShape(Circle())
+                                                        Button(action: {
+                                                            selectedCheck = true
+                                                        }) {
+                                                            Image("unchecked")
+                                                                .renderingMode(.template)
+                                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                                .padding([.trailing, .leading], 5)
+                                                                .frame(width: 34, height: 34)
+                                                                .clipShape(Circle())
+                                                        }
                                                         HStack {
                                                             VStack(alignment: .leading){
                                                                 if draftData.status?.rawValue ?? "" == "draft"{
@@ -543,6 +586,8 @@ struct HomeAwaitingView: View {
                                                             .onEnded { _ in
                                                                 withAnimation {
                                                                     beforeLongPress = false
+                                                                    AppBar = false
+                                                                    print("selectedCheck \(selectedCheck)")
                                                                 }
                                                             }
                                                     )
@@ -559,12 +604,15 @@ struct HomeAwaitingView: View {
                                             VStack{
                                                 List($homeAwaitingViewModel.draftsData,id: \.self) { $draftData in
                                                     HStack{
-                                                        Image("Checked")
+                                                        Image(selectedCheck ? "Check" : "unchecked")
                                                             .renderingMode(.template)
                                                             .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                             .padding([.trailing,.leading],5)
                                                             .frame(width: 34,height: 34)
                                                             .clipShape(Circle())
+                                                            .onTapGesture{
+                                                                selectedCheck = true
+                                                            }
                                                         HStack {
                                                             VStack(alignment: .leading){
                                                                 if draftData.status?.rawValue ?? "" == "draft"{
@@ -612,7 +660,8 @@ struct HomeAwaitingView: View {
                                             }
                                         }
                                     }
-                                }else if homeAwaitingViewModel.istDraftselected{
+                                }
+                                else if homeAwaitingViewModel.istDraftselected{
                                     if homeAwaitingViewModel.isLoading {
                                         CustomProgressView()
                                     }

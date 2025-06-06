@@ -231,72 +231,121 @@ class MailComposeViewModel:ObservableObject{
            }
        }
     
-    func uploadFiles(fileURLs: [URL]) {
-        let url = URL(string: "http://128.199.21.237:8080/api/v1/attachments")!
-        var request = URLRequest(url: url)
-        let sessionManager = SessionManager()
-        request.httpMethod = "POST"
-        request.setValue("Bearer \(sessionManager.token)", forHTTPHeaderField: "Authorization")
-        
-        let boundary = UUID().uuidString
-        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-        
-        let data = createBody(boundary: boundary, fileURLs: fileURLs)
-        
-        let task = URLSession.shared.uploadTask(with: request, from: data) { responseData, response, error in
-            if let error = error {
-                print("Error uploading files: \(error)")
-                return
-            }
-            
-            if let response = response as? HTTPURLResponse, let responseData = responseData {
-                print("Status code: \(response.statusCode)")
-                do {
-                    let attachmentResponse = try JSONDecoder().decode(AttachmentModel.self, from: responseData)
-                    print("Response: \(attachmentResponse)")
-                    DispatchQueue.main.async {
-                        // Handle the response, e.g., update the view model
-                        self.handleAttachmentResponse(attachmentResponse)
-                    }
-                } catch {
-                    print("Failed to decode response: \(error)")
-                }
-            }
-        }
-        task.resume()
-    }
-
-    func createBody(boundary: String, fileURLs: [URL]) -> Data {
-        var body = Data()
-        
-        for fileURL in fileURLs {
-            let filename = fileURL.lastPathComponent
-            let mimeType = determineFileType(fileURL: fileURL)
-            
-            body.append("--\(boundary)\r\n".data(using: .utf8)!)
-            body.append("Content-Disposition: form-data; name=\"attachment\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
-            body.append("Content-Type: \(mimeType)\r\n\r\n".data(using: .utf8)!)
-            do {
-                       let fileData = try Data(contentsOf: fileURL)
-                       body.append(fileData)
-                   } catch {
-                       print("Error reading file data for \(filename): \(error.localizedDescription)")
-                       continue
-                   }
-            body.append("\r\n".data(using: .utf8)!)
-        }
-        
-        body.append("--\(boundary)--\r\n".data(using: .utf8)!)
-        
-        return body
-    }
-
-    func handleAttachmentResponse(_ response: AttachmentModel) {
-        if let attachments = response.attachments {
-            self.attachmentDataIn.append(contentsOf: attachments)
-        }
-        self.error = response.message
-    }
+//    func fileupload(folderID: Int, fileType: String, subfoldertype: String, fileName: String, azureFileName: String, fileLink: String, fileSize: String) {
+//        isLoading = true
+//
+//        let uploadFile = UploadFile(
+//            fileName: fileName,
+//            azureFileName: azureFileName,
+//            fileLink: fileLink,
+//            fileSize: fileSize
+//        )
+//
+//        let params = UploadPayload(
+//            files: [uploadFile],
+//            folderId: folderID,
+//            type: fileType,
+//            subFolderType: subfoldertype
+//        )
+//
+//        let endPoint = "\(EndPoint.uploadfile)"
+//
+//        NetworkManager.shared.request(type: UploadResponses.self, endPoint: endPoint, httpMethod: .post, parameters: params, isTokenRequired: true) { [weak self] result in
+//            guard let self = self else { return }
+//            DispatchQueue.main.async {
+//                self.isLoading = false
+//                switch result {
+//                case .success(let response):
+//                    print("Upload successful: \(response.message)")
+//                    // You can set a success message or handle response further here.
+//                case .failure(let error):
+//                    switch error {
+//                    case .error(let message):
+//                        self.error = message
+//                        print("Error: \(message)")
+//                    case .sessionExpired:
+//                        self.error = "Session expired. Please log in again."
+//                    default:
+//                        self.error = "An unexpected error occurred."
+//                    }
+//                }
+//            }
+//        }
+//    }
+    
+//    func uploadImages(_ images: [UIImage]) {
+//        let url = URL(string: "http://128.199.21.237:8080/api/v1/attachments")!
+//        var request = URLRequest(url: url)
+//        let sessionManager = SessionManager()
+//        request.httpMethod = "POST"
+//        request.setValue("Bearer \(sessionManager.token)", forHTTPHeaderField: "Authorization")
+//
+//        let boundary = UUID().uuidString
+//        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+//
+//        let body = createImageBody(boundary: boundary, images: images)
+//        
+//        let task = URLSession.shared.uploadTask(with: request, from: body) { responseData, response, error in
+//            if let error = error {
+//                print("Error uploading images: \(error)")
+//                return
+//            }
+//
+//            if let response = response as? HTTPURLResponse, let responseData = responseData {
+//                print("Status code: \(response.statusCode)")
+//                do {
+//                    let attachmentResponse = try JSONDecoder().decode(AttachmentModel.self, from: responseData)
+//                    print("Response: \(attachmentResponse)")
+//                    DispatchQueue.main.async {
+//                        self.handleAttachmentResponse(attachmentResponse)
+//                        if let attachments = attachmentResponse.attachments {
+//                            for attachment in attachments {
+//                                self.fileupload(
+//                                    folderID: 1060,
+//                                    fileType: "work",
+//                                    subfoldertype: "files",
+//                                    fileName: attachment.fileName ?? "",
+//                                    azureFileName: attachment.fileName ?? "",
+//                                    fileLink: attachment.fileLink ?? "",
+//                                    fileSize: attachment.fileSize ?? ""
+//                                )
+//                            }
+//                        }
+//                        
+//                    }
+//                } catch {
+//                    print("Failed to decode response: \(error)")
+//                }
+//            }
+//        }
+//        task.resume()
+//    }
+//
+//    func createImageBody(boundary: String, images: [UIImage]) -> Data {
+//        var body = Data()
+//
+//        for (index, image) in images.enumerated() {
+//            guard let imageData = image.jpegData(compressionQuality: 0.8) else { continue }
+//
+//            let filename = "image\(index).jpg"
+//            let mimeType = "image/jpeg"
+//
+//            body.append("--\(boundary)\r\n".data(using: .utf8)!)
+//            body.append("Content-Disposition: form-data; name=\"attachment\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
+//            body.append("Content-Type: \(mimeType)\r\n\r\n".data(using: .utf8)!)
+//            body.append(imageData)
+//            body.append("\r\n".data(using: .utf8)!)
+//        }
+//
+//        body.append("--\(boundary)--\r\n".data(using: .utf8)!)
+//        return body
+//    }
+//    func handleAttachmentResponse(_ response: AttachmentModel) {
+//        if let attachments = response.attachments {
+//            self.attachmentDataIn.append(contentsOf: attachments)
+//        }
+//        self.error = response.message
+//    }
     
 //        func getFullEmail(emailId:Int) {
 //            print(emailId)

@@ -25,6 +25,8 @@ class SessionManager: ObservableObject {
     @AppStorage("userId") var userId = 0
     @AppStorage("favoriteEmails") var favoriteEmailsData: Data = Data()
     @AppStorage("SelectedTheme") var SelectedTheme = ""
+    @AppStorage("pin") var pin = ""
+    @AppStorage("password") var password = ""
 }
  
 class UserDataManager {

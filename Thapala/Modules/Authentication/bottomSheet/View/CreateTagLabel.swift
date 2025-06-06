@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct CreateTagLabel: View {
-    @ObservedObject var BottomsheetviewModel = BottomSheetViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
-    @ObservedObject var LabelsMailViewModel = LabelledMailsViewModel()
-    @ObservedObject private var homePostboxViewModel = HomePostboxViewModel()
+    @StateObject var BottomsheetviewModel = BottomSheetViewModel()
+    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var LabelsMailViewModel = LabelledMailsViewModel()
+    @StateObject private var homePostboxViewModel = HomePostboxViewModel()
     @Binding var isTagSheetVisible: Bool
     @Binding var isActive: Bool
     @Binding var selectedNewBottomTag: [Int]
@@ -160,12 +160,6 @@ struct CreateTagLabel: View {
 
                                 ForEach(filteredLabels) { label in
                                     VStack(alignment: .leading) {
-                                        HStack {
-                                            Text("hello vamshi")
-                                                .foregroundColor(.red)
-                                            Text("hey vamshi")
-                                                .foregroundColor(.red)
-                                        }
 
                                         HStack {
                                             Button(action: {

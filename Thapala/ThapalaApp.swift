@@ -33,7 +33,9 @@ struct ThapalaApp: App {
                 }else{
                     switch sessionManager.mainOption {
                     case .isMainView:
-                       HomeScreenView()
+//                       HomeScreenView()
+//                        HomeAwaitingView(imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person")
+                        HomeAwaitingView(imageUrl: "")
 //                            .environmentObject(sessionManager)
                     case .isNavigator:
                         NavigationView()

@@ -168,12 +168,14 @@ class consoleviewModel:ObservableObject{
                 case .success(let response):
                     print("Comment added successfully: \(response.message)")
                     self.successMessage = response.message
+                    self.error = response.message
                 case .failure(let error):
                     // Handle the error scenarios
                     switch error {
                     case .error(let message):
                         self.error = message
                         print("Error: \(message)")
+                        self.error = message
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:

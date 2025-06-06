@@ -66,7 +66,10 @@ class LoginViewModel: ObservableObject {
                         sessionManager.LastName = response.model?.user?.lastname ?? ""
                         sessionManager.userTcode = response.model?.user?.tCode ?? ""
                         sessionManager.userId = response.model?.user?.id ?? 0
+                        sessionManager.pin = response.model?.user?.pin ?? ""
+                        sessionManager.password = self.password
                         self.error = response.model?.message ?? ""
+                        
                         if response.model?.message == "User logged in successfully." {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                 completion()

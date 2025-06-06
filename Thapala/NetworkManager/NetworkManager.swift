@@ -24,7 +24,7 @@ class NetworkManager: NSObject {
     private override init() {}
     private let baseURL = "http://128.199.21.237:8080/api/v1/"
     
-    func request<T : Decodable>(type : T.Type, endPoint: String, httpMethod: HTTPMethod = .get, parameters: Encodable? = nil, isTokenRequired: Bool = true,passwordHash:String? = nil, isSessionIdRequited: Bool = false, completion completionHandler: @escaping(Result<T, NetworkError>) -> Void){
+    func request<T : Decodable>(type : T.Type, endPoint: String, httpMethod: HTTPMethod = .get, parameters: Encodable? = nil, isTokenRequired: Bool = true,passwordHash:String? = nil, pin:String? = nil, isSessionIdRequited: Bool = false, completion completionHandler: @escaping(Result<T, NetworkError>) -> Void){
         guard let url = URL(string: "\(baseURL)\(endPoint)") else {
             completionHandler(.failure(.error(error: "Invalid URL")))
             return
@@ -51,6 +51,9 @@ class NetworkManager: NSObject {
         }
         if passwordHash != nil{
             request.setValue(passwordHash, forHTTPHeaderField: "password")
+        }
+        if pin != nil{
+            request.setValue(pin, forHTTPHeaderField: "pin")
         }
         
         if parameters != nil {

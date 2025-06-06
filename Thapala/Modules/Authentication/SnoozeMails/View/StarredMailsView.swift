@@ -18,7 +18,6 @@ struct StarredMailsView: View {
     @State private var conveyedView: Bool = false
     @State private var PostBoxView: Bool = false
     @State private var SnoozedView: Bool = false
-    
     @ObservedObject var starredEmailViewModel = StarredEmailViewModel()
     
     var body: some View {

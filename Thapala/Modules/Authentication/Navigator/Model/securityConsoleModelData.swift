@@ -22,7 +22,12 @@ struct securityQuestion: Identifiable, Codable {
 
 struct PinResponse: Codable {
     let message: String
-    let hashedPin: String
+    let hashedPin: String?
+
+    enum CodingKeys: String, CodingKey {
+        case message
+        case hashedPin
+    }
 }
 
 struct PinChangeRequest: Codable {

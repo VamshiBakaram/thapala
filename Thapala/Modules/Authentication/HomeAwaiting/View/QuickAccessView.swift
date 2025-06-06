@@ -8,8 +8,8 @@
 import SwiftUI
 struct QuickAccessView: View {
     @Environment(\.presentationMode) var closeView
-    @ObservedObject var homeAwaitingViewModel = HomeAwaitingViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @StateObject var homeAwaitingViewModel = HomeAwaitingViewModel()
+    @StateObject var themesviewModel = themesViewModel()
     @Binding var isQuickAccessVisible: Bool
 //    @Binding var homeAwaitingViewModel: Bool
     
