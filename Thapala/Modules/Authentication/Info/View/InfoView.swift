@@ -284,6 +284,7 @@ struct InfoView: View {
                     
                     TabViewNavigator()
                         .frame(height: 40)
+                        .padding(.bottom , 10)
                 }
                 .background(themesviewModel.currentTheme.windowBackground)
                 
@@ -345,9 +346,10 @@ struct InfoView: View {
                 }
             }
             .zIndex(0)
-            .navigationDestination(isPresented: $infoViewViewModel.isComposeEmail) {
-                MailComposeView().toolbar(.hidden)
-            }
+
+        }
+        .navigationDestination(isPresented: $infoViewViewModel.isComposeEmail) {
+            MailComposeView().toolbar(.hidden)
         }
     }
 }

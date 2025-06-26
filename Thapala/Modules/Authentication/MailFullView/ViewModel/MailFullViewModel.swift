@@ -62,19 +62,19 @@ class MailFullViewModel: ObservableObject {
         }
     }
     
-    func deleteEmailFromAwaiting(emailId:Int) {
+    func deleteEmailFromAwaiting(emailId:[Int]) {
         self.isLoading = true
-        let params = ["ids": emailId]
-        NetworkManager.shared.request(type: DeleteEmailModel.self, endPoint: EndPoint.deleteEmailAwaiting, httpMethod: .delete, parameters: params, isTokenRequired: true) { [weak self] result in
-            guard let self = self else { return }
+        let params = DeleteEmailpayload(
+            ids: emailId
+        )
+        let endUrl = "\(EndPoint.deleteEmailAwaiting)"
+            NetworkManager.shared.request(type: DeleteEmailModel.self, endPoint: endUrl, httpMethod: .delete, parameters: params, isTokenRequired: true) { [weak self] result in
+                guard let self = self else { return }
             switch result {
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.error = response.message ?? ""
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-                        self.getEmailsData()
-                    })
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -92,36 +92,36 @@ class MailFullViewModel: ObservableObject {
         }
     }
     
-    func getEmailsData() {
-        self.isLoading = true
-        let endUrl = "\(EndPoint.allEmails)status=awaited"
-        NetworkManager.shared.request(type: HomeEmailsModel.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let response):
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    self.error = response.message ?? ""
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-//                        self.emailData = response.data ?? []
-//                        self.emailFullData = response
-//                    })
-                }
-            case .failure(let error):
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    switch error {
-                    case .error(error: let error):
-                        DispatchQueue.main.async {
-                            self.error = error
-                        }
-                    case .sessionExpired(error: _):
-                        self.error = "Please try again later"
-                    }
-                }
-            }
-        }
-    }
+//    func getEmailsData() {
+//        self.isLoading = true
+//        let endUrl = "\(EndPoint.allEmails)status=awaited"
+//        NetworkManager.shared.request(type: HomeEmailsModel.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
+//            guard let self = self else { return }
+//            switch result {
+//            case .success(let response):
+//                DispatchQueue.main.async {
+//                    self.isLoading = false
+//                    self.error = response.message ?? ""
+////                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+////                        self.emailData = response.data ?? []
+////                        self.emailFullData = response
+////                    })
+//                }
+//            case .failure(let error):
+//                DispatchQueue.main.async {
+//                    self.isLoading = false
+//                    switch error {
+//                    case .error(error: let error):
+//                        DispatchQueue.main.async {
+//                            self.error = error
+//                        }
+//                    case .sessionExpired(error: _):
+//                        self.error = "Please try again later"
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     func markEmailAsUnRead(emailId: Int) {
         self.isLoading = true
@@ -133,9 +133,9 @@ class MailFullViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.error = response.message ?? ""
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-                        self.getEmailsData()
-                    })
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+//                        self.getEmailsData()
+//                    })
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -163,9 +163,9 @@ class MailFullViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.error = response.message ?? ""
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-                        self.getEmailsData()
-                    })
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+//                        self.getEmailsData()
+//                    })
                 }
             case .failure(let error):
                 DispatchQueue.main.async {

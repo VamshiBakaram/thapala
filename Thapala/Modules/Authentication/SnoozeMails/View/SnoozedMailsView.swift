@@ -18,168 +18,177 @@ struct SnoozedMailsView:View{
     @State private var conveyedView: Bool = false
     @State private var PostBoxView: Bool = false
     @State private var SnoozedView: Bool = false
-    
+    @State private var AwaitingView: Bool = false
     
     var body: some View {
-        VStack{
-            HStack{
-                Button {
-                    withAnimation {
-                        isMenuVisible.toggle()
+        GeometryReader{ reader in
+            ZStack {
+                themesviewModel.currentTheme.windowBackground
+                VStack{
+                    HStack{
+                        Button {
+                            withAnimation {
+                                isMenuVisible.toggle()
+                            }
+                        } label: {
+                            Image(systemName: "arrow.backward")
+                                .foregroundColor(themesviewModel.currentTheme.iconColor)
+                        }
+                        .foregroundColor(Color.black)
+                        Spacer()
+                        Text("Snoozed Mails")
+                            .font(.custom(.poppinsSemiBold, size: 16))
+                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                        Spacer()
                     }
-                } label: {
-                    Image(systemName: "arrow.backward")
-                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-                }
-                .foregroundColor(Color.black)
-                Spacer()
-                Text("Snoozed Mails")
-                    .font(.custom(.poppinsSemiBold, size: 16))
-                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                Spacer()
-            }
-            .padding(.leading,20)
-            .padding(.top,12)
-            
-            
-            HStack {
-                Button(action: {
-                    selectedTab = "awaited";
-                    snoozedMailsViewModel.getSnoozedEmailData(selectedTabItem: selectedTab);
-                    print("selected Tab is : \(selectedTab)")
+                    .padding(.leading,20)
+                    .padding(.top,12)
                     
-                }) {
-                    Text("Queue")
-                        .fontWeight(.medium)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(selectedTab == "awaited" ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
-                        .foregroundColor(themesviewModel.currentTheme.textColor)
-                        .cornerRadius(10)
-//                        .overlay(
-//                            RoundedRectangle(cornerRadius: 10)
-//                                .stroke(Color.black.opacity(0.2), lineWidth: 1)
-//                        )
+                    
+                    HStack {
+                        Button(action: {
+                            selectedTab = "awaited";
+                            SnoozedView = false
+                            snoozedMailsViewModel.getSnoozedEmailData(selectedTabItem: selectedTab);
+                            print("selected Tab is : \(selectedTab)")
+                            
+                        }) {
+                            Text("Queue")
+                                .fontWeight(.medium)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(selectedTab == "awaited" ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
+                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                .cornerRadius(10)
+                            //                        .overlay(
+                            //                            RoundedRectangle(cornerRadius: 10)
+                            //                                .stroke(Color.black.opacity(0.2), lineWidth: 1)
+                            //                        )
+                        }
+                        
+                        Button(action: {
+                            selectedTab = "postbox";
+                            SnoozedView = false
+                            snoozedMailsViewModel.getSnoozedEmailData(selectedTabItem: selectedTab);
+                            print("selected Tab is : \(selectedTab)")
+                        }) {
+                            Text("postbox")
+                                .fontWeight(.medium)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(selectedTab == "postbox" ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
+                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                .cornerRadius(10)
+                            //                        .overlay(
+                            //                            RoundedRectangle(cornerRadius: 10)
+                            //                                .stroke(Color.black.opacity(0.2), lineWidth: 1)
+                            //                        )
+                        }
+                        
+                        Button(action: {
+                            selectedTab = "conveyed";
+                            SnoozedView = false
+                            snoozedMailsViewModel.getSnoozedEmailData(selectedTabItem: selectedTab);
+                            print("selected Tab is : \(selectedTab)")
+                        }) {
+                            Text("conveyed")
+                                .fontWeight(.medium)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(selectedTab == "conveyed" ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
+                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                .cornerRadius(10)
+                            //                        .overlay(
+                            //                            RoundedRectangle(cornerRadius: 10)
+                            //                                .stroke(Color.black.opacity(0.2), lineWidth: 1)
+                            //                        )
+                        }
+                    }
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(themesviewModel.currentTheme.strokeColor, lineWidth: 1)
+                    )
+                    .background(themesviewModel.currentTheme.windowBackground) // Light ash color
+                    
+                    .cornerRadius(20)
+                    .padding(.horizontal)
+                    .padding(.top)
+                    
+                    if selectedTab == "awaited" {
+                        QueueSnoozedMailsView
+                    }
+                    else if selectedTab == "postbox" {
+                        postboxMailsView
+                    }
+                    else if selectedTab == "conveyed" {
+                        conveyedMailsView
+                    }
+                    
+                    Spacer()
+                }
+                .background(themesviewModel.currentTheme.windowBackground)
+                
+                .onAppear {
+                    // Initialize with "awaited" to show QueueSnoozedMailsView on appear
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        selectedTab = "awaited"
+                        snoozedMailsViewModel.getSnoozedEmailData(selectedTabItem: selectedTab)
+                    }
                 }
                 
-                Button(action: {
-                    selectedTab = "postbox";
-                    snoozedMailsViewModel.getSnoozedEmailData(selectedTabItem: selectedTab);
-                    print("selected Tab is : \(selectedTab)")
-                }) {
-                    Text("postbox")
-                        .fontWeight(.medium)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(selectedTab == "postbox" ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
-                        .foregroundColor(themesviewModel.currentTheme.textColor)
-                        .cornerRadius(10)
-//                        .overlay(
-//                            RoundedRectangle(cornerRadius: 10)
-//                                .stroke(Color.black.opacity(0.2), lineWidth: 1)
-//                        )
-                }
+                .sheet(isPresented: $isMultiSelectionSheetVisible, content: {
+                    EmailOptionsView( replyAction: {
+                        // Perform reply action
+                        print("Reply tapped")
+                        dismissSheet()
+                    },
+                                      replyAllAction: {
+                        // Perform reply all action
+                        print("Reply all tapped")
+                        dismissSheet()
+                    },
+                                      forwardAction: {
+                        // Perform forward action
+                        print("Forward tapped")
+                        dismissSheet()
+                    },
+                                      markAsReadAction: {
+                        print("read")
+                        dismissSheet()
+                    },
+                                      markAsUnReadAction: {
+                        print("unread")
+                        dismissSheet()
+                    },
+                                      createLabelAction: {
+                        print("label")
+                        dismissSheet()
+                    },
+                                      moveToFolderAction: {
+                        print("move folder")
+                        dismissSheet()
+                    },
+                                      starAction: {
+                        print("star")
+                        dismissSheet()
+                    },
+                                      snoozeAction: {
+                        print("snooze")
+                        dismissSheet()
+                    },
+                                      trashAction: {
+                        print("trash acti")
+                        dismissSheet()
+                    }
+                    )
+                    .presentationDetents([.medium])
+                    .presentationDragIndicator(.hidden)
+                })
                 
-                Button(action: {
-                    selectedTab = "conveyed";
-                    snoozedMailsViewModel.getSnoozedEmailData(selectedTabItem: selectedTab);
-                    print("selected Tab is : \(selectedTab)")
-                }) {
-                    Text("conveyed")
-                        .fontWeight(.medium)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(selectedTab == "conveyed" ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
-                        .foregroundColor(themesviewModel.currentTheme.textColor)
-                        .cornerRadius(10)
-//                        .overlay(
-//                            RoundedRectangle(cornerRadius: 10)
-//                                .stroke(Color.black.opacity(0.2), lineWidth: 1)
-//                        )
+                if isMenuVisible{
+                    HomeMenuView(isSidebarVisible: $isMenuVisible)
                 }
             }
-            .overlay(
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(themesviewModel.currentTheme.strokeColor, lineWidth: 1)
-            )
-            .background(themesviewModel.currentTheme.windowBackground) // Light ash color
-
-            .cornerRadius(20)
-            .padding(.horizontal)
-            .padding(.top)
-            
-            if selectedTab == "awaited" {
-                QueueSnoozedMailsView
-            }
-            else if selectedTab == "postbox" {
-                postboxMailsView
-            }
-            else if selectedTab == "conveyed" {
-                conveyedMailsView
-            }
-            
-            Spacer()
-            
-        }
-        .background(themesviewModel.currentTheme.windowBackground)
-        
-        .onAppear {
-            // Initialize with "awaited" to show QueueSnoozedMailsView on appear
-            selectedTab = "awaited"
-            snoozedMailsViewModel.getSnoozedEmailData(selectedTabItem: selectedTab)
-        }
-
-        .sheet(isPresented: $isMultiSelectionSheetVisible, content: {
-            EmailOptionsView( replyAction: {
-                // Perform reply action
-                print("Reply tapped")
-                dismissSheet()
-            },
-                              replyAllAction: {
-                // Perform reply all action
-                print("Reply all tapped")
-                dismissSheet()
-            },
-                              forwardAction: {
-                // Perform forward action
-                print("Forward tapped")
-                dismissSheet()
-            },
-                              markAsReadAction: {
-                print("read")
-                dismissSheet()
-            },
-                              markAsUnReadAction: {
-                print("unread")
-                dismissSheet()
-            },
-                              createLabelAction: {
-                print("label")
-                dismissSheet()
-            },
-                              moveToFolderAction: {
-                print("move folder")
-                dismissSheet()
-            },
-                              starAction: {
-                print("star")
-                dismissSheet()
-            },
-                              snoozeAction: {
-                print("snooze")
-                dismissSheet()
-            },
-                              trashAction: {
-                print("trash acti")
-                dismissSheet()
-            }
-            )
-            .presentationDetents([.medium])
-            .presentationDragIndicator(.hidden)
-        })
-        
-        if isMenuVisible{
-            HomeMenuView(isSidebarVisible: $isMenuVisible)
         }
 
     }
@@ -187,6 +196,16 @@ struct SnoozedMailsView:View{
     var QueueSnoozedMailsView: some View {
         VStack {
             if beforeLongPress {
+                if  snoozedMailsViewModel.snoozedMailsDataModel.count == 0 {
+                    VStack {
+                        Text("No mails found")
+                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                            .font(.custom(.poppinsRegular, size: 16))
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                    .background(themesviewModel.currentTheme.windowBackground)
+                }
+                else {
                 List($snoozedMailsViewModel.snoozedMailsDataModel, id: \.id) { $email in
                     HStack {
                         Image("person")
@@ -213,16 +232,17 @@ struct SnoozedMailsView:View{
                                     .font(.custom(.poppinsLight, size: 14))
                                     .lineLimit(1)
                                 Spacer()
-//                                 Image("star.fill")
+                                //                                 Image("star.fill")
                             }
                         }
                         //                        Text("\(email.sentAt ?? 0)")
                         //                            .padding(.top, -30)
-
- 
-         
+                        
+                        
+                        
                     }
                     .onTapGesture {
+                        SnoozedView = true
                         snoozedMailsViewModel.selectedID = email.threadId
                         snoozedMailsViewModel.passwordHint = email.passwordHint
                         snoozedMailsViewModel.isEmailScreen = true
@@ -239,6 +259,7 @@ struct SnoozedMailsView:View{
                 }
                 .listStyle(PlainListStyle())
                 .scrollContentBackground(.hidden)
+            }
             } else {
                 List($snoozedMailsViewModel.snoozedMailsDataModel, id: \.id) { $email in
                     HStack{
@@ -319,9 +340,9 @@ struct SnoozedMailsView:View{
         }
         .navigationDestination(isPresented: $snoozedMailsViewModel.isEmailScreen) {
             if $snoozedMailsViewModel.passwordHint != nil{
-                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, emailId: snoozedMailsViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars).toolbar(.hidden)
+                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, awaitingView: $AwaitingView, emailId: snoozedMailsViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars).toolbar(.hidden)
             }else{
-                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, emailId: snoozedMailsViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars).toolbar(.hidden)
+                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, awaitingView: $AwaitingView, emailId: snoozedMailsViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars).toolbar(.hidden)
             }
         }
     }
@@ -329,52 +350,63 @@ struct SnoozedMailsView:View{
     var postboxMailsView: some View {
         VStack{
         if beforeLongPress{
-            List($snoozedMailsViewModel.snoozedMailsDataModel, id: \.id) { $email in
-                HStack {
-                    Image("person")
-                    VStack(alignment: .leading) {
-                        HStack {
-                            Text(email.firstname ?? "")
-                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                .font(.custom(.poppinsRegular, size: 16))
-                            Text(email.lastname ?? "")
-                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                .font(.custom(.poppinsRegular, size: 16))
-                            Spacer()
-                            let unixTimestamp = email.sentAt ?? 0
-                            if let istDateStringFromTimestamp = convertToIST(dateInput: unixTimestamp) {
-                                Text(istDateStringFromTimestamp)
+            if  snoozedMailsViewModel.snoozedMailsDataModel.count == 0 {
+                VStack {
+                    Text("No mails found")
+                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                        .font(.custom(.poppinsRegular, size: 16))
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                .background(themesviewModel.currentTheme.windowBackground)
+            }
+            else {
+                List($snoozedMailsViewModel.snoozedMailsDataModel, id: \.id) { $email in
+                    HStack {
+                        Image("person")
+                        VStack(alignment: .leading) {
+                            HStack {
+                                Text(email.firstname ?? "")
                                     .foregroundColor(themesviewModel.currentTheme.textColor)
-                                    .padding(.trailing, 20)
-                                    .font(.custom(.poppinsLight, size: 12, relativeTo: .title))
+                                    .font(.custom(.poppinsRegular, size: 16))
+                                Text(email.lastname ?? "")
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .font(.custom(.poppinsRegular, size: 16))
+                                Spacer()
+                                let unixTimestamp = email.sentAt ?? 0
+                                if let istDateStringFromTimestamp = convertToIST(dateInput: unixTimestamp) {
+                                    Text(istDateStringFromTimestamp)
+                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                        .padding(.trailing, 20)
+                                        .font(.custom(.poppinsLight, size: 12, relativeTo: .title))
+                                }
+                            }
+                            HStack {
+                                Text(email.subject ?? "")
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .font(.custom(.poppinsLight, size: 14))
+                                    .lineLimit(1)
+                                Spacer()
+                                //                                 Image("star.fill")
                             }
                         }
-                        HStack {
-                            Text(email.subject ?? "")
-                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                .font(.custom(.poppinsLight, size: 14))
-                                .lineLimit(1)
-                            Spacer()
-//                                 Image("star.fill")
-                        }
+                        //                        Text("\(email.sentAt ?? 0)")
+                        //                            .padding(.top, -30)
+                        
+                        
+                        
                     }
-                    //                        Text("\(email.sentAt ?? 0)")
-                    //                            .padding(.top, -30)
-
-
-     
+                    .listRowBackground(themesviewModel.currentTheme.windowBackground)
+                    .onTapGesture {
+                        SnoozedView = true
+                        print("snoozed postbox clicked")
+                        snoozedMailsViewModel.selectedID = email.emailId
+                        snoozedMailsViewModel.passwordHint = email.passwordHint
+                        snoozedMailsViewModel.isEmailScreen = true
+                    }
                 }
-                .listRowBackground(themesviewModel.currentTheme.windowBackground)
-                .onTapGesture {
-                    print("snoozed postbox clicked")
-                    snoozedMailsViewModel.selectedID = email.emailId
-                    snoozedMailsViewModel.passwordHint = email.passwordHint
-                    snoozedMailsViewModel.isEmailScreen = true
-                    SnoozedView = true
-                }
+                .listStyle(PlainListStyle())
+                .scrollContentBackground(.hidden)
             }
-            .listStyle(PlainListStyle())
-            .scrollContentBackground(.hidden)
         
         }else{
             List($snoozedMailsViewModel.snoozedMailsDataModel, id: \.id) { $email in
@@ -474,63 +506,73 @@ struct SnoozedMailsView:View{
             }
         }
         .navigationDestination(isPresented: $snoozedMailsViewModel.isEmailScreen) {
-            MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, emailId: snoozedMailsViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars ).toolbar(.hidden)
+            MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, awaitingView: $AwaitingView, emailId: snoozedMailsViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars).toolbar(.hidden)
            }
     }
     
     var conveyedMailsView: some View {
         VStack{
         if beforeLongPress{
-            List($snoozedMailsViewModel.snoozedMailsDataModel, id: \.id) { $email in
-                HStack {
-                    Image("person")
-                    
-                    VStack(alignment: .leading) {
-                        HStack {
-                            Text(email.firstname ?? "")
-                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                .font(.custom(.poppinsRegular, size: 16))
-                            Text(email.lastname ?? "")
-                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                .font(.custom(.poppinsRegular, size: 16))
-                            Spacer()
-                            let unixTimestamp = email.sentAt ?? 0
-                            if let istDateStringFromTimestamp = convertToIST(dateInput: unixTimestamp) {
-                                Text(istDateStringFromTimestamp)
-                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                    .padding(.trailing, 20)
-                                    .font(.custom(.poppinsLight, size: 12, relativeTo: .title))
-                            }
-                        }
-                        HStack {
-                            Text(email.subject ?? "")
-                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                .font(.custom(.poppinsLight, size: 14))
-                                .lineLimit(1)
-                            Spacer()
-//                                 Image("star.fill")
-                        }
-                    }
-                    //                        Text("\(email.sentAt ?? 0)")
-                    //                            .padding(.top, -30)
-
-
-     
+            if  snoozedMailsViewModel.snoozedMailsDataModel.count == 0 {
+                VStack {
+                    Text("No mails found")
+                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                        .font(.custom(.poppinsRegular, size: 16))
                 }
-                .listRowBackground(themesviewModel.currentTheme.windowBackground)
-                .gesture(
-                    LongPressGesture(minimumDuration: 1.0)
-                        .onEnded { _ in
-                            withAnimation {
-                                beforeLongPress = false
-                                
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                .background(themesviewModel.currentTheme.windowBackground)
+            }
+            else {
+                List($snoozedMailsViewModel.snoozedMailsDataModel, id: \.id) { $email in
+                    HStack {
+                        Image("person")
+                        
+                        VStack(alignment: .leading) {
+                            HStack {
+                                Text(email.firstname ?? "")
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .font(.custom(.poppinsRegular, size: 16))
+                                Text(email.lastname ?? "")
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .font(.custom(.poppinsRegular, size: 16))
+                                Spacer()
+                                let unixTimestamp = email.sentAt ?? 0
+                                if let istDateStringFromTimestamp = convertToIST(dateInput: unixTimestamp) {
+                                    Text(istDateStringFromTimestamp)
+                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                        .padding(.trailing, 20)
+                                        .font(.custom(.poppinsLight, size: 12, relativeTo: .title))
+                                }
+                            }
+                            HStack {
+                                Text(email.subject ?? "")
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .font(.custom(.poppinsLight, size: 14))
+                                    .lineLimit(1)
+                                Spacer()
+                                //                                 Image("star.fill")
                             }
                         }
-                )
+                        //                        Text("\(email.sentAt ?? 0)")
+                        //                            .padding(.top, -30)
+                        
+                        
+                        
+                    }
+                    .listRowBackground(themesviewModel.currentTheme.windowBackground)
+                    .gesture(
+                        LongPressGesture(minimumDuration: 1.0)
+                            .onEnded { _ in
+                                withAnimation {
+                                    beforeLongPress = false
+                                    
+                                }
+                            }
+                    )
+                }
+                .listStyle(PlainListStyle())
+                .scrollContentBackground(.hidden)
             }
-            .listStyle(PlainListStyle())
-            .scrollContentBackground(.hidden)
-        
         }else{
             List($snoozedMailsViewModel.snoozedMailsDataModel, id: \.id) { $email in
                 HStack{

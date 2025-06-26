@@ -37,13 +37,12 @@ struct FolderRecord: Codable, Identifiable , Equatable {
     let parentId: Int
     let type: String
     let isDeleted: Bool
-    let deletedAt: Int
+    let deletedAt: Int?
     let subFolderType: String
     let `default`: Bool
     let createdAt: String
     let updatedAt: String
 }
-
 struct FileRecord: Codable, Identifiable , Equatable {
     let id: Int
     let fileName: String
@@ -189,3 +188,30 @@ struct UploadFile: Codable {
     let fileLink: String
     let fileSize: String
 }
+
+
+
+//get main records - get api
+struct RecordsResponse: Codable {
+    let message: String
+    let mainRecords: [MainRecord]
+}
+
+struct MainRecord: Codable, Identifiable {
+    let id: Int
+    let folderName: String?
+    let userId: Int
+    let parentId: Int
+    let type: String
+    let isDeleted: Bool
+    let deletedAt: Int
+    let subFolderType: String
+    let `default`: Bool
+    let createdAt: String
+    let updatedAt: String
+}
+
+
+// sub records Data - Get api
+
+

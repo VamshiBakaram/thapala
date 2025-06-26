@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MailComposeView: View {
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject private var mailComposeViewModel = MailComposeViewModel()
+    @ObservedObject var mailComposeViewModel = MailComposeViewModel()
     @ObservedObject var themesviewModel = themesViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
     @State var id:Int = 0

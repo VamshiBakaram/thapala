@@ -41,6 +41,7 @@ class HomeNavigatorViewModel:ObservableObject{
     @Published var isEmailCompose = false
     @Published var isPlusbtn = false
     @Published var isComposeEmail:Bool = false
+    @Published var isSearchView: Bool = false
     @Published var isLoading:Bool = false
     @Published var error: String?
     @Published var lastestData: LastestLoginModel?

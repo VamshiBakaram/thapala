@@ -15,8 +15,5 @@
 		<string>Poppins-Medium.ttf</string>
 		<string>Poppins-Regular.ttf</string>
 	</array>
-    <key>NSPhotoLibraryAddUsageDescription</key>
-    <string>We need your permission to save files to your Photos library.</string>
-
 </dict>
 </plist>

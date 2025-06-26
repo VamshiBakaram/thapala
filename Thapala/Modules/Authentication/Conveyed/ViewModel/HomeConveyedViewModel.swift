@@ -9,19 +9,14 @@ import Foundation
 class HomeConveyedViewModel:ObservableObject{
     @Published var error: String?
     @Published var isLoading = false
-    
     @Published var isComposeEmail:Bool = false
     @Published var selectedOption: ConveyedOptions? = .emails
-    
     @Published var isEmailsSelected:Bool = true
     @Published var isPrintSelected:Bool = false
     @Published var isShipmentsSelected:Bool = false
-    
-
     @Published var beforeLongPress:Bool = true
-    
     @Published var starredemail: [StarredModel] = []
-    @Published var selectedID: Int? = nil
+    @Published var selectedID: Int? = 0
     @Published var passwordHint: String? = ""
     @Published var isEmailScreen: Bool = false
     @Published var conveyedEmailData:[ConveyedData] = []

@@ -44,6 +44,7 @@ struct QuickAccessView: View {
                             .background(themesviewModel.currentTheme.colorAccent)
                             .foregroundColor(themesviewModel.currentTheme.textColor)
                             .clipShape(Circle())
+                            .padding(.trailing,10)
                     }
                     .buttonStyle(PlainButtonStyle())
                     .fullScreenCover(isPresented: $homeAwaitingViewModel.isComposeEmail, onDismiss: {
@@ -73,6 +74,7 @@ struct QuickAccessView: View {
                             .background(themesviewModel.currentTheme.colorAccent)
                             .foregroundColor(themesviewModel.currentTheme.textColor)
                             .clipShape(Circle())
+                            .padding(.trailing,10)
                     }
                 }
                 Spacer()
@@ -93,6 +95,7 @@ struct QuickAccessView: View {
                             .background(themesviewModel.currentTheme.colorAccent)
                             .foregroundColor(themesviewModel.currentTheme.textColor)
                             .clipShape(Circle())
+                            .padding(.trailing,10)
                     }
                 }
                 Spacer()
@@ -104,7 +107,7 @@ struct QuickAccessView: View {
             }
             .padding(.bottom, 10)
         }
-        .frame(width: 200, height: 250)
+        .frame(width: 220, height: 250)
     }
 //        .frame(width: .infinity, height: .infinity)
 //        .background(Color.black)

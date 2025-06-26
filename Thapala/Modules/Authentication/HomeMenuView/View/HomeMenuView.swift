@@ -8,14 +8,18 @@
 
 import SwiftUI
 struct HomeMenuView: View {
+    @ObservedObject var homeMenuViewModel = HomeMenuViewModel()
     @ObservedObject var homeNavigatorViewModel = HomeNavigatorViewModel()
     @ObservedObject var homeDirectoryViewModel = HomeDirectoryViewModel()
+    @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
+    @StateObject private var blueprintViewModel = BlueprintViewModel()
     @ObservedObject var infoViewViewModel = InfoViewViewModel()
     @ObservedObject var TrashedViewModel = TrashViewModel()
     @ObservedObject var consoleViewModel = ConsoleViewModel()
     @ObservedObject var themesviewModel = themesViewModel()
+    @State private var notificationTime: Int?
     let menuData: [HomeMenuData] = [
-        .init(image: "mail", menuType: "Queue"),
+        .init(image: "queue", menuType: "Queue"),
         .init(image: "postboxW", menuType: "Postbox"),
         .init(image: "conveyedW", menuType: "Conveyed"),
         .init(image: "blueprintW", menuType: "Blueprint"),
@@ -59,7 +63,6 @@ struct HomeMenuView: View {
             ZStack {
                 if isSidebarVisible {
                     Rectangle()
-                        .opacity(0.3)
                         .ignoresSafeArea()
                         .onTapGesture {
                             isSidebarVisible.toggle()
@@ -81,46 +84,51 @@ struct HomeMenuView: View {
             .onAppear {
                 homeNavigatorViewModel.getNavigatorBio(userId: sessionManager.userId)
             }
-            .toast(message: $homeNavigatorViewModel.error)
+            .toast(message: $homeMenuViewModel.error)
         }
     }
     
     var content: some View {
-        HStack {
-            Spacer()
-            VStack {
-                profileHeader
-                Divider()
-                    .frame(height: 2)
-                    .background(themesviewModel.currentTheme.customEditTextColor)
-                    .padding([.leading, .trailing], 10)
-                menuListView(menuData: menuData)
-                Divider()
-                    .frame(height: 1)
-                    .background(themesviewModel.currentTheme.customEditTextColor)
-                    .padding([.leading, .trailing], 10)
-                quickAccessSection
-                Divider()
-                    .frame(height: 1)
-                    .background(themesviewModel.currentTheme.customEditTextColor)
-                    .padding([.leading, .trailing], 10)
-                mailsSection
-                Divider()
-                    .frame(height: 1)
-                    .background(themesviewModel.currentTheme.customEditTextColor)
-                    .padding([.leading, .trailing], 10)
+        GeometryReader{ reader in
+            HStack {
                 Spacer()
-                signOutSection
+                ScrollView {
+                    VStack {
+                        profileHeader
+                        Divider()
+                            .frame(height: 2)
+                            .background(themesviewModel.currentTheme.customEditTextColor)
+                            .padding([.leading, .trailing], 10)
+                        
+                        menuListView(menuData: menuData, selectedOption: $selectedOption)
+                        Divider()
+                            .frame(height: 1)
+                            .background(themesviewModel.currentTheme.customEditTextColor)
+                            .padding([.leading, .trailing], 10)
+                        
+                        quickAccessSection
+                        Divider()
+                            .frame(height: 1)
+                            .background(themesviewModel.currentTheme.customEditTextColor)
+                            .padding([.leading, .trailing], 10)
+                        
+                        mailsSection
+                        Divider()
+                            .frame(height: 1)
+                            .background(themesviewModel.currentTheme.customEditTextColor)
+                            .padding([.leading, .trailing], 10)
+                        
+                        Spacer()
+                            .frame(height: 10)
+                        signOutSection
+                    }
+                }
+                .frame(width: UIScreen.main.bounds.width * 0.75)
+//                .frame(height: UIScreen.main.bounds.height)
+                .background(themesviewModel.currentTheme.colorPrimary)
+//                .ignoresSafeArea(edges: [.bottom])
             }
-            .frame(width: 270)
-            .background(themesviewModel.currentTheme.colorPrimary)
-//            .navigationDestination(isPresented: $showEditProfileDialog) {
-//                if isEditProfile {
-//                    showEditProfileDialog(imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person", name: "\(homeNavigatorViewModel.navigatorBioData?.user?.firstName ?? "") \(homeNavigatorViewModel.navigatorBioData?.user?.lastName ?? "")", tCode: homeNavigatorViewModel.navigatorBioData?.user?.tCode ?? "").toolbar(.hidden)
-//                }
-//            }
         }
-        
     }
     
     var profileHeader: some View {
@@ -164,34 +172,44 @@ struct HomeMenuView: View {
         }
     }
     
-    func menuListView(menuData: [HomeMenuData]) -> some View {
+    func menuListView(menuData: [HomeMenuData], selectedOption: Binding<HomeMenuData?>) -> some View {
         VStack {
             ForEach(menuData) { data in
                 HStack {
                     Image(data.image)
-                        .padding(.leading, 5) // Adjust padding to align left
-                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-
+                        .renderingMode(.template)
+                        .padding(.leading, 20)
+                        .foregroundColor(
+                            selectedOption.wrappedValue?.menuType == data.menuType ?
+                            themesviewModel.currentTheme.colorAccent : themesviewModel.currentTheme.inverseIconColor
+                        )
                     Text(data.menuType)
-                        .padding(.leading, 5) // Same left padding for consistency
-                        .font(.custom("Poppins-Regular", size: 16))
-                        .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                        .padding(.leading, 5)
+                        .font(.custom(.poppinsMedium, size: 18))
+                        .foregroundColor(
+                            selectedOption.wrappedValue?.menuType == data.menuType ?
+                            themesviewModel.currentTheme.colorAccent : themesviewModel.currentTheme.inverseIconColor
+                        )
 
-                    Spacer() // This will push the content to the left
+                    Spacer()
                 }
+                .padding(.vertical, 8)
+                .padding(.horizontal, 5)
+                .background(
+                    selectedOption.wrappedValue?.menuType == data.menuType ?
+                    Color.white : Color.clear
+                )
+                .cornerRadius(8)
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    selectedOption = data
+                    selectedOption.wrappedValue = data
                     path.append(data)
                 }
-                .listRowSeparator(.hidden)
-                .listRowBackground(Color.themeColor)
             }
-            .listStyle(PlainListStyle())
-            .scrollContentBackground(.hidden)
         }
-        .padding(.leading, 5) // Optional, to add padding to the whole VStack if needed
+        .padding(.leading, 5)
     }
+
 
     
     var quickAccessSection: some View {
@@ -210,7 +228,7 @@ struct HomeMenuView: View {
                         .padding(.trailing,20)
                 }
             }
-            menuListView(menuData: quickAccessData)
+            menuListView(menuData: quickAccessData, selectedOption: $selectedOption)
         }
     }
     
@@ -223,44 +241,40 @@ struct HomeMenuView: View {
                     .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
                 Spacer()
             }
-            menuListView(menuData: mailsData)
+            menuListView(menuData: mailsData, selectedOption: $selectedOption)
         }
     }
     
     var signOutSection: some View {
-        NavigationStack {
-            VStack {
-                Divider().padding([.leading, .trailing], 10)
-                HStack {
-                    Image("signout")
-                    Text("Sign Out")
-                        .font(.custom("Poppins-Regular", size: 16))
-                        .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                    Spacer()
-                }
-                .padding(.leading, 10)
-                .onTapGesture {
-                    showAlert = true
-                }
+        VStack {
+            Divider().padding([.leading, .trailing], 10)
+            HStack {
+                Image("signout")
+                Text("Sign Out")
+                    .font(.custom("Poppins-Regular", size: 16))
+                    .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                Spacer()
             }
-            .alert(isPresented: $showAlert) {
-                Alert(
-                    title: Text("Sign Out"),
-                    message: Text("Are you sure you want to sign out?"),
-                    primaryButton: .destructive(Text("Sign Out")) {
-                        // Navigate to LoginView
-                        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                           let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
-                            keyWindow.rootViewController = UIHostingController(rootView: LoginView())
-                            keyWindow.makeKeyAndVisible()
-                        }
-                    },
-                    secondaryButton: .cancel {
-                        // Cancel the action
-                        showAlert = false
-                    }
-                )
+            .padding(.leading, 10)
+            .onTapGesture {
+                showAlert = true
             }
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(
+                title: Text("Sign Out"),
+                message: Text("Are you sure you want to sign out?"),
+                primaryButton: .destructive(Text("Sign Out")) {
+                    // Navigate to LoginView
+                    print("clicked on conform to signout")
+                    homeMenuViewModel.logout(userID: sessionManager.userId)
+                    print("sessionManager.userId  \(sessionManager.userId)")
+                    sessionManager.isShowLogin = true
+                },
+                secondaryButton: .cancel {
+                    showAlert = false
+                }
+            )
         }
     }
 
@@ -272,10 +286,11 @@ struct HomeMenuView: View {
             return AnyView(HomeAwaitingView(imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person"))
         case "Blueprint":
             return AnyView(BlueprintView(imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person"))
+            
         case "Conveyed":
             return AnyView(HomeConveyedView(imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person"))
         case "Postbox":
-            return AnyView(HomePostboxView( imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person"))
+            return AnyView(HomePostboxView(imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person", notificationTime: $notificationTime, selectedID: 0, emailId: 0, passwordHash: ""))
         case "Planner":
             return AnyView(HomePlannerView())
         case "Pocket":
@@ -411,6 +426,7 @@ struct HomeMenuView: View {
 
 
 }
+
 
 #Preview {
     HomeMenuView(isSidebarVisible: .constant(false))

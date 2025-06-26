@@ -7,8 +7,9 @@
 
 import SwiftUI
 struct HomeDirectoryView: View {
-    @ObservedObject var homeDirectoryViewModel = HomeDirectoryViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @StateObject var homeDirectoryViewModel = HomeDirectoryViewModel()
+    @StateObject var themesviewModel = themesViewModel()
+    @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
     @Binding var isHomeDirectoryVisible: Bool
     let imageUrl: String
     @State private var isMenuVisible = false
@@ -21,6 +22,7 @@ struct HomeDirectoryView: View {
     @State private var isSearchDialogVisible = false
     @State private var isContactsDialogVisible = false
     @State private var isQuickAccessVisible = false
+    @State private var iNotificationAppBarView = false
     var body: some View {
         GeometryReader{ reader in
             ZStack {
@@ -59,16 +61,19 @@ struct HomeDirectoryView: View {
                         Spacer()
                         Button(action: {
                             print("search button pressed")
+                            print("Before appBarElementsViewModel.isSearch \(appBarElementsViewModel.isSearch)")
+                                appBarElementsViewModel.isSearch = true
+                            print("After appBarElementsViewModel.isSearch \(appBarElementsViewModel.isSearch)")
                         }) {
                             Image("magnifyingglass")
                                 .renderingMode(.template)
                                 .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
                                 .font(Font.title.weight(.medium))
-                            
                         }
-                        .padding(.leading,15)
+
                         Button(action: {
                             print("bell button pressed")
+                            iNotificationAppBarView = true
                         }) {
                             Image("notification")
                                 .renderingMode(.template)
@@ -492,6 +497,7 @@ struct HomeDirectoryView: View {
                 
                 TabViewNavigator()
                     .frame(height: 40)
+                    .padding(.bottom, 10)
             }
                 
                 
@@ -569,6 +575,27 @@ struct HomeDirectoryView: View {
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing) // Align at the bottom right
                             .padding([.bottom, .trailing], 20)
                     }
+                if iNotificationAppBarView {
+                    ZStack {
+                        Rectangle()
+                            .fill(Color.black.opacity(0.3))
+                            .ignoresSafeArea()
+                            .onTapGesture {
+                                withAnimation {
+                                    iNotificationAppBarView = false
+                                }
+                            }
+                        NotificationAppBarView()
+                        .frame(height: .infinity)
+                        .background(themesviewModel.currentTheme.windowBackground)
+                        .cornerRadius(20)
+                        .padding(.horizontal,20)
+                        .padding(.bottom,50)
+                        .padding(.top,80)
+                        .transition(.scale)
+                        .animation(.easeInOut, value: iNotificationAppBarView)
+                    }
+                }
 
                 if isSearchDialogVisible {
                     ZStack {
@@ -768,10 +795,19 @@ struct HomeDirectoryView: View {
                 isSearchDialogVisible = false
                 homeDirectoryViewModel.getStatesAndCities()
             }
-            .navigationDestination(isPresented: $homeDirectoryViewModel.isComposeEmail) {
-                MailComposeView().toolbar(.hidden)
-            }
+
         }
+        .fullScreenCover(isPresented: $appBarElementsViewModel.isSearch) {
+            SearchView(appBarElementsViewModel: appBarElementsViewModel)
+                .toolbar(.hidden)
+        }
+        .navigationDestination(isPresented: $homeDirectoryViewModel.isComposeEmail) {
+            MailComposeView().toolbar(.hidden)
+        }
+//        .navigationDestination(isPresented: $appBarElementsViewModel.isSearch) {
+//            SearchView(appBarElementsViewModel: appBarElementsViewModel)
+//                .toolbar(.hidden)
+//        }
 
     }
 }

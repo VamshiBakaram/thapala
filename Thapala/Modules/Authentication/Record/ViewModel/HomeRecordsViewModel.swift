@@ -31,6 +31,7 @@ class HomeRecordsViewModel:ObservableObject{
     @Published var ismoresheet: Bool = false
     @Published var downloadedFileURL: URL?
     @Published var attachmentDataIn: [AttachmentDataModel] = []
+    @Published var mainRecords: [MainRecord] = []
     @Published var folderID: Int = 0
     @Published var fileType: String = ""
     @Published var subfoldertype: String = ""
@@ -41,6 +42,35 @@ class HomeRecordsViewModel:ObservableObject{
     @Published var password: String = ""
 //    @Published var viewtype: Bool = true
         
+    
+    func getMainRecordsData() {
+        self.isLoading = true
+        let endUrl = "\(EndPoint.getRecords)"
+        
+        NetworkManager.shared.request(type: RecordsResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let response):
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    self.mainRecords = response.mainRecords
+                    self.error = response.message
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    switch error {
+                    case .error(let errorDescription):
+                        self.error = errorDescription
+                    case .sessionExpired:
+                        self.error = "Please try again later"
+                    }
+                }
+            }
+        }
+    }
+
     func getRecordsData(selectedTabID: Int , Type:String , SubFoldersType: String) {
         self.isLoading = true
         let endUrl = "\(EndPoint.records)/\(selectedTabID)?type=\(Type)&subfoldertype=\(SubFoldersType)&page=1&pageSize=10"
@@ -56,6 +86,41 @@ class HomeRecordsViewModel:ObservableObject{
                     self.recordsData = response.records
                     self.FilesData = response.files
                     self.emailsData = response.emails
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    switch error {
+                    case .error(let errorDescription):
+                        self.error = errorDescription
+                    case .sessionExpired:
+                        self.error = "Please try again later"
+                    }
+                }
+            }
+        }
+    }
+    
+    func getSubRecordsData(selectedTabID: Int , Type:String) {
+        self.isLoading = true
+        let endUrl = "\(EndPoint.subrecords)/\(selectedTabID)?type=\(Type)&page=1&pageSize=10"
+        
+        NetworkManager.shared.request(type: WorkRecordsResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let response):
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    self.defaultRecordsData = response.defaultRecords
+                    self.recordsData = response.records.filter { $0.parentId == selectedTabID }
+                    self.FilesData = response.files
+                    self.emailsData = response.emails
+                    
+                    print("Fetched \(self.recordsData.count) folders")
+                    if let first = self.recordsData.first {
+                        print("First folder: \(first.folderName), parentId: \(first.parentId), id: \(first.id)")
+                    }
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -203,21 +268,29 @@ class HomeRecordsViewModel:ObservableObject{
             let fileManager = FileManager.default
             let docsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
             let destinationURL = docsURL.appendingPathComponent(fileName)
-
             do {
                 if fileManager.fileExists(atPath: destinationURL.path) {
                     try fileManager.removeItem(at: destinationURL)
                 }
                 try fileManager.copyItem(at: localURL, to: destinationURL)
                 print("✅ File saved at: \(destinationURL)")
-
                 DispatchQueue.main.async {
                     if ["jpg", "jpeg", "png"].contains(fileExtension) {
                         self.saveImageToPhotoLibrary(fileURL: destinationURL)
-                    } else if ["mp4", "mov", "m4v"].contains(fileExtension) {
+                    }
+//                    else if ["mp4", "mov", "m4v", "3gp", "asf", "avi", "f4v", "flv" , "hevc" , "m2ts" , "m2v" , "m4v" , "mjpeg" , "mpg" , "mts" , "mxf" , "ogv" , "rm" , "swf" , "ts" , "vob" , "webm" , "wmv" , "wtv"].contains(fileExtension) {
+//                        self.saveVideoToPhotoLibrary(fileURL: destinationURL)
+//                    }
+                    else if ["mp4", "mov", "m4v", "3gp"].contains(fileExtension) {
                         self.saveVideoToPhotoLibrary(fileURL: destinationURL)
-                    } else {
-                        self.error = "Downloaded but unsupported media type"
+                    }
+                    else if ["pdf", "doc", "docx", "odt", "rtf", "txt", "xls", "xlsx", "ods", "ppt", "pptx", "odp", "mp3", "wav", "zip", "rar"].contains(fileExtension) {
+                        self.presentShareSheet(for: destinationURL)
+                        }
+                    
+                    else {
+                        print("showUnsupportedFormatAlert")
+                        self.showUnsupportedFormatAlert(for: destinationURL)
                     }
                 }
             } catch {
@@ -228,6 +301,38 @@ class HomeRecordsViewModel:ObservableObject{
         }
 
         task.resume()
+    }
+
+    
+    func showUnsupportedFormatAlert(for fileURL: URL) {
+        let alert = UIAlertController(
+            title: "Unsupported Format",
+            message: "This file type isn't supported by iOS. Try opening it with another app (like VLC) using the Share button.",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        alert.addAction(UIAlertAction(title: "Share", style: .default, handler: { _ in
+            self.presentShareSheet(for: fileURL)
+        }))
+        
+        if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let rootVC = scene.windows.first?.rootViewController {
+            DispatchQueue.main.async {
+                rootVC.present(alert, animated: true)
+            }
+        }
+    }
+
+    func presentShareSheet(for fileURL: URL) {
+        let activityVC = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+
+        // Present from the top-most view controller
+        if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let rootVC = scene.windows.first?.rootViewController {
+            DispatchQueue.main.async {
+                rootVC.present(activityVC, animated: true, completion: nil)
+            }
+        }
     }
 
 

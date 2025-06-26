@@ -8,246 +8,273 @@
 import SwiftUI
 
 struct BlueprintView: View {
-    
     @State private var isMenuVisible = false
-    @ObservedObject var blueprintViewModel = BlueprintViewModel()
-    @ObservedObject var homeNavigatorViewModel = HomeNavigatorViewModel()
+    @StateObject private var blueprintViewModel = BlueprintViewModel()
+    @StateObject var homeNavigatorViewModel = HomeNavigatorViewModel()
+    @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject private var themesviewModel = themesViewModel()
     @State private var isQuickAccessVisible = false
 //    @State private var isMailViewActive = false
     @State var isInsertTcode: Bool = false
     @State private var toText: String = ""
     let imageUrl: String
+    @State private var iNotificationAppBarView = false
     var body: some View {
-        GeometryReader{ reader in
-            ZStack{
-                VStack{
-                    VStack {
-                        AsyncImage(url: URL(string: imageUrl)) { phase in
-                            switch phase {
-                            case .empty:
-                                ProgressView()
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .frame(width: 40, height: 40)
-                                    .aspectRatio(contentMode: .fit)
-                                    .clipShape(Circle())
-                                    .padding(.leading,20)
-                            case .failure:
-                                Image("person")
-                                    .resizable()
-                                    .frame(width: 40, height: 40)
-                                    .aspectRatio(contentMode: .fit)
-                                    .clipShape(Circle())
-                                    .padding(.leading,20)
-                            @unknown default:
-                                EmptyView()
-                            }
-                        }
-                        HStack(spacing:20){
-                            Text("Blueprint")
-                                .padding(.leading,20)
-                                .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                                .font(.custom(.poppinsRegular, size: 16, relativeTo: .title))
-                            Spacer()
-                            Button(action: {
-                                print("Pencil button pressed")
-                                blueprintViewModel.isComposeEmail = true
-                            }) {
-                                Image("search")
-                                    .renderingMode(.template)
-                                    .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
-                                    .font(Font.title.weight(.medium))
-                            }
-                            
-                            Button(action: {
-                                print("bell button pressed")
-                            }) {
-                                Image("bell")
-                                    .renderingMode(.template)
-                                    .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
-                                    .font(Font.title.weight(.medium))
-                            }
-                            
-                            Button(action: {
-                                print("line.3.horizontal button pressed")
-                                withAnimation {
-                                    isMenuVisible.toggle()
+            GeometryReader{ reader in
+                ZStack{
+                    VStack{
+                        VStack {
+                            HStack(spacing:20){
+                                AsyncImage(url: URL(string: imageUrl)) { phase in
+                                    switch phase {
+                                    case .empty:
+                                        ProgressView()
+                                    case .success(let image):
+                                        image
+                                            .resizable()
+                                            .frame(width: 40, height: 40)
+                                            .aspectRatio(contentMode: .fit)
+                                            .clipShape(Circle())
+                                            .padding(.leading,20)
+                                    case .failure:
+                                        Image("person")
+                                            .resizable()
+                                            .frame(width: 40, height: 40)
+                                            .aspectRatio(contentMode: .fit)
+                                            .clipShape(Circle())
+                                            .padding(.leading,20)
+                                    @unknown default:
+                                        EmptyView()
+                                    }
                                 }
-                            }) {
-                                Image(systemName: "line.3.horizontal")
-                                    .renderingMode(.template)
-                                    .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
-                                    .font(Font.title.weight(.medium))
-                            }
-                            .padding(.trailing,15)
-                            
-                        }
-                        .padding(.top , -20)
-                        HStack {
-                            ScrollView(.horizontal,showsIndicators: false){
-                                HStack{
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .fill(self.blueprintViewModel.isComposeSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
-                                        .frame(width: reader.size.width/3 - 10, height: 50)
-                                        .onTapGesture {
-                                            self.blueprintViewModel.selectedOption = .compose
-                                            self.blueprintViewModel.isComposeSelected = true
-                                            self.blueprintViewModel.isLettersSelected = false
-                                            self.blueprintViewModel.isCardsSelected = false
-                                        }
-                                        .overlay(
-                                            Group{
-                                                HStack{
-                                                 Image("compose")
-                                                        .frame(width: 20, height: 20)
-                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                        .background(themesviewModel.currentTheme.tabBackground)
-                                                    VStack{
-                                                        Text("Compose")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                    }
-                                                }
-                                            }
-                                        )
+                                
+                                Text("Blueprint")
+                                    .padding(.leading,20)
+                                    .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                    .font(.custom(.poppinsRegular, size: 16, relativeTo: .title))
+                                    .padding(.leading,10)
+                                Spacer()
+                                Button(action: {
+                                    print("search button pressed")
+                                    print("Before appBarElementsViewModel.isSearch \(appBarElementsViewModel.isSearch)")
+                                    appBarElementsViewModel.isSearch = true
                                     
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .fill(self.blueprintViewModel.isLettersSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
-                                        .frame(width: reader.size.width/3 - 10, height: 50)
-                                        .onTapGesture {
-                                            self.blueprintViewModel.selectedOption = .letters
-                                            self.blueprintViewModel.isComposeSelected = false
-                                            self.blueprintViewModel.isLettersSelected = true
-                                            self.blueprintViewModel.isCardsSelected = false
-                                        }
-                                        .overlay(
-                                            Group{
-                                                HStack{
-                                                    Image("printIcon")
-                                                       .frame(width: 20, height: 20)
-                                                       .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                       .background(themesviewModel.currentTheme.tabBackground)
-                                                    
-                                                    VStack{
-                                                        Text("Letters")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                    }
-                                                }
-                                            }
-                                            
-                                        )
-                                    
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .fill(self.blueprintViewModel.isCardsSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
-                                        .frame(width: reader.size.width/3 - 10, height: 50)
-                                        .onTapGesture {
-                                            self.blueprintViewModel.selectedOption = .cards
-                                            self.blueprintViewModel.isComposeSelected = false
-                                            self.blueprintViewModel.isLettersSelected = false
-                                            self.blueprintViewModel.isCardsSelected = true
-                                        }
-                                        .overlay(
-                                            Group{
-                                                HStack{
-                                                    Image("chatBox")
-                                                        .frame(width: 20, height: 20)
-                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                        .background(themesviewModel.currentTheme.tabBackground)
-                                                    
-                                                    VStack{
-                                                        Text("Cards")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                    }
-                                                }
-                                            }
-                                        )
+                                    print("After appBarElementsViewModel.isSearch \(appBarElementsViewModel.isSearch)")
+                                }) {
+                                    Image("magnifyingglass")
+                                        .renderingMode(.template)
+                                        .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                        .font(Font.title.weight(.medium))
                                 }
-                                .padding([.leading,.trailing])
+                                
+                                Button(action: {
+                                    print("bell button pressed")
+                                    iNotificationAppBarView = true
+                                }) {
+                                    Image("bell")
+                                        .renderingMode(.template)
+                                        .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                        .font(Font.title.weight(.medium))
+                                }
+                                
+                                Button(action: {
+                                    print("line.3.horizontal button pressed")
+                                    withAnimation {
+                                        isMenuVisible.toggle()
+                                    }
+                                }) {
+                                    Image(systemName: "line.3.horizontal")
+                                        .renderingMode(.template)
+                                        .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                        .font(Font.title.weight(.medium))
+                                }
+                                .padding(.trailing,15)
+                                
                             }
+                            .padding(.top , -reader.size.height * 0.01)
+                            HStack {
+                                ScrollView(.horizontal,showsIndicators: false){
+                                    HStack{
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .fill(self.blueprintViewModel.isComposeSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
+                                            .frame(width: reader.size.width/3 - 10, height: 50)
+                                            .onTapGesture {
+                                                self.blueprintViewModel.selectedOption = .compose
+                                                self.blueprintViewModel.isComposeSelected = true
+                                                self.blueprintViewModel.isLettersSelected = false
+                                                self.blueprintViewModel.isCardsSelected = false
+                                            }
+                                            .overlay(
+                                                Group{
+                                                    HStack{
+                                                        Image("compose")
+                                                            .frame(width: 20, height: 20)
+                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                            .background(themesviewModel.currentTheme.tabBackground)
+                                                        VStack{
+                                                            Text("Compose")
+                                                                .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                        }
+                                                    }
+                                                }
+                                            )
+                                        
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .fill(self.blueprintViewModel.isLettersSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
+                                            .frame(width: reader.size.width/3 - 10, height: 50)
+                                            .onTapGesture {
+                                                self.blueprintViewModel.selectedOption = .letters
+                                                self.blueprintViewModel.isComposeSelected = false
+                                                self.blueprintViewModel.isLettersSelected = true
+                                                self.blueprintViewModel.isCardsSelected = false
+                                            }
+                                            .overlay(
+                                                Group{
+                                                    HStack{
+                                                        Image("printIcon")
+                                                            .frame(width: 20, height: 20)
+                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                            .background(themesviewModel.currentTheme.tabBackground)
+                                                        
+                                                        VStack{
+                                                            Text("Letters")
+                                                                .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                        }
+                                                    }
+                                                }
+                                                
+                                            )
+                                        
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .fill(self.blueprintViewModel.isCardsSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
+                                            .frame(width: reader.size.width/3 - 10, height: 50)
+                                            .onTapGesture {
+                                                self.blueprintViewModel.selectedOption = .cards
+                                                self.blueprintViewModel.isComposeSelected = false
+                                                self.blueprintViewModel.isLettersSelected = false
+                                                self.blueprintViewModel.isCardsSelected = true
+                                            }
+                                            .overlay(
+                                                Group{
+                                                    HStack{
+                                                        Image("chatBox")
+                                                            .frame(width: 20, height: 20)
+                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                            .background(themesviewModel.currentTheme.tabBackground)
+                                                        
+                                                        VStack{
+                                                            Text("Cards")
+                                                                .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                        }
+                                                    }
+                                                }
+                                            )
+                                    }
+                                    .padding([.leading,.trailing])
+                                }
+                            }
+                            
+                            
+                            //                        .padding(.top , -20)
                         }
+                        .frame(height: reader.size.height * 0.16)
+                        .background(themesviewModel.currentTheme.tabBackground)
                         
                         
-                        //                        .padding(.top , -20)
+                        
+                        if let selectedOption = blueprintViewModel.selectedOption {
+                            switch selectedOption {
+                            case .compose:
+                                composeView
+                            case .letters:
+                                lettersView
+                            case .cards:
+                                cardsView
+                            }
+                        }
+                        Spacer()
+                        
+                        //                    Spacer().frame(height: 20)
+                        
+                        TabViewNavigator()
+                            .frame(height: 40)
+                            .padding(.bottom , 10)
+                        
                     }
-                    .frame(height: 120)
-                    .background(themesviewModel.currentTheme.tabBackground)
+                    .navigationBarBackButtonHidden(true)
+                    .background(themesviewModel.currentTheme.windowBackground)
                     
                     
                     
-                    if let selectedOption = blueprintViewModel.selectedOption {
-                        switch selectedOption {
-                        case .compose:
-                            composeView
-                        case .letters:
-                            lettersView
-                        case .cards:
-                            cardsView
+                    
+                    if isQuickAccessVisible {
+                        Color.white.opacity(0.8) // Optional: semi-transparent background
+                            .ignoresSafeArea()
+                            .blur(radius: 10) // Blur effect for the background
+                        QuickAccessView(isQuickAccessVisible: $isQuickAccessVisible)
+                            .background(Color.white) // Background color for the Quick Access View
+                            .cornerRadius(10)
+                            .shadow(radius: 10)
+                            .padding()
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing) // Align at the bottom right
+                            .padding([.bottom, .trailing], 20)
+                    }
+                    
+                    //                if isMailViewActive { // change on 24 march
+                    //                        Color.white.opacity(0.8) // Optional: semi-transparent background
+                    //                            .ignoresSafeArea()
+                    //                            .blur(radius: 10) // Blur effect for the background
+                    //                    TabViewNavigator(isMailViewActive: $isMailViewActive)
+                    //                            .background(Color.white) // Background color for the Quick Access View
+                    //                            .cornerRadius(10)
+                    //                            .shadow(radius: 10)
+                    //                            .padding()
+                    //                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing) // Align at the bottom right
+                    //                            .padding([.bottom, .trailing], 20)
+                    //                    }
+                    
+                    
+                    
+                    
+                    if isMenuVisible{
+                        HomeMenuView(isSidebarVisible: $isMenuVisible)
+                    }
+                    
+                    if iNotificationAppBarView {
+                        ZStack {
+                            Rectangle()
+                                .fill(Color.black.opacity(0.3))
+                                .ignoresSafeArea()
+                                .onTapGesture {
+                                    withAnimation {
+                                        iNotificationAppBarView = false
+                                    }
+                                }
+                            NotificationAppBarView()
+                                .frame(height: .infinity)
+                                .background(themesviewModel.currentTheme.windowBackground)
+                                .cornerRadius(20)
+                                .padding(.horizontal,20)
+                                .padding(.bottom,50)
+                                .padding(.top,80)
+                                .transition(.scale)
+                                .animation(.easeInOut, value: iNotificationAppBarView)
                         }
                     }
-                    Spacer()
-                    
-//                    Spacer().frame(height: 20)
-                    
-                    TabViewNavigator()
-                        .frame(height: 40)
                     
                 }
-                .navigationBarBackButtonHidden(true)
-                .background(themesviewModel.currentTheme.windowBackground)
-
-                
-
-                
-            if isQuickAccessVisible {
-                    Color.white.opacity(0.8) // Optional: semi-transparent background
-                        .ignoresSafeArea()
-                        .blur(radius: 10) // Blur effect for the background
-                    QuickAccessView(isQuickAccessVisible: $isQuickAccessVisible)
-                        .background(Color.white) // Background color for the Quick Access View
-                        .cornerRadius(10)
-                        .shadow(radius: 10)
-                        .padding()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing) // Align at the bottom right
-                        .padding([.bottom, .trailing], 20)
-                }
-                
-//                if isMailViewActive { // change on 24 march
-//                        Color.white.opacity(0.8) // Optional: semi-transparent background
-//                            .ignoresSafeArea()
-//                            .blur(radius: 10) // Blur effect for the background
-//                    TabViewNavigator(isMailViewActive: $isMailViewActive)
-//                            .background(Color.white) // Background color for the Quick Access View
-//                            .cornerRadius(10)
-//                            .shadow(radius: 10)
-//                            .padding()
-//                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing) // Align at the bottom right
-//                            .padding([.bottom, .trailing], 20)
-//                    }
-
-                
-                
-                
-                if isMenuVisible{
-                    HomeMenuView(isSidebarVisible: $isMenuVisible)
-                }
-                
-//                if blueprintViewModel.isPlusBtn {
-//                    QuickAccessView(isQuickAccessVisible: $blueprintViewModel.isPlusBtn)
-//                        .transition(.opacity)
-//                }
-                
             }
-
+            .fullScreenCover(isPresented: $appBarElementsViewModel.isSearch) {
+                SearchView(appBarElementsViewModel: appBarElementsViewModel)
+                    .toolbar(.hidden)
+            }
             .navigationDestination(isPresented: $blueprintViewModel.isComposeEmail) {
                 MailComposeView().toolbar(.hidden)
             }
-        }
-        .toast(message: $blueprintViewModel.error)
     }
     var composeView:some View{
         VStack(alignment: .leading) {
@@ -391,7 +418,6 @@ struct BlueprintView: View {
                                             .padding(.trailing, 20)
                                         }
                                     )
-                                    
                                 }
                                 Rectangle()
                                     .frame(maxWidth: .infinity)
