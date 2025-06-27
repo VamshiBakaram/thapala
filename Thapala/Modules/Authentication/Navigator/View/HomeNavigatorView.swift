@@ -8,20 +8,24 @@
 import SwiftUI
 
 struct HomeNavigatorView: View {
-    
     @State private var isMenuVisible = false
-    @ObservedObject var homeNavigatorViewModel = HomeNavigatorViewModel()
+    @StateObject var homeNavigatorViewModel = HomeNavigatorViewModel()
+    @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
-    @ObservedObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = themesViewModel()
     @State private var isQuickAccessVisible = false
-    @ObservedObject var ConsoleviewModel = consoleviewModel()
+    @StateObject var ConsoleviewModel = consoleviewModel()
     let imageUrl: String
+//    @State private var isSearchView = false
+    @State private var iNotificationAppBarView = false
     var body: some View {
         GeometryReader{ reader in
             ZStack{
                 VStack{
                     VStack {
 //                    NavigatorHeaderView
+                            
+                        HStack(spacing:20){
                             AsyncImage(url: URL(string: imageUrl)) { phase in
                                 switch phase {
                                 case .empty:
@@ -45,19 +49,20 @@ struct HomeNavigatorView: View {
                                 }
                             }
                             
-                        HStack(spacing:20){
                             Text("Navigator")
                                 .padding(.leading,20)
                                 .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
                                 .font(.custom(.poppinsRegular, size: 16, relativeTo: .title))
                             Spacer()
                             Button(action: {
-                                print("search button pressed")
+                                print("Pencil button pressed")
+                                appBarElementsViewModel.isSearch = true
                             }) {
                                 Image("magnifyingglass")
                                     .renderingMode(.template)
                                     .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
                                     .font(Font.title.weight(.medium))
+                                    .padding(.trailing , 16)
                             }
 //                            Button(action: {
 //                                print("Pencil button pressed")
@@ -70,6 +75,7 @@ struct HomeNavigatorView: View {
                             
                             Button(action: {
                                 print("bell button pressed")
+                                iNotificationAppBarView = true
                             }) {
                                 Image("notification")
                                     .renderingMode(.template)
@@ -92,7 +98,7 @@ struct HomeNavigatorView: View {
                             
                         }
 
-                    ScrollView(.horizontal,showsIndicators: false){
+//                    ScrollView(.horizontal,showsIndicators: false){
                         HStack{
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(self.homeNavigatorViewModel.isAdobeSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
@@ -179,10 +185,10 @@ struct HomeNavigatorView: View {
                                 )
                         }
                         .padding([.leading,.trailing])
-                        .padding(.bottom , 50)
-                    }
+//                        .padding(.bottom , 50)
+//                    }
                 }
-                    .frame(height: 120)
+                    .frame(height: reader.size.height * 0.16)
                     .background(themesviewModel.currentTheme.tabBackground)
                     if let selectedOption = homeNavigatorViewModel.selectedOption {
                         switch selectedOption {
@@ -253,6 +259,7 @@ struct HomeNavigatorView: View {
                     if ConsoleviewModel.isContactsDialogVisible == false{
                         TabViewNavigator()
                             .frame(height: 40)
+                            .padding(.bottom, 10)
                     }
                     
                 }
@@ -283,13 +290,38 @@ struct HomeNavigatorView: View {
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing) // Align at the bottom right
                             .padding([.bottom, .trailing], 20)
                     }
+                if iNotificationAppBarView {
+                    ZStack {
+                        Rectangle()
+                            .fill(Color.black.opacity(0.3))
+                            .ignoresSafeArea()
+                            .onTapGesture {
+                                withAnimation {
+                                    iNotificationAppBarView = false
+                                }
+                            }
+                        NotificationAppBarView()
+                        .frame(height: .infinity)
+                        .background(themesviewModel.currentTheme.windowBackground)
+                        .cornerRadius(20)
+                        .padding(.horizontal,20)
+                        .padding(.bottom,50)
+                        .padding(.top,80)
+                        .transition(.scale)
+                        .animation(.easeInOut, value: iNotificationAppBarView)
+                    }
+                }
             }
-            .zIndex(0)
+            .navigationDestination(isPresented: $appBarElementsViewModel.isSearch) {
+                SearchView(appBarElementsViewModel: appBarElementsViewModel)
+                    .toolbar(.hidden)
+            }
+            .navigationDestination(isPresented: $homeNavigatorViewModel.isComposeEmail) {
+                MailComposeView().toolbar(.hidden)
+            }
 
         }
-        .navigationDestination(isPresented: $homeNavigatorViewModel.isComposeEmail) {
-            MailComposeView().toolbar(.hidden)
-        }
+
        
     }
     

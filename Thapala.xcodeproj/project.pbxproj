@@ -109,7 +109,6 @@
 		D368BB3B2C21CE5A00AE2C7F /* ResidenceUserProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D368BB3A2C21CE5A00AE2C7F /* ResidenceUserProfileViewModel.swift */; };
 		D369637E2DE5BF5E0034F3E9 /* RecordsThreeDotsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D369637D2DE5BF5E0034F3E9 /* RecordsThreeDotsView.swift */; };
 		D36963802DE5CFC90034F3E9 /* threeDotsModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D369637F2DE5CFC90034F3E9 /* threeDotsModelData.swift */; };
-		D374BE142C784B2400317058 /* HomeMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D374BE132C784B2400317058 /* HomeMenuViewModel.swift */; };
 		D374BE162C7871E600317058 /* MoveToFolderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D374BE152C7871E600317058 /* MoveToFolderView.swift */; };
 		D374BE182C7897DC00317058 /* MoveToFolderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D374BE172C7897DC00317058 /* MoveToFolderViewModel.swift */; };
 		D37614CB2D1415C700951686 /* tDoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37614CA2D1415C700951686 /* tDoView.swift */; };
@@ -155,7 +154,6 @@
 		D392CF0F2C255EE300636ACC /* HomePlannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D392CF0E2C255EE300636ACC /* HomePlannerViewModel.swift */; };
 		D392CF112C257FDA00636ACC /* PlannerAddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D392CF102C257FDA00636ACC /* PlannerAddTaskView.swift */; };
 		D392CF132C257FF600636ACC /* PlannerAddTaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D392CF122C257FF600636ACC /* PlannerAddTaskViewModel.swift */; };
-		D392CF152C25883D00636ACC /* PlannerDetailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D392CF142C25883D00636ACC /* PlannerDetailedView.swift */; };
 		D392CF172C25884C00636ACC /* PlannerDetailedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D392CF162C25884C00636ACC /* PlannerDetailedViewModel.swift */; };
 		D392CF192C25A32600636ACC /* AddEventViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D392CF182C25A32600636ACC /* AddEventViewModel.swift */; };
 		D392CF1B2C25A33300636ACC /* AddEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D392CF1A2C25A33300636ACC /* AddEventView.swift */; };
@@ -165,6 +163,11 @@
 		D3A0489E2C7F0E5C0091B35A /* ReplyEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A0489D2C7F0E5C0091B35A /* ReplyEmailView.swift */; };
 		D3A048A22C7F10BF0091B35A /* ReplyEmailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A048A12C7F10BF0091B35A /* ReplyEmailViewModel.swift */; };
 		D3A27E0E2DD7631600466320 /* countriesToCities.json in Resources */ = {isa = PBXBuildFile; fileRef = D3A27E0D2DD7631600466320 /* countriesToCities.json */; };
+		D3A5D4582E091AF00044DB32 /* HomeMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A5D4572E091AF00044DB32 /* HomeMenuViewModel.swift */; };
+		D3A8658F2E01428600F4E7C3 /* NotificationAppBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A8658E2E01428600F4E7C3 /* NotificationAppBarView.swift */; };
+		D3A8A15F2E00212E0046D36D /* AppBarElemenetsModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A8A15E2E00212E0046D36D /* AppBarElemenetsModelData.swift */; };
+		D3A8A1612E0021580046D36D /* AppBarElementsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A8A1602E0021580046D36D /* AppBarElementsViewModel.swift */; };
+		D3A8A1632E0021990046D36D /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A8A1622E0021990046D36D /* SearchView.swift */; };
 		D3B4E39E2DD5E56E0098CD6B /* BluePrintModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B4E39D2DD5E56E0098CD6B /* BluePrintModel.swift */; };
 		D3B75F5D2BFDCA1E008DA18C /* ResetPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B75F5C2BFDCA1E008DA18C /* ResetPasswordView.swift */; };
 		D3B75F5F2BFDCA46008DA18C /* VerifyCodeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B75F5E2BFDCA46008DA18C /* VerifyCodeViewModel.swift */; };
@@ -296,7 +299,6 @@
 		D368BB3A2C21CE5A00AE2C7F /* ResidenceUserProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResidenceUserProfileViewModel.swift; sourceTree = "<group>"; };
 		D369637D2DE5BF5E0034F3E9 /* RecordsThreeDotsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsThreeDotsView.swift; sourceTree = "<group>"; };
 		D369637F2DE5CFC90034F3E9 /* threeDotsModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = threeDotsModelData.swift; sourceTree = "<group>"; };
-		D374BE132C784B2400317058 /* HomeMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HomeMenuViewModel.swift; path = Thapala/Modules/Authentication/MailCompose/View/HomeMenuViewModel.swift; sourceTree = SOURCE_ROOT; };
 		D374BE152C7871E600317058 /* MoveToFolderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveToFolderView.swift; sourceTree = "<group>"; };
 		D374BE172C7897DC00317058 /* MoveToFolderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveToFolderViewModel.swift; sourceTree = "<group>"; };
 		D37614CA2D1415C700951686 /* tDoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tDoView.swift; sourceTree = "<group>"; };
@@ -341,7 +343,6 @@
 		D392CF0E2C255EE300636ACC /* HomePlannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePlannerViewModel.swift; sourceTree = "<group>"; };
 		D392CF102C257FDA00636ACC /* PlannerAddTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlannerAddTaskView.swift; sourceTree = "<group>"; };
 		D392CF122C257FF600636ACC /* PlannerAddTaskViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlannerAddTaskViewModel.swift; sourceTree = "<group>"; };
-		D392CF142C25883D00636ACC /* PlannerDetailedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlannerDetailedView.swift; sourceTree = "<group>"; };
 		D392CF162C25884C00636ACC /* PlannerDetailedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlannerDetailedViewModel.swift; sourceTree = "<group>"; };
 		D392CF182C25A32600636ACC /* AddEventViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEventViewModel.swift; sourceTree = "<group>"; };
 		D392CF1A2C25A33300636ACC /* AddEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEventView.swift; sourceTree = "<group>"; };
@@ -351,6 +352,11 @@
 		D3A0489D2C7F0E5C0091B35A /* ReplyEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyEmailView.swift; sourceTree = "<group>"; };
 		D3A048A12C7F10BF0091B35A /* ReplyEmailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyEmailViewModel.swift; sourceTree = "<group>"; };
 		D3A27E0D2DD7631600466320 /* countriesToCities.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = countriesToCities.json; sourceTree = "<group>"; };
+		D3A5D4572E091AF00044DB32 /* HomeMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeMenuViewModel.swift; sourceTree = "<group>"; };
+		D3A8658E2E01428600F4E7C3 /* NotificationAppBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAppBarView.swift; sourceTree = "<group>"; };
+		D3A8A15E2E00212E0046D36D /* AppBarElemenetsModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBarElemenetsModelData.swift; sourceTree = "<group>"; };
+		D3A8A1602E0021580046D36D /* AppBarElementsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBarElementsViewModel.swift; sourceTree = "<group>"; };
+		D3A8A1622E0021990046D36D /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		D3B4E39D2DD5E56E0098CD6B /* BluePrintModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluePrintModel.swift; sourceTree = "<group>"; };
 		D3B75F5C2BFDCA1E008DA18C /* ResetPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordView.swift; sourceTree = "<group>"; };
 		D3B75F5E2BFDCA46008DA18C /* VerifyCodeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCodeViewModel.swift; sourceTree = "<group>"; };
@@ -493,6 +499,7 @@
 		7B22B3642BD6CB9400020111 /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
+				D3A8A1592E0020AB0046D36D /* AppBarSearchNotification */,
 				D363A7622DD307C900D42A2F /* bottomSheet */,
 				D38F3BF02CC8C6BD004FCB0C /* Directory */,
 				D355F01C2CC11F120025391D /* SnoozeMails */,
@@ -1137,8 +1144,8 @@
 		D37CA8E12C05E51D000DE3C5 /* HomeMenuView */ = {
 			isa = PBXGroup;
 			children = (
-				D37CA8E42C05E531000DE3C5 /* ViewModel */,
 				D37CA8E32C05E52C000DE3C5 /* Model */,
+				D3A5D4562E091AD60044DB32 /* ViewModel */,
 				D37CA8E22C05E522000DE3C5 /* View */,
 			);
 			path = HomeMenuView;
@@ -1159,14 +1166,6 @@
 				D37CA8E72C05E576000DE3C5 /* HomeMenuModel.swift */,
 			);
 			path = Model;
-			sourceTree = "<group>";
-		};
-		D37CA8E42C05E531000DE3C5 /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-				D374BE132C784B2400317058 /* HomeMenuViewModel.swift */,
-			);
-			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		D37CA8E92C05E650000DE3C5 /* HomeAwaiting */ = {
@@ -1397,7 +1396,6 @@
 			children = (
 				D392CF092C255E8300636ACC /* HomePlannerView.swift */,
 				D392CF102C257FDA00636ACC /* PlannerAddTaskView.swift */,
-				D392CF142C25883D00636ACC /* PlannerDetailedView.swift */,
 				D3E75B982CEF479C00038827 /* DiaryView.swift */,
 				D34A1A722CF5A9520020128E /* NoteView.swift */,
 				D37614CA2D1415C700951686 /* tDoView.swift */,
@@ -1444,6 +1442,49 @@
 				D398A6632CB557EF0069CCD7 /* InfoView.swift */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		D3A5D4562E091AD60044DB32 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				D3A5D4572E091AF00044DB32 /* HomeMenuViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		D3A8A1592E0020AB0046D36D /* AppBarSearchNotification */ = {
+			isa = PBXGroup;
+			children = (
+				D3A8A15D2E0020FA0046D36D /* ModelData */,
+				D3A8A15C2E0020F10046D36D /* ViewModel */,
+				D3A8A15B2E0020E30046D36D /* View */,
+			);
+			path = AppBarSearchNotification;
+			sourceTree = "<group>";
+		};
+		D3A8A15B2E0020E30046D36D /* View */ = {
+			isa = PBXGroup;
+			children = (
+				D3A8A1622E0021990046D36D /* SearchView.swift */,
+				D3A8658E2E01428600F4E7C3 /* NotificationAppBarView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		D3A8A15C2E0020F10046D36D /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				D3A8A1602E0021580046D36D /* AppBarElementsViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		D3A8A15D2E0020FA0046D36D /* ModelData */ = {
+			isa = PBXGroup;
+			children = (
+				D3A8A15E2E00212E0046D36D /* AppBarElemenetsModelData.swift */,
+			);
+			path = ModelData;
 			sourceTree = "<group>";
 		};
 		D3B4E39C2DD5E5570098CD6B /* Model */ = {
@@ -1752,6 +1793,7 @@
 				7B00FA322BE0FE7800E100FF /* PasswordSuccessView.swift in Sources */,
 				D32A219F2C22AE0000765A23 /* AddNewGroupView.swift in Sources */,
 				D37CA8F82C05E788000DE3C5 /* HomeNavigatorView.swift in Sources */,
+				D3A5D4582E091AF00044DB32 /* HomeMenuViewModel.swift in Sources */,
 				D37CA8EE2C05E67B000DE3C5 /* HomeAwaitingView.swift in Sources */,
 				D3B75F5F2BFDCA46008DA18C /* VerifyCodeViewModel.swift in Sources */,
 				D3934D932CB68FCB00BEFEB9 /* ContactsModel.swift in Sources */,
@@ -1768,7 +1810,6 @@
 				D37CA8F02C05E6BC000DE3C5 /* HomeAwaitingModel.swift in Sources */,
 				D363A7712DD3476C00D42A2F /* postBoxMoreSheet.swift in Sources */,
 				D38229752CC7AD0F00BB1235 /* LabelledMailsViewModel.swift in Sources */,
-				D374BE142C784B2400317058 /* HomeMenuViewModel.swift in Sources */,
 				D333A9852CEB612B00081062 /* ScheduleView.swift in Sources */,
 				D3A0489E2C7F0E5C0091B35A /* ReplyEmailView.swift in Sources */,
 				D3283ADE2C36BE0B00CA88FB /* SaveEmailToDraftsModel.swift in Sources */,
@@ -1777,6 +1818,7 @@
 				D33094212C00C6630016F32F /* SecurityAnswerModel.swift in Sources */,
 				7B0F7FC12BD7694200BE2F5A /* CreateAccountView.swift in Sources */,
 				D32A21AD2C22E0B700765A23 /* CreateNewFolderViewModel.swift in Sources */,
+				D3A8A15F2E00212E0046D36D /* AppBarElemenetsModelData.swift in Sources */,
 				7BCFC7522BDF87F600839D05 /* SecurityQuestionsView.swift in Sources */,
 				D36888F22CC66786002897EA /* StarredEmailViewModel.swift in Sources */,
 				7BC6DF462BD9077100F427B0 /* CustomProgressView.swift in Sources */,
@@ -1807,6 +1849,7 @@
 				7BCFC74B2BDF801500839D05 /* VerifyOTPModel.swift in Sources */,
 				D34AAD6E2C2A9474006C2507 /* BlueprintViewModel.swift in Sources */,
 				D392CF0F2C255EE300636ACC /* HomePlannerViewModel.swift in Sources */,
+				D3A8658F2E01428600F4E7C3 /* NotificationAppBarView.swift in Sources */,
 				D368BB332C21A38600AE2C7F /* HomeResidenceView.swift in Sources */,
 				D37614CB2D1415C700951686 /* tDoView.swift in Sources */,
 				D339CF7C2D352FF20069B9AB /* DateBookModel.swift in Sources */,
@@ -1817,6 +1860,7 @@
 				D34AAD6C2C2A941F006C2507 /* BlueprintView.swift in Sources */,
 				D363A76F2DD3206F00D42A2F /* MoreSheet.swift in Sources */,
 				D358658F2DAD317A00A1AEDA /* securityConsoleModelData.swift in Sources */,
+				D3A8A1612E0021580046D36D /* AppBarElementsViewModel.swift in Sources */,
 				D38241C72C13498B001CFF9E /* MailComposeView.swift in Sources */,
 				7BCFC7582BDF882500839D05 /* SecurityQuestionsModel.swift in Sources */,
 				D38241B62C13388D001CFF9E /* ScheduleEmailView.swift in Sources */,
@@ -1840,6 +1884,7 @@
 				D3E75B992CEF479C00038827 /* DiaryView.swift in Sources */,
 				D38F3BF72CC8CB70004FCB0C /* HomeDirectoryViewModel.swift in Sources */,
 				D38241BD2C1343D9001CFF9E /* ComposeEmailEncripted.swift in Sources */,
+				D3A8A1632E0021990046D36D /* SearchView.swift in Sources */,
 				D36963802DE5CFC90034F3E9 /* threeDotsModelData.swift in Sources */,
 				7BCFC74D2BDF803700839D05 /* VerifyOTPViewModel.swift in Sources */,
 				D398A6642CB557F80069CCD7 /* InfoView.swift in Sources */,
@@ -1848,7 +1893,6 @@
 				D38241BF2C13440A001CFF9E /* ComposeEmailEncriptedViewModel.swift in Sources */,
 				7B22B36B2BD6CC3300020111 /* ColorExtensions.swift in Sources */,
 				D30CE6402DB22F4D009B215F /* WebSocketManager.swift in Sources */,
-				D392CF152C25883D00636ACC /* PlannerDetailedView.swift in Sources */,
 				D3B75F652BFDCB09008DA18C /* SecurityAnswerView.swift in Sources */,
 				7BC5AD592BE0F1590017D67F /* ChangePasswordViewModel.swift in Sources */,
 				D38229732CC7ACB000BB1235 /* LabelledMailsModel.swift in Sources */,
@@ -2011,14 +2055,17 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Thapala/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Thapala;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app uses Camera ";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "This app needs permission to access photos";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need your permission to save files to your Photos library.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app needs permission to access photos Library";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIStatusBarHidden = NO;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2028,9 +2075,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.text.Thapala;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -2047,14 +2098,17 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Thapala/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Thapala;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app uses Camera ";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "This app needs permission to access photos";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need your permission to save files to your Photos library.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app needs permission to access photos Library";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIStatusBarHidden = NO;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2064,9 +2118,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.text.Thapala;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

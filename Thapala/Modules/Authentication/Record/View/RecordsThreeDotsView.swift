@@ -143,7 +143,8 @@ struct RecordsThreeDotsView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.leading, 10)
                         .onAppear {
-                            homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: folderName, SubFoldersType: subFolderName)
+                            print("three dpots view appears")
+//                            homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: folderName, SubFoldersType: subFolderName)
                             print("file link \(azureLink)")
                             Files = [FieldID(id: fieldIDs, azureFileName: azureName)]
                             if fieldIDs == 0 && azureName == "" {

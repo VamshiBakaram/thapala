@@ -10,7 +10,9 @@ struct HomeAwaitingView: View {
     @State private var isMenuVisible = false
     @StateObject private var homeAwaitingViewModel = HomeAwaitingViewModel()
     @StateObject var mailComposeViewModel = MailComposeViewModel()
+    @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
     @StateObject var themesviewModel = themesViewModel()
+    @Environment(\.presentationMode) var presentationMode
     @State private var isSheetVisible = false
     @State private var isMultiSelectionSheetVisible = false
     @State private var isMoveToFolder = false
@@ -23,11 +25,17 @@ struct HomeAwaitingView: View {
     let imageUrl: String
     @State private var conveyedView: Bool = false
     @State private var PostBoxView: Bool = false
-    @Environment(\.presentationMode) var presentationMode
     @State private var SnoozedView: Bool = false
+    @State private var AwaitingView: Bool = false
     @State private var beforeLongPress = true
     @State private var AppBar = true
     @State private var selectedCheck = false
+    @State private var iNotificationAppBarView = false
+    @State private var showEmptyText = false
+    @State private var isFullScreenPresented = false
+    @State private var selectedIndices: Set<Int> = []
+    @State private var isSelectAll = false
+    @State private var showingDeleteAlert = false
     var body: some View {
         GeometryReader{ reader in
             ZStack{
@@ -42,6 +50,7 @@ struct HomeAwaitingView: View {
                                     case .empty:
                                         ProgressView()
                                     case .success(let image):
+                                        
                                         image
                                             .resizable()
                                             .frame(width: 40, height: 40)
@@ -98,6 +107,7 @@ struct HomeAwaitingView: View {
                                 Spacer()
                                 Button(action: {
                                     print("search button pressed")
+                                    appBarElementsViewModel.isSearch = true
                                 }) {
                                     Image("magnifyingglass")
                                         .renderingMode(.template)
@@ -117,6 +127,7 @@ struct HomeAwaitingView: View {
                                  */
                                 Button(action: {
                                     print("bell button pressed")
+                                    iNotificationAppBarView = true
                                 }) {
                                     Image("bell")
                                         .renderingMode(.template)
@@ -138,7 +149,7 @@ struct HomeAwaitingView: View {
                                 .padding([.leading,.trailing],15)
                                 
                             }
-                            
+                            .padding(.top, -reader.size.height * 0.01)
                             //   ScrollView(.horizontal,showsIndicators: false){
                             HStack{
                                 RoundedRectangle(cornerRadius: 10)
@@ -149,10 +160,11 @@ struct HomeAwaitingView: View {
                                         print("Emailed clicked")
                                         print()
                                         print(reader.size.width/3 - 10)
+                                        homeAwaitingViewModel.getEmailsData()
                                         self.homeAwaitingViewModel.isEmailSelected = true
                                         self.homeAwaitingViewModel.isPrintSelected = false
                                         self.homeAwaitingViewModel.isOntlineSelected = false
-                                        homeAwaitingViewModel.getEmailsData()
+                                       
                                     }
                                     .overlay(
                                         Group{
@@ -203,6 +215,7 @@ struct HomeAwaitingView: View {
                                     .onTapGesture {
                                         self.homeAwaitingViewModel.selectedOption = .outline
                                         print("outline clicked")
+                                        
                                         self.homeAwaitingViewModel.isEmailSelected = false
                                         self.homeAwaitingViewModel.isPrintSelected = false
                                         self.homeAwaitingViewModel.isOntlineSelected = true
@@ -227,15 +240,13 @@ struct HomeAwaitingView: View {
                             .padding([.leading,.trailing],5)
                             //}
                         }
-                        .frame(height: 120)
+                        .frame(height: reader.size.height * 0.16)
                         .background(themesviewModel.currentTheme.colorPrimary)
                         
                         HStack{
                             if let selectedOption = homeAwaitingViewModel.selectedOption {
                                 switch selectedOption {
                                 case .email:
-                                    Spacer()
-                                    
                                     Text("")
                                 case .print:
                                     
@@ -243,121 +254,124 @@ struct HomeAwaitingView: View {
                                 case .outline:
                                     Spacer()
                                     
-                                    ScrollView(.horizontal, showsIndicators: false) {
-                                        HStack(spacing: 12) { // Adjust spacing as needed
-                                            RoundedRectangle(cornerRadius: 25)
-                                                .fill(self.homeAwaitingViewModel.isDraftsSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
-                                                .frame(width: 100, height: 50) // Add fixed width for consistent layout
-                                                .onTapGesture {
-                                                    self.homeAwaitingViewModel.outlineSelectedOption = .draft
-                                                    self.homeAwaitingViewModel.isDraftsSelected = true
-                                                    self.homeAwaitingViewModel.istDraftselected = false
-                                                    self.homeAwaitingViewModel.isScheduledSelected = false
-                                                    self.homeAwaitingViewModel.istLetersSelected = false
-                                                    self.homeAwaitingViewModel.istCardsSelected = false
-                                                    self.homeAwaitingViewModel.getDraftsData()
-                                                }
-                                                .overlay(
-                                                    Text("Drafts")
-                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                        .foregroundColor(self.homeAwaitingViewModel.isDraftsSelected ? themesviewModel.currentTheme.textColor : themesviewModel.currentTheme.inverseTextColor)
-                                                )
-                                            
-                                            RoundedRectangle(cornerRadius: 25)
-                                                .fill(self.homeAwaitingViewModel.istDraftselected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
-                                                .frame(width: 100, height: 50)
-                                                .onTapGesture {
-                                                    self.homeAwaitingViewModel.outlineSelectedOption = .tDraft
-                                                    self.homeAwaitingViewModel.isDraftsSelected = false
-                                                    self.homeAwaitingViewModel.istDraftselected = true
-                                                    self.homeAwaitingViewModel.isScheduledSelected = false
-                                                    self.homeAwaitingViewModel.istLetersSelected = false
-                                                    self.homeAwaitingViewModel.istCardsSelected = false
-                                                    self.homeAwaitingViewModel.getTDraftsData()
-                                                }
-                                                .overlay(
-                                                    Text("tDrafts")
-                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                        .foregroundColor(self.homeAwaitingViewModel.istDraftselected ? themesviewModel.currentTheme.textColor : themesviewModel.currentTheme.inverseTextColor)
-                                                )
-                                            
-                                            RoundedRectangle(cornerRadius: 25)
-                                                .fill(self.homeAwaitingViewModel.isScheduledSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
-                                                .frame(width: 100, height: 50)
-                                                .onTapGesture {
-                                                    self.homeAwaitingViewModel.outlineSelectedOption = .schedule
-                                                    self.homeAwaitingViewModel.isDraftsSelected = false
-                                                    self.homeAwaitingViewModel.istDraftselected = false
-                                                    self.homeAwaitingViewModel.isScheduledSelected = true
-                                                    self.homeAwaitingViewModel.istLetersSelected = false
-                                                    self.homeAwaitingViewModel.istCardsSelected = false
-                                                    self.homeAwaitingViewModel.getScheduleEmailsData()
-                                                }
-                                                .overlay(
-                                                    Text("Scheduled")
-                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                        .foregroundColor(self.homeAwaitingViewModel.isScheduledSelected ? themesviewModel.currentTheme.textColor : themesviewModel.currentTheme.inverseTextColor)
-                                                )
-                                            
-                                            RoundedRectangle(cornerRadius: 25)
-                                                .fill(self.homeAwaitingViewModel.istLetersSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
-                                                .frame(width: 100, height: 50)
-                                                .onTapGesture {
-                                                    self.homeAwaitingViewModel.outlineSelectedOption = .schedule
-                                                    self.homeAwaitingViewModel.isDraftsSelected = false
-                                                    self.homeAwaitingViewModel.istDraftselected = false
-                                                    self.homeAwaitingViewModel.isScheduledSelected = false
-                                                    self.homeAwaitingViewModel.istLetersSelected = true
-                                                    self.homeAwaitingViewModel.istCardsSelected = false
-                                                    self.homeAwaitingViewModel.getScheduleEmailsData()
-                                                }
-                                                .overlay(
-                                                    Text("tLetters")
-                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                        .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                                                )
-                                            
-                                            RoundedRectangle(cornerRadius: 25)
-                                                .fill(self.homeAwaitingViewModel.istCardsSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
-                                                .frame(width: 100, height: 50)
-                                                .onTapGesture {
-                                                    self.homeAwaitingViewModel.outlineSelectedOption = .schedule
-                                                    self.homeAwaitingViewModel.isDraftsSelected = false
-                                                    self.homeAwaitingViewModel.istDraftselected = false
-                                                    self.homeAwaitingViewModel.isScheduledSelected = false
-                                                    self.homeAwaitingViewModel.istLetersSelected = false
-                                                    self.homeAwaitingViewModel.istCardsSelected = true
-                                                    self.homeAwaitingViewModel.getScheduleEmailsData()
-                                                }
-                                                .overlay(
-                                                    Text("tCards")
-                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                        .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                                                )
+                                        ScrollView(.horizontal, showsIndicators: false) {
+                                            HStack(spacing: 12) { // Adjust spacing as needed
+                                                RoundedRectangle(cornerRadius: 25)
+                                                    .fill(self.homeAwaitingViewModel.isDraftsSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
+                                                    .frame(width: 100, height: 50) // Add fixed width for consistent layout
+                                                    .onTapGesture {
+                                                        self.homeAwaitingViewModel.outlineSelectedOption = .draft
+                                                        self.homeAwaitingViewModel.isDraftsSelected = true
+                                                        self.homeAwaitingViewModel.istDraftselected = false
+                                                        self.homeAwaitingViewModel.isScheduledSelected = false
+                                                        self.homeAwaitingViewModel.istLetersSelected = false
+                                                        self.homeAwaitingViewModel.istCardsSelected = false
+                                                        self.homeAwaitingViewModel.getDraftsData()
+                                                    }
+                                                    .overlay(
+                                                        Text("Drafts")
+                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                            .foregroundColor(self.homeAwaitingViewModel.isDraftsSelected ? themesviewModel.currentTheme.textColor : themesviewModel.currentTheme.inverseTextColor)
+                                                    )
+                                                
+                                                RoundedRectangle(cornerRadius: 25)
+                                                    .fill(self.homeAwaitingViewModel.istDraftselected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
+                                                    .frame(width: 100, height: 50)
+                                                    .onTapGesture {
+                                                        self.homeAwaitingViewModel.outlineSelectedOption = .tDraft
+                                                        self.homeAwaitingViewModel.isDraftsSelected = false
+                                                        self.homeAwaitingViewModel.istDraftselected = true
+                                                        self.homeAwaitingViewModel.isScheduledSelected = false
+                                                        self.homeAwaitingViewModel.istLetersSelected = false
+                                                        self.homeAwaitingViewModel.istCardsSelected = false
+                                                        self.homeAwaitingViewModel.getTDraftsData()
+                                                    }
+                                                    .overlay(
+                                                        Text("tDrafts")
+                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                            .foregroundColor(self.homeAwaitingViewModel.istDraftselected ? themesviewModel.currentTheme.textColor : themesviewModel.currentTheme.inverseTextColor)
+                                                    )
+                                                
+                                                RoundedRectangle(cornerRadius: 25)
+                                                    .fill(self.homeAwaitingViewModel.isScheduledSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
+                                                    .frame(width: 100, height: 50)
+                                                    .onTapGesture {
+                                                        self.homeAwaitingViewModel.outlineSelectedOption = .schedule
+                                                        self.homeAwaitingViewModel.isDraftsSelected = false
+                                                        self.homeAwaitingViewModel.istDraftselected = false
+                                                        self.homeAwaitingViewModel.isScheduledSelected = true
+                                                        self.homeAwaitingViewModel.istLetersSelected = false
+                                                        self.homeAwaitingViewModel.istCardsSelected = false
+                                                        self.homeAwaitingViewModel.getScheduleEmailsData()
+                                                    }
+                                                    .overlay(
+                                                        Text("Scheduled")
+                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                            .foregroundColor(self.homeAwaitingViewModel.isScheduledSelected ? themesviewModel.currentTheme.textColor : themesviewModel.currentTheme.inverseTextColor)
+                                                    )
+                                                
+                                                RoundedRectangle(cornerRadius: 25)
+                                                    .fill(self.homeAwaitingViewModel.istLetersSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
+                                                    .frame(width: 100, height: 50)
+                                                    .onTapGesture {
+                                                        self.homeAwaitingViewModel.outlineSelectedOption = .schedule
+                                                        self.homeAwaitingViewModel.isDraftsSelected = false
+                                                        self.homeAwaitingViewModel.istDraftselected = false
+                                                        self.homeAwaitingViewModel.isScheduledSelected = false
+                                                        self.homeAwaitingViewModel.istLetersSelected = true
+                                                        self.homeAwaitingViewModel.istCardsSelected = false
+                                                        self.homeAwaitingViewModel.getScheduleEmailsData()
+                                                    }
+                                                    .overlay(
+                                                        Text("tLetters")
+                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                            .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                                    )
+                                                
+                                                RoundedRectangle(cornerRadius: 25)
+                                                    .fill(self.homeAwaitingViewModel.istCardsSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
+                                                    .frame(width: 100, height: 50)
+                                                    .onTapGesture {
+                                                        self.homeAwaitingViewModel.outlineSelectedOption = .schedule
+                                                        self.homeAwaitingViewModel.isDraftsSelected = false
+                                                        self.homeAwaitingViewModel.istDraftselected = false
+                                                        self.homeAwaitingViewModel.isScheduledSelected = false
+                                                        self.homeAwaitingViewModel.istLetersSelected = false
+                                                        self.homeAwaitingViewModel.istCardsSelected = true
+                                                        self.homeAwaitingViewModel.getScheduleEmailsData()
+                                                    }
+                                                    .overlay(
+                                                        Text("tCards")
+                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                            .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                                    )
+                                            }
+                                            .padding(.horizontal)
                                         }
-                                        .padding(.horizontal)
-                                    }
-                                    .background(themesviewModel.currentTheme.tabBackground)
-                                    .cornerRadius(25)
+                                        .background(themesviewModel.currentTheme.tabBackground)
+                                        .cornerRadius(25)
                                     
                                 }
                             }
                         }
-                        .padding()
+                        .padding(.top , 5)
+                        Spacer()
                     }
                     else {
                         VStack{
                             HStack{
                                 Spacer()
-                                Text("\(2) Selected")
+                                Text("\(selectedIndices.count) Selected")
                                     .font(.custom(.poppinsRegular, size: 16))
                                     .foregroundColor(themesviewModel.currentTheme.iconColor)
                                 
                                 Spacer()
                                 
                                 Button {
+                                    print("cancel works")
                                     beforeLongPress = true
                                     AppBar = true
+                                    
                                 } label: {
                                     Text("Cancel")
                                         .foregroundColor(themesviewModel.currentTheme.iconColor)
@@ -365,16 +379,78 @@ struct HomeAwaitingView: View {
                                 .padding(.trailing,15)
                             }
                             
-                            HStack{
-                                Image("unchecked")
-                                    .renderingMode(.template)
-                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                            HStack {
                                 Text("Select All")
-                                    .font(.custom(.poppinsRegular, size: 14))
-                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                    .onTapGesture {
-                                       // selectAllEmails()
+                                    .font(.custom("Poppins-Bold", size: 16))
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .fontWeight(.bold)
+                                    .padding(.leading, 16)
+
+                                Button(action: {
+                                    print("select All clicked")
+                                    if homeAwaitingViewModel.isEmailSelected{
+                                        print("homeAwaitingViewModel.isEmailSelected")
+                                        if selectedIndices.count == homeAwaitingViewModel.emailData.count {
+                                            selectedIndices.removeAll()
+                                            isSelectAll = false
+                                            //                                        selectedMailID = Array(selectedIndices)
+                                        } else {
+                                            selectedIndices = Set(homeAwaitingViewModel.emailData.compactMap { $0.threadID })
+                                            isSelectAll = true
+                                            homeAwaitingViewModel.selectedThreadIDs = Array(selectedIndices)
+                                            //                                        homeAwaitingViewModel.selectedThreadIDs = Array(selectedIndices)
+                                            print("homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs )")
+                                        }
                                     }
+                                    
+                                    else if homeAwaitingViewModel.isDraftsSelected{
+                                        if selectedIndices.count == homeAwaitingViewModel.draftsData.count {
+                                            selectedIndices.removeAll()
+                                            isSelectAll = false
+                                            //                                        selectedMailID = Array(selectedIndices)
+                                        } else {
+                                            selectedIndices = Set(homeAwaitingViewModel.draftsData.compactMap { $0.threadID })
+                                            isSelectAll = true
+                                            homeAwaitingViewModel.selectedThreadIDs = Array(selectedIndices)
+                                            //                                        homeAwaitingViewModel.selectedThreadIDs = Array(selectedIndices)
+                                            print("homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs )")
+                                        }
+                                    }
+                                    else if homeAwaitingViewModel.istDraftselected{
+                                        if selectedIndices.count == homeAwaitingViewModel.tDraftsData.count {
+                                            selectedIndices.removeAll()
+                                            isSelectAll = false
+                                        } else {
+                                            selectedIndices = Set(homeAwaitingViewModel.tDraftsData.compactMap { $0.threadID })
+                                            isSelectAll = true
+                                            homeAwaitingViewModel.selectedThreadIDs = Array(selectedIndices)
+                                            print("homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs )")
+                                        }
+                                    }
+                                    
+                                    else if homeAwaitingViewModel.isScheduledSelected{
+                                        if selectedIndices.count == homeAwaitingViewModel.scheduleData.count {
+                                            selectedIndices.removeAll()
+                                            isSelectAll = false
+                                            //                                        selectedMailID = Array(selectedIndices)
+                                        } else {
+                                            selectedIndices = Set(homeAwaitingViewModel.scheduleData.compactMap { $0.threadID })
+                                            isSelectAll = true
+                                            homeAwaitingViewModel.selectedThreadIDs = Array(selectedIndices)
+                                            //                                        homeAwaitingViewModel.selectedThreadIDs = Array(selectedIndices)
+                                            print("homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs )")
+                                        }
+                                    }
+                                                                        
+                                }) {
+                                    Image(systemName: isSelectAll ? "checkmark.square.fill" : "square")
+                                        .resizable()
+                                        .frame(width: 20, height: 20)
+                                        .padding(.top, 1)
+                                        .padding(.trailing, 5)
+                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                }
+
                                 Spacer()
                             }
                             .padding(.leading,15)
@@ -385,23 +461,15 @@ struct HomeAwaitingView: View {
                         if let selectedOption = homeAwaitingViewModel.selectedOption {
                             switch selectedOption {
                             case .email:
-                                if homeAwaitingViewModel.emailData.count == 0{
-                                    Text("No Mails Found.")
-                                        .foregroundColor(themesviewModel.currentTheme.textColor)
-                                        .font(.custom(.poppinsMedium, size: 25, relativeTo: .title))
-                                }else{
+                                if homeAwaitingViewModel.isLoading {
+                                    CustomProgressView()
+                                }
+                                else if homeAwaitingViewModel.emailData.count != 0{
                                     VStack{
-                                        List($homeAwaitingViewModel.emailData) { $data in
-                                            HStack{
-                                                if data.isSelected{
-                                                    Image("select")
-                                                        .resizable()
-                                                        .frame(width: 24,height: 24)
-                                                        .padding([.trailing,.leading],5)
-                                                        .clipShape(Circle())
+                                        if beforeLongPress {
+                                            List($homeAwaitingViewModel.emailData) { $data in
+                                                HStack{
                                                     
-                                                }else{
-                                          
                                                     let image = data.senderProfile ?? "person"
                                                     AsyncImage(url: URL(string: image)) { phase in
                                                         switch phase {
@@ -423,87 +491,175 @@ struct HomeAwaitingView: View {
                                                             EmptyView()
                                                         }
                                                     }
-                                                }
-                                                
-                                                VStack(alignment: .leading){
-                                                    Text(firstName)
-                                                        .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
-                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                    Text(Subject)
-                                                        .font(.custom(.poppinsRegular, size: 14,relativeTo: .title))
-                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                        .lineLimit(1)
-                                                }
-                                                Spacer()
-                                                VStack(alignment: .trailing) {
-                                                    if let unixTimestamp = data.sentAt, let istDateStringFromTimestamp = convertToIST(dateInput: unixTimestamp) {
-                                                        Text(istDateStringFromTimestamp)
-                                                            .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
-                                                            .fontWeight(.bold)
+                                                    
+                                                    
+                                                    VStack(alignment: .leading){
+                                                        Text(data.firstname ?? "")
+                                                            .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
                                                             .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                                    .padding(.top, 0) // Adds 5 points of padding from the top
-                                                                    .frame(maxWidth: .infinity, alignment: .topTrailing)
+                                                        Text(data.subject ?? "")
+                                                            .font(.custom(.poppinsRegular, size: 14,relativeTo: .title))
+                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                            .lineLimit(1)
                                                     }
-                                                    Image(data.starred == 1 ? "star" : "emptystar")
-                                                        .resizable()
-                                                        .frame(width: 14, height: 14)
-                                                        .foregroundColor(Color.red)
-                                                        .onTapGesture {
-                                                            if let threadID = data.threadID,
-                                                               let index = homeAwaitingViewModel.emailData.firstIndex(where: { $0.threadID == threadID }) {
-                                                                print("thread id:", threadID)
-                                                                // Toggle the 'starred' status between 1 and 0
-                                                                homeAwaitingViewModel.emailData[index].starred = (homeAwaitingViewModel.emailData[index].starred == 1) ? 0 : 1
-                                                                homeAwaitingViewModel.getStarredEmail(selectedEmail: threadID)
-                                                            } else {
-                                                                print("threadID is nil")
+                                                    Spacer()
+                                                    VStack(alignment: .trailing) {
+                                                        if let unixTimestamp = data.sentAt, let istDateStringFromTimestamp = convertToIST(dateInput: unixTimestamp) {
+                                                            Text(istDateStringFromTimestamp)
+                                                                .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
+                                                                .fontWeight(.bold)
+                                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                .padding(.top, 0) // Adds 5 points of padding from the top
+                                                                .frame(maxWidth: .infinity, alignment: .topTrailing)
+                                                        }
+                                                        Image(data.starred == 1 ? "star" : "emptystar")
+                                                            .resizable()
+                                                            .frame(width: 14, height: 14)
+                                                            .foregroundColor(Color.red)
+                                                            .onTapGesture {
+                                                                if let threadID = data.threadID,
+                                                                   let index = homeAwaitingViewModel.emailData.firstIndex(where: { $0.threadID == threadID }) {
+                                                                    print("thread id:", threadID)
+                                                                    // Toggle the 'starred' status between 1 and 0
+                                                                    homeAwaitingViewModel.emailData[index].starred = (homeAwaitingViewModel.emailData[index].starred == 1) ? 0 : 1
+                                                                    homeAwaitingViewModel.getStarredEmail(selectedEmail: threadID)
+                                                                } else {
+                                                                    print("threadID is nil")
+                                                                }
+                                                            }
+                                                    }
+                                                    .frame(height: 34)
+                                                }
+                                                .padding(.top , 10)
+                                                .listRowBackground(themesviewModel.currentTheme.windowBackground)
+                                                .onTapGesture {
+                                                    if homeAwaitingViewModel.beforeLongPress {
+                                                        homeAwaitingViewModel.selectedID = data.threadID
+                                                        homeAwaitingViewModel.passwordHint = data.passwordHint
+                                                        homeAwaitingViewModel.isEmailScreen = true
+                                                        AwaitingView = true
+                                                        beforeLongPress = false
+                                                        homeAwaitingViewModel.beforeLongPress = false
+                                                        AppBar = false
+                                                        print("selectedCheck \(selectedCheck)")
+                                                    }
+                                                }
+                                                .gesture(
+                                                    LongPressGesture(minimumDuration: 1.0)
+                                                        .onEnded { _ in
+                                                            withAnimation {
+                                                                beforeLongPress = false
+                                                                homeAwaitingViewModel.beforeLongPress = false
+                                                                AppBar = false
+                                                                print("selectedCheck \(selectedCheck)")
                                                             }
                                                         }
-                                                }
-                                                    .frame(height: 34)
-                                            }
-                                            .listRowBackground(themesviewModel.currentTheme.windowBackground)
-                                            .onTapGesture {
-                                                if homeAwaitingViewModel.beforeLongPress {
-                                                    homeAwaitingViewModel.selectedID = data.threadID
-                                                    homeAwaitingViewModel.passwordHint = data.passwordHint
-                                                    homeAwaitingViewModel.isEmailScreen = true
-                                                } else {
-                                                    selectEmail(data: data)
-                                                }
-                                            }
-                                            .gesture(
-                                                LongPressGesture(minimumDuration: 1.0)
-                                                    .onEnded { _ in
-                                                        withAnimation {
-                                                            homeAwaitingViewModel.beforeLongPress = false
-                                                            selectEmail(data: data)
-                                                        }
+                                                )
+                                                .swipeActions(edge: .leading) {
+                                                    Button {
+                                                        print("Deleting row")
+                                                        homeAwaitingViewModel.selectedThreadIDs.append(data.threadID ?? 0)
+                                                        homeAwaitingViewModel.deleteEmailFromAwaiting()
+                                                    } label: {
+                                                        deleteIcon
+                                                            .foregroundStyle(.white)
                                                     }
-                                            )
-                                            .swipeActions(edge: .leading) {
-                                                Button {
-                                                    print("Deleting row")
-                                                    homeAwaitingViewModel.selectedThreadIDs.append(data.threadID ?? 0)
-                                                    homeAwaitingViewModel.deleteEmailFromAwaiting()
-                                                } label: {
-                                                    deleteIcon
-                                                        .foregroundStyle(.white)
+                                                    .tint(Color.themeColor)
                                                 }
-                                                .tint(Color.themeColor)
-                                            }
-                                            .swipeActions(edge: .trailing) {
-                                                Button {
-                                                    isSheetVisible = true
-                                                } label: {
-                                                    moreIcon
-                                                        .foregroundStyle(.white)
+                                                .swipeActions(edge: .trailing) {
+                                                    Button {
+                                                        isSheetVisible = true
+                                                    } label: {
+                                                        moreIcon
+                                                            .foregroundStyle(.white)
+                                                    }
+                                                    .tint(Color(red:255/255, green: 128/255, blue: 128/255))
                                                 }
-                                                .tint(Color(red:255/255, green: 128/255, blue: 128/255))
                                             }
+                                            .listStyle(PlainListStyle())
+                                            .scrollContentBackground(.hidden)
                                         }
-                                        .listStyle(PlainListStyle())
-                                        .scrollContentBackground(.hidden)
+                                        
+                                        else {
+                                            List($homeAwaitingViewModel.emailData) { $data in
+                                                HStack{
+                                                    Button(action: {
+                                                        print("selected check image")
+                                                        if let threadId = data.threadID {
+                                                            if selectedIndices.contains(threadId) {
+                                                                selectedIndices.remove(threadId)
+                                                            } else {
+                                                                selectedIndices.insert(threadId)
+                                                                print("selected threadId \(threadId)")
+                                                                homeAwaitingViewModel.selectedThreadIDs = [threadId]
+                                                                print("single check homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs)")
+                                                            }
+                                                            isSelectAll = selectedIndices.count == homeAwaitingViewModel.emailData.count
+                                                        }
+                                                    }) {
+                                                        Image(selectedIndices.contains(data.threadID ?? -1) ?  "selected" : "contactW")
+                                                            .resizable()
+                                                            .renderingMode(.template)
+                                                            .scaledToFill()
+                                                            .frame(width: 30, height: 30)
+                                                            .background(themesviewModel.currentTheme.colorAccent)
+                                                            .clipShape(Circle())
+                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                            .padding(.leading, 10)
+                                                            .contentShape(Rectangle())
+                                                    }
+                                                    
+                                                    VStack(alignment: .leading){
+                                                        Text(data.firstname ?? "")
+                                                            .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                        Text(data.subject ?? "")
+                                                            .font(.custom(.poppinsRegular, size: 14,relativeTo: .title))
+                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                            .lineLimit(1)
+                                                    }
+                                                    Spacer()
+                                                    VStack(alignment: .trailing) {
+                                                        if let unixTimestamp = data.sentAt, let istDateStringFromTimestamp = convertToIST(dateInput: unixTimestamp) {
+                                                            Text(istDateStringFromTimestamp)
+                                                                .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
+                                                                .fontWeight(.bold)
+                                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                .padding(.top, 0) // Adds 5 points of padding from the top
+                                                                .frame(maxWidth: .infinity, alignment: .topTrailing)
+                                                        }
+                                                        Image(data.starred == 1 ? "star" : "emptystar")
+                                                            .resizable()
+                                                            .frame(width: 14, height: 14)
+                                                            .foregroundColor(Color.red)
+                                                            .onTapGesture {
+                                                                if let threadID = data.threadID,
+                                                                   let index = homeAwaitingViewModel.emailData.firstIndex(where: { $0.threadID == threadID }) {
+                                                                    print("thread id:", threadID)
+                                                                    // Toggle the 'starred' status between 1 and 0
+                                                                    homeAwaitingViewModel.emailData[index].starred = (homeAwaitingViewModel.emailData[index].starred == 1) ? 0 : 1
+                                                                    homeAwaitingViewModel.getStarredEmail(selectedEmail: threadID)
+                                                                } else {
+                                                                    print("threadID is nil")
+                                                                }
+                                                            }
+                                                    }
+                                                    .frame(height: 34)
+                                                }
+                                                .padding(.top , 10)
+                                                .listRowBackground(themesviewModel.currentTheme.windowBackground)
+                                            }
+                                            .listStyle(PlainListStyle())
+                                            .scrollContentBackground(.hidden)
+                                        }
+                                    }
+                                    
+                                }
+                                else {
+                                    if showEmptyText {
+                                        Text("No Mails Found.")
+                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                            .font(.custom(.poppinsMedium, size: 25, relativeTo: .title))
                                     }
                                 }
                             case .print:
@@ -525,9 +681,12 @@ struct HomeAwaitingView: View {
                                         CustomProgressView()
                                     }
                                     else if homeAwaitingViewModel.draftsData.count == 0{
-                                        Text("No Mails Found.")
-                                            .font(.custom(.poppinsMedium, size: 25, relativeTo: .title))
-                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                        VStack {
+                                            Text("No Mails Found.")
+                                                .font(.custom(.poppinsMedium, size: 25, relativeTo: .title))
+                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                            Spacer()
+                                        }
                                     }else {
                                         if beforeLongPress {
                                             VStack{
@@ -578,7 +737,11 @@ struct HomeAwaitingView: View {
                                                         if homeAwaitingViewModel.beforeLongPress {
                                                             homeAwaitingViewModel.selectedID = draftData.threadID
                                                             homeAwaitingViewModel.passwordHint = draftData.passwordHint
+                                                            print("before isdraftemail true  \(homeAwaitingViewModel.isdraftEmail)")
                                                             homeAwaitingViewModel.isdraftEmail = true
+                                                            print("before AwaitingView \(AwaitingView)")
+                                                            print("After AwaitingView \(AwaitingView)")
+                                                            print("After isdraftemail true  \(homeAwaitingViewModel.isdraftEmail)")
                                                         }
                                                     }
                                                     .gesture(
@@ -586,6 +749,7 @@ struct HomeAwaitingView: View {
                                                             .onEnded { _ in
                                                                 withAnimation {
                                                                     beforeLongPress = false
+                                                                    homeAwaitingViewModel.beforeLongPress = false
                                                                     AppBar = false
                                                                     print("selectedCheck \(selectedCheck)")
                                                                 }
@@ -600,19 +764,37 @@ struct HomeAwaitingView: View {
                                                 .scrollContentBackground(.hidden)
                                             }
                                         }
+                                        
                                         else {
                                             VStack{
-                                                List($homeAwaitingViewModel.draftsData,id: \.self) { $draftData in
+                                                List($homeAwaitingViewModel.draftsData,id: \.threadID) { $draftData in
                                                     HStack{
-                                                        Image(selectedCheck ? "Check" : "unchecked")
-                                                            .renderingMode(.template)
-                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                            .padding([.trailing,.leading],5)
-                                                            .frame(width: 34,height: 34)
-                                                            .clipShape(Circle())
-                                                            .onTapGesture{
-                                                                selectedCheck = true
+                                                        Button(action: {
+                                                            print("selected check image")
+                                                            if let threadId = draftData.threadID {
+                                                                if selectedIndices.contains(threadId) {
+                                                                    selectedIndices.remove(threadId)
+                                                                } else {
+                                                                    selectedIndices.insert(threadId)
+                                                                    print("selected threadId \(threadId)")
+                                                                    homeAwaitingViewModel.selectedThreadIDs = [threadId]
+                                                                    print("single check homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs)")
+                                                                }
+                                                                isSelectAll = selectedIndices.count == homeAwaitingViewModel.draftsData.count
                                                             }
+                                                        }) {
+                                                            Image(selectedIndices.contains(draftData.threadID ?? -1) ?  "selected" : "contactW")
+                                                                .resizable()
+                                                                .renderingMode(.template)
+                                                                .scaledToFill()
+                                                                .frame(width: 30, height: 30)
+                                                                .background(themesviewModel.currentTheme.colorAccent)
+                                                                .clipShape(Circle())
+                                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                                .padding(.leading, 10)
+                                                                .contentShape(Rectangle())
+                                                        }
+                                                        
                                                         HStack {
                                                             VStack(alignment: .leading){
                                                                 if draftData.status?.rawValue ?? "" == "draft"{
@@ -644,19 +826,25 @@ struct HomeAwaitingView: View {
                                                         }
                                                     }
                                                     .listRowBackground(themesviewModel.currentTheme.windowBackground)
-                                                    .onTapGesture {
-                                                        if homeAwaitingViewModel.beforeLongPress {
-                                                            homeAwaitingViewModel.selectedID = draftData.threadID
-                                                            homeAwaitingViewModel.passwordHint = draftData.passwordHint
-                                                        }
-                                                    }
-                                                }
-                                                .refreshable{
-                                                    homeAwaitingViewModel.getDraftsData()
                                                 }
                                                 
                                                 .listStyle(PlainListStyle())
                                                 .scrollContentBackground(.hidden)
+                                                
+                                                HStack{
+                                                    Button(action: {
+                                                        print("delete clicked")
+                                                        showingDeleteAlert = true
+                                                    }){
+                                                        Image("delete")
+                                                            .renderingMode(.template)
+                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                            .frame(width: 30 , height: 30)
+                                                            .padding(.leading ,20 )
+                                                    }
+                                                    Spacer()
+                                                }
+                                                .background(themesviewModel.currentTheme.colorPrimary)
                                             }
                                         }
                                     }
@@ -666,198 +854,433 @@ struct HomeAwaitingView: View {
                                         CustomProgressView()
                                     }
                                     else if homeAwaitingViewModel.tDraftsData.count == 0{
-                                        Text("No Mails Found.")
-                                            .font(.custom(.poppinsMedium, size: 25, relativeTo: .title))
-                                            .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                        VStack {
+                                            Text("No Mails Found.")
+                                                .font(.custom(.poppinsMedium, size: 25, relativeTo: .title))
+                                                .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                            Spacer()
+                                        }
                                     }else{
                                         VStack{
-                                            List($homeAwaitingViewModel.tDraftsData,id: \.self) { $tdraftData in
-                                                HStack{
-                                                    Image("unchecked")
-                                                        .renderingMode(.template)
-                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                        .padding([.trailing,.leading],5)
-                                                        .frame(width: 34,height: 34)
-                                                        .clipShape(Circle())
-                                                       
-                                                    VStack(alignment: .leading){
-                                                        if tdraftData.status?.rawValue ?? "" == "draft"{
-                                                            if let recipient = tdraftData.recipients.first(where: { $0.type == "to" }) {
-                                                                Text(recipient.user.firstname ?? "")
-                                                                    .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
-                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                                    .onTapGesture {
-                                                                        print("recipient.user.firstname \(recipient.user.firstname ?? "")")
-                                                                    }
-                                                            }
-
-                                                            else {
-                                                                Text("(no recipient)")
-                                                                    .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
-                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                            }
-                                                        }
-                                                        HStack {
-                                                            if let subject = tdraftData.subject, !subject.isEmpty,
-                                                               let body = tdraftData.body, !body.isEmpty {
-                                                                Text(subject)
-                                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                                    .lineLimit(1)
+                                            if beforeLongPress {
+                                                List($homeAwaitingViewModel.tDraftsData,id: \.self) { $tdraftData in
+                                                    HStack{
+                                                        Image("unchecked")
+                                                            .renderingMode(.template)
+                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                            .padding([.trailing,.leading],5)
+                                                            .frame(width: 34,height: 34)
+                                                            .clipShape(Circle())
+                                                        
+                                                        VStack(alignment: .leading){
+                                                            if tdraftData.status?.rawValue ?? "" == "draft"{
+                                                                if let recipient = tdraftData.recipients.first(where: { $0.type == "to" }) {
+                                                                    Text(recipient.user.firstname ?? "")
+                                                                        .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .onTapGesture {
+                                                                            print("recipient.user.firstname \(recipient.user.firstname ?? "")")
+                                                                        }
+                                                                }
                                                                 
-                                                                Text("- \(body)")
-                                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                                    .lineLimit(1)
-                                                            } else if let subject = tdraftData.subject, !subject.isEmpty {
-                                                                Text(subject)
-                                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                                    .lineLimit(1)
-                                                            } else if let body = tdraftData.body, !body.isEmpty {
-                                                                Text("- \(body)")
-                                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                                    .lineLimit(1)
-                                                            } else {
-                                                                Text("No subject")
-                                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                else {
+                                                                    Text("(no recipient)")
+                                                                        .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                }
                                                             }
+                                                            HStack {
+                                                                if let subject = tdraftData.subject, !subject.isEmpty,
+                                                                   let body = tdraftData.body, !body.isEmpty {
+                                                                    Text(subject)
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .lineLimit(1)
+                                                                    
+                                                                    Text("- \(body)")
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .lineLimit(1)
+                                                                } else if let subject = tdraftData.subject, !subject.isEmpty {
+                                                                    Text(subject)
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .lineLimit(1)
+                                                                } else if let body = tdraftData.body, !body.isEmpty {
+                                                                    Text("- \(body)")
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .lineLimit(1)
+                                                                } else {
+                                                                    Text("No subject")
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                }
+                                                            }
+                                                            
+                                                            
+                                                        }
+                                                        Spacer()
+                                                        let unixTimestamp = tdraftData.createdAt ?? ""
+                                                        if let istDateStringFromISO = convertToIST(dateInput: unixTimestamp) {
+                                                            Text(istDateStringFromISO)
+                                                                .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
+                                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                .padding(.top, 0) // Adds 5 points of padding from the top
+                                                                .frame(maxWidth: .infinity, alignment: .topTrailing)
+                                                        }
+                                                    }
+                                                    .listRowBackground(themesviewModel.currentTheme.windowBackground)
+                                                    .onTapGesture {
+                                                        if homeAwaitingViewModel.beforeLongPress {
+                                                            homeAwaitingViewModel.selectedID = tdraftData.threadID
+                                                            homeAwaitingViewModel.passwordHint = tdraftData.passwordHint
+                                                            homeAwaitingViewModel.isEmailScreen = true
+                                                        }
+                                                    }
+                                                    .gesture(
+                                                        LongPressGesture(minimumDuration: 1.0)
+                                                            .onEnded { _ in
+                                                                withAnimation {
+                                                                    beforeLongPress = false
+                                                                }
+                                                            }
+                                                    )
+                                                }
+                                                .listStyle(PlainListStyle())
+                                                .scrollContentBackground(.hidden)
+                                            }
+                                            
+                                            
+                                            else {
+                                                List($homeAwaitingViewModel.tDraftsData,id: \.self) { $tdraftData in
+                                                    HStack{
+                                                        Button(action: {
+                                                            print("selected check image")
+                                                            if let threadId = tdraftData.threadID {
+                                                                if selectedIndices.contains(threadId) {
+                                                                    selectedIndices.remove(threadId)
+                                                                } else {
+                                                                    selectedIndices.insert(threadId)
+                                                                    print("selected threadId \(threadId)")
+                                                                    homeAwaitingViewModel.selectedThreadIDs = [threadId]
+                                                                    print("single check homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs)")
+                                                                }
+                                                                isSelectAll = selectedIndices.count == homeAwaitingViewModel.tDraftsData.count
+                                                            }
+                                                        }) {
+                                                            Image(selectedIndices.contains(tdraftData.threadID ?? -1) ?  "selected" : "contactW")
+                                                                .resizable()
+                                                                .renderingMode(.template)
+                                                                .scaledToFill()
+                                                                .frame(width: 30, height: 30)
+                                                                .background(themesviewModel.currentTheme.colorAccent)
+                                                                .clipShape(Circle())
+                                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                                .padding(.leading, 10)
+                                                                .contentShape(Rectangle())
                                                         }
 
                                                         
+                                                        VStack(alignment: .leading){
+                                                            if tdraftData.status?.rawValue ?? "" == "draft"{
+                                                                if let recipient = tdraftData.recipients.first(where: { $0.type == "to" }) {
+                                                                    Text(recipient.user.firstname ?? "")
+                                                                        .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .onTapGesture {
+                                                                            print("recipient.user.firstname \(recipient.user.firstname ?? "")")
+                                                                        }
+                                                                }
+                                                                
+                                                                else {
+                                                                    Text("(no recipient)")
+                                                                        .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                }
+                                                            }
+                                                            HStack {
+                                                                if let subject = tdraftData.subject, !subject.isEmpty,
+                                                                   let body = tdraftData.body, !body.isEmpty {
+                                                                    Text(subject)
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .lineLimit(1)
+                                                                    
+                                                                    Text("- \(body)")
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .lineLimit(1)
+                                                                } else if let subject = tdraftData.subject, !subject.isEmpty {
+                                                                    Text(subject)
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .lineLimit(1)
+                                                                } else if let body = tdraftData.body, !body.isEmpty {
+                                                                    Text("- \(body)")
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .lineLimit(1)
+                                                                } else {
+                                                                    Text("No subject")
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                }
+                                                            }
+                                                            
+                                                            
+                                                        }
+                                                        Spacer()
+                                                        let unixTimestamp = tdraftData.createdAt ?? ""
+                                                        if let istDateStringFromISO = convertToIST(dateInput: unixTimestamp) {
+                                                            Text(istDateStringFromISO)
+                                                                .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
+                                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                .padding(.top, 0) // Adds 5 points of padding from the top
+                                                                .frame(maxWidth: .infinity, alignment: .topTrailing)
+                                                        }
+                                                    }
+                                                    .listRowBackground(themesviewModel.currentTheme.windowBackground)
+                                                }
+                                                .listStyle(PlainListStyle())
+                                                .scrollContentBackground(.hidden)
+                                                
+                                                HStack{
+                                                    Button(action: {
+                                                        print("delete clicked")
+                                                        showingDeleteAlert = true
+                                                    }){
+                                                        Image("delete")
+                                                            .renderingMode(.template)
+                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                            .frame(width: 30 , height: 30)
+                                                            .padding(.leading ,20 )
                                                     }
                                                     Spacer()
-                                                    let unixTimestamp = tdraftData.createdAt ?? ""
-                                                    if let istDateStringFromISO = convertToIST(dateInput: unixTimestamp) {
-                                                        Text(istDateStringFromISO)
-                                                            .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
-                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                                    .padding(.top, 0) // Adds 5 points of padding from the top
-                                                                    .frame(maxWidth: .infinity, alignment: .topTrailing)
-                                                    }
                                                 }
-                                                .listRowBackground(themesviewModel.currentTheme.windowBackground)
-                                                .onTapGesture {
-                                                    if homeAwaitingViewModel.beforeLongPress {
-                                                        homeAwaitingViewModel.selectedID = tdraftData.threadID
-                                                        homeAwaitingViewModel.passwordHint = tdraftData.passwordHint
-                                                        homeAwaitingViewModel.isdraftEmail = true
-                                                    }
-                                                }
-                                                .gesture(
-                                                    LongPressGesture(minimumDuration: 1.0)
-                                                        .onEnded { _ in
-                                                            withAnimation {
-                                                                beforeLongPress = false
-                                                            }
-                                                        }
-                                                )
-                                                
+                                                .background(themesviewModel.currentTheme.colorPrimary)
                                             }
-                                            .listStyle(PlainListStyle())
-                                            .scrollContentBackground(.hidden)
                                             
                                         }
                                     }
-                                }else if homeAwaitingViewModel.isScheduledSelected{
+                                }
+                                
+                                else if homeAwaitingViewModel.isScheduledSelected{
                                     if homeAwaitingViewModel.isLoading {
                                         CustomProgressView()
                                     }
                                     else if homeAwaitingViewModel.scheduleData.count == 0{
-                                        Text("No Mails Found.")
-                                            .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                                            .font(.custom(.poppinsMedium, size: 25, relativeTo: .title))
+                                        VStack {
+                                            Text("No Mails Found.")
+                                                .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                                .font(.custom(.poppinsMedium, size: 25, relativeTo: .title))
+                                            Spacer()
+                                        }
                                     }else{
                                         VStack{
-                                            List($homeAwaitingViewModel.scheduleData,id: \.self) { $scheduleddata in
-                                                HStack{
-                                                    Image("unchecked")
-                                                        .renderingMode(.template)
-                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                        .padding([.trailing,.leading],5)
-                                                        .frame(width: 34,height: 34)
-                                                        .clipShape(Circle())
-                                                    VStack(alignment: .leading){
-                                                        if scheduleddata.status?.rawValue ?? "" == "scheduled"{
-                                                            if let recipient = scheduleddata.recipients.first(where: { $0.type == "to" }) {
-                                                                Text(recipient.user.firstname ?? "")
-                                                                    .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
-                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                                    .onTapGesture {
-                                                                        print("recipient.user.firstname \(recipient.user.firstname ?? "")")
-                                                                    }
-                                                            }
-
-                                                            else {
-                                                                Text("(no recipient)")
-                                                                    .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
-                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                            }
-                                                        }
-                                                        HStack {
-                                                            if let subject = scheduleddata.subject, !subject.isEmpty,
-                                                               let body = scheduleddata.body, !body.isEmpty {
-                                                                Text(subject)
-                                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                                    .lineLimit(1)
+                                            if beforeLongPress {
+                                                List($homeAwaitingViewModel.scheduleData,id: \.self) { $scheduleddata in
+                                                    HStack{
+                                                        Image("unchecked")
+                                                            .renderingMode(.template)
+                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                            .padding([.trailing,.leading],5)
+                                                            .frame(width: 34,height: 34)
+                                                            .clipShape(Circle())
+                                                        VStack(alignment: .leading){
+                                                            if scheduleddata.status?.rawValue ?? "" == "scheduled"{
+                                                                if let recipient = scheduleddata.recipients.first(where: { $0.type == "to" }) {
+                                                                    Text(recipient.user.firstname ?? "")
+                                                                        .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .onTapGesture {
+                                                                            print("recipient.user.firstname \(recipient.user.firstname ?? "")")
+                                                                        }
+                                                                }
                                                                 
-                                                                Text("- \(body)")
-                                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                                    .lineLimit(1)
-                                                            } else if let subject = scheduleddata.subject, !subject.isEmpty {
-                                                                Text(subject)
-                                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                                    .lineLimit(1)
-                                                            } else if let body = scheduleddata.body, !body.isEmpty {
-                                                                Text("- \(body)")
-                                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                                    .lineLimit(1)
-                                                            } else {
-                                                                Text("No subject")
-                                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                else {
+                                                                    Text("(no recipient)")
+                                                                        .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                }
                                                             }
+                                                            HStack {
+                                                                if let subject = scheduleddata.subject, !subject.isEmpty,
+                                                                   let body = scheduleddata.body, !body.isEmpty {
+                                                                    Text(subject)
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .lineLimit(1)
+                                                                    
+                                                                    Text("- \(body)")
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .lineLimit(1)
+                                                                } else if let subject = scheduleddata.subject, !subject.isEmpty {
+                                                                    Text(subject)
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .lineLimit(1)
+                                                                } else if let body = scheduleddata.body, !body.isEmpty {
+                                                                    Text("- \(body)")
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .lineLimit(1)
+                                                                } else {
+                                                                    Text("No subject")
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                }
+                                                            }
+                                                            
+                                                            
                                                         }
-
+                                                        Spacer()
+                                                        if let unixTimestamp = scheduleddata.scheduledTime,
+                                                           let istDateStringFromISO = convertToIST(dateInput: unixTimestamp) {
+                                                            Text(istDateStringFromISO)
+                                                                .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
+                                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                .padding(.top, 0)
+                                                                .frame(maxWidth: .infinity, alignment: .topTrailing)
+                                                        }
                                                         
                                                     }
-                                                    Spacer()
-                                                    if let unixTimestamp = scheduleddata.scheduledTime,
-                                                       let istDateStringFromISO = convertToIST(dateInput: unixTimestamp) {
-                                                        Text(istDateStringFromISO)
-                                                            .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
-                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                            .padding(.top, 0)
-                                                            .frame(maxWidth: .infinity, alignment: .topTrailing)
-                                                    }
-
-                                                }
-                                                .listRowBackground(themesviewModel.currentTheme.windowBackground)
-                                                .onTapGesture {
-                                                    if homeAwaitingViewModel.beforeLongPress {
-                                                        homeAwaitingViewModel.selectedID = scheduleddata.threadID
-                                                        homeAwaitingViewModel.passwordHint = scheduleddata.passwordHint
-                                                        homeAwaitingViewModel.isScheduleEmail = true
-                                                    }
-                                                }
-                                                .gesture(
-                                                    LongPressGesture(minimumDuration: 1.0)
-                                                        .onEnded { _ in
-                                                            withAnimation {
-                                                                beforeLongPress = false
-                                                            }
+                                                    .listRowBackground(themesviewModel.currentTheme.windowBackground)
+                                                    .onTapGesture {
+                                                        if homeAwaitingViewModel.beforeLongPress {
+                                                            homeAwaitingViewModel.selectedID = scheduleddata.threadID
+                                                            homeAwaitingViewModel.passwordHint = scheduleddata.passwordHint
+                                                            homeAwaitingViewModel.isScheduleEmail = true
                                                         }
-                                                )
-                                                
+                                                    }
+                                                    .gesture(
+                                                        LongPressGesture(minimumDuration: 1.0)
+                                                            .onEnded { _ in
+                                                                withAnimation {
+                                                                    beforeLongPress = false
+                                                                    homeAwaitingViewModel.beforeLongPress = false
+                                                                    AppBar = false
+                                                                }
+                                                            }
+                                                    )
+                                                    
+                                                }
+                                                .listStyle(PlainListStyle())
+                                                .scrollContentBackground(.hidden)
                                             }
-                                            .listStyle(PlainListStyle())
-                                            .scrollContentBackground(.hidden)
+                                            
+                                            else {
+                                                List($homeAwaitingViewModel.scheduleData,id: \.self) { $scheduleddata in
+                                                    HStack{
+                                                        Button(action: {
+                                                            
+                                                            print("selected check image")
+                                                            if let threadId = scheduleddata.threadID {
+                                                                if selectedIndices.contains(threadId) {
+                                                                    selectedIndices.remove(threadId)
+                                                                } else {
+                                                                    selectedIndices.insert(threadId)
+                                                                    print("selected threadId \(threadId)")
+                                                                    homeAwaitingViewModel.selectedThreadIDs = [threadId]
+                                                                    print("single check homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs)")
+                                                                }
+                                                                isSelectAll = selectedIndices.count == homeAwaitingViewModel.draftsData.count
+                                                            }
+                                                        }) {
+                                                            Image(selectedIndices.contains(scheduleddata.threadID ?? -1) ?  "selected" : "contactW")
+                                                                .resizable()
+                                                                .renderingMode(.template)
+                                                                .scaledToFill()
+                                                                .frame(width: 30, height: 30)
+                                                                .background(themesviewModel.currentTheme.colorAccent)
+                                                                .clipShape(Circle())
+                                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                                .padding(.leading, 10)
+                                                                .contentShape(Rectangle())
+                                                        }
+                                                        
+                                                        
+                                                        VStack(alignment: .leading){
+                                                            if scheduleddata.status?.rawValue ?? "" == "scheduled"{
+                                                                if let recipient = scheduleddata.recipients.first(where: { $0.type == "to" }) {
+                                                                    Text(recipient.user.firstname ?? "")
+                                                                        .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .onTapGesture {
+                                                                            print("recipient.user.firstname \(recipient.user.firstname ?? "")")
+                                                                        }
+                                                                }
+                                                                
+                                                                else {
+                                                                    Text("(no recipient)")
+                                                                        .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                }
+                                                            }
+                                                            HStack {
+                                                                if let subject = scheduleddata.subject, !subject.isEmpty,
+                                                                   let body = scheduleddata.body, !body.isEmpty {
+                                                                    Text(subject)
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .lineLimit(1)
+                                                                    
+                                                                    Text("- \(body)")
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .lineLimit(1)
+                                                                } else if let subject = scheduleddata.subject, !subject.isEmpty {
+                                                                    Text(subject)
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .lineLimit(1)
+                                                                } else if let body = scheduleddata.body, !body.isEmpty {
+                                                                    Text("- \(body)")
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .lineLimit(1)
+                                                                } else {
+                                                                    Text("No subject")
+                                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                }
+                                                            }
+                                                            
+                                                            
+                                                        }
+                                                        Spacer()
+                                                        if let unixTimestamp = scheduleddata.scheduledTime,
+                                                           let istDateStringFromISO = convertToIST(dateInput: unixTimestamp) {
+                                                            Text(istDateStringFromISO)
+                                                                .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
+                                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                .padding(.top, 0)
+                                                                .frame(maxWidth: .infinity, alignment: .topTrailing)
+                                                        }
+                                                        
+                                                    }
+                                                    .listRowBackground(themesviewModel.currentTheme.windowBackground)
+                                                    
+                                                }
+                                                .listStyle(PlainListStyle())
+                                                .scrollContentBackground(.hidden)
+                                                
+                                                HStack{
+                                                    Button(action: {
+                                                        print("delete clicked")
+                                                        showingDeleteAlert = true
+                                                    }){
+                                                        Image("delete")
+                                                            .renderingMode(.template)
+                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                            .frame(width: 30 , height: 30)
+                                                            .padding(.leading ,20 )
+                                                    }
+                                                    Spacer()
+                                                }
+                                                .background(themesviewModel.currentTheme.colorPrimary)
+                                            }
                                         }
                                     }
                                 }
@@ -1007,16 +1430,6 @@ struct HomeAwaitingView: View {
                         Spacer()
                         HStack{
                             Spacer()
-                            /*
-                             Button(action: {
-                             homeAwaitingViewModel.isPlusBtn = true
-                             }) {
-                             Image("plus")
-                             .font(Font.title.weight(.medium))
-                             .foregroundColor(Color.white)
-                             }
-                             .padding(.trailing,15)
-                             */
                             RoundedRectangle(cornerRadius: 30)
                                 .fill(themesviewModel.currentTheme.colorPrimary)
                                 .frame(width: 150,height: 48)
@@ -1036,89 +1449,111 @@ struct HomeAwaitingView: View {
                                             .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                 .onTapGesture {
                                                     isQuickAccessVisible = true
-                                                    
                                                 }
                                     }
-//                                    if isQuickAccessVisible {
-//                                                        Color.white.opacity(0.5) // Optional: semi-transparent background
-//                                                            .ignoresSafeArea()
-//                                                            .blur(radius: 10) // Blur effect for the background
-//                                                        QuickAccessView(isQuickAccessVisible: $isQuickAccessVisible)
-//                                                            .background(Color.white) // Background color for the Quick Access View
-//                                                            .cornerRadius(10)
-//                                                            .shadow(radius: 10)
-//                                                            .padding()
-//                                                    }
                                 }
                                 .padding(.trailing)
                                 .padding(.bottom)
                         }
+                        TabViewNavigator()
+                            .frame(height: 40)
+                            .padding(.bottom, 10)
                     }
                     
 //                    Spacer()
                     
-                    TabViewNavigator()
-                        .frame(height: 40)
+
                     
                     
                 }
                 .navigationBarBackButtonHidden(true)
                 .onAppear {
-                    if homeAwaitingViewModel.emailData.isEmpty {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                        print("on appears")
                         homeAwaitingViewModel.getEmailsData()
+                        print("homeAwaitingViewModel.isLoading  \(homeAwaitingViewModel.isLoading)")
                     }
-                }
-                .onChange(of: homeAwaitingViewModel.emailData) { newData in
-                    let mappedEmails = newData.map { email in
-                        firstName = email.firstname ?? ""
-                        Subject = email.subject ?? ""
-                        if let unixTimestamp = email.sentAt,
-                           let istDateStringFromTimestamp = convertToIST(dateInput: unixTimestamp) {
-                            TimeSent = unixTimestamp
-                        }
-                        print("obtained FirstName: \(firstName)")
-                        print("obtained Subject: \(Subject)")
-                        print("obtained TimeSent (Unix): \(TimeSent)")
-                    }
-                }
 
-//                .onAppear {
-//                    if homeAwaitingViewModel.emailData.isEmpty {
-//                        homeAwaitingViewModel.getEmailsData()
-//                    }
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 500 / 1000.0) {
-//                        firstName = homeAwaitingViewModel.emailData.first?.firstname ?? ""
-//                        Subject = homeAwaitingViewModel.emailData.first?.subject ?? ""
-//                        if let unixTimestamp = homeAwaitingViewModel.emailData.first?.sentAt, let istDateStringFromTimestamp = convertToIST(dateInput: unixTimestamp) {
-//                            TimeSent = unixTimestamp
-//                        }
-//                        print("firstName\(firstName)")
-//                        print("Subject\(Subject)")
-//                        print("TimeSent\(TimeSent)")
-//                        
-//                        
-//                    }
-//                }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                        showEmptyText = true
+                    }
+                    
+
+                }
+                
                 .background(
                                     Color.clear
                                         .blur(radius: isQuickAccessVisible ? 5 : 0) // Apply blur to the background
                                 )
+                
                 if isQuickAccessVisible {
-                    Color.white.opacity(0.8) // Optional: semi-transparent background
-                                        .ignoresSafeArea()
-                                        .blur(radius: 10) // Blur effect for the background
-                                    QuickAccessView(isQuickAccessVisible: $isQuickAccessVisible)
-                                        .background(Color.white) // Background color for the Quick Access View
-                                        .cornerRadius(10)
-                                        .shadow(radius: 10)
-                                        .padding()
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing) // Align at the bottom right
-                                        .padding([.bottom, .trailing], 20)
+                    ZStack {
+                        Color.gray.opacity(0.3)
+                            .ignoresSafeArea()
+                            .onTapGesture {
+                                isQuickAccessVisible = false
+                            }
+                        QuickAccessView(isQuickAccessVisible: $isQuickAccessVisible)
+                            .background(Color.white) // Background color for the Quick Access View
+                            .cornerRadius(10)
+                            .shadow(radius: 10)
+                            .padding()
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing) // Align at the bottom right
+                            .padding([.bottom, .trailing], 20)
+                    }
+                }
+                
+                if iNotificationAppBarView {
+                    ZStack {
+                        Rectangle()
+                            .fill(Color.black.opacity(0.3))
+                            .ignoresSafeArea()
+                            .onTapGesture {
+                                withAnimation {
+                                    iNotificationAppBarView = false
                                 }
+                            }
+                        NotificationAppBarView()
+                        .frame(height: .infinity)
+                        .background(themesviewModel.currentTheme.windowBackground)
+                        .cornerRadius(20)
+                        .padding(.horizontal,20)
+                        .padding(.bottom,50)
+                        .padding(.top,80)
+                        .transition(.scale)
+                        .animation(.easeInOut, value: iNotificationAppBarView)
+                    }
+                }
+
                 
                 if isMenuVisible{
                     HomeMenuView(isSidebarVisible: $isMenuVisible)
                 }
+                
+                if homeAwaitingViewModel.isPlusBtn {
+                    QuickAccessView(isQuickAccessVisible: $homeAwaitingViewModel.isPlusBtn)
+                        .transition(.opacity)
+                }
+                
+                if showingDeleteAlert {
+                    ZStack {
+                        Color.gray.opacity(0.5) // Dimmed background
+                            .ignoresSafeArea()
+                            .transition(.opacity)
+                        // Centered DeleteNoteAlert
+                        DeleteAlert(isPresented: $showingDeleteAlert) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                print("delete alert")
+                                homeAwaitingViewModel.deleteEmailFromAwaiting()
+                                showingDeleteAlert = false
+                                beforeLongPress = true
+                                AppBar = true
+                            }
+                        }
+                    }
+                    .transition(.scale)
+                }
+
             }
             .sheet(isPresented: $isSheetVisible, content: {
                 EmailOptionsView( replyAction: {
@@ -1200,43 +1635,73 @@ struct HomeAwaitingView: View {
                     .presentationDetents([.medium])
                     .presentationDragIndicator(.hidden)
             })
-            .navigationDestination(isPresented: $homeAwaitingViewModel.isEmailScreen) {
-                if homeAwaitingViewModel.passwordHint != nil{
-                    PasswordProtectedAccessView(isPasswordProtected: $homeAwaitingViewModel.isEmailScreen, emailId: homeAwaitingViewModel.selectedID ?? 0,passwordHint: homeAwaitingViewModel.passwordHint ?? "").toolbar(.hidden)
-                }else{
-                    MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, emailId: homeAwaitingViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars ).toolbar(.hidden)
+            .onChange(of: homeAwaitingViewModel.isEmailScreen) { newValue in
+                if newValue == false && homeAwaitingViewModel.isEmailSelected {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                        print("queue Api calls")
+                        homeAwaitingViewModel.getEmailsData()
+                        print("queue Api calls")
+                    }
+                }
+                else if newValue == false && homeAwaitingViewModel.istDraftselected {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                        homeAwaitingViewModel.getTDraftsData()
+                        print("tDrafts Api calls")
+                    }
                 }
             }
-            .navigationDestination(isPresented: $homeAwaitingViewModel.isComposeEmail) {
+            .onChange(of: homeAwaitingViewModel.isdraftEmail) { newValue in
+                if newValue == false {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                        homeAwaitingViewModel.getDraftsData()
+                        print("drafts Api calls")
+                    }
+                }
+            }
+            .onChange(of: homeAwaitingViewModel.isScheduleEmail) { newValue in
+                if newValue == false {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                        homeAwaitingViewModel.getScheduleEmailsData()
+                        print("drafts getScheduleEmailsData calls")
+                    }
+                }
+            }
+
+            .fullScreenCover(isPresented: $homeAwaitingViewModel.isEmailScreen) {
+                    MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView,awaitingView: $AwaitingView,  emailId: homeAwaitingViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars ).toolbar(.hidden)
+            }
+            .fullScreenCover(isPresented: $homeAwaitingViewModel.isComposeEmail) {
                 MailComposeView(id:homeAwaitingViewModel.selectedID ?? 0).toolbar(.hidden)
             }
-            .navigationDestination(isPresented: $homeAwaitingViewModel.isdraftEmail) {
+            .fullScreenCover(isPresented: $homeAwaitingViewModel.isdraftEmail) {
                 draftView(isdraftViewVisible: $homeAwaitingViewModel.draftView, id:homeAwaitingViewModel.selectedID ?? 0).toolbar(.hidden)
             }
-            .navigationDestination(isPresented: $homeAwaitingViewModel.isScheduleEmail) {
+            .fullScreenCover(isPresented: $homeAwaitingViewModel.isScheduleEmail) {
                 ScheduleView(id:homeAwaitingViewModel.selectedID ?? 0).toolbar(.hidden)
             }
+            .fullScreenCover(isPresented: $appBarElementsViewModel.isSearch) {
+                SearchView(appBarElementsViewModel: appBarElementsViewModel)
+                    .toolbar(.hidden)
+            }
+            
 //            .toast(message: $homeAwaitingViewModel.error)
             
-            if homeAwaitingViewModel.isPlusBtn {
-                QuickAccessView(isQuickAccessVisible: $homeAwaitingViewModel.isPlusBtn)
-                    .transition(.opacity)
-            }
+
             
         }
     }
     
     
-    private func selectEmail(data: HomeEmailsDataModel) {
-        if let index = homeAwaitingViewModel.emailData.firstIndex(where: { $0.threadID == data.threadID }) {
-            homeAwaitingViewModel.emailData[index].isSelected.toggle()
-            if homeAwaitingViewModel.emailData[index].isSelected {
-                homeAwaitingViewModel.selectedThreadIDs.append(data.threadID ?? 0)
-            } else {
-                homeAwaitingViewModel.selectedThreadIDs.removeAll { $0 == data.threadID }
-            }
-        }
-    }
+//    private func selectEmail(data: HomeEmailsDataModel) {
+//        if let index = homeAwaitingViewModel.emailData.firstIndex(where: { $0.threadID == data.threadID }) {
+//            homeAwaitingViewModel.emailData[index].isSelected.toggle()
+//            if homeAwaitingViewModel.emailData[index].isSelected {
+//                homeAwaitingViewModel.selectedThreadIDs.append(data.threadID ?? 0)
+//            } else {
+//                homeAwaitingViewModel.selectedThreadIDs.removeAll { $0 == data.threadID }
+//            }
+//        }
+//    }
     
     private func selectAllEmails() {
         let allSelected = homeAwaitingViewModel.emailData.allSatisfy { $0.isSelected }

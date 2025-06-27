@@ -12,13 +12,9 @@ class SnoozedMailsViewModel: ObservableObject {
     @Published var passwordHint: String? = ""
     @Published var selectedID: Int? = nil
     @Published var snoozedMailsDataModel:[SnoozedMailsDataModel] = []
-    init() {
-        self.getSnoozedEmailData(selectedTabItem : "awaited")
-    }
     
     func getSnoozedEmailData(selectedTabItem : String) {
         self.isLoading = true
-        
         let endUrl = "\(EndPoint.snoozedEmails)\(selectedTabItem)"
         NetworkManager.shared.request(type: SnoozedMailsModel.self, endPoint: endUrl, httpMethod: .get,isTokenRequired: true) { [weak self]result in
             guard let self = self else { return }

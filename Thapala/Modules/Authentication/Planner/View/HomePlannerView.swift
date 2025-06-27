@@ -9,14 +9,14 @@ import SwiftUI
 import ClockTimePicker
 struct HomePlannerView: View {
     @State private var isMenuVisible = false
-    @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var homeConveyedViewModel = HomeConveyedViewModel()
-    @ObservedObject var homeNavigatorViewModel = HomeNavigatorViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
+    @StateObject var homePlannerViewModel = HomePlannerViewModel()
+    @StateObject var homeConveyedViewModel = HomeConveyedViewModel()
+    @StateObject var homeNavigatorViewModel = HomeNavigatorViewModel()
+    @StateObject var themesviewModel = themesViewModel()
     @State private var selectedOption: TabOption = .doit
     @State private var image : String = ""
     @State private var searchText: String = ""
-//    var selectedID: Int
     @State var index: Int?
     @State var id:Int = 0
     @State var selectedID : Int?
@@ -33,6 +33,7 @@ struct HomePlannerView: View {
     @State private var selectedNames: [String] = []
     @State private var clickedDate: String = "" // Store the formatted date
     @State private var clickedTime: String = ""
+    @State private var iNotificationAppBarView = false
     enum TabOption {
             case doit, diary, Note, date
         }
@@ -62,17 +63,27 @@ struct HomePlannerView: View {
                                 }
                             }
                             .padding(.leading, 20) // Padding for consistent spacing
-                            .padding(.top , -47)
+                            
                             
                             Text("Planner")
                                 .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
                                 .font(.custom(.poppinsRegular, size: 16, relativeTo: .title))
-                                .padding(.top , -43)
-                            
                             Spacer()
                             
                             Button(action: {
+                                print("search button pressed")
+                                print("Before appBarElementsViewModel.isSearch \(appBarElementsViewModel.isSearch)")
+                                    appBarElementsViewModel.isSearch = true
+                                print("After appBarElementsViewModel.isSearch \(appBarElementsViewModel.isSearch)")
+                            }) {
+                                Image("magnifyingglass")
+                                    .renderingMode(.template)
+                                    .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                    .font(Font.title.weight(.medium))
+                            }
+                            Button(action: {
                                 print("bell button pressed")
+                                iNotificationAppBarView = true
                             }) {
                                 Image("notification")
                                     .resizable()
@@ -80,7 +91,7 @@ struct HomePlannerView: View {
                                     .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
                             }
                             .padding(.trailing, 15)
-                            .padding(.top , -35)
+                            
                             
                             Button(action: {
                                 print("line.3.horizontal button pressed")
@@ -94,8 +105,9 @@ struct HomePlannerView: View {
                                     .frame(width: 18, height: 18)
                             }
                             .padding(.trailing, 15)
-                            .padding(.top , -33)
+                           
                         }
+                        .padding(.top , -reader.size.height * 0.01)
                         HStack {
                             HStack {
                                 Image(systemName: "magnifyingglass")
@@ -139,10 +151,10 @@ struct HomePlannerView: View {
                                         }
                                     }
                                     .padding(.horizontal)
-                                    .padding()
+//                                    .padding()
                     }
                    
-                    .frame(height: 164)
+                    .frame(height: reader.size.height * 0.20)
                     .background(themesviewModel.currentTheme.tabBackground)
                     
 
@@ -348,163 +360,186 @@ struct HomePlannerView: View {
                      .padding(.trailing,15)
                      }
                      */
+                    TabViewNavigator()
+                        .frame(height: 40)
+                        .padding(.bottom, 10)
+                }
+                .onAppear {
+                    image = homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person"
+                    homePlannerViewModel.GetDoitList()
+                    
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 300 / 1000.0) {
+                        themeArray = homePlannerViewModel.doitlistData.compactMap { $0.theme }
+                        print("Themes: \(themeArray)")
+                        
+                        if !themeArray.isEmpty {
+                            // Extract themes from doitlistData
+                            let themes = homePlannerViewModel.doitlistData.compactMap { $0.theme }
+                            
+                            // Process each theme in the array
+                            themeArray = themes.compactMap { theme in
+                                theme.components(separatedBy: "/").last?.replacingOccurrences(of: ".png", with: "")
+                            }
+                            
+                            print("themeImage \(themeArray)")
+                            for (index, theme) in themeArray.enumerated() {
+                                print("Theme Image \(index + 1): \(theme)")
+                            }
+                        } else {
+                            themeArray = [] // Default value if themeArray is empty
+                        }
+                    }
                 }
                 .navigationBarBackButtonHidden(true)
 
                 if isMenuVisible{
                     HomeMenuView(isSidebarVisible: $isMenuVisible)
                 }
-            }
-            .background(themesviewModel.currentTheme.windowBackground)
-            .onAppear {
-                image = homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person"
-                homePlannerViewModel.GetDoitList()
-                
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 300 / 1000.0) {
-                    themeArray = homePlannerViewModel.doitlistData.compactMap { $0.theme }
-                    print("Themes: \(themeArray)")
-                    
-                    if !themeArray.isEmpty {
-                        // Extract themes from doitlistData
-                        let themes = homePlannerViewModel.doitlistData.compactMap { $0.theme }
-                        
-                        // Process each theme in the array
-                        themeArray = themes.compactMap { theme in
-                            theme.components(separatedBy: "/").last?.replacingOccurrences(of: ".png", with: "")
-                        }
-                        
-                        print("themeImage \(themeArray)")
-                        for (index, theme) in themeArray.enumerated() {
-                            print("Theme Image \(index + 1): \(theme)")
-                        }
+                if homePlannerViewModel.addtask {
+                    Color.black
+                     .opacity(0.4)
+                     .edgesIgnoringSafeArea(.all)
+                     PlannerAddTaskView(isAddTaskVisible: $homePlannerViewModel.addtask)
+    //                 .transition(.opacity)
+                     .padding(.bottom,330 )
+                }
+                if homePlannerViewModel.Diarytask {
+                    Color.black
+                     .opacity(0.4)
+                     .edgesIgnoringSafeArea(.all)
+                    DiaryView(isDiaryVisible: $homePlannerViewModel.Diarytask, DiarynotificationTime: $homePlannerViewModel.DiaryNotificationNotetime, isDiaryTagActive: $homePlannerViewModel.isDiaryTagActive, selectedNames: selectedNames)
+                     .transition(.opacity)
+                }
+                if homePlannerViewModel.Notetask {
+    //                PlannerAddTaskView(isAddTaskVisible: $homePlannerViewModel.addtask)
+                    Color.black
+                     .opacity(0.4)
+                     .edgesIgnoringSafeArea(.all)
+                    NoteView(isNoteVisible: $homePlannerViewModel.Notetask, notificationTime: $homePlannerViewModel.NotificationNotetime, isTagActive: $homePlannerViewModel.isTagActive)
+                     .transition(.opacity)
+    //                 .padding(.bottom,330 )
+                }
+                if homePlannerViewModel.Diaryupdate {
+                    Color.black
+                        .opacity(0.4)
+                        .edgesIgnoringSafeArea(.all)
+                        .transition(.opacity)
+
+                    if let selectedData = homePlannerViewModel.listData.first(where: { $0.id == homePlannerViewModel.selectedID }) {
+                        DiaryUpdateView(isDiaryupdateVisible: $homePlannerViewModel.Diaryupdate, DiarynotificationTime: $homePlannerViewModel.DiaryNotificationNotetime, selectedID: selectedData.id ?? 0, selectedNames: $selectedNames)
                     } else {
-                        themeArray = [] // Default value if themeArray is empty
+                        Text("Error: Could not find data for the selected ID")
+                            .foregroundColor(.red)
+                    }
+                }
+                
+                if homePlannerViewModel.Noteupdate {
+                    Color.black
+                        .opacity(0.4)
+                        .edgesIgnoringSafeArea(.all)
+                        .transition(.opacity)
+                    if let selectedData = homePlannerViewModel.NotelistData.first(where: { $0.id == homePlannerViewModel.selectedID }) {
+                        NoteUpdateView(isNoteupdateVisible: $homePlannerViewModel.Noteupdate, notificationTime: $homePlannerViewModel.NotificationNotetime, selectedID: selectedData.id ?? 0)
+                    } else {
+                        Text("Error: Could not find data for the selected ID")
+                            .foregroundColor(.red)
+                    }
+                }
+                if homePlannerViewModel.selectedtodo {
+                    Color.black
+                        .opacity(0.4)
+                        .edgesIgnoringSafeArea(.all)
+                        .transition(.opacity)
+
+                    if let selectedData = homePlannerViewModel.doitlistData.first(where: { $0.id == homePlannerViewModel.selectedItem }) {
+                        ListitemView(isListItemVisible: $homePlannerViewModel.selectedtodo, selectedID: selectedData.id ?? 0)
+                    } else {
+                        Text("Error: Could not find data for the selected ID")
+                            .foregroundColor(.red)
+                    }
+                }
+
+
+                
+                if homePlannerViewModel.addNote {
+                                Color.black
+                                    .opacity(0.4)
+                                    .edgesIgnoringSafeArea(.all)
+                                PlannerAddTaskView(isAddTaskVisible: $homePlannerViewModel.addNote)
+                                    .transition(.opacity)
+                }
+                if homePlannerViewModel.isPlusBtn {
+                    VStack {
+                        tDoView(isCreateVisible: $homePlannerViewModel.isPlusBtn)
+                            .transition(.move(edge: .bottom)) // Smooth transition
+                            .animation(.easeInOut)
+                    }
+                    .background(
+                        themesviewModel.currentTheme.windowBackground
+                            .edgesIgnoringSafeArea(.all)
+                            .onTapGesture {
+                                    isEventVisible = false // Dismiss the sheet
+                                
+                            }
+                    )
+                }
+    //            if homePlannerViewModel.selectedtodo {
+    //                ListitemView(isListItemVisible: $homePlannerViewModel.selectedtodo, selectedID: homePlannerViewModel.selectedItem ?? 0)
+    //                    .transition(.move(edge: .bottom)) // Smooth transition
+    //                    .animation(.easeInOut)
+    //            }
+                if isEventVisible {
+                    VStack {
+                        Spacer() // Pushes the sheet to the bottom
+    //                    EventView(isEventVisible: $isEventVisible,text: $title)
+                        EventView(isEventVisible: $isEventVisible, clickedDate: $clickedDate, clickedTime: $clickedTime, text: $title)
+                            .transition(.move(edge: .bottom)) // Smooth transition
+                            .animation(.easeInOut)
+                    }
+                    .background(
+                        Color.black.opacity(0.3)
+                            .edgesIgnoringSafeArea(.all)
+                            .onTapGesture {
+                                    isEventVisible = false // Dismiss the sheet
+                                
+                            }
+                    )
+                }
+                
+                if iNotificationAppBarView {
+                    ZStack {
+                        Rectangle()
+                            .fill(Color.black.opacity(0.3))
+                            .ignoresSafeArea()
+                            .onTapGesture {
+                                withAnimation {
+                                    iNotificationAppBarView = false
+                                }
+                            }
+                        NotificationAppBarView()
+                        .frame(height: .infinity)
+                        .background(themesviewModel.currentTheme.windowBackground)
+                        .cornerRadius(20)
+                        .padding(.horizontal,20)
+                        .padding(.bottom,50)
+                        .padding(.top,80)
+                        .transition(.scale)
+                        .animation(.easeInOut, value: iNotificationAppBarView)
                     }
                 }
             }
-            .navigationDestination(isPresented: $homePlannerViewModel.doItTapped) {
-                            PlannerDetailedView().toolbar(.hidden)
-                        }
-            
-            .navigationDestination(isPresented: $homePlannerViewModel.isComposeEmail) {
-              //  MailComposeView().toolbar(.hidden)
-                        }
-            .toast(message: $homePlannerViewModel.error)
-            
-            if homePlannerViewModel.addtask {
-                Color.black
-                 .opacity(0.4)
-                 .edgesIgnoringSafeArea(.all)
-                 PlannerAddTaskView(isAddTaskVisible: $homePlannerViewModel.addtask)
-//                 .transition(.opacity)
-                 .padding(.bottom,330 )
-            }
-            if homePlannerViewModel.Diarytask {
-                Color.black
-                 .opacity(0.4)
-                 .edgesIgnoringSafeArea(.all)
-                DiaryView(isDiaryVisible: $homePlannerViewModel.Diarytask, DiarynotificationTime: $homePlannerViewModel.DiaryNotificationNotetime, isDiaryTagActive: $homePlannerViewModel.isDiaryTagActive, selectedNames: selectedNames)
-                 .transition(.opacity)
-//                 .padding(.bottom,330)
-            }
-            if homePlannerViewModel.Notetask {
-//                PlannerAddTaskView(isAddTaskVisible: $homePlannerViewModel.addtask)
-                Color.black
-                 .opacity(0.4)
-                 .edgesIgnoringSafeArea(.all)
-                NoteView(isNoteVisible: $homePlannerViewModel.Notetask, notificationTime: $homePlannerViewModel.NotificationNotetime, isTagActive: $homePlannerViewModel.isTagActive)
-                 .transition(.opacity)
-//                 .padding(.bottom,330 )
-            }
-            if homePlannerViewModel.Diaryupdate {
-                Color.black
-                    .opacity(0.4)
-                    .edgesIgnoringSafeArea(.all)
-                    .transition(.opacity)
-
-                if let selectedData = homePlannerViewModel.listData.first(where: { $0.id == homePlannerViewModel.selectedID }) {
-                    DiaryUpdateView(isDiaryupdateVisible: $homePlannerViewModel.Diaryupdate, DiarynotificationTime: $homePlannerViewModel.DiaryNotificationNotetime, selectedID: selectedData.id ?? 0, selectedNames: $selectedNames)
-                } else {
-                    Text("Error: Could not find data for the selected ID")
-                        .foregroundColor(.red)
-                }
-            }
-            
-            if homePlannerViewModel.Noteupdate {
-                Color.black
-                    .opacity(0.4)
-                    .edgesIgnoringSafeArea(.all)
-                    .transition(.opacity)
-                if let selectedData = homePlannerViewModel.NotelistData.first(where: { $0.id == homePlannerViewModel.selectedID }) {
-                    NoteUpdateView(isNoteupdateVisible: $homePlannerViewModel.Noteupdate, notificationTime: $homePlannerViewModel.NotificationNotetime, selectedID: selectedData.id ?? 0)
-                } else {
-                    Text("Error: Could not find data for the selected ID")
-                        .foregroundColor(.red)
-                }
-            }
-            if homePlannerViewModel.selectedtodo {
-                Color.black
-                    .opacity(0.4)
-                    .edgesIgnoringSafeArea(.all)
-                    .transition(.opacity)
-
-                if let selectedData = homePlannerViewModel.doitlistData.first(where: { $0.id == homePlannerViewModel.selectedItem }) {
-                    ListitemView(isListItemVisible: $homePlannerViewModel.selectedtodo, selectedID: selectedData.id ?? 0)
-                } else {
-                    Text("Error: Could not find data for the selected ID")
-                        .foregroundColor(.red)
-                }
-            }
-
-
-            
-            if homePlannerViewModel.addNote {
-                            Color.black
-                                .opacity(0.4)
-                                .edgesIgnoringSafeArea(.all)
-                            PlannerAddTaskView(isAddTaskVisible: $homePlannerViewModel.addNote)
-                                .transition(.opacity)
-            }
-            if homePlannerViewModel.isPlusBtn {
-                VStack {
-                    tDoView(isCreateVisible: $homePlannerViewModel.isPlusBtn)
-                        .transition(.move(edge: .bottom)) // Smooth transition
-                        .animation(.easeInOut)
-                }
-                .background(
-                    themesviewModel.currentTheme.windowBackground
-                        .edgesIgnoringSafeArea(.all)
-                        .onTapGesture {
-                                isEventVisible = false // Dismiss the sheet
-                            
-                        }
-                )
-            }
-//            if homePlannerViewModel.selectedtodo {
-//                ListitemView(isListItemVisible: $homePlannerViewModel.selectedtodo, selectedID: homePlannerViewModel.selectedItem ?? 0)
-//                    .transition(.move(edge: .bottom)) // Smooth transition
-//                    .animation(.easeInOut)
-//            }
-            if isEventVisible {
-                VStack {
-                    Spacer() // Pushes the sheet to the bottom
-//                    EventView(isEventVisible: $isEventVisible,text: $title)
-                    EventView(isEventVisible: $isEventVisible, clickedDate: $clickedDate, clickedTime: $clickedTime, text: $title)
-                        .transition(.move(edge: .bottom)) // Smooth transition
-                        .animation(.easeInOut)
-                }
-                .background(
-                    Color.black.opacity(0.3)
-                        .edgesIgnoringSafeArea(.all)
-                        .onTapGesture {
-                                isEventVisible = false // Dismiss the sheet
-                            
-                        }
-                )
-            }
-
         }
+        .background(themesviewModel.currentTheme.windowBackground)
+        .fullScreenCover(isPresented: $appBarElementsViewModel.isSearch) {
+            SearchView(appBarElementsViewModel: appBarElementsViewModel)
+                .toolbar(.hidden)
+        }
+        .navigationDestination(isPresented: $homePlannerViewModel.isComposeEmail) {
+          //  MailComposeView().toolbar(.hidden)
+                    }
+        .toast(message: $homePlannerViewModel.error)
+
     }
     func getCurrentDateWithMonthYear() -> String {
             let dateFormatter = DateFormatter()
@@ -689,8 +724,6 @@ struct HomePlannerView: View {
                     .padding(.bottom, 15)
                 }
                 
-                TabViewNavigator()
-                    .frame(height: 40)
             }
             .onTapGesture {
                 selectedCommentId = nil
@@ -757,116 +790,139 @@ struct HomePlannerView: View {
     var diaryView:some View{
         
         VStack{
-            List ($homePlannerViewModel.listData, id: \.id) {  $data in
-                HStack{
-                    let senderDate: TimeInterval = TimeInterval(data.createdTimeStamp)
-                    let finalDate = convertToTime(timestamp: senderDate)
-                    if homePlannerViewModel.listData.firstIndex(where: { $0.id == data.id }) == 0 {
-                        VStack(alignment: .leading){
-                            Text(finalDate)
-                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                .font(.custom(.poppinsRegular, size: 14,relativeTo: .title))
-                                .lineLimit(1)
-                            
-                            Text(data.title)
-                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                        }
-                        .padding(.leading , 16)
-                    }
-                    else {
-                        VStack(alignment: .leading) {
-                            Text(finalDate)
-                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                .font(.custom(.poppinsRegular, size: 14,relativeTo: .title))
-                                .lineLimit(1)
+            if homePlannerViewModel.listData.count == 0 {
+                VStack {
+                    Text("No Data found")
+                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                        .font(.custom(.poppinsRegular, size: 16))
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                .background(themesviewModel.currentTheme.windowBackground)
+            }
+            else {
+                List ($homePlannerViewModel.listData, id: \.id) {  $data in
+                    HStack{
+                        let senderDate: TimeInterval = TimeInterval(data.createdTimeStamp)
+                        let finalDate = convertToTime(timestamp: senderDate)
+                        if homePlannerViewModel.listData.firstIndex(where: { $0.id == data.id }) == 0 {
+                            VStack(alignment: .leading){
+                                Text(finalDate)
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .font(.custom(.poppinsRegular, size: 14,relativeTo: .title))
+                                    .lineLimit(1)
                                 
-                            Text(data.title)
-                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                Text(data.title)
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                            }
+                            .padding(.leading , 16)
                         }
-                        .padding(.leading , 16)
-
-    //                    padding()
+                        else {
+                            VStack(alignment: .leading) {
+                                Text(finalDate)
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .font(.custom(.poppinsRegular, size: 14,relativeTo: .title))
+                                    .lineLimit(1)
+                                
+                                Text(data.title)
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                            }
+                            .padding(.leading , 16)
                             
+                            //                    padding()
+                            
+                        }
+                        Spacer()
                     }
-                    Spacer()
-                }
-                .listRowBackground(themesviewModel.currentTheme.windowBackground)
-                .contentShape(Rectangle())
-                .onTapGesture {
-//                    homePlannerViewModel.updateDiaryData(selectedID: data.id)
-                    homePlannerViewModel.selectedID = data.id ?? 0
-                    homePlannerViewModel.Diaryupdate = true
-                    print("Selected ID: \(data.id)")
-//                    homePlannerViewModel.Diaryupdate = true
-//                    index = data.id
-                    print("api called, \(data.id)")
-                }
-
+                    .listRowBackground(themesviewModel.currentTheme.windowBackground)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        //                    homePlannerViewModel.updateDiaryData(selectedID: data.id)
+                        homePlannerViewModel.selectedID = data.id ?? 0
+                        homePlannerViewModel.Diaryupdate = true
+                        print("Selected ID: \(data.id)")
+                        //                    homePlannerViewModel.Diaryupdate = true
+                        //                    index = data.id
+                        print("api called, \(data.id)")
+                    }
+                    
                     .tint(Color(red:255/255, green: 128/255, blue: 128/255))
                 }
+             }
             }
             .listStyle(PlainListStyle())
             .scrollContentBackground(.hidden)
         }
     
     var dateBookView:some View{
+        
         VStack{
-            List ($homePlannerViewModel.NotelistData, id: \.id) {  $data in
-                HStack{
-                    let senderDate: TimeInterval = TimeInterval(data.createdTimeStamp) ?? 0
-                    let finalDate = convertTime(timestamp: senderDate)
-//                    if homePlannerViewModel.listData.firstIndex(where: { $0.id == data.id }) == 0 {
-//                        Image("addnote")
-//                            .padding([.trailing, .leading], 5)
-//                            .frame(width: 34, height: 34)
-//                            .clipShape(Circle())
-                    VStack {
-                        HStack {
-                            Text(data.title)
-                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                .padding(.leading, 20)
-                                .lineLimit(1) 
-                                .truncationMode(.tail)  // Optional: Adds ellipsis for overflowing text
-                                .frame(maxWidth: .infinity, alignment: .leading)
-
-                            Text(finalDate)
+            if homePlannerViewModel.NotelistData.count == 0 {
+                VStack {
+                    Text("No Data found")
+                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                        .font(.custom(.poppinsRegular, size: 16))
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                .background(themesviewModel.currentTheme.windowBackground)
+            }
+            else {
+                List ($homePlannerViewModel.NotelistData, id: \.id) {  $data in
+                    HStack{
+                        let senderDate: TimeInterval = TimeInterval(data.createdTimeStamp) ?? 0
+                        let finalDate = convertTime(timestamp: senderDate)
+                        //                    if homePlannerViewModel.listData.firstIndex(where: { $0.id == data.id }) == 0 {
+                        //                        Image("addnote")
+                        //                            .padding([.trailing, .leading], 5)
+                        //                            .frame(width: 34, height: 34)
+                        //                            .clipShape(Circle())
+                        VStack {
+                            HStack {
+                                Text(data.title)
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                    .padding(.leading, 20)
+                                    .lineLimit(1)
+                                    .truncationMode(.tail)  // Optional: Adds ellipsis for overflowing text
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                
+                                Text(finalDate)
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title2))
+                                    .padding(.trailing, 20)
+                                    .frame(maxWidth: .infinity, alignment: .trailing)
+                            }
+                            
+                            Text(data.note)
                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                                 .font(.custom(.poppinsRegular, size: 14, relativeTo: .title2))
-                                .padding(.trailing, 20)
-                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                .padding(.leading, 20)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                         }
-
-                        Text(data.note)
-                            .foregroundColor(themesviewModel.currentTheme.textColor)
-                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title2))
-                            .padding(.leading, 20)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                        
+                        
+                        
+                        //                    padding()
+                        //                    }
+                        Spacer()
                     }
-
-
+                    .listRowBackground(themesviewModel.currentTheme.windowBackground)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        //                    homePlannerViewModel.updateDiaryData(selectedID: data.id)
+                        homePlannerViewModel.selectedID = data.id ?? 0
+                        homePlannerViewModel.Noteupdate = true
+                        print("Selected ID: \(data.id)")
+                        //                    homePlannerViewModel.Diaryupdate = true
+                        //                    index = data.id
+                        print("api called, \(data.id)")
+                    }
                     
-
-    //                    padding()
-//                    }
-                    Spacer()
-                }
-                .listRowBackground(themesviewModel.currentTheme.windowBackground)
-                .contentShape(Rectangle())
-                .onTapGesture {
-//                    homePlannerViewModel.updateDiaryData(selectedID: data.id)
-                    homePlannerViewModel.selectedID = data.id ?? 0
-                    homePlannerViewModel.Noteupdate = true
-                    print("Selected ID: \(data.id)")
-//                    homePlannerViewModel.Diaryupdate = true
-//                    index = data.id
-                    print("api called, \(data.id)")
-                }
-
                     .tint(Color(red:255/255, green: 128/255, blue: 128/255))
                 }
+            }
             }
             .listStyle(PlainListStyle())
             .scrollContentBackground(.hidden)

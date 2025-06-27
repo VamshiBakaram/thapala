@@ -9,15 +9,12 @@ import SwiftUI
 
 @main
 struct ThapalaApp: App {
-    
     @StateObject var sessionManager = SessionManager()
-    
-    
-    var body: some Scene {
+        var body: some Scene {
         WindowGroup {
-            Group {
             if sessionManager.isShowSplashView {
                 SplashView()
+                    .environmentObject(sessionManager)
                     .onAppear(perform: {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
                             withAnimation {
@@ -29,22 +26,12 @@ struct ThapalaApp: App {
 //                PostBoxView()
                 if sessionManager.isShowLogin {
                     LoginView()
-//                        .environmentObject(sessionManager)
+                        .environmentObject(sessionManager)
                 }else{
-                    switch sessionManager.mainOption {
-                    case .isMainView:
-//                       HomeScreenView()
-//                        HomeAwaitingView(imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person")
-                        HomeAwaitingView(imageUrl: "")
-//                            .environmentObject(sessionManager)
-                    case .isNavigator:
-                        NavigationView()
-//                            .environmentObject(sessionManager)
-                    }
+                    HomeAwaitingView(imageUrl: "")
+                            .environmentObject(sessionManager)
                 }
             }
-          }
-            .environmentObject(sessionManager)
         }
     }
 }

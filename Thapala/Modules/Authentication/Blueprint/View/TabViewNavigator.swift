@@ -19,6 +19,7 @@ struct TabViewNavigator: View {
     @State private var conveyedView: Bool = false
     @State private var PostBoxView: Bool = false
     @State private var SnoozedView: Bool = false
+    @State private var AwaitingView: Bool = false
     var body: some View {
             VStack {
                 Spacer()
@@ -89,7 +90,7 @@ struct TabViewNavigator: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.leading, 20)
                     .navigationDestination(isPresented: $isQuickAccessViewActive) {
-                        MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView, conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, emailId: 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars)
+                        MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView, conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, awaitingView: $AwaitingView, emailId: 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars)
                     }
 
                     VStack(alignment: .leading, spacing: 5) {

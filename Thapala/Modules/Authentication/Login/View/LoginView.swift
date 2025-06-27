@@ -118,6 +118,8 @@ struct LoginView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 15.3))
                     .padding(.horizontal, 25)
                     .shadow(radius: 5)
+                    .frame(height: reader.size.height * 0.5)
+                    
                 }
                 .onTapGesture {
                     otpFocus = nil

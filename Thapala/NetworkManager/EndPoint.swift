@@ -25,7 +25,6 @@ struct EndPoint {
     static let emailsById = "emails/get-by-id/"
     static let sendEmail = "emails/send?scheduledStatus="
     static let saveEmailtoDrafts = "emails/save-to-draft?"
-    static let deleteEmailAwaiting = "emails/delete"
     static let markAsReadEmail = "emails/mark-as-read"
     static let markAsUnReadEmail = "emails/mark-as-unread"
     static let downloadEmailsFile = "download"
@@ -51,6 +50,11 @@ struct EndPoint {
     static let GetTagLabels = "/get-labels" // Diary Tag
     static let ApplyTagLabel = "planner/add-label" // Diary Tag
     static let removeTagLabel = "planner/remove-label?" // remove Tag
+    
+    // postBox
+    static let deleteEmailAwaiting = "emails/delete"
+    
+    
     
     // Home awaiting
     
@@ -82,10 +86,15 @@ struct EndPoint {
     // trash module
     
     static let GetAlltrash = "emails/get-all?page=1&pageSize=30&status=trash"
-    static let GetRecordsFileTrash = "record/get-trash?type="
+    static let GetRecordsFileTrash = "record/get-trash?type=files"
+    static let GetRecordsFoldersTrash = "record/get-trash?type=folders"
     static let plannerTrash = "trash"
     static let RestorePlanner = "planner/restore-planner"
     static let DeletePlanner = "planner/delete-planner-items"
+    static let DeleteFiles = "record/delete-from-trash"
+    static let restoreFiles = "record/restore"
+    static let emailRestore = "emails/restore"
+    static let emailDelete = "emails/delete-from-trash"
     
     // info module
     static let info = "user/content/get-all?"
@@ -103,6 +112,7 @@ struct EndPoint {
     // Records Module
     static let getRecords = "get-main-records"
     static let records = "subfolders"
+    static let subrecords = "records"
     static let bottomDelete = "record/delete?pin=undefined&password=undefined&"
     static let downloadFiles = "download"
     static let renamefile = "record/"
@@ -131,6 +141,12 @@ struct EndPoint {
     // Blue print
     
     static let saveToDraft = "emails/save-to-draft?type=template"
+    
+    
+    // App Bar Search and notification
+    
+    static let getSearchData = "emails/search?"
+    static let getNotifications = "notification/get-all-notification"
 }
 
 //senderId=48&receiverId=14&page=1&pageSize=500

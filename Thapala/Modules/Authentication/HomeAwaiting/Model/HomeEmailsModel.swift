@@ -49,9 +49,15 @@ struct Label: Decodable,Hashable {
     let labelName: String?
 }
 
+// Delete postBox email - Delete Api
 struct DeleteEmailModel: Decodable {
     let message: String?
     let status: Int?
+}
+
+// payload of delete Api
+struct DeleteEmailpayload: Codable {
+    let ids: [Int]
 }
 
 struct MarkAsReadEmailModel: Decodable {

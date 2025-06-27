@@ -15,7 +15,6 @@ class HomePostboxViewModel:ObservableObject{
     @Published var isPrintSelected:Bool = false
     @Published var isChatboxSelected:Bool = false
     @Published var postBoxEmailData:[PostboxDataModel] = []
-    @Published var postboxEmailCounaData:CountData?
     @Published var starredemail: [StarredModel] = []
     @Published var ContactsList: [contact] = []
     @Published var ChatContacts: [chatContacts] = []
@@ -46,7 +45,6 @@ class HomePostboxViewModel:ObservableObject{
                     self.isLoading = false
                         self.error = response.message ?? ""
                         self.postBoxEmailData = response.data ?? []
-                    self.postboxEmailCounaData = response.count
                 }
             case .failure(let error):
                 DispatchQueue.main.async {

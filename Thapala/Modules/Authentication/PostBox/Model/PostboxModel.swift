@@ -11,46 +11,54 @@ import Foundation
 struct PostboxModel: Decodable {
     let message: String?
     let data: [PostboxDataModel]?
-    let count: CountData?
+    let count: EmailCountData?
 }
 
-struct CountData: Decodable {
-    let totalCount: Int?
-    let readCount, unreadCount: String?
-}
-
-struct PostboxDataModel: Decodable,Identifiable,Hashable {
+struct PostboxDataModel: Codable, Identifiable {
     let id: Int?
-    let firstname, lastname: String?
-    let threadID: Int?
-    let status: Status?
-    let readReceiptStatus: Int?
-    let passwordHash, passwordHint: String?
-    let passwordProtected, isChecked: Int?
-    let type: String?
-    var starred: Int?
-    let labels: [Label]?
-    let subject: String?
-    let body: String?
-    let sentAt, senderUserID: Int?
+    let firstname: String?
+    let lastname: String?
+    let tCode: String
+    let tCodeHidden: Int
+    let threadId: Int?
+    let status: String?
+    let readReceiptStatus: Int
+    let passwordHash: String?
+    let passwordHint: String?
+    let passwordProtected: Int
+    let isChecked: Int
+    let type: String
+    let snooze: Int
+    let snoozeAt: StringOrInt?
+    let labels: [String]
+    let subject: String
+    let body: String
+    let sentAt: Int?
+    let senderUserId: Int
+    let senderProfile: String?
+    let attachments: [String]
+    let emailCountInThread: Int
+    var starred: Int
+    let hasDraft: Int
+    let snoozeAtThread: StringOrInt?
+    let snoozeThread: StringOrInt??
     var isStarred: Bool = false
 
+    // Coding keys for mapping JSON keys to Swift properties
     enum CodingKeys: String, CodingKey {
-        case id, firstname, lastname
-        case threadID = "threadId"
-        case status, readReceiptStatus, passwordHash, passwordHint, passwordProtected, isChecked, type, starred, labels, subject, body, sentAt
-        case senderUserID = "senderUserId"
-    }
-    
-    enum Status: String, Codable {
-        case postbox = "postbox"
-    }
-
-    enum TypeEnum: String, Codable {
-        case to = "to"
+        case id, firstname, lastname, tCode, tCodeHidden, threadId, status, readReceiptStatus,
+             passwordHash, passwordHint, passwordProtected, isChecked, type, snooze, snoozeAt,
+             labels, subject, body, sentAt, senderUserId, senderProfile, attachments,
+             emailCountInThread, starred, hasDraft, snoozeAtThread, snoozeThread
     }
 }
 
+
+struct EmailCountData: Codable {
+    let totalCount: Int
+    let readCount: String
+    let unreadCount: String
+}
 
 
 enum PostBoxOptions {
@@ -163,3 +171,22 @@ struct ChatMessage: Codable, Identifiable {
     }
 }
 
+struct StringOrInt: Codable {
+    let value: String?
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let intValue = try? container.decode(Int.self) {
+            self.value = String(intValue)
+        } else if let stringValue = try? container.decode(String.self) {
+            self.value = stringValue
+        } else {
+            self.value = nil
+        }
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(value)
+    }
+}

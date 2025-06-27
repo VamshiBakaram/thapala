@@ -27,6 +27,7 @@ struct NoteView: View {
     @State private var isBackgroundSheetVisible: Bool = false
     @State private var BackgroundThemeimage: String?
     @State private var onTapTheme: Bool = false
+    @State private var isPostBoxMailViewActive: Bool = false
     @State var themeImage: String = ""
     
     var body: some View {
@@ -211,7 +212,7 @@ struct NoteView: View {
 
                     VStack {
                         Spacer()
-                        BottomNotificationView(isNotificationVisible: $isNotificationVisible, notificationTime: $notificationTime, isViewActive: $isViewActive, selectedID: selectedID ?? 0)
+                        BottomNotificationView(isNotificationVisible: $isNotificationVisible, notificationTime: $notificationTime, isViewActive: $isViewActive, ispostBoxMailViewActive: $isPostBoxMailViewActive, selectedID: selectedID ?? 0)
                         .transition(.move(edge: .bottom))
                         .animation(.easeInOut, value: isNotificationVisible)
                     }
@@ -294,6 +295,7 @@ struct NoteUpdateView: View {
     @State private var isBackgroundSheetVisible: Bool = false
     @State private var BackgroundThemeimage: String?
     @State private var onTapTheme: Bool = false
+    @State private var isPostBoxMailViewActive: Bool = false
     @State var themeImage: String = ""
     
     
@@ -615,7 +617,7 @@ struct NoteUpdateView: View {
 
                     VStack {
                         Spacer()
-                        BottomNotificationView(isNotificationVisible: $isNotificationVisible, notificationTime: $notificationTime, isViewActive: $isViewActive, selectedID: selectedID)
+                        BottomNotificationView(isNotificationVisible: $isNotificationVisible, notificationTime: $notificationTime, isViewActive: $isViewActive, ispostBoxMailViewActive: $isPostBoxMailViewActive, selectedID: selectedID)
                         .transition(.move(edge: .bottom))
                         .animation(.easeInOut, value: isTagVisible)
                     }
@@ -736,9 +738,11 @@ struct NoteUpdateView: View {
 struct BottomNotificationView: View {
     @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
     @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var snoozedMailsViewModel = SnoozedMailsViewModel()
     @Binding var isNotificationVisible: Bool
     @Binding var notificationTime: Int?
     @Binding var isViewActive: Bool
+    @Binding var ispostBoxMailViewActive: Bool
     @State var comment: String = ""
     var selectedID: Int
     @State private var selectedDate = Date() // Holds the current date or time

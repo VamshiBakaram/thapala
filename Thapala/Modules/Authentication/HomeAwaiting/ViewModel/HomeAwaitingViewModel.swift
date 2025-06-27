@@ -50,10 +50,6 @@ class HomeAwaitingViewModel: ObservableObject {
     @Published var body = ""
     @Published var draftView: Bool = false
     
-    
-//    init() {
-//        getEmailsData()
-//    }
 
     func getEmailsData() {
         self.isLoading = true
@@ -65,10 +61,9 @@ class HomeAwaitingViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.error = response.message ?? ""
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-                        self.emailData = response.data ?? []
-                        self.emailFullData = response
-                    })
+                    self.emailData = response.data ?? []
+                    self.emailFullData = response
+                    
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -207,32 +202,6 @@ class HomeAwaitingViewModel: ObservableObject {
         }
     }
     
-   /*
-    func moveToFolder() {
-        isLoading = true
-        let params = MoveToFolderParams(folderId: <#T##Int#>, recordName: <#T##String#>, makeACopy: true, emailIds: selectedThreadIDs)
-        NetworkManager.shared.request(type: MoveEmailToFolderModel.self, endPoint: EndPoint.moveToFolder, httpMethod: .post,parameters: params, isTokenRequired: true, isSessionIdRequited: false) { [weak self]result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let response):
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    self.error = response.message
-                }
-            case .failure(let error):
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    switch error {
-                    case .error(error: let message):
-                        self.error = message
-                    case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
-                    }
-                }
-            }
-        }
-    }
-    */
 
     var shouldDisplayOpenEnvelope: Bool {
         guard let emailFullData = emailFullData else { return false }
@@ -264,10 +233,9 @@ class HomeAwaitingViewModel: ObservableObject {
                 DispatchQueue.main.async {
 //                    self.isLoading = false
                     self.error = response.message ?? ""
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
                         self.starredemail = [response]
                         print("starred email, response")
-                    })
+                    
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -355,10 +323,9 @@ class HomeAwaitingViewModel: ObservableObject {
                 DispatchQueue.main.async {
     //                    self.isLoading = false
 //                    self.error = response.sel
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
                         self.snoozedmail = [response]
                         print("starred email, response")
-                    })
+                    
                 }
             case .failure(let error):
                 DispatchQueue.main.async {

@@ -10,7 +10,6 @@ import SwiftUI
 
 enum MainOption {
     case isMainView
-    case isNavigator
 }
 
 class SessionManager: ObservableObject {
@@ -22,7 +21,7 @@ class SessionManager: ObservableObject {
     @AppStorage("userTcode") var userTcode = ""
     @AppStorage("userName") var userName = ""
     @AppStorage("LastName") var LastName = ""
-    @AppStorage("userId") var userId = 0
+    @AppStorage("userId") var userId: Int = 0
     @AppStorage("favoriteEmails") var favoriteEmailsData: Data = Data()
     @AppStorage("SelectedTheme") var SelectedTheme = ""
     @AppStorage("pin") var pin = ""

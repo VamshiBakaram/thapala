@@ -9,9 +9,12 @@ import SwiftUI
 struct HomePocketView: View {
     @State private var isMenuVisible = false
     @State private var isQuickAccessVisible = false
-    @ObservedObject var homePocketViewModel = HomePocketViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @StateObject var homePocketViewModel = HomePocketViewModel()
+    @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
+    @StateObject var themesviewModel = themesViewModel()
     let imageUrl: String
+    @State private var isSearchView = false
+    @State private var iNotificationAppBarView = false
     
     var body: some View {
         GeometryReader{ reader in
@@ -50,18 +53,19 @@ struct HomePocketView: View {
                                 .font(.custom(.poppinsRegular, size: 16, relativeTo: .title))
                             Spacer()
                             Button(action: {
-                                print("Pencil button pressed")
-                                homePocketViewModel.isComposeEmail = true
+                                print("search button pressed")
+                                appBarElementsViewModel.isSearch = true
                             }) {
                                 Image("magnifyingglass")
                                     .renderingMode(.template)
                                     .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
                                     .font(Font.title.weight(.medium))
-                                    .padding(.trailing , 16)
                             }
+                            .padding(.leading,15)
                             
                             Button(action: {
                                 print("bell button pressed")
+                                iNotificationAppBarView = true
                             }) {
                                 Image("notification")
                                     .renderingMode(.template)
@@ -84,9 +88,78 @@ struct HomePocketView: View {
                             .padding(.trailing,15)
                             
                         }
-                        .frame(height: 60)
-                        .background(themesviewModel.currentTheme.tabBackground)
+                        .padding(.top , -reader.size.height * 0.01)
+                        
+                        HStack {
+                            ScrollView(.horizontal,showsIndicators: false){
+                                HStack{
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(Color.gray)
+                                        .frame(width: reader.size.width/3 - 10, height: 50)
+                                        .overlay(
+                                            Group{
+                                                HStack{
+                                                 Image("compose")
+                                                        .frame(width: 20, height: 20)
+                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                        .background(themesviewModel.currentTheme.tabBackground)
+                                                    VStack{
+                                                        Text("tReturns")
+                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                    }
+                                                }
+                                            }
+                                        )
+                                    
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(Color.gray)
+                                        .frame(width: reader.size.width/3 - 10, height: 50)
+                                        .overlay(
+                                            Group{
+                                                HStack{
+                                                    Image("printIcon")
+                                                       .frame(width: 20, height: 20)
+                                                       .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                       .background(themesviewModel.currentTheme.tabBackground)
+                                                    
+                                                    VStack{
+                                                        Text("tTransactions")
+                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                    }
+                                                }
+                                            }
+                                            
+                                        )
+                                    
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(Color.gray)
+                                        .frame(width: reader.size.width/3 - 10, height: 50)
+                                        .overlay(
+                                            Group{
+                                                HStack{
+                                                    Image("chatBox")
+                                                        .frame(width: 20, height: 20)
+                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                        .background(themesviewModel.currentTheme.tabBackground)
+                                                    
+                                                    VStack{
+                                                        Text("tBank")
+                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                    }
+                                                }
+                                            }
+                                        )
+                                }
+                                .padding(.horizontal , 16)
+                            }
+                        }
+                        
                     }
+                    .frame(height: reader.size.height * 0.16)
+                    .background(themesviewModel.currentTheme.tabBackground)
                     ZStack {
                         Color.clear // Background to help center the image
                         Image("coming soon") // Replace with the actual image name
@@ -131,6 +204,7 @@ struct HomePocketView: View {
                     
                     TabViewNavigator()
                         .frame(height: 40)
+                        .padding(.bottom, 10)
 
                 }
                 
@@ -153,6 +227,33 @@ struct HomePocketView: View {
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing) // Align at the bottom right
                             .padding([.bottom, .trailing], 20)
                     }
+                
+                if iNotificationAppBarView {
+                    ZStack {
+                        Rectangle()
+                            .fill(Color.black.opacity(0.3))
+                            .ignoresSafeArea()
+                            .onTapGesture {
+                                withAnimation {
+                                    iNotificationAppBarView = false
+                                }
+                            }
+                        NotificationAppBarView()
+                        .frame(height: .infinity)
+                        .background(themesviewModel.currentTheme.windowBackground)
+                        .cornerRadius(20)
+                        .padding(.horizontal,20)
+                        .padding(.bottom,50)
+                        .padding(.top,80)
+                        .transition(.scale)
+                        .animation(.easeInOut, value: iNotificationAppBarView)
+                    }
+                }
+
+            }
+            .navigationDestination(isPresented: $appBarElementsViewModel.isSearch) {
+                SearchView(appBarElementsViewModel: appBarElementsViewModel)
+                    .toolbar(.hidden)
             }
             .navigationDestination(isPresented: $homePocketViewModel.isComposeEmail) {
                     MailComposeView().toolbar(.hidden)

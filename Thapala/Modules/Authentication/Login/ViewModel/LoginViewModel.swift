@@ -85,6 +85,7 @@ class LoginViewModel: ObservableObject {
                         switch error {
                         case .error(let error):
                           //  self.error = error
+                            self.error = "Incorrect or invalid password."
                             if error == "Server error with status code: 401"{
                                 self.error = "Incorrect or invalid password."
                             }

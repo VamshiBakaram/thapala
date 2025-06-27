@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct NavigationView: View {
+struct NavigationScreen: View { // Renamed to avoid name conflict with NavigationView
     @EnvironmentObject var sessionManager: SessionManager
     var body: some View {
         Text("Navigator")
@@ -15,5 +15,5 @@ struct NavigationView: View {
 }
 
 #Preview {
-    NavigationView()
+    NavigationScreen().environmentObject(SessionManager())
 }

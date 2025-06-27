@@ -147,6 +147,7 @@ struct ConsoleView: View {
                         
                         TabViewNavigator()
                             .frame(height: 40)
+                            .padding(.bottom , 10)
                     }
                 }
                 .background(themesviewModel.currentTheme.windowBackground)
@@ -190,6 +191,7 @@ struct ConsoleView: View {
                 }
             }
             .zIndex(0)
+            .navigationBarBackButtonHidden(true)
             .navigationDestination(isPresented: $consoleViewModel.isComposeEmail) {
                 MailComposeView().toolbar(.hidden)
             }

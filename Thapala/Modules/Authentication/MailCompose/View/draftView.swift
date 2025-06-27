@@ -10,6 +10,7 @@ import SwiftUI
 struct draftView: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject var mailComposeViewModel = MailComposeViewModel()
+    @ObservedObject var mailFullViewModel = MailFullViewModel()
     @StateObject var themesviewModel = themesViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
     @Binding var isdraftViewVisible: Bool
@@ -445,7 +446,8 @@ struct draftView: View {
                                        .foregroundColor(themesviewModel.currentTheme.iconColor)                               }
                                Spacer()
                            }
-                .padding([.leading,.trailing],5)
+                .padding(.leading , 16)
+                .padding(.bottom , 10)
                 
             }
             .background(themesviewModel.currentTheme.windowBackground)
@@ -506,7 +508,7 @@ struct draftView: View {
 
                         // Centered DeleteNoteAlert
                         DeleteTrashAlert(isPresented: $showingDeleteAlert) {
-                            mailComposeViewModel.Drafttrash(EmailID: id)
+                            mailFullViewModel.deleteEmailFromAwaiting(emailId: [id])
                             self.isdraftViewVisible = false
                             print("Note deleted")
                         }
