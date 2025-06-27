@@ -30,6 +30,7 @@ struct HomePostboxView: View {
                 VStack{
                     if homePostboxViewModel.beforeLongPress{
                         VStack {
+                            
                             AsyncImage(url: URL(string: imageUrl)) { phase in
                                 switch phase {
                                 case .empty:
@@ -361,7 +362,7 @@ struct HomePostboxView: View {
                     print("trash acti")
                     dismissSheet()
                 }
-                )
+              )
                 .presentationDetents([.medium])
                 .presentationDragIndicator(.hidden)
             })
@@ -387,7 +388,6 @@ struct HomePostboxView: View {
         VStack{
             if homePostboxViewModel.isLoading {
                 CustomProgressView()
-                    
             }
             else if homePostboxViewModel.postBoxEmailData.isEmpty{
                 Text("No Mails Found.")
