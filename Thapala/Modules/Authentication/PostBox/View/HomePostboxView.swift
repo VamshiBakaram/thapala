@@ -758,7 +758,7 @@ struct HomePostboxView: View {
                     print("trash acti")
                     dismissSheet()
                 }
-                )
+              )
                 .presentationDetents([.medium])
                 .presentationDragIndicator(.hidden)
             })
@@ -781,7 +781,6 @@ struct HomePostboxView: View {
         VStack{
             if homePostboxViewModel.isLoading {
                 CustomProgressView()
-                    
             }
             else if homePostboxViewModel.postBoxEmailData.isEmpty{
                 Text("No Mails Found.")
