@@ -183,7 +183,6 @@ struct HomeDirectoryView: View {
                                                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                                                                 .lineLimit(1)
                                                                 .padding(.leading , 5)
-                                                                .fixedSize()
                                                             
                                                             Button(action: {
                                                                 print("clicked on dots")

@@ -35,7 +35,6 @@
 		7B8168822BECB61300E825EC /* SuggestTCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8168812BECB61300E825EC /* SuggestTCodeView.swift */; };
 		7B8168842BECB8A700E825EC /* PicktCodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8168832BECB8A700E825EC /* PicktCodeModel.swift */; };
 		7BA42B862BD79C9E00D93450 /* VerifyOTPView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA42B852BD79C9E00D93450 /* VerifyOTPView.swift */; };
-		7BABFF082C6B2F5B003C4A6C /* PostBoxEmailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BABFF072C6B2F5B003C4A6C /* PostBoxEmailsView.swift */; };
 		7BC5AD4B2BE0E2600017D67F /* PicktCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC5AD4A2BE0E2600017D67F /* PicktCodeView.swift */; };
 		7BC5AD4F2BE0E6D90017D67F /* PicktCodeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC5AD4E2BE0E6D90017D67F /* PicktCodeViewModel.swift */; };
 		7BC5AD532BE0F12E0017D67F /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC5AD522BE0F12E0017D67F /* ChangePasswordView.swift */; };
@@ -51,9 +50,6 @@
 		7BCFC7522BDF87F600839D05 /* SecurityQuestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCFC7512BDF87F600839D05 /* SecurityQuestionsView.swift */; };
 		7BCFC7562BDF881700839D05 /* SecurityQuestionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCFC7552BDF881700839D05 /* SecurityQuestionsViewModel.swift */; };
 		7BCFC7582BDF882500839D05 /* SecurityQuestionsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCFC7572BDF882500839D05 /* SecurityQuestionsModel.swift */; };
-		7BFAAF252C64850000A4D021 /* PostBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BFAAF242C64850000A4D021 /* PostBoxView.swift */; };
-		7BFAAF292C64872400A4D021 /* PostBoxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BFAAF282C64872400A4D021 /* PostBoxViewModel.swift */; };
-		7BFAAF2B2C64873B00A4D021 /* PostBoxModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BFAAF2A2C64873B00A4D021 /* PostBoxModel.swift */; };
 		D307910D2D9E627900AE0200 /* consoleModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D307910C2D9E627900AE0200 /* consoleModelData.swift */; };
 		D30CE6402DB22F4D009B215F /* WebSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D30CE63F2DB22F4D009B215F /* WebSocketManager.swift */; };
 		D30DAC632E1C01D200F556A7 /* bottomSheetModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D30DAC622E1C01D200F556A7 /* bottomSheetModelData.swift */; };
@@ -365,6 +361,7 @@
 		D3A1D5EC2E30F42D00E11195 /* chatBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = chatBoxView.swift; sourceTree = "<group>"; };
 		D3A1D5ED2E30F42D00E11195 /* HomePostboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePostboxView.swift; sourceTree = "<group>"; };
 		D3A1D5EF2E30F42D00E11195 /* HomePostboxViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePostboxViewModel.swift; sourceTree = "<group>"; };
+		D3A1D5F62E30F57E00E11195 /* File.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = File.txt; sourceTree = "<group>"; };
 		D3A27E0D2DD7631600466320 /* countriesToCities.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = countriesToCities.json; sourceTree = "<group>"; };
 		D3A5D4572E091AF00044DB32 /* HomeMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeMenuViewModel.swift; sourceTree = "<group>"; };
 		D3A8658E2E01428600F4E7C3 /* NotificationAppBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationAppBarView.swift; sourceTree = "<group>"; };
@@ -496,6 +493,7 @@
 		7B22B34A2BD6CAB700020111 = {
 			isa = PBXGroup;
 			children = (
+				D3A1D5F62E30F57E00E11195 /* File.txt */,
 				7B22B3552BD6CAB700020111 /* Thapala */,
 				D37B89DD2DB757BC00ED8E68 /* Frameworks */,
 				7B22B3542BD6CAB700020111 /* Products */,
@@ -1865,7 +1863,6 @@
 				D362224E2C119FA200D3B222 /* EmailsByIdModel.swift in Sources */,
 				7BC6DF442BD9072300F427B0 /* CustomToast.swift in Sources */,
 				D37CA8E02C05E463000DE3C5 /* HomeScreenView.swift in Sources */,
-				7BABFF082C6B2F5B003C4A6C /* PostBoxEmailsView.swift in Sources */,
 				7B22B3672BD6CBD400020111 /* SplashView.swift in Sources */,
 				D368BB392C21C74A00AE2C7F /* ResidenceUserProfileView.swift in Sources */,
 				7B00FA322BE0FE7800E100FF /* PasswordSuccessView.swift in Sources */,
@@ -1923,7 +1920,6 @@
 				D384E2DF2C16FE370044E631 /* SendEmailsModel.swift in Sources */,
 				D33B17912D93CF480011AED8 /* trashViewModel.swift in Sources */,
 				D3D47DCE2DA90DE6003B7387 /* GeneralConsoleModelData.swift in Sources */,
-				7BFAAF292C64872400A4D021 /* PostBoxViewModel.swift in Sources */,
 				7B0F7FB82BD766D400BE2F5A /* FloatingTextField.swift in Sources */,
 				D392CF192C25A32600636ACC /* AddEventViewModel.swift in Sources */,
 				D3C8170C2DB79CF900BB0359 /* themesViewModel.swift in Sources */,
@@ -1950,7 +1946,6 @@
 				D38241CA2C134E1B001CFF9E /* MailComposeViewModel.swift in Sources */,
 				7B0F7FC42BD7699000BE2F5A /* CreateAccountViewModel.swift in Sources */,
 				D3B4E39E2DD5E56E0098CD6B /* BluePrintModel.swift in Sources */,
-				7BFAAF252C64850000A4D021 /* PostBoxView.swift in Sources */,
 				D38229792CC7B84900BB1235 /* SnoozedMailsViewModel.swift in Sources */,
 				D3CCD5152DB2904E007700B9 /* socketServiceManager.swift in Sources */,
 				D3B75F612BFDCA6E008DA18C /* ResetpasswordModel.swift in Sources */,
@@ -1960,7 +1955,6 @@
 				D38E5B582CB64B2300901F91 /* InfoViewViewModel.swift in Sources */,
 				D33D4B4C2C883909004DB3E4 /* GetFolderModel.swift in Sources */,
 				7BC5AD4B2BE0E2600017D67F /* PicktCodeView.swift in Sources */,
-				7BFAAF2B2C64873B00A4D021 /* PostBoxModel.swift in Sources */,
 				D392CF1B2C25A33300636ACC /* AddEventView.swift in Sources */,
 				D38C7F842C0ED4C4001FB36D /* HomeScreenViewModel.swift in Sources */,
 				D347F1A72D9195F100B42E9F /* TabViewNavigator.swift in Sources */,
