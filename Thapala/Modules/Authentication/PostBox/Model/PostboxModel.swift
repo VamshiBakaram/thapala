@@ -29,10 +29,10 @@ struct PostboxDataModel: Codable, Identifiable {
     let isChecked: Int
     let type: String
     let snooze: Int
-    let snoozeAt: StringOrInt?
-    let labels: [String]
+    let snoozeAt: Int?
+    let labels: [LabelListItems]?
     let subject: String
-    let body: String
+    let body: String?
     let sentAt: Int?
     let senderUserId: Int
     let senderProfile: String?
@@ -40,8 +40,8 @@ struct PostboxDataModel: Codable, Identifiable {
     let emailCountInThread: Int
     var starred: Int
     let hasDraft: Int
-    let snoozeAtThread: StringOrInt?
-    let snoozeThread: StringOrInt??
+    let snoozeAtThread: Int?
+    let snoozeThread: Int?
     var isStarred: Bool = false
 
     // Coding keys for mapping JSON keys to Swift properties
@@ -51,6 +51,12 @@ struct PostboxDataModel: Codable, Identifiable {
              labels, subject, body, sentAt, senderUserId, senderProfile, attachments,
              emailCountInThread, starred, hasDraft, snoozeAtThread, snoozeThread
     }
+}
+
+struct LabelListItems: Codable, Identifiable, Equatable {
+    let labelId: Int
+    let labelName: String
+    var id: Int { labelId } // For Identifiable
 }
 
 
@@ -171,22 +177,22 @@ struct ChatMessage: Codable, Identifiable {
     }
 }
 
-struct StringOrInt: Codable {
-    let value: String?
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        if let intValue = try? container.decode(Int.self) {
-            self.value = String(intValue)
-        } else if let stringValue = try? container.decode(String.self) {
-            self.value = stringValue
-        } else {
-            self.value = nil
-        }
-    }
-
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(value)
-    }
-}
+//struct StringOrInt: Codable {
+//    let value: String?
+//
+//    init(from decoder: Decoder) throws {
+//        let container = try decoder.singleValueContainer()
+//        if let intValue = try? container.decode(Int.self) {
+//            self.value = String(intValue)
+//        } else if let stringValue = try? container.decode(String.self) {
+//            self.value = stringValue
+//        } else {
+//            self.value = nil
+//        }
+//    }
+//
+//    func encode(to encoder: Encoder) throws {
+//        var container = encoder.singleValueContainer()
+//        try container.encode(value)
+//    }
+//}

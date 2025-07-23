@@ -26,7 +26,7 @@ struct TrashView: View {
     @State private var NoteItems: [PlannerTrashItem] = []
     @State private var selectedPlannerTab: String = ""
     @State private var bottomIcons = false
-    @State private var selectedID: [Int] = []  // Use @State to make it mutable
+    @State private var selectedID: [Int] = []
     @State private var showingDeleteAlert = false
     @State private var showingRestoreAlert = false
     @Binding var isTrashViewVisible: Bool
@@ -46,6 +46,7 @@ struct TrashView: View {
     @State private var fileSize: String = ""
     @State private var selectedFieldID: Int = 0
     @State private var AwaitingView: Bool = false
+    @State private var markAs : Int = 0
     var body: some View {
         ZStack {
             VStack {
@@ -999,7 +1000,7 @@ struct TrashView: View {
             }
         }
         .fullScreenCover(isPresented: $TrashedViewModel.isEmailScreen) {
-                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView,  awaitingView: $AwaitingView , emailId: TrashedViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars ).toolbar(.hidden)
+            MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView,  awaitingView: $AwaitingView , emailId: TrashedViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars ,markAs: $markAs).toolbar(.hidden)
             }
     }
     

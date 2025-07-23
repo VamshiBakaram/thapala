@@ -9,8 +9,8 @@ import SwiftUI
 
 struct MailComposeView: View {
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var mailComposeViewModel = MailComposeViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @StateObject var mailComposeViewModel = MailComposeViewModel()
+    @StateObject var themesviewModel = themesViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
     @State var id:Int = 0
     @State var emailByIdData:EmailsByIdModel?
@@ -48,16 +48,16 @@ struct MailComposeView: View {
                     
                     Button(action: {
 //                        mailComposeViewModel.sendEmail()
-                        print("on click of send: \(mailComposeViewModel.sendEmail())")
+                        print("on click of send: ")
+                        mailComposeViewModel.to = tCodeText
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                            mailComposeViewModel.sendEmail()
+                        }
+                        presentationMode.wrappedValue.dismiss()
                     }) {
                         Image("send")
                             .renderingMode(.template)
                             .foregroundColor(themesviewModel.currentTheme.iconColor)
-                            .onTapGesture {
-                                mailComposeViewModel.sendEmail()
-                                presentationMode.wrappedValue.dismiss()// This will pop the current view
-                                    
-                                            }
                     }
                     .padding(.trailing,15)
                 }
@@ -81,20 +81,19 @@ struct MailComposeView: View {
                                 .foregroundColor(themesviewModel.currentTheme.strokeColor)
                                 .padding(.trailing, 20)
                         }
-                        
                         VStack(spacing: 2) {
                             HStack {
                                 Text("To:")
                                     .foregroundColor(themesviewModel.currentTheme.textColor)
                                     .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-
-                                ZStack(alignment: .topLeading) {
-                                    ZStack(alignment: .leading) {
+                                
+                                ZStack(alignment: .leading) {
+                                    VStack {
                                         if tCodeText.isEmpty {
                                             Text("Enter tcode")
-                                                .foregroundColor(themesviewModel.currentTheme.AllGray)
+                                                .foregroundColor(themesviewModel.currentTheme.textColor)
                                         }
-
+                                        
                                         TextField("", text: $tCodeText)
                                             .foregroundColor(themesviewModel.currentTheme.textColor)
                                             .onChange(of: tCodeText) { newValue in
@@ -109,42 +108,13 @@ struct MailComposeView: View {
                                                 }
                                                 if isThreeNumbers(newValue) {
                                                     mailComposeViewModel.suggest = true
-                                                    print("Calling getSearchTcode")
                                                     mailComposeViewModel.getSerachTcode(searchKey: newValue)
-                                                    print("API call completed")
                                                 } else {
                                                     mailComposeViewModel.suggest = false
                                                 }
                                             }
                                     }
-
-                                    
-                                    // Display suggestions
-                                    if mailComposeViewModel.suggest,
-                                           let data = mailComposeViewModel.tcodesuggest?.data {
-                                            VStack(alignment: .leading, spacing: 0) {
-                                                List(data, id: \.self) { tCode in
-                                                    Button(action: {
-                                                        if let selectedTCode = tCode.tCode {
-                                                            tCodeText = selectedTCode
-                                                        }
-                                                        mailComposeViewModel.suggest = false
-                                                    }) {
-                                                        Text(tCode.tCode ?? "Unknown")
-                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                    }
-                                                }
-                                                .frame(height: min(CGFloat(data.count * 40), 200)) // Dynamically adjust height
-                                                .frame(width: CGFloat(min(10, tCodeText.count)) * 50) // Adjust width based on character count (up to 10)
-                                                .listStyle(PlainListStyle()) // Clean style for the list
-                                                .scrollContentBackground(.hidden)
-                                                .background(Color.green)
-                                                .cornerRadius(8) // Rounded corners for suggestions
-                                                .shadow(color: Color.gray.opacity(0.3), radius: 4, x: 0, y: 2)
-                                                .offset(y: 25) // Adjust this for spacing between the TextField and list
-                                            }
-                                            .zIndex(1) // Ensure this appears above other elements in the ZStack
-                                        }
+                                    Spacer()
                                 }
                             }
                             .overlay(
@@ -168,12 +138,46 @@ struct MailComposeView: View {
                                     .padding(.trailing, 20)
                                 }
                             )
+
+                            if mailComposeViewModel.suggest,
+                               let data = mailComposeViewModel.tcodesuggest?.data {
+                                HStack(alignment: .top) {
+                                    VStack(alignment: .leading, spacing: 0) {
+                                        ForEach(data, id: \.self) { tCode in
+                                            Button(action: {
+                                                if let selectedTCode = tCode.tCode {
+                                                    tCodeText = selectedTCode
+                                                }
+                                                mailComposeViewModel.suggest = false
+                                            }) {
+                                                Text(tCode.tCode ?? "Unknown")
+                                                    .foregroundColor(.black)
+                                                    .font(.custom(.poppinsBold, size: 16))
+                                                    .padding()
+                                                    .frame(alignment: .leading)
+                                                    .padding(.leading , 5)
+                                            }
+                                            .buttonStyle(.plain)
+                                        }
+                                    }
+                                    .frame(width: 150)
+                                    .background(Color.white)
+                                    .cornerRadius(8)
+                                    .shadow(radius: 4)
+
+                                    Spacer() // pushes box left within the parent if needed
+                                }
+                                .padding(.leading, 20)
+
+                            }
+
                             Rectangle()
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 1)
                                 .foregroundColor(themesviewModel.currentTheme.strokeColor)
                                 .padding(.trailing, 20)
                         }
+
                         
                         
                         
@@ -239,10 +243,6 @@ struct MailComposeView: View {
                                     Text("Bcc:")
                                         .foregroundColor(themesviewModel.currentTheme.textColor)
                                         .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                    /*
-                                    TextField("", text: $mailComposeViewModel.bcc)
-                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                     */
                                     HStack {
                                         ForEach(mailComposeViewModel.bccTCodes) { tCode in
                                                 HStack {
@@ -313,7 +313,7 @@ struct MailComposeView: View {
                             TextEditor(text: $mailComposeViewModel.composeEmail)
                                 .scrollContentBackground(.hidden)
                                 .background(themesviewModel.currentTheme.windowBackground)
-                                .foregroundColor(Color.blue)
+                                .foregroundColor(themesviewModel.currentTheme.textColor)
                                 .padding(4)
                                 .font(.custom(.poppinsLight, size: 14))
                             if mailComposeViewModel.composeEmail.isEmpty {
@@ -364,14 +364,6 @@ struct MailComposeView: View {
                     }
                 }
                 .padding([.leading, .top, .bottom], 20)
-                /*
-                 .overlay(
-                     RoundedRectangle(cornerRadius: 20)
-                         .stroke(Color.gray, lineWidth: 1)
-                 )
-                 .padding()
-                 */
-                
                 HStack (spacing:0){
                                Button(action: {
                                    self.presentationMode.wrappedValue.dismiss()
@@ -421,68 +413,7 @@ struct MailComposeView: View {
                     .presentationDetents([.medium])
                     .presentationDragIndicator(.hidden)
             })
-//            .fileImporter(isPresented: $isFilePickerPresented, allowedContentTypes: [.image, .pdf, .plainText], allowsMultipleSelection: true) { result in
-//                switch result {
-//                case .success(let urls):
-//                    mailComposeViewModel.selectedFiles.append(contentsOf: urls)
-//                    mailComposeViewModel.uploadFiles(fileURLs: urls)
-//                case .failure(let error):
-//                    print("Failed to select files: \(error.localizedDescription)")
-//                }
-//            }
             .toast(message: $mailComposeViewModel.error)
-            .onAppear {
-//                if mailComposeViewModel.detailedEmailData.isEmpty {
-//                    print("getFullEmail(emailId: id)")
-//                    mailComposeViewModel.getFullEmail(emailId: id)
-//                }
-//                
-//                // Safely handle any logic without mutating `selectedID`
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-//                    if let diary = mailComposeViewModel.detailedEmailData.first(where: { $0.threadID == id }) {
-//                        let stringValue = diary.body
-//                        composeText = (convertHTMLToAttributedString(html: stringValue ?? ""))?.string ?? ""
-//                        mailComposeViewModel.composeEmail = composeText
-//                        mailComposeViewModel.subject = diary.subject ?? ""
-//                        attachmentsData = diary.attachments ?? []
-//                        print("composeText \(composeText)")
-//                        print("subject \(mailComposeViewModel.subject)")
-//                        print("attachmentsData \(attachmentsData)")
-//                        //                    selectedIconIndex = diary.theme
-//                        if let recipients = diary.recipients {
-//                            if let toRecipient = recipients.first(where: { $0.type == "to" }) {
-//                                mailComposeViewModel.to = toRecipient.user?.tCode ?? ""
-//                                print("emailByIdData.to \(mailComposeViewModel.to))")
-//                            }
-//                            
-//                        }
-//                    }
-//                }
-            }
-//            .onAppear {
-//                mailComposeViewModel.getFullEmail(emailId: id) { result in
-//                    switch result {
-//                    case .success(let response):
-//                        emailByIdData = response
-//                        let stringValue = response.email?.first?.body ?? ""
-//                        composeText = (convertHTMLToAttributedString(html: stringValue))?.string ?? ""
-//                        mailComposeViewModel.composeEmail = composeText
-//                        mailComposeViewModel.subject = response.email?.first?.parentSubject ?? ""
-//                        attachmentsData = response.email?.first?.attachments ?? []
-////                        mailComposeViewModel.to = (response.email?.first?.recipients?.first?.user?.tCode ?? "")
-//                        if let recipients = response.email?.first?.recipients {
-//                                        if let toRecipient = recipients.first(where: { $0.type == "to" }) {
-//                                            mailComposeViewModel.to = toRecipient.user?.tCode ?? ""
-//                                            print("emailByIdData.to \(mailComposeViewModel.to))")
-//                                        }
-//                                    }
-////
-//                        
-//                    case .failure(let error):
-//                        self.errorMessage = error.localizedDescription
-//                    }
-//                }
-//            }
             
             if mailComposeViewModel.isSchedule {
                 Color.black

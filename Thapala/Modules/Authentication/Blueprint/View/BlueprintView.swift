@@ -11,53 +11,49 @@ struct BlueprintView: View {
     @State private var isMenuVisible = false
     @StateObject private var blueprintViewModel = BlueprintViewModel()
     @StateObject var homeNavigatorViewModel = HomeNavigatorViewModel()
+    @StateObject var mailComposeViewModel = MailComposeViewModel()
     @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
     @ObservedObject private var themesviewModel = themesViewModel()
     @State private var isQuickAccessVisible = false
 //    @State private var isMailViewActive = false
     @State var isInsertTcode: Bool = false
-    @State private var toText: String = ""
+    @State private var selectedTcode: String = ""
+    @State private var selectedCCcode: String = ""
+    @State private var selectedBCCcode: String = ""
     let imageUrl: String
     @State private var iNotificationAppBarView = false
+    @FocusState private var isFocused: Bool
+    
     var body: some View {
             GeometryReader{ reader in
                 ZStack{
                     VStack{
                         VStack {
                             HStack(spacing:20){
-                                AsyncImage(url: URL(string: imageUrl)) { phase in
-                                    switch phase {
-                                    case .empty:
-                                        ProgressView()
-                                    case .success(let image):
-                                        image
-                                            .resizable()
-                                            .frame(width: 40, height: 40)
-                                            .aspectRatio(contentMode: .fit)
-                                            .clipShape(Circle())
-                                            .padding(.leading,20)
-                                    case .failure:
-                                        Image("person")
-                                            .resizable()
-                                            .frame(width: 40, height: 40)
-                                            .aspectRatio(contentMode: .fit)
-                                            .clipShape(Circle())
-                                            .padding(.leading,20)
-                                    @unknown default:
-                                        EmptyView()
-                                    }
-                                }
+                                Image("contactW")
+                                    .resizable()
+                                    .renderingMode(.template)
+                                    .frame(width: 35, height: 35)
+                                    .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                    .background(
+                                        Circle()
+                                            .fill(themesviewModel.currentTheme.colorPrimary) // Inner background
+                                    )
+                                    .overlay(
+                                        Circle()
+                                            .stroke(Color.white, lineWidth: 2) // Border
+                                    )
+                                    .clipShape(Circle())
+                                    .padding(.leading, 16)
                                 
                                 Text("Blueprint")
-                                    .padding(.leading,20)
                                     .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                                    .font(.custom(.poppinsRegular, size: 16, relativeTo: .title))
-                                    .padding(.leading,10)
+                                    .font(.custom(.poppinsSemiBold, size: 16, relativeTo: .title))
+                                
                                 Spacer()
+                                
                                 Button(action: {
-                                    print("search button pressed")
-                                    print("Before appBarElementsViewModel.isSearch \(appBarElementsViewModel.isSearch)")
                                     appBarElementsViewModel.isSearch = true
                                     
                                     print("After appBarElementsViewModel.isSearch \(appBarElementsViewModel.isSearch)")
@@ -67,16 +63,17 @@ struct BlueprintView: View {
                                         .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
                                         .font(Font.title.weight(.medium))
                                 }
+                                .padding(.leading,15)
+                                
                                 
                                 Button(action: {
                                     print("bell button pressed")
                                     iNotificationAppBarView = true
                                 }) {
-                                    Image("bell")
-                                        .renderingMode(.template)
-                                        .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
-                                        .font(Font.title.weight(.medium))
+                                    Image("notification")
                                 }
+                                .padding(.leading,15)
+                                
                                 
                                 Button(action: {
                                     print("line.3.horizontal button pressed")
@@ -84,21 +81,20 @@ struct BlueprintView: View {
                                         isMenuVisible.toggle()
                                     }
                                 }) {
-                                    Image(systemName: "line.3.horizontal")
+                                    Image("MenuIcon")
                                         .renderingMode(.template)
                                         .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
                                         .font(Font.title.weight(.medium))
                                 }
-                                .padding(.trailing,15)
-                                
+                                .padding(.leading,15)
+                                .padding(.trailing , 30)
                             }
                             .padding(.top , -reader.size.height * 0.01)
-                            HStack {
-                                ScrollView(.horizontal,showsIndicators: false){
+
                                     HStack{
                                         RoundedRectangle(cornerRadius: 10)
                                             .fill(self.blueprintViewModel.isComposeSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
-                                            .frame(width: reader.size.width/3 - 10, height: 50)
+                                            .frame(width: max(reader.size.width/3 - 10, 50), height: 50)
                                             .onTapGesture {
                                                 self.blueprintViewModel.selectedOption = .compose
                                                 self.blueprintViewModel.isComposeSelected = true
@@ -109,12 +105,18 @@ struct BlueprintView: View {
                                                 Group{
                                                     HStack{
                                                         Image("compose")
+                                                            .resizable()
+                                                            .renderingMode(.template)
                                                             .frame(width: 20, height: 20)
-                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                            .background(themesviewModel.currentTheme.tabBackground)
+                                                            .padding(5)
+                                                            .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                            .background(
+                                                                RoundedRectangle(cornerRadius: 8)
+                                                                    .fill(themesviewModel.currentTheme.tabBackground)
+                                                            )
                                                         VStack{
                                                             Text("Compose")
-                                                                .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                .font(.custom(.poppinsMedium, size: 14, relativeTo: .title))
                                                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                                                         }
                                                     }
@@ -123,7 +125,7 @@ struct BlueprintView: View {
                                         
                                         RoundedRectangle(cornerRadius: 10)
                                             .fill(self.blueprintViewModel.isLettersSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
-                                            .frame(width: reader.size.width/3 - 10, height: 50)
+                                            .frame(width: max(reader.size.width/3 - 10, 50), height: 50)
                                             .onTapGesture {
                                                 self.blueprintViewModel.selectedOption = .letters
                                                 self.blueprintViewModel.isComposeSelected = false
@@ -134,13 +136,19 @@ struct BlueprintView: View {
                                                 Group{
                                                     HStack{
                                                         Image("printIcon")
+                                                            .resizable()
+                                                            .renderingMode(.template)
                                                             .frame(width: 20, height: 20)
-                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                            .background(themesviewModel.currentTheme.tabBackground)
+                                                            .padding(5)
+                                                            .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                            .background(
+                                                                RoundedRectangle(cornerRadius: 8)
+                                                                    .fill(themesviewModel.currentTheme.tabBackground)
+                                                            )
                                                         
                                                         VStack{
                                                             Text("Letters")
-                                                                .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                .font(.custom(.poppinsMedium, size: 14, relativeTo: .title))
                                                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                                                         }
                                                     }
@@ -150,7 +158,7 @@ struct BlueprintView: View {
                                         
                                         RoundedRectangle(cornerRadius: 10)
                                             .fill(self.blueprintViewModel.isCardsSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
-                                            .frame(width: reader.size.width/3 - 10, height: 50)
+                                            .frame(width: max(reader.size.width/3 - 10, 50), height: 50)
                                             .onTapGesture {
                                                 self.blueprintViewModel.selectedOption = .cards
                                                 self.blueprintViewModel.isComposeSelected = false
@@ -161,25 +169,28 @@ struct BlueprintView: View {
                                                 Group{
                                                     HStack{
                                                         Image("chatBox")
+                                                            .resizable()
+                                                            .renderingMode(.template)
                                                             .frame(width: 20, height: 20)
-                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                            .background(themesviewModel.currentTheme.tabBackground)
+                                                            .padding(5)
+                                                            .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                            .background(
+                                                                RoundedRectangle(cornerRadius: 8)
+                                                                    .fill(themesviewModel.currentTheme.tabBackground)
+                                                            )
                                                         
                                                         VStack{
                                                             Text("Cards")
-                                                                .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                                .font(.custom(.poppinsMedium, size: 14, relativeTo: .title))
                                                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                                                         }
                                                     }
                                                 }
                                             )
                                     }
-                                    .padding([.leading,.trailing])
-                                }
-                            }
+                                    .padding([.leading,.trailing,],5)
+                                    .padding(.bottom , 10)
                             
-                            
-                            //                        .padding(.top , -20)
                         }
                         .frame(height: reader.size.height * 0.16)
                         .background(themesviewModel.currentTheme.tabBackground)
@@ -205,38 +216,29 @@ struct BlueprintView: View {
                             .padding(.bottom , 10)
                         
                     }
+                    .toast(message: $blueprintViewModel.error)
                     .navigationBarBackButtonHidden(true)
                     .background(themesviewModel.currentTheme.windowBackground)
                     
                     
                     
-                    
+
                     if isQuickAccessVisible {
-                        Color.white.opacity(0.8) // Optional: semi-transparent background
-                            .ignoresSafeArea()
-                            .blur(radius: 10) // Blur effect for the background
-                        QuickAccessView(isQuickAccessVisible: $isQuickAccessVisible)
-                            .background(Color.white) // Background color for the Quick Access View
-                            .cornerRadius(10)
-                            .shadow(radius: 10)
-                            .padding()
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing) // Align at the bottom right
-                            .padding([.bottom, .trailing], 20)
+                        ZStack {
+                            Color.gray.opacity(0.3)
+                                .ignoresSafeArea()
+                                .onTapGesture {
+                                    isQuickAccessVisible = false
+                                }
+                            QuickAccessView(isQuickAccessVisible: $isQuickAccessVisible)
+                                .background(Color.white) // Background color for the Quick Access View
+                                .cornerRadius(10)
+                                .shadow(radius: 10)
+                                .padding()
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing) // Align at the bottom right
+                                .padding([.bottom, .trailing], 20)
+                        }
                     }
-                    
-                    //                if isMailViewActive { // change on 24 march
-                    //                        Color.white.opacity(0.8) // Optional: semi-transparent background
-                    //                            .ignoresSafeArea()
-                    //                            .blur(radius: 10) // Blur effect for the background
-                    //                    TabViewNavigator(isMailViewActive: $isMailViewActive)
-                    //                            .background(Color.white) // Background color for the Quick Access View
-                    //                            .cornerRadius(10)
-                    //                            .shadow(radius: 10)
-                    //                            .padding()
-                    //                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing) // Align at the bottom right
-                    //                            .padding([.bottom, .trailing], 20)
-                    //                    }
-                    
                     
                     
                     
@@ -267,50 +269,63 @@ struct BlueprintView: View {
                     }
                     
                 }
+                .fullScreenCover(isPresented: $appBarElementsViewModel.isSearch) {
+                    SearchView(appBarElementsViewModel: appBarElementsViewModel)
+                        .toolbar(.hidden)
+                }
+
+                .fullScreenCover(isPresented: $blueprintViewModel.isComposeEmail) {
+                    MailComposeView().toolbar(.hidden)
+                        .onAppear {
+                            print("MailFullView appeared")
+                        }
+                }
+
             }
-            .fullScreenCover(isPresented: $appBarElementsViewModel.isSearch) {
-                SearchView(appBarElementsViewModel: appBarElementsViewModel)
-                    .toolbar(.hidden)
-            }
-            .navigationDestination(isPresented: $blueprintViewModel.isComposeEmail) {
-                MailComposeView().toolbar(.hidden)
-            }
+
+
+
     }
     var composeView:some View{
         VStack(alignment: .leading) {
             HStack {
                 Spacer()
-                //
-                let bccList = blueprintViewModel.bcc.isEmpty ? [] : [blueprintViewModel.bcc]
-                let ccList = blueprintViewModel.cc.isEmpty ? [] : [blueprintViewModel.cc]
                 Button(action: {
-                    print("to text \(toText) ")
-                    print("to cc \(ccList) ")
-                    print("to bcc \(bccList) ")
+                    print("to text \(blueprintViewModel.to) ")
+                    print("to cc \(blueprintViewModel.cc) ")
+                    print("to bcc \(blueprintViewModel.bcc) ")
                     print("to subject \(blueprintViewModel.subject) ")
                     print("to composeEmail \(blueprintViewModel.composeEmail) ")
-                    blueprintViewModel.saveToTdraft(To: [toText], CC: ccList, BCC: bccList, Subject: blueprintViewModel.subject, Body: blueprintViewModel.composeEmail)
-                    toText = ""
+                    blueprintViewModel.saveToTdraft(To: [blueprintViewModel.to], CC: [blueprintViewModel.cc], BCC: [blueprintViewModel.bcc], Subject: blueprintViewModel.subject, Body: blueprintViewModel.composeEmail)
+                    blueprintViewModel.to = ""
                     blueprintViewModel.cc = ""
                     blueprintViewModel.bcc = ""
                     blueprintViewModel.subject = ""
                     blueprintViewModel.composeEmail = ""
+                    selectedTcode = ""
+                    selectedCCcode = ""
+                    selectedBCCcode = ""
+                    blueprintViewModel.isArrow = false
                 }) {
-                    Image("TickMark")
+                    Image("addtoTDraft")
                         .renderingMode(.template)
-                        .foregroundColor(themesviewModel.currentTheme.colorPrimary)
-                        .background(themesviewModel.currentTheme.iconColor)
+                        .foregroundColor(themesviewModel.currentTheme.iconColor)
                     
                         .padding(.all,8)
                         .cornerRadius(10)
                 }
                 
                 Button(action: {
-                    toText = ""
+                    blueprintViewModel.to = ""
                     blueprintViewModel.cc = ""
                     blueprintViewModel.bcc = ""
                     blueprintViewModel.subject = ""
                     blueprintViewModel.composeEmail = ""
+                    selectedTcode = ""
+                    selectedCCcode = ""
+                    selectedBCCcode = ""
+                    blueprintViewModel.isArrow = false
+                    blueprintViewModel.error = "delete successfully"
                     print("click on delete button")
                 }) {
                     Image("del")
@@ -326,24 +341,15 @@ struct BlueprintView: View {
             
             ZStack(alignment: .bottomTrailing) {
                 ZStack(alignment: .topLeading) {
-//                    TextEditor(text: $blueprintViewModel.emailEditor)
-//                        .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
-//                        .padding(.trailing, 10)
-//                        .frame(minHeight: 60)
-//                        .background(Color.clear)
-// 
-//                        .padding()
-                    
-                    
                     ScrollView {
                         VStack(alignment: .leading, spacing: 20) {
-                            VStack(spacing: 5) {
+                            VStack(spacing: 10) {
                                 HStack {
                                     Text("From:")
-                                        .font(.custom(.poppinsRegular, size: 16, relativeTo: .title))
+                                        .font(.custom(.poppinsRegular, size: 18, relativeTo: .title))
                                         .foregroundColor(themesviewModel.currentTheme.iconColor)
                                     TextField("", text: $sessionManager.userTcode)
-                                        .font(.custom(.poppinsRegular, size: 16, relativeTo: .title))
+                                        .font(.custom(.poppinsSemiBold, size: 18, relativeTo: .title))
                                         .foregroundColor(themesviewModel.currentTheme.textColor)
                                         .disabled(true)
                                 }
@@ -351,216 +357,412 @@ struct BlueprintView: View {
                                     .frame(maxWidth: .infinity)
                                     .frame(height: 1)
                                     .foregroundColor(themesviewModel.currentTheme.AllGray)
-                                    .padding(.trailing, 20)
                             }
                             
-                            VStack(spacing: 5) {
+                            VStack(spacing: 2) {
                                 HStack {
                                     Text("To:")
-                                        .font(.custom(.poppinsRegular, size: 16, relativeTo: .title))
                                         .foregroundColor(themesviewModel.currentTheme.textColor)
-                                    /*
-                                     TextField("", text: $mailComposeViewModel.to)
-                                     .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                     .keyboardType(.numberPad)
-                                     */
-                                    
-                                    ZStack(alignment: .topLeading) {
-                                        VStack {
-                                            TextField(
-                                                "Enter tcode",
-                                                text: $toText
-                                            )
+                                        .font(.custom(.poppinsRegular, size: 18, relativeTo: .title))
+
+                                    ZStack(alignment: .leading) {
+                                        if blueprintViewModel.to.isEmpty {
+                                            Text("Enter tcode")
+                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                .padding(.leading, 5)
+                                        }
+
+                                        TextField("", text: $blueprintViewModel.to)
                                             .foregroundColor(themesviewModel.currentTheme.textColor)
-                                            .padding(.leading, 20)
-                                            .onChange(of: toText) { newValue in
+                                            .padding(.leading, 5)
+                                            .keyboardType(.numbersAndPunctuation)
+                                            .submitLabel(.done)
+                                            .focused($isFocused)
+                                            .onSubmit {
+                                                isFocused = false
+                                            }
+                                            
+                                            .onChange(of: blueprintViewModel.to) { newValue in
                                                 if let intValue = Int(newValue) {
-                                                    if !$blueprintViewModel.tcodeinfo.isEmpty {
-                                                        blueprintViewModel.tcodeinfo[0].tCode = String(intValue)
+                                                    if !mailComposeViewModel.tcodeinfo.isEmpty {
+                                                        mailComposeViewModel.tcodeinfo[0].tCode = String(intValue)
                                                     }
                                                 } else {
-                                                    if !blueprintViewModel.tcodeinfo.isEmpty {
-                                                        blueprintViewModel.tcodeinfo[0].tCode = nil
+                                                    if !mailComposeViewModel.tcodeinfo.isEmpty {
+                                                        mailComposeViewModel.tcodeinfo[0].tCode = nil
                                                     }
                                                 }
-                                                
-                                                // Update `suggest` and call API when the value has 3 or more characters
                                                 if isThreeNumbers(newValue) {
-                                                    blueprintViewModel.suggest = true
-                                                    print("Calling getSearchTcode")
-                                                    //                                                blueprintViewModel.getSerachTcode(searchKey: newValue)
-                                                    print("API call completed")
-                                                } else {
-                                                    blueprintViewModel.suggest = false
+                                                    mailComposeViewModel.suggest = true
+                                                    mailComposeViewModel.getSerachTcode(searchKey: newValue)
+                                                }
+                                                else {
+                                                    mailComposeViewModel.suggest = false
+                                                }
+                                            }
+                                        
+                                        if !selectedTcode.isEmpty {
+                                            HStack {
+                                                Text(blueprintViewModel.to)
+                                                    .foregroundColor(Color.black)
+                                                    .padding(.leading, 5)
+                                                    .font(.custom(.poppinsSemiBold, size: 14))
+                                                   
+                                                Button(action: {
+                                                    selectedTcode = ""
+                                                    blueprintViewModel.to = ""
+                                                }) {
+                                                    Image(systemName: "xmark")
+                                                        .renderingMode(.template)
+                                                        .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                                }
+                                                .padding([.leading , .trailing] , 5)
+
+                                            }
+                                            .padding(.all , 5)
+                                            .background(selectedTcode.isEmpty ? Color.clear : themesviewModel.currentTheme.attachmentBGColor)
+                                            .cornerRadius(5)
+                                            
+                                        }
+                                    }
+                                }
+
+                                .overlay(
+                                    HStack {
+                                        Spacer()
+                                        Image("contacts")
+                                            .renderingMode(.template)
+                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                            .onTapGesture {
+                                                isInsertTcode = true
+                                            }
+                                        Button(action: {
+                                            blueprintViewModel.isArrow.toggle()
+                                            print("arrow clicked")
+                                        }, label: {
+                                            Image(blueprintViewModel.isArrow ? "dropup" : "dropdown")
+                                                .renderingMode(.template)
+                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                .frame(width: 35, height: 35)
+                                        })
+                                        .padding(.trailing, 20)
+                                    }
+                                )
+
+                                if mailComposeViewModel.suggest,
+                                   let data = mailComposeViewModel.tcodesuggest?.data {
+                                    HStack(alignment: .top) {
+                                        VStack(alignment: .leading, spacing: 0) {
+                                            ForEach(data, id: \.self) { tCode in
+                                                Button(action: {
+                                                    if let selectedTCode = tCode.tCode {
+                                                        selectedTcode = selectedTCode
+                                                        blueprintViewModel.to = selectedTCode
+                                                    }
+                                                    mailComposeViewModel.suggest = false
+                                                }) {
+                                                    Text(tCode.tCode ?? "Unknown")
+                                                        .foregroundColor(.black)
+                                                        .font(.custom(.poppinsBold, size: 16))
+                                                        .padding()
+                                                        .frame(alignment: .leading)
+                                                        .padding(.leading , 5)
+                                                    
+                                                }
+                                                .buttonStyle(.plain)
+                                            }
+                                        }
+                                        .frame(width: 150)
+                                        .background(Color.white)
+                                        .cornerRadius(8)
+                                        .shadow(radius: 4)
+
+                                        Spacer() // pushes box left within the parent if needed
+                                    }
+                                    .padding(.leading, 20)
+
+                                }
+
+                                Rectangle()
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 1)
+                                    .foregroundColor(themesviewModel.currentTheme.AllGray)
+                            }
+               
+                                
+                                
+                                if blueprintViewModel.isArrow {
+                                    VStack(spacing: 10) {
+                                        HStack {
+                                            Text("CC:")
+                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                .font(.custom(.poppinsRegular, size: 18, relativeTo: .title))
+
+                                            ZStack(alignment: .leading) {
+                                                TextField("", text: $blueprintViewModel.cc)
+                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                    .padding(.leading, 5)
+                                                    .keyboardType(.numbersAndPunctuation)
+                                                    .submitLabel(.done)
+                                                    .focused($isFocused)
+                                                    .onSubmit {
+                                                        isFocused = false
+                                                    }
+                                                    .onChange(of: blueprintViewModel.cc) { newValue in
+                                                        if let intValue = Int(newValue) {
+                                                            if !mailComposeViewModel.tcodeinfo.isEmpty {
+                                                                mailComposeViewModel.tcodeinfo[0].tCode = String(intValue)
+                                                            }
+                                                        } else {
+                                                            if !mailComposeViewModel.tcodeinfo.isEmpty {
+                                                                mailComposeViewModel.tcodeinfo[0].tCode = nil
+                                                            }
+                                                        }
+                                                        if isThreeNumbers(newValue) {
+                                                            mailComposeViewModel.CCsuggest = true
+                                                            mailComposeViewModel.getSerachTcode(searchKey: newValue)
+                                                        }
+                                                        else {
+                                                            mailComposeViewModel.CCsuggest = false
+                                                        }
+                                                    }
+                                                
+                                                if !selectedCCcode.isEmpty {
+                                                    HStack {
+                                                        Text(blueprintViewModel.cc)
+                                                            .foregroundColor(Color.black)
+                                                            .padding(.leading, 5)
+                                                            .font(.custom(.poppinsSemiBold, size: 14))
+                                                           
+                                                        Button(action: {
+                                                            selectedCCcode = ""
+                                                            blueprintViewModel.cc = ""
+                                                        }) {
+                                                            Image(systemName: "xmark")
+                                                                .renderingMode(.template)
+                                                                .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                                        }
+                                                        .padding([.leading , .trailing] , 5)
+
+                                                    }
+                                                    .padding(.all , 5)
+                                                    .background(selectedCCcode.isEmpty ? Color.clear : themesviewModel.currentTheme.attachmentBGColor)
+                                                    .cornerRadius(5)
+                                                    
                                                 }
                                             }
                                         }
-                                        Spacer()
-                                    }
-                                    .overlay(
-                                        HStack {
-                                            Spacer()
-                                            Image("contacts")
-                                                .renderingMode(.template)
-                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                .onTapGesture {
-                                                    isInsertTcode = true
-                                                }
-                                            Button(action: {
-                                                blueprintViewModel.isArrow.toggle()
-                                                print("arrow clicked")
-                                            }, label: {
-                                                Image(blueprintViewModel.isArrow ? "dropup" : "dropdown")
+
+                                        .overlay(
+                                            HStack {
+                                                Spacer()
+                                                Image("contacts")
                                                     .renderingMode(.template)
                                                     .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                    .frame(width: 35, height: 35)
-                                            })
-                                            .padding(.trailing, 20)
+                                                    .onTapGesture {
+                                                        isInsertTcode = true
+                                                    }
+                                                Button(action: {
+                                                    blueprintViewModel.isArrow.toggle()
+                                                    print("arrow clicked")
+                                                }, label: {
+                                                    Image(blueprintViewModel.isArrow ? "dropup" : "dropdown")
+                                                        .renderingMode(.template)
+                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                        .frame(width: 35, height: 35)
+                                                })
+                                                .padding(.trailing, 20)
+                                            }
+                                        )
+
+                                        if mailComposeViewModel.CCsuggest,
+                                           let data = mailComposeViewModel.tcodesuggest?.data {
+                                            HStack(alignment: .top) {
+                                                VStack(alignment: .leading, spacing: 0) {
+                                                    ForEach(data, id: \.self) { tCode in
+                                                        Button(action: {
+                                                            if let selectedTCode = tCode.tCode {
+                                                                selectedCCcode = selectedTCode
+                                                                blueprintViewModel.cc = selectedTCode
+                                                            }
+                                                            mailComposeViewModel.CCsuggest = false
+                                                        }) {
+                                                            Text(tCode.tCode ?? "Unknown")
+                                                                .foregroundColor(.black)
+                                                                .font(.custom(.poppinsBold, size: 16))
+                                                                .padding()
+                                                                .frame(alignment: .leading)
+                                                                .padding(.leading , 5)
+                                                            
+                                                        }
+                                                        .buttonStyle(.plain)
+                                                    }
+                                                }
+                                                .frame(width: 150)
+                                                .background(Color.white)
+                                                .cornerRadius(8)
+                                                .shadow(radius: 4)
+
+                                                Spacer() // pushes box left within the parent if needed
+                                            }
+                                            .padding(.leading, 20)
+
                                         }
-                                    )
+
+                                        Rectangle()
+                                            .frame(maxWidth: .infinity)
+                                            .frame(height: 1)
+                                            .foregroundColor(themesviewModel.currentTheme.AllGray)
+                                    }
+                                    
+                                    VStack(spacing: 10) {
+                                        HStack {
+                                            Text("BCC:")
+                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                .font(.custom(.poppinsRegular, size: 18, relativeTo: .title))
+
+                                            ZStack(alignment: .leading) {
+                                                TextField("", text: $blueprintViewModel.bcc)
+                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                    .padding(.leading, 5)
+                                                    .keyboardType(.numbersAndPunctuation)
+                                                    .submitLabel(.done)
+                                                    .focused($isFocused)
+                                                    .onSubmit {
+                                                        isFocused = false
+                                                    }
+                                                    .onChange(of: blueprintViewModel.bcc) { newValue in
+                                                        if let intValue = Int(newValue) {
+                                                            if !mailComposeViewModel.tcodeinfo.isEmpty {
+                                                                mailComposeViewModel.tcodeinfo[0].tCode = String(intValue)
+                                                            }
+                                                        } else {
+                                                            if !mailComposeViewModel.tcodeinfo.isEmpty {
+                                                                mailComposeViewModel.tcodeinfo[0].tCode = nil
+                                                            }
+                                                        }
+                                                        if isThreeNumbers(newValue) {
+                                                            mailComposeViewModel.BCCsuggest = true
+                                                            mailComposeViewModel.getSerachTcode(searchKey: newValue)
+                                                        }
+                                                        else {
+                                                            mailComposeViewModel.BCCsuggest = false
+                                                        }
+                                                    }
+                                                
+                                                if !selectedBCCcode.isEmpty {
+                                                    HStack {
+                                                        Text(blueprintViewModel.bcc)
+                                                            .foregroundColor(Color.black)
+                                                            .padding(.leading, 5)
+                                                            .font(.custom(.poppinsSemiBold, size: 14))
+                                                           
+                                                        Button(action: {
+                                                            selectedBCCcode = ""
+                                                            blueprintViewModel.bcc = ""
+                                                        }) {
+                                                            Image(systemName: "xmark")
+                                                                .renderingMode(.template)
+                                                                .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                                        }
+                                                        .padding([.leading , .trailing] , 5)
+
+                                                    }
+                                                    .padding(.all , 5)
+                                                    .background(selectedBCCcode.isEmpty ? Color.clear : themesviewModel.currentTheme.attachmentBGColor)
+                                                    .cornerRadius(5)
+                                                    
+                                                }
+                                            }
+                                        }
+
+                                        .overlay(
+                                            HStack {
+                                                Spacer()
+                                                Image("contacts")
+                                                    .renderingMode(.template)
+                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                    .onTapGesture {
+                                                        isInsertTcode = true
+                                                    }
+                                                Button(action: {
+                                                    blueprintViewModel.isArrow.toggle()
+                                                    print("arrow clicked")
+                                                }, label: {
+                                                    Image(blueprintViewModel.isArrow ? "dropup" : "dropdown")
+                                                        .renderingMode(.template)
+                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                        .frame(width: 35, height: 35)
+                                                })
+                                                .padding(.trailing, 20)
+                                            }
+                                        )
+
+                                        if mailComposeViewModel.BCCsuggest,
+                                           let data = mailComposeViewModel.tcodesuggest?.data {
+                                            HStack(alignment: .top) {
+                                                VStack(alignment: .leading, spacing: 0) {
+                                                    ForEach(data, id: \.self) { tCode in
+                                                        Button(action: {
+                                                            if let selectedTCode = tCode.tCode {
+                                                                selectedBCCcode = selectedTCode
+                                                                blueprintViewModel.bcc = selectedTCode
+                                                            }
+                                                            mailComposeViewModel.BCCsuggest = false
+                                                        }) {
+                                                            Text(tCode.tCode ?? "Unknown")
+                                                                .foregroundColor(.black)
+                                                                .font(.custom(.poppinsBold, size: 16))
+                                                                .padding()
+                                                                .frame(alignment: .leading)
+                                                                .padding(.leading , 5)
+                                                            
+                                                        }
+                                                        .buttonStyle(.plain)
+                                                    }
+                                                }
+                                                .frame(width: 150)
+                                                .background(Color.white)
+                                                .cornerRadius(8)
+                                                .shadow(radius: 4)
+
+                                                Spacer() // pushes box left within the parent if needed
+                                            }
+                                            .padding(.leading, 20)
+
+                                        }
+
+                                        Rectangle()
+                                            .frame(maxWidth: .infinity)
+                                            .frame(height: 1)
+                                            .foregroundColor(themesviewModel.currentTheme.AllGray)
+                                    }
+                                }
+                                
+                            VStack(spacing: 5) {
+                                ZStack(alignment: .leading) {
+                                    TextEditor(text:$blueprintViewModel.subject)
+                                        .scrollContentBackground(.hidden)
+                                        .background(themesviewModel.currentTheme.windowBackground)
+                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                        .padding(4)
+                                        .font(.custom(.poppinsLight, size: 14))
+                                    
+                                    if blueprintViewModel.subject.isEmpty {
+                                        Text("Title")
+                                            .font(.custom(.poppinsRegular, size: 20))
+                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                            .padding(.horizontal, 4)
+                                            .padding(.vertical, 8)
+                                            .allowsHitTesting(false)
+                                    }
                                 }
                                 Rectangle()
                                     .frame(maxWidth: .infinity)
                                     .frame(height: 1)
                                     .foregroundColor(themesviewModel.currentTheme.AllGray)
-                                    .padding(.trailing, 20)
-                                
-                                
-                                if blueprintViewModel.isArrow {
-                                    VStack(spacing: 5) {
-                                        HStack {
-                                            Text("Cc:")
-                                                .font(.custom(.poppinsRegular, size: 16, relativeTo: .title))
-                                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                            /*
-                                             TextField("", text: $mailComposeViewModel.cc)
-                                             .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                             */
-                                            HStack {
-                                                ForEach(blueprintViewModel.ccTCodes) { tCode in
-                                                    HStack {
-                                                        Text(tCode.code)
-                                                            .padding(.leading, 5)
-                                                            .padding(.vertical, 4)
-                                                            .cornerRadius(8)
-                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                        Button(action: {
-                                                            blueprintViewModel.removeCcTCode(tCode)
-                                                        }) {
-                                                            Image(systemName: "xmark.circle.fill")
-                                                                .foregroundColor(.gray)
-                                                        }
-                                                        .padding(.trailing,5)
-                                                    }
-                                                    .overlay(
-                                                        RoundedRectangle(cornerRadius: 10)
-                                                            .stroke(Color.gray, lineWidth: 1)
-                                                    )
-                                                }
-                                                
-                                                TextField("", text: $blueprintViewModel.cc)
-                                                    .textFieldStyle(PlainTextFieldStyle())
-                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-//                                                    .onSubmit {
-//                                                        blueprintViewModel.addCcTCode()
-//                                                    }
-                                            }
-                                        }
-                                        .overlay(
-                                            HStack {
-                                                Spacer()
-                                                Image("contacts")
-                                                    .renderingMode(.template)
-                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                    .padding(.trailing, 60)
-                                                    .onTapGesture {
-                                                        isInsertTcode = true
-                                                    }
-                                            }
-                                        )
-                                        Rectangle()
-                                            .frame(maxWidth: .infinity)
-                                            .frame(height: 1)
-                                            .foregroundColor(themesviewModel.currentTheme.AllGray)
-                                            .padding(.trailing, 20)
-                                    }
-                                    
-                                    VStack(spacing: 5) {
-                                        HStack {
-                                            Text("Bcc:")
-                                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                .font(.custom(.poppinsRegular, size: 16, relativeTo: .title))
-                                            /*
-                                             TextField("", text: $mailComposeViewModel.bcc)
-                                             .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                             */
-                                            HStack {
-                                                ForEach(blueprintViewModel.bccTCodes) { tCode in
-                                                    HStack {
-                                                        Text(tCode.code)
-                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                            .padding(.leading, 5)
-                                                            .padding(.vertical, 4)
-                                                            .cornerRadius(8)
-                                                        Button(action: {
-                                                            blueprintViewModel.removeBccTCode(tCode)
-                                                        }) {
-                                                            Image(systemName: "xmark.circle.fill")
-                                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                        }
-                                                        .padding(.trailing,5)
-                                                    }
-                                                    .overlay(
-                                                        RoundedRectangle(cornerRadius: 10)
-                                                            .stroke(themesviewModel.currentTheme.strokeColor, lineWidth: 1)
-                                                    )
-                                                }
-                                                
-                                                TextField("", text: $blueprintViewModel.bcc)
-                                                    .textFieldStyle(PlainTextFieldStyle())
-                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                    .onSubmit {
-                                                        blueprintViewModel.addBccTCode()
-                                                    }
-                                            }
-                                        }
-                                        .overlay(
-                                            HStack {
-                                                Spacer()
-                                                Image("contacts")
-                                                    .renderingMode(.template)
-                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                    .padding(.trailing, 60)
-                                                    .onTapGesture {
-                                                        isInsertTcode = true
-                                                    }
-                                            }
-                                        )
-                                        Rectangle()
-                                            .frame(maxWidth: .infinity)
-                                            .frame(height: 1)
-                                            .foregroundColor(themesviewModel.currentTheme.AllGray)
-                                            .padding(.trailing, 20)
-                                    }
-                                }
-                                
-                                VStack(spacing: 5) {
-                                    HStack {
-                                        Text("Subject")
-                                            .foregroundColor(themesviewModel.currentTheme.textColor)
-                                            .font(.custom(.poppinsRegular, size: 16, relativeTo: .title))
-                                        TextField("", text: $blueprintViewModel.subject)
-                                            .foregroundColor(themesviewModel.currentTheme.textColor)
-                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                    }
-                                    Rectangle()
-                                        .frame(maxWidth: .infinity)
-                                        .frame(height: 1)
-                                        .foregroundColor(themesviewModel.currentTheme.strokeColor)
-                                        .padding(.trailing, 20)
-                                }
+                            }
+
                                 
                                 ZStack(alignment: .leading) {
                                     TextEditor(text: $blueprintViewModel.composeEmail)
@@ -571,32 +773,20 @@ struct BlueprintView: View {
                                         .font(.custom(.poppinsLight, size: 14))
                                     if blueprintViewModel.composeEmail.isEmpty {
                                         Text("Compose email")
-                                            .font(.custom(.poppinsLight, size: 14))
+                                            .font(.custom(.poppinsRegular, size: 20))
                                             .foregroundColor(themesviewModel.currentTheme.textColor)
                                             .padding(.horizontal, 4)
                                             .padding(.vertical, 8)
+                                            .allowsHitTesting(false)
                                     }
                                 }
-                                
-//                                ZStack(alignment: .leading) {
-//                                        Text("Compose email")
-//                                            .font(.custom(.poppinsLight, size: 14))
-//                                            .foregroundColor(themesviewModel.currentTheme.textColor)
-//                                            .padding(.leading, 5)
-//                                            .padding(.vertical, 8)
-//                                    
-//                                }
-//                                .frame(maxWidth: .infinity, alignment: .leading)
-                                //                            Spacer()
-                            }
+                            
                         }
-                        .padding([.top, .bottom ,.trailing], 20 )
-                        .padding(.leading , 30)
+                        .padding([.top, .bottom], 20 )
+                        .padding([.leading , .trailing] , 10)
                     }
-                    
                 }
-                VStack {
-    //                        Spacer().frame(height: 100)
+                
                      HStack {
                          Spacer()
                          RoundedRectangle(cornerRadius: 30)
@@ -612,33 +802,27 @@ struct BlueprintView: View {
                                              blueprintViewModel.isComposeEmail = true
                                          }
                                      Spacer()
-                                         .frame(width: 1, height: 24)
+                                         .frame(width: 1, height: 35)
                                          .background(themesviewModel.currentTheme.inverseIconColor)
                                      Image("dropdown 1")
                                          .foregroundColor(themesviewModel.currentTheme.iconColor)
                                          .onTapGesture {
                                              isQuickAccessVisible = true
-                                             
                                          }
                                  }
                              )
-                             .padding(.trailing, 20)
-                             .padding(.bottom, 20)
+                             .padding([.bottom , .trailing] , 5)
                      }
-                 }
+                 
+                
             }
             .background(themesviewModel.currentTheme.windowBackground)
-            .padding()
-            
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(themesviewModel.currentTheme.strokeColor, lineWidth: 1)
             )
-            .padding([.leading,.trailing], 10)
-            
-        
-
-
+            .padding([.leading,.trailing], 15)
+            .padding(.bottom , 50)
         }
     }
             var lettersView:some View{
@@ -654,10 +838,11 @@ struct BlueprintView: View {
                     Spacer()
                 }
             }
+    
     private func isThreeNumbers(_ input: String) -> Bool {
-            let numbers = input.filter { $0.isNumber }
-            return numbers.count == 3
-        }
+        let numbers = input.filter { $0.isNumber }
+        return numbers.count == 3
+    }
         
     
 }

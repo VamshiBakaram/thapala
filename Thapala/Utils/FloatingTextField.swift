@@ -50,13 +50,15 @@ struct floatingtextfield: View {
 
             if isSecure {
                 SecureField("", text: $text)
-                    .keyboardType(.numberPad)
+                    .keyboardType(.default)
                     .padding(8)
             } else {
                 TextField("", text: $text)
-                    .keyboardType(.numberPad)
+                    .keyboardType(.default)
                     .padding(8)
             }
+            
+            
         }
         .overlay(
             RoundedRectangle(cornerRadius: 8)
@@ -65,8 +67,54 @@ struct floatingtextfield: View {
     }
 }
 
+// ------------------------------------------------------------------------------------------------------------
+
+// ***** placeholder label float on above the border of textfeild
+
+struct floatingTextField: View {
+    var placeHolder: String = ""
+    @ObservedObject var themesviewModel = themesViewModel()
+    @Binding var text: String
+    @FocusState private var isFocused: Bool
+
+    var body: some View {
+        ZStack(alignment: .leading) {
+            // Border
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(
+                    themesviewModel.currentTheme.strokeColor,
+                    lineWidth: (isFocused || !text.isEmpty) ? 2 : 1
+                )
+                .frame(height: 55)
+
+            // Floating label with background masking the border line
+            Text(placeHolder)
+                .font(.custom(.poppinsRegular, size: 14))
+                .background(themesviewModel.currentTheme.windowBackground)
+                .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                .scaleEffect((isFocused || !text.isEmpty) ? 0.8 : 1.0, anchor: .leading)
+                .offset(x: 12, y: (isFocused || !text.isEmpty) ? -28 : 0)
+                .padding(.horizontal, 4)
+                .animation(.easeInOut(duration: 0.2), value: isFocused || !text.isEmpty)
+
+            // TextField
+            TextField("", text: $text)
+                .focused($isFocused)
+                .font(.custom(.poppinsRegular, size: 14))
+                .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                .padding(.horizontal, 12)
+                .frame(height: 55)
+        }
+        .padding(.horizontal, 8)
+    }
+}
+
+
+// ------------------------------------------------------------------------------------------------------------
+
 
 struct Floatingtextfield: View {
+    @StateObject var themesviewModel = themesViewModel()
     @Binding var text: String
     var placeHolder: String
     var allowedCharacter: AllowedCharacter
@@ -76,12 +124,13 @@ struct Floatingtextfield: View {
         ZStack(alignment: .leading) {
             if text.isEmpty {
                 Text(placeHolder)
-                    .foregroundColor(.gray)
+                    .foregroundColor(themesviewModel.currentTheme.textColor)
                     .padding(.leading, 8)
             }
 
             if isSecure {
                 SecureField("", text: $text)
+                    .foregroundColor(themesviewModel.currentTheme.textColor)
                     .keyboardType(.numberPad)
                     .padding(8)
                     .onChange(of: text) { newValue in
@@ -98,7 +147,7 @@ struct Floatingtextfield: View {
         }
         .overlay(
             RoundedRectangle(cornerRadius: 8)
-                .stroke(Color.black, lineWidth: 1)
+                .stroke(themesviewModel.currentTheme.strokeColor, lineWidth: 1)
         )
 //        .padding(.horizontal)
     }

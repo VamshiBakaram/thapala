@@ -24,33 +24,26 @@ struct HomePocketView: View {
                 VStack {
                     VStack{
                         HStack(spacing:20){
-                            AsyncImage(url: URL(string: imageUrl)) { phase in
-                                switch phase {
-                                case .empty:
-                                    ProgressView()
-                                case .success(let image):
-                                    image
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                        .aspectRatio(contentMode: .fit)
-                                        .clipShape(Circle())
-                                        .padding(.leading,20)
-                                case .failure:
-                                    Image("person")
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                        .aspectRatio(contentMode: .fit)
-                                        .clipShape(Circle())
-                                        .padding(.leading,20)
-                                @unknown default:
-                                    EmptyView()
-                                }
-                            }
+                            Image("contactW")
+                                .resizable()
+                                .renderingMode(.template)
+                                .frame(width: 35, height: 35)
+                                .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                .background(
+                                    Circle()
+                                        .fill(themesviewModel.currentTheme.colorPrimary) // Inner background
+                                )
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color.white, lineWidth: 2) // Border
+                                )
+                                .clipShape(Circle())
+                                .padding(.leading, 16)
                             
                             Text("Pocket")
-                            //                            .padding(.leading,20)
                                 .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                                .font(.custom(.poppinsRegular, size: 16, relativeTo: .title))
+                                .font(.custom(.poppinsSemiBold, size: 16, relativeTo: .title))
+                            
                             Spacer()
                             Button(action: {
                                 print("search button pressed")
@@ -68,11 +61,9 @@ struct HomePocketView: View {
                                 iNotificationAppBarView = true
                             }) {
                                 Image("notification")
-                                    .renderingMode(.template)
-                                    .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
-                                    .font(Font.title.weight(.medium))
-                                    .padding(.trailing , 16)
                             }
+                            .padding(.leading,15)
+                            
                             
                             Button(action: {
                                 print("line.3.horizontal button pressed")
@@ -80,32 +71,37 @@ struct HomePocketView: View {
                                     isMenuVisible.toggle()
                                 }
                             }) {
-                                Image(systemName: "line.3.horizontal")
+                                Image("MenuIcon")
                                     .renderingMode(.template)
                                     .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
                                     .font(Font.title.weight(.medium))
                             }
-                            .padding(.trailing,15)
+                            .padding(.leading,15)
+                            .padding(.trailing , 30)
                             
                         }
                         .padding(.top , -reader.size.height * 0.01)
                         
-                        HStack {
-                            ScrollView(.horizontal,showsIndicators: false){
+
                                 HStack{
                                     RoundedRectangle(cornerRadius: 10)
                                         .fill(Color.gray)
-                                        .frame(width: reader.size.width/3 - 10, height: 50)
+                                        .frame(width: max(reader.size.width/3 - 10, 50), height: 50)
                                         .overlay(
                                             Group{
                                                 HStack{
                                                  Image("compose")
+                                                        .renderingMode(.template)
                                                         .frame(width: 20, height: 20)
-                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                        .background(themesviewModel.currentTheme.tabBackground)
+                                                        .padding(5)
+                                                        .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 8)
+                                                                .fill(themesviewModel.currentTheme.tabBackground)
+                                                        )
                                                     VStack{
                                                         Text("tReturns")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                            .font(.custom(.poppinsMedium, size: 14, relativeTo: .title))
                                                             .foregroundColor(themesviewModel.currentTheme.textColor)
                                                     }
                                                 }
@@ -114,19 +110,25 @@ struct HomePocketView: View {
                                     
                                     RoundedRectangle(cornerRadius: 10)
                                         .fill(Color.gray)
-                                        .frame(width: reader.size.width/3 - 10, height: 50)
+                                        .frame(width: max(reader.size.width/3 - 10, 50), height: 50)
                                         .overlay(
                                             Group{
                                                 HStack{
                                                     Image("printIcon")
-                                                       .frame(width: 20, height: 20)
-                                                       .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                       .background(themesviewModel.currentTheme.tabBackground)
+                                                        .renderingMode(.template)
+                                                        .frame(width: 20, height: 20)
+                                                        .padding(5)
+                                                        .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 8)
+                                                                .fill(themesviewModel.currentTheme.tabBackground)
+                                                        )
                                                     
                                                     VStack{
                                                         Text("tTransactions")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                            .font(.custom(.poppinsMedium, size: 14, relativeTo: .title))
                                                             .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                            .lineLimit(1)
                                                     }
                                                 }
                                             }
@@ -135,27 +137,32 @@ struct HomePocketView: View {
                                     
                                     RoundedRectangle(cornerRadius: 10)
                                         .fill(Color.gray)
-                                        .frame(width: reader.size.width/3 - 10, height: 50)
+                                        .frame(width: max(reader.size.width/3 - 10, 50), height: 50)
                                         .overlay(
                                             Group{
                                                 HStack{
                                                     Image("chatBox")
+                                                        .renderingMode(.template)
                                                         .frame(width: 20, height: 20)
-                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                        .background(themesviewModel.currentTheme.tabBackground)
+                                                        .padding(5)
+                                                        .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 8)
+                                                                .fill(themesviewModel.currentTheme.tabBackground)
+                                                        )
                                                     
                                                     VStack{
                                                         Text("tBank")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                            .font(.custom(.poppinsMedium, size: 14, relativeTo: .title))
                                                             .foregroundColor(themesviewModel.currentTheme.textColor)
                                                     }
                                                 }
                                             }
                                         )
                                 }
-                                .padding(.horizontal , 16)
-                            }
-                        }
+                                .padding([.leading,.trailing,],5)
+                                .padding(.bottom , 10)
+                     
                         
                     }
                     .frame(height: reader.size.height * 0.16)
@@ -213,12 +220,14 @@ struct HomePocketView: View {
                 if isMenuVisible{
                     HomeMenuView(isSidebarVisible: $isMenuVisible)
                 }
-
                 
                 if isQuickAccessVisible {
-                        Color.white.opacity(0.8) // Optional: semi-transparent background
+                    ZStack {
+                        Color.gray.opacity(0.3)
                             .ignoresSafeArea()
-                            .blur(radius: 10) // Blur effect for the background
+                            .onTapGesture {
+                                isQuickAccessVisible = false
+                            }
                         QuickAccessView(isQuickAccessVisible: $isQuickAccessVisible)
                             .background(Color.white) // Background color for the Quick Access View
                             .cornerRadius(10)
@@ -227,6 +236,8 @@ struct HomePocketView: View {
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing) // Align at the bottom right
                             .padding([.bottom, .trailing], 20)
                     }
+                }
+                
                 
                 if iNotificationAppBarView {
                     ZStack {

@@ -24,14 +24,22 @@ struct DetailedEmailData: Decodable,Identifiable {
     let parentSubject:String?
     let snoozeAtThread: Int?
     let snoozeThread: Int?
+    let labels: [Labelmailitems]
 
     enum CodingKeys: String, CodingKey {
         case threadID = "threadId"
         case replyToID = "replyToId"
         case subject, body, passwordProtected, passwordHash, passwordHint, scheduledTime, scheduledStatus, draft, sentAt
         case emailID = "emailId"
-        case recipients, attachments,parentSubject , snoozeAtThread , snoozeThread
+        case recipients, attachments,parentSubject , snoozeAtThread , snoozeThread , labels
     }
+}
+
+struct Labelmailitems: Codable, Identifiable {
+    let labelId: Int
+    let labelName: String?
+    
+    var id: Int { labelId}
 }
 
 struct Attachment: Decodable,Hashable {
@@ -53,8 +61,13 @@ struct Recipient: Decodable {
 }
 
 struct EmailUserData: Decodable {
-    let id,tCodeHidden:Int?
-    let tCode, lastname, firstname,profile: String?
+    let id: Int
+    let tCode: String
+    let profile: String?
+    let lastname: String?
+    let userType: String?
+    let firstname: String?
+    let tCodeHidden: Int?
 }
 
 struct DownloFileModel: Decodable {

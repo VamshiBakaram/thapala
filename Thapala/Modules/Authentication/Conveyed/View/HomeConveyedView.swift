@@ -11,6 +11,7 @@ struct HomeConveyedView: View {
     @State private var isMenuVisible = false
     @StateObject var homeConveyedViewModel = HomeConveyedViewModel()
     @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
+    @StateObject private var homeAwaitingViewModel = HomeAwaitingViewModel()
     @StateObject var mailComposeViewModel = MailComposeViewModel()
     @StateObject var themesviewModel = themesViewModel()
     @State private var isSheetVisible = false
@@ -23,42 +24,41 @@ struct HomeConveyedView: View {
     let imageUrl: String
     @Environment(\.presentationMode) var presentationMode
     @State private var iNotificationAppBarView = false
-    
+    @State private var showingDeleteAlert = false
+    @State private var selectedIndices: Set<Int> = []
+    @State private var isSelectAll = false
+    @State private var markAs : Int = 0
     var body: some View {
             GeometryReader{ reader in
-                ZStack{
+                ZStack(alignment: .bottomTrailing) {
                     themesviewModel.currentTheme.windowBackground
                         .ignoresSafeArea()
                     VStack{
                         if homeConveyedViewModel.beforeLongPress{
                             VStack {
                                 HStack(spacing:20){
-                                    AsyncImage(url: URL(string: imageUrl)) { phase in
-                                        switch phase {
-                                        case .empty:
-                                            ProgressView()
-                                        case .success(let image):
-                                            image
-                                                .resizable()
-                                                .frame(width: 40, height: 40)
-                                                .aspectRatio(contentMode: .fit)
-                                                .clipShape(Circle())
-                                                .padding(.leading,20)
-                                        case .failure:
-                                            Image("person")
-                                                .resizable()
-                                                .frame(width: 40, height: 40)
-                                                .aspectRatio(contentMode: .fit)
-                                                .clipShape(Circle())
-                                                .padding(.leading,20)
-                                        @unknown default:
-                                            EmptyView()
-                                        }
-                                    }
+                                    
+                                    Image("contactW")
+                                        .resizable()
+                                        .renderingMode(.template)
+                                        .frame(width: 35, height: 35)
+                                        .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                        .background(
+                                            Circle()
+                                                .fill(themesviewModel.currentTheme.colorPrimary) // Inner background
+                                        )
+                                        .overlay(
+                                            Circle()
+                                                .stroke(Color.white, lineWidth: 2) // Border
+                                        )
+                                        .clipShape(Circle())
+                                        .padding(.leading, 16)
+                                    
                                     Text("Conveyed")
-                                        .padding(.leading,20)
+                                        .padding(.leading,5)
                                         .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                                        .font(.custom(.poppinsRegular, size: 16, relativeTo: .title))
+                                        .font(.custom(.poppinsSemiBold, size: 16, relativeTo: .title))
+                                    
                                     Spacer()
                                     Button(action: {
                                         print("Before isSearchView \(appBarElementsViewModel.isSearch)")
@@ -69,18 +69,15 @@ struct HomeConveyedView: View {
                                             .renderingMode(.template)
                                             .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
                                             .font(Font.title.weight(.medium))
-                                            .padding(.trailing , 16)
                                     }
+                                    .padding(.leading,15)
                                     
                                     Button(action: {
-                                        print("bell button pressed")
                                         iNotificationAppBarView = true
                                     }) {
                                         Image("notification")
-                                            .renderingMode(.template)
-                                            .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
-                                            .font(Font.title.weight(.medium))
                                     }
+                                    .padding(.leading,15)
                                     
                                     Button(action: {
                                         print("line.3.horizontal button pressed")
@@ -88,12 +85,12 @@ struct HomeConveyedView: View {
                                             isMenuVisible.toggle()
                                         }
                                     }) {
-                                        Image(systemName: "line.3.horizontal")
+                                        Image("MenuIcon")
                                             .renderingMode(.template)
                                             .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
                                             .font(Font.title.weight(.medium))
                                     }
-                                    .padding(.trailing,15)
+                                    .padding([.leading,.trailing],15)
                                     
                                 }
                                 .padding(.top , -reader.size.height * 0.01)
@@ -115,16 +112,19 @@ struct HomeConveyedView: View {
                                             Group{
                                                 HStack{
                                                     Image("emailG")
+                                                        .resizable()
                                                         .renderingMode(.template)
                                                         .frame(width: 20, height: 20)
-                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                        .background(themesviewModel.currentTheme.tabBackground)
+                                                        .padding(5)
+                                                        .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 8)
+                                                                .fill(themesviewModel.currentTheme.tabBackground)
+                                                        )
                                                     VStack(alignment:.leading){
-                                                        Text("Emails")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                        Text("tSent")
+                                                            .font(.custom(.poppinsMedium, size: 14, relativeTo: .title))
                                                             .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                        //   Text("Obtained")
-                                                        //  .font(.custom(.poppinsLight, size: 10, relativeTo: .title))
                                                     }
                                                 }
                                             }
@@ -145,15 +145,19 @@ struct HomeConveyedView: View {
                                             Group{
                                                 HStack{
                                                     Image("printIcon")
-                                                        .frame(width: 20, height: 20)
-                                                        .background(themesviewModel.currentTheme.tabBackground)
-                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                        .resizable()
+                                                        .renderingMode(.template)
+                                                        .frame(width: 15, height: 15)
+                                                        .padding(5)
+                                                        .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 8)
+                                                                .fill(themesviewModel.currentTheme.tabBackground)
+                                                        )
                                                     VStack(alignment:.leading){
-                                                        Text("Letters")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                        Text("tDispatch")
+                                                            .font(.custom(.poppinsMedium, size: 14, relativeTo: .title))
                                                             .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                        //   Text("Letters")
-                                                        //   .font(.custom(.poppinsLight, size: 10, relativeTo: .title))
                                                     }
                                                 }
                                             }
@@ -174,15 +178,20 @@ struct HomeConveyedView: View {
                                             Group{
                                                 HStack{
                                                     Image("chatBox")
-                                                        .frame(width: 20, height: 20)
-                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                        .background(themesviewModel.currentTheme.tabBackground)
+                                                        .resizable()
+                                                        .renderingMode(.template)
+                                                        .frame(width: 15, height: 15)
+                                                        .padding(5)
+                                                        .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 8)
+                                                                .fill(themesviewModel.currentTheme.tabBackground)
+                                                        )
                                                     VStack(alignment:.leading){
-                                                        Text("Shipments")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                        Text("Acknowledgement")
+                                                            .font(.custom(.poppinsMedium, size: 14, relativeTo: .title))
                                                             .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                        // Text("Letters")
-                                                        // .font(.custom(.poppinsLight, size: 10, relativeTo: .title))
+                                                            .lineLimit(1)
                                                     }
                                                 }
                                             }
@@ -208,47 +217,63 @@ struct HomeConveyedView: View {
                             //                            }
                             
                         }else{
-                            VStack{
-                                HStack{
-                                    Button {
-                                        homeConveyedViewModel.beforeLongPress.toggle()
-                                    } label: {
-                                        Image(systemName: "arrow.backward")
-                                            .foregroundColor(Color.black)
+                                VStack{
+                                    HStack{
+                                        Spacer()
+                                        Text("\(selectedIndices.count) Selected")
+                                            .font(.custom(.poppinsRegular, size: 16))
+                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                        
+                                        Spacer()
+                                        
+                                        Button {
+                                            print("cancel works")
+                                            homeConveyedViewModel.beforeLongPress = true
+                                            homeConveyedViewModel.selectedThreadIDs = []
+                                            selectedIndices = []
+                                            
+                                        } label: {
+                                            Text("Cancel")
+                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                        }
+                                        .padding(.trailing,15)
                                     }
                                     
-                                    Text("1 Selected")
-                                        .font(.custom(.poppinsRegular, size: 16))
-                                        .foregroundColor(Color(red: 51/255, green: 51/255, blue: 51/255))
-                                    Spacer()
+                                    HStack {
+                                        Text("Select All")
+                                            .font(.custom("Poppins-Bold", size: 16))
+                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                            .fontWeight(.bold)
+                                            .padding(.leading, 16)
+
+                                        Button(action: {
+                                            print("select All clicked")
+                                                if selectedIndices.count == homeConveyedViewModel.conveyedEmailData.count {
+                                                    selectedIndices.removeAll()
+                                                    homeConveyedViewModel.selectedThreadIDs = []
+                                                    print("homeConveyedViewModel.selectedThreadIDs  \(homeConveyedViewModel.selectedThreadIDs )")
+                                                    isSelectAll = false
+                                                } else {
+                                                    selectedIndices = Set(homeConveyedViewModel.conveyedEmailData.compactMap { $0.threadID })
+                                                    isSelectAll = true
+                                                    homeConveyedViewModel.selectedThreadIDs = Array(selectedIndices)
+                                                    print("homeConveyedViewModel.selectedThreadIDs  \(homeConveyedViewModel.selectedThreadIDs )")
+                                                }
+                                        }) {
+                                            Image(systemName: isSelectAll ? "checkmark.square.fill" : "square")
+                                                .resizable()
+                                                .frame(width: 20, height: 20)
+                                                .padding(.top, 1)
+                                                .padding(.trailing, 5)
+                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                        }
+
+                                        Spacer()
+                                    }
+                                    .padding(.leading,15)
+                                    
                                 }
-                                .padding(.leading,15)
-                                
-                                HStack{
-                                    Image("unchecked")
-                                    Image("dropdown")
-                                    Text("Select All")
-                                        .font(.custom(.poppinsRegular, size: 14))
-                                        .foregroundColor(Color(red: 112/255, green: 112/255, blue: 112/255))
-                                    Spacer()
-                                }
-                                .padding(.leading,15)
-                                HStack(spacing: 40) {
-                                    Image(systemName: "square.and.arrow.down")
-                                        .foregroundColor(Color(red: 39/255, green: 50/255, blue: 64/255))
-                                    Image(systemName: "trash")
-                                        .foregroundColor(Color(red: 39/255, green: 50/255, blue: 64/255))
-                                    Image(systemName: "envelope")
-                                        .foregroundColor(Color(red: 39/255, green: 50/255, blue: 64/255))
-                                    Image(systemName: "clock")
-                                        .foregroundColor(Color(red: 39/255, green: 50/255, blue: 64/255))
-                                    Image(systemName: "folder")
-                                        .foregroundColor(Color(red: 39/255, green: 50/255, blue: 64/255))
-                                    Spacer()
-                                }
-                                .padding([.leading,.top],15)
-                            }
-                            .padding(.top,15)
+                            
                         }
                         
                         
@@ -271,110 +296,291 @@ struct HomeConveyedView: View {
                                         .background(themesviewModel.currentTheme.windowBackground)
                                     }else{
                                         VStack{
-                                            List(homeConveyedViewModel.conveyedEmailData) { data in
-                                                HStack {
-                                                    let image = data.senderProfile ?? "person"
-                                                    AsyncImage(url: URL(string: image)) { phase in
-                                                        switch phase {
-                                                        case .empty:
-                                                            ProgressView()
-                                                                .foregroundColor(.white)
-                                                        case .success(let image):
-                                                            image
-                                                                .resizable()
-                                                                .frame(width: 34, height: 34)
-                                                                .padding([.trailing, .leading], 5)
-                                                                .aspectRatio(contentMode: .fit)
-                                                                .clipShape(Circle())
-                                                        case .failure:
-                                                            Image("person")
-                                                                .resizable()
-                                                                .frame(width: 34, height: 34)
-                                                                .foregroundColor(.blue)
-                                                        @unknown default:
-                                                            EmptyView()
-                                                        }
-                                                    }
-                                                    
-                                                    VStack(alignment: .leading) {
-                                                        Text("\(data.firstname ?? "") \(data.lastname ?? "")")
-                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                            .font(.custom("Poppins-Medium", size: 16))
-                                                        Text(data.subject ?? "No Subject")
-                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                            .font(.custom("Poppins-Regular", size: 14))
-                                                            .lineLimit(1)
-                                                    }
-                                                    
-                                                    Spacer()
-                                                    
-                                                    VStack(alignment: .trailing) {
-                                                        if let unixTimestamp = data.sentAt, let istDateStringFromTimestamp = convertToIST(dateInput: unixTimestamp) {
-                                                            Text(istDateStringFromTimestamp)
-                                                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                                .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
-                                                        }
-                                                        
-                                                        Image(data.starred == 1 ? "star" : "emptystar")
-                                                            .resizable()
-                                                            .renderingMode(.template)
-                                                            .frame(width: 14, height: 14)
-                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                            .onTapGesture {
-                                                                if let threadID = data.threadID,
-                                                                   let index = homeConveyedViewModel.conveyedEmailData.firstIndex(where: { $0.threadID == threadID }) {
-                                                                    homeConveyedViewModel.conveyedEmailData[index].starred = (homeConveyedViewModel.conveyedEmailData[index].starred == 1) ? 0 : 1
-                                                                    homeConveyedViewModel.getStarredEmail(selectedEmail: threadID)
+                                            if homeConveyedViewModel.beforeLongPress {
+                                                List(homeConveyedViewModel.conveyedEmailData) { data in
+                                                    VStack(spacing: 0) {
+                                                        HStack {
+                                                            let image = data.senderProfile ?? "person"
+                                                            AsyncImage(url: URL(string: image)) { phase in
+                                                                switch phase {
+                                                                case .empty:
+                                                                    Image("contactW")
+                                                                        .resizable()
+                                                                        .renderingMode(.template)
+                                                                        .scaledToFill()
+                                                                        .frame(width: 30, height: 30)
+                                                                        .background(themesviewModel.currentTheme.colorAccent)
+                                                                        .clipShape(Circle())
+                                                                        .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                                        .padding(.leading, 10)
+                                                                        .contentShape(Rectangle())
+                                                                case .success(let image):
+                                                                    image
+                                                                        .resizable()
+                                                                        .frame(width: 34, height: 34)
+                                                                        .padding([.trailing,.leading],5)
+                                                                        .aspectRatio(contentMode: .fit)
+                                                                        .clipShape(Circle())
+                                                                case .failure:
+                                                                    Image("contactW")
+                                                                        .resizable()
+                                                                        .renderingMode(.template)
+                                                                        .scaledToFill()
+                                                                        .frame(width: 30, height: 30)
+                                                                        .background(themesviewModel.currentTheme.colorAccent)
+                                                                        .clipShape(Circle())
+                                                                        .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                                        .padding(.leading, 10)
+                                                                        .contentShape(Rectangle())
+                                                                @unknown default:
+                                                                    EmptyView()
                                                                 }
                                                             }
-                                                    }
-                                                }
-                                                .listRowBackground(themesviewModel.currentTheme.windowBackground)
-                                                .onTapGesture {
-                                                    conveyedView = true
-                                                    homeConveyedViewModel.selectedID = data.threadID
-                                                    homeConveyedViewModel.passwordHint = data.passwordHint
-                                                    print("Before setting isEmailScreen: \(homeConveyedViewModel.isEmailScreen)")
-                                                    homeConveyedViewModel.isEmailScreen = true
-                                                    print("After setting isEmailScreen: \(homeConveyedViewModel.isEmailScreen)")
-                                                    print("conveyedView  \(conveyedView)")
-                                                    print("homeConveyedViewModel.selectedID  \(homeConveyedViewModel.selectedID)")
-                                                    print("homeConveyedViewModel.passwordHint  \(homeConveyedViewModel.passwordHint)")
-                                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                                        print("Delayed check isEmailScreen: \(homeConveyedViewModel.isEmailScreen)")
-                                                    }
-                                                }
-                                                .gesture(
-                                                    LongPressGesture(minimumDuration: 1.0)
-                                                        .onEnded { _ in
-                                                            withAnimation {
-                                                                homeConveyedViewModel.beforeLongPress = false
+                                                            
+                                                            VStack(alignment: .leading) {
+                                                                HStack {
+                                                                    Text("\(data.firstname ?? "")")
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .font(.custom(.poppinsMedium, size: 16))
+                                                                    
+                                                                    if data.hasDraft == 1 {
+                                                                        Text("Draft")
+                                                                            .foregroundColor(Color.red)
+                                                                            .font(.custom(.poppinsMedium, size: 14))
+                                                                            .padding(.leading , 5)
+                                                                    }
+                                                                }
+                                                                Text(data.subject ?? "No Subject")
+                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                    .font(.custom(.poppinsMedium, size: 14))
+                                                                    .lineLimit(1)
+                                                            }
+                                                            
+                                                            Spacer()
+                                                            
+                                                            VStack(alignment: .trailing) {
+                                                                if let unixTimestamp = data.sentAt, let istDateStringFromTimestamp = convertToIST(dateInput: unixTimestamp) {
+                                                                    Text(istDateStringFromTimestamp)
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
+                                                                        .padding(.trailing , 10)
+                                                                }
+                                                                
+                                                                Image(data.starred == 1 ? "star" : "emptystar")
+                                                                    .resizable()
+                                                                    .renderingMode(.template)
+                                                                    .frame(width: 20, height: 20)
+                                                                    .padding(.trailing , 10)
+                                                                    .foregroundColor(data.starred == 1 ? themesviewModel.currentTheme.colorAccent : themesviewModel.currentTheme.iconColor)
+                                                                    .onTapGesture {
+                                                                        if let threadID = data.threadID,
+                                                                           let index = homeConveyedViewModel.conveyedEmailData.firstIndex(where: { $0.threadID == threadID }) {
+                                                                            homeConveyedViewModel.conveyedEmailData[index].starred = (homeConveyedViewModel.conveyedEmailData[index].starred == 1) ? 0 : 1
+                                                                            homeConveyedViewModel.getStarredEmail(selectedEmail: threadID)
+                                                                            homeConveyedViewModel.selectedID = data.threadID
+                                                                            homeConveyedViewModel.selectedThreadIDs.append(data.threadID ?? 0)
+                                                                            print("homeConveyedViewModel.selectedID   \(homeConveyedViewModel.selectedID)")
+                                                                            print("homeConveyedViewModel.selectedThreadIDs   \(homeConveyedViewModel.selectedThreadIDs)")
+                                                                        }
+                                                                    }
                                                             }
                                                         }
-                                                )
-                                                .swipeActions(edge: .leading) {
-                                                    Button {
-                                                        homeConveyedViewModel.selectedThreadIDs.append(data.threadID ?? 0)
-                                                        homeConveyedViewModel.deleteEmailFromConvey()
-                                                    } label: {
-                                                        deleteIcon
-                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                        .padding(.vertical, 8)
+                                                        .onTapGesture {
+                                                            conveyedView = true
+                                                            homeConveyedViewModel.beforeLongPress = false
+                                                            homeConveyedViewModel.selectedID = data.threadID
+                                                            homeConveyedViewModel.passwordHint = data.passwordHint
+                                                            homeConveyedViewModel.isEmailScreen = true
+                                                            homeConveyedViewModel.selectedThreadIDs.append(data.threadID ?? 0)
+                                                            print("homeConveyedViewModel.selectedID \(homeConveyedViewModel.selectedID)")
+                                                            print("homeConveyedViewModel.selectedThreadIDs \(homeConveyedViewModel.selectedThreadIDs)")
+                                                        }
+                                                        .gesture(
+                                                            LongPressGesture(minimumDuration: 1.0)
+                                                                .onEnded { _ in
+                                                                    withAnimation {
+                                                                        homeConveyedViewModel.beforeLongPress = false
+                                                                        selectedIndices.insert(data.threadID ?? 0)
+                                                                        homeConveyedViewModel.selectedID = data.threadID
+                                                                        homeConveyedViewModel.selectedThreadIDs.append(data.threadID ?? 0)
+                                                                        print("homeConveyedViewModel.selectedID \(homeConveyedViewModel.selectedID)")
+                                                                        print("homeConveyedViewModel.selectedThreadIDs \(homeConveyedViewModel.selectedThreadIDs)")
+                                                                    }
+                                                                }
+                                                        )
+                                                        .swipeActions(edge: .leading) {
+                                                            Button {
+                                                                homeConveyedViewModel.selectedThreadIDs.append(data.threadID ?? 0)
+                                                                homeConveyedViewModel.deleteEmailFromConvey()
+                                                            } label: {
+                                                                deleteIcon
+                                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                            }
+                                                            .tint(Color.themeColor)
+                                                        }
+                                                        .swipeActions(edge: .trailing) {
+                                                            Button {
+                                                                isSheetVisible = true
+                                                            } label: {
+                                                                moreIcon
+                                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                            }
+                                                            .tint(Color(red: 255/255, green: 128/255, blue: 128/255))
+                                                        }
+                                                        
+                                                        Divider()
+                                                            .frame(maxWidth: .infinity)
+                                                            .frame(height: 1)
+                                                            .background(themesviewModel.currentTheme.strokeColor.opacity(0.2))
+                                                        //                                                            .padding(.leading, 60) // Optional: Indent divider
                                                     }
-                                                    .tint(Color.themeColor)
+                                                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                                    .listRowBackground(themesviewModel.currentTheme.windowBackground)
                                                 }
-                                                .swipeActions(edge: .trailing) {
-                                                    Button {
-                                                        isSheetVisible = true
-                                                    } label: {
-                                                        moreIcon
-                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                    }
-                                                    .tint(Color(red: 255/255, green: 128/255, blue: 128/255))
-                                                }
-                                                
+                                                .listStyle(PlainListStyle())
+                                                .scrollContentBackground(.hidden)
                                             }
-                                            .listStyle(PlainListStyle())
-                                            .scrollContentBackground(.hidden)
+                                            
+                                            else {
+                                                ZStack(alignment: .bottomTrailing) {
+                                                List(homeConveyedViewModel.conveyedEmailData) { data in
+                                                    VStack {
+                                                        HStack {
+                                                            Button(action: {
+                                                                print("selected check image")
+                                                                if let threadId = data.threadID {
+                                                                    if selectedIndices.contains(threadId) {
+                                                                        selectedIndices.remove(threadId)
+                                                                        homeConveyedViewModel.selectedThreadIDs.removeAll { $0 == threadId }
+                                                                    } else {
+                                                                        selectedIndices.insert(threadId)
+                                                                        print("selected threadId \(threadId)")
+                                                                        homeConveyedViewModel.selectedThreadIDs.append(threadId)
+                                                                        print("single check homeConveyedViewModel.selectedThreadIDs  \(homeConveyedViewModel.selectedThreadIDs)")
+                                                                    }
+                                                                    isSelectAll = selectedIndices.count == homeConveyedViewModel.conveyedEmailData.count
+                                                                }
+                                                            }) {
+                                                                Image(selectedIndices.contains(data.threadID ?? -1) ?  "selected" : "contactW")
+                                                                    .resizable()
+                                                                    .renderingMode(.template)
+                                                                    .scaledToFill()
+                                                                    .frame(width: 30, height: 30)
+                                                                    .background(themesviewModel.currentTheme.colorAccent)
+                                                                    .clipShape(Circle())
+                                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                                    .padding(.leading, 10)
+                                                                    .contentShape(Rectangle())
+                                                            }
+                                                            
+                                                            VStack(alignment: .leading) {
+                                                                HStack {
+                                                                    Text("\(data.firstname ?? "")")
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .font(.custom(.poppinsMedium, size: 16))
+                                                                    
+                                                                    if data.hasDraft == 1 {
+                                                                        Text("Draft")
+                                                                            .foregroundColor(Color.red)
+                                                                            .font(.custom(.poppinsMedium, size: 14))
+                                                                            .padding(.leading , 5)
+                                                                    }
+                                                                }
+                                                                Text(data.subject ?? "No Subject")
+                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                    .font(.custom(.poppinsMedium, size: 14))
+                                                                    .lineLimit(1)
+                                                            }
+                                                            
+                                                            Spacer()
+                                                            
+                                                            VStack(alignment: .trailing) {
+                                                                if let unixTimestamp = data.sentAt, let istDateStringFromTimestamp = convertToIST(dateInput: unixTimestamp) {
+                                                                    Text(istDateStringFromTimestamp)
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
+                                                                        .padding(.trailing , 10)
+                                                                }
+                                                                
+                                                                Image(data.starred == 1 ? "star" : "emptystar")
+                                                                    .resizable()
+                                                                    .renderingMode(.template)
+                                                                    .frame(width: 20, height: 20)
+                                                                    .foregroundColor(data.starred == 1 ? themesviewModel.currentTheme.colorAccent : themesviewModel.currentTheme.iconColor)
+                                                                    .padding(.trailing , 10)
+                                                                    .onTapGesture {
+                                                                        if let threadID = data.threadID,
+                                                                           let index = homeConveyedViewModel.conveyedEmailData.firstIndex(where: { $0.threadID == threadID }) {
+                                                                            homeConveyedViewModel.conveyedEmailData[index].starred = (homeConveyedViewModel.conveyedEmailData[index].starred == 1) ? 0 : 1
+                                                                            homeConveyedViewModel.getStarredEmail(selectedEmail: threadID)
+                                                                        }
+                                                                    }
+                                                            }
+                                                        }
+                                                        Divider()
+                                                            .frame(maxWidth: .infinity)
+                                                            .frame(height: 1)
+                                                            .background(themesviewModel.currentTheme.strokeColor.opacity(0.2))
+                                                            .padding(.top,2)
+                                                            .padding(.bottom,2)
+                                                        //                                                            .padding(.leading, 60) // Optional: Indent divider
+                                                    }
+                                                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                                    .listRowBackground(themesviewModel.currentTheme.windowBackground)
+                                                }
+                                                .listStyle(PlainListStyle())
+                                                .scrollContentBackground(.hidden)
+                                                
+                                                
+                                                HStack {
+//                                                    Spacer()
+                                                    RoundedRectangle(cornerRadius: 30)
+                                                        .fill(themesviewModel.currentTheme.colorPrimary)
+                                                        .frame(width: 150, height: 48)
+                                                        .overlay(
+                                                            HStack {
+                                                                Text("New Email")
+                                                                    .font(.custom(.poppinsBold, size: 14))
+                                                                    .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                                                    .padding(.trailing, 8)
+                                                                    .onTapGesture {
+                                                                        homeConveyedViewModel.isComposeEmail = true
+                                                                    }
+                                                                Spacer()
+                                                                    .frame(width: 1, height: 24)
+                                                                    .background(themesviewModel.currentTheme.inverseIconColor)
+                                                                Image("dropdown 1")
+                                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                                    .onTapGesture {
+                                                                        isQuickAccessVisible = true
+                                                                        
+                                                                    }
+                                                            }
+                                                        )
+                                                        .padding(.trailing, 20)
+                                                        .padding(.bottom, 20)
+                                                }
+                                                .padding(.bottom , 30)
+                                                
+                                                
+                                                
+                                                HStack{
+                                                    Button(action: {
+                                                        print("delete clicked")
+                                                        showingDeleteAlert = true
+                                                    }){
+                                                        Image("delete")
+                                                            .renderingMode(.template)
+                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                            .frame(width: 30 , height: 30)
+                                                            .padding(.leading ,20 )
+                                                    }
+                                                    Spacer()
+                                                }
+                                                .background(themesviewModel.currentTheme.colorPrimary)
+                                            }
+                                          }
                                         }
                                     }
                                 }
@@ -417,8 +623,54 @@ struct HomeConveyedView: View {
                         //                        }
                         //                        .padding(.trailing,15)
                         //                    }
-                        VStack {
-                            //                        Spacer().frame(height: 100)
+                        if homeConveyedViewModel.beforeLongPress{
+//                                HStack {
+//                                    RoundedRectangle(cornerRadius: 30)
+//                                        .fill(themesviewModel.currentTheme.colorPrimary)
+//                                        .frame(width: 150, height: 48)
+//                                        .overlay(
+//                                            HStack {
+//                                                Text("New Email")
+//                                                    .font(.custom(.poppinsBold, size: 14))
+//                                                    .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+//                                                    .padding(.trailing, 8)
+//                                                    .onTapGesture {
+//                                                        homeConveyedViewModel.isComposeEmail = true
+//                                                    }
+//                                                Spacer()
+//                                                    .frame(width: 1, height: 24)
+//                                                    .background(themesviewModel.currentTheme.inverseIconColor)
+//                                                Image("dropdown 1")
+//                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+//                                                    .onTapGesture {
+//                                                        isQuickAccessVisible = true
+//                                                        
+//                                                    }
+//                                            }
+//                                        )
+//                                        .padding(.trailing, 20)
+//                                        .padding(.bottom, 20)
+//                                }
+                            
+                            TabViewNavigator()
+                                .frame(height: 40)
+                                .padding(.bottom , 10)
+                            
+                        }
+
+                        
+                        
+                    }
+                    .toast(message: $homeConveyedViewModel.error)
+                    .background(themesviewModel.currentTheme.windowBackground)
+                    .onAppear{
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                            print("conveyed view appears")
+                            homeConveyedViewModel.getConveyedEmailData()
+                        }
+                    }
+                    
+                    if homeConveyedViewModel.beforeLongPress{
                             HStack {
                                 Spacer()
                                 RoundedRectangle(cornerRadius: 30)
@@ -447,38 +699,30 @@ struct HomeConveyedView: View {
                                     .padding(.trailing, 20)
                                     .padding(.bottom, 20)
                             }
-                        }
+                            .padding(.bottom, 50)
                         
-                        TabViewNavigator()
-                            .frame(height: 40)
-                            .padding(.bottom , 10)
                         
                     }
-                    .toast(message: $homeConveyedViewModel.error)
-                    .background(themesviewModel.currentTheme.windowBackground)
-                    .onAppear{
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                            print("conveyed view appears")
-                            homeConveyedViewModel.getConveyedEmailData()
-                        }
-                    }
-                    
                     
                     if isMenuVisible{
                         HomeMenuView(isSidebarVisible: $isMenuVisible)
                     }
                     
                     if isQuickAccessVisible {
-                        Color.white.opacity(0.8) // Optional: semi-transparent background
-                            .ignoresSafeArea()
-                            .blur(radius: 10) // Blur effect for the background
-                        QuickAccessView(isQuickAccessVisible: $isQuickAccessVisible)
-                            .background(Color.white) // Background color for the Quick Access View
-                            .cornerRadius(10)
-                            .shadow(radius: 10)
-                            .padding()
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing) // Align at the bottom right
-                            .padding([.bottom, .trailing], 20)
+                        ZStack {
+                            Color.gray.opacity(0.3)
+                                .ignoresSafeArea()
+                                .onTapGesture {
+                                    isQuickAccessVisible = false
+                                }
+                            QuickAccessView(isQuickAccessVisible: $isQuickAccessVisible)
+                                .background(Color.white) // Background color for the Quick Access View
+                                .cornerRadius(10)
+                                .shadow(radius: 10)
+                                .padding()
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing) // Align at the bottom right
+                                .padding([.bottom, .trailing], 20)
+                        }
                     }
                     
                     if iNotificationAppBarView {
@@ -502,6 +746,31 @@ struct HomeConveyedView: View {
                             .animation(.easeInOut, value: iNotificationAppBarView)
                         }
                     }
+                    
+                    if showingDeleteAlert {
+                        ZStack {
+                            Color.gray.opacity(0.5) // Dimmed background
+                                .ignoresSafeArea()
+                                .transition(.opacity)
+                            // Centered DeleteNoteAlert
+                            DeleteAlert(isPresented: $showingDeleteAlert) {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.001) {
+                                    print("delete alert")
+                                    homeAwaitingViewModel.deleteEmailFromAwaiting(threadIDS: homeConveyedViewModel.selectedThreadIDs)
+                                    showingDeleteAlert = false
+                                    homeConveyedViewModel.beforeLongPress = true
+                                }
+                                
+                                homeConveyedViewModel.conveyedEmailData.removeAll { item in
+                                    homeConveyedViewModel.selectedThreadIDs.contains(item.id)
+                                }
+                                
+                                selectedIndices.removeAll()
+                            }
+                        }
+                        .transition(.scale)
+                    }
+
                     
                     
                 }
@@ -539,7 +808,7 @@ struct HomeConveyedView: View {
 
 
                 .navigationDestination(isPresented: $homeConveyedViewModel.isEmailScreen) {
-                    MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, awaitingView: $AwaitingView, emailId: homeConveyedViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars).toolbar(.hidden)
+                    MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, awaitingView: $AwaitingView, emailId: homeConveyedViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars, markAs: $markAs).toolbar(.hidden)
                 }
                 //
                 .sheet(isPresented: $isSheetVisible, content: {
@@ -576,7 +845,6 @@ struct HomeConveyedView: View {
                     },
                                       starAction: {
                         print("star")
-                        //   homeAwaitingViewModel.getStarredEmail(selectedEmail: homeAwaitingViewModel.selectedID ?? 0)
                         dismissSheet()
                     },
                                       snoozeAction: {

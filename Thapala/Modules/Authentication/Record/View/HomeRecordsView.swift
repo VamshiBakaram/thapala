@@ -77,7 +77,7 @@ struct HomeRecordsView: View {
     @State private var subfoldersViewType: String = ""
     @State private var isSearchView = false
     @State private var iNotificationAppBarView = false
-
+    @State private var markAs : Int = 0
     func subFolderIndex(for name: String) -> Int? {
         return subFolders.firstIndex(of: name)
     }
@@ -1926,7 +1926,7 @@ struct HomeRecordsView: View {
                     .toolbar(.hidden)
             }
             .navigationDestination(isPresented: $homeRecordsViewModel.isEmailScreen) {
-                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, awaitingView: $AwaitingView , emailId: homeRecordsViewModel.selectedId ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars).toolbar(.hidden)
+                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, awaitingView: $AwaitingView , emailId: homeRecordsViewModel.selectedId ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars, markAs: $markAs).toolbar(.hidden)
                 
             }
             

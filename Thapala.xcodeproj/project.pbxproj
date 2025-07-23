@@ -51,6 +51,8 @@
 		7BCFC7582BDF882500839D05 /* SecurityQuestionsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCFC7572BDF882500839D05 /* SecurityQuestionsModel.swift */; };
 		D307910D2D9E627900AE0200 /* consoleModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D307910C2D9E627900AE0200 /* consoleModelData.swift */; };
 		D30CE6402DB22F4D009B215F /* WebSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D30CE63F2DB22F4D009B215F /* WebSocketManager.swift */; };
+		D30DAC632E1C01D200F556A7 /* bottomSheetModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D30DAC622E1C01D200F556A7 /* bottomSheetModelData.swift */; };
+		D322C41D2E16A95500332A67 /* BottomSnoozeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D322C41C2E16A95500332A67 /* BottomSnoozeView.swift */; };
 		D323C5E02DD487680064566F /* StarredmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D323C5DF2DD487680064566F /* StarredmailView.swift */; };
 		D3283ADE2C36BE0B00CA88FB /* SaveEmailToDraftsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3283ADD2C36BE0B00CA88FB /* SaveEmailToDraftsModel.swift */; };
 		D3283AEA2CFF08CA0036F139 /* ClockTimePicker in Frameworks */ = {isa = PBXBuildFile; productRef = D3283AE92CFF08CA0036F139 /* ClockTimePicker */; };
@@ -60,8 +62,6 @@
 		D32A21A92C22B44F00765A23 /* HomeRecordsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32A21A82C22B44F00765A23 /* HomeRecordsViewModel.swift */; };
 		D32A21AB2C22E08D00765A23 /* CreateNewFolderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32A21AA2C22E08C00765A23 /* CreateNewFolderView.swift */; };
 		D32A21AD2C22E0B700765A23 /* CreateNewFolderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32A21AC2C22E0B700765A23 /* CreateNewFolderViewModel.swift */; };
-		D32A21B32C22EC4D00765A23 /* HomePocketView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32A21B22C22EC4D00765A23 /* HomePocketView.swift */; };
-		D32A21B52C22ECA600765A23 /* HomePocketViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32A21B42C22ECA600765A23 /* HomePocketViewModel.swift */; };
 		D32FD1052BFF72B4004D8AA0 /* ResetForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32FD1042BFF72B4004D8AA0 /* ResetForgotPasswordView.swift */; };
 		D32FD1072BFF7310004D8AA0 /* ResetForgotPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32FD1062BFF7310004D8AA0 /* ResetForgotPasswordViewModel.swift */; };
 		D33094212C00C6630016F32F /* SecurityAnswerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33094202C00C6630016F32F /* SecurityAnswerModel.swift */; };
@@ -190,6 +190,8 @@
 		D3D757C62C2469FD00F127FF /* HomeConveyedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3D757C52C2469FD00F127FF /* HomeConveyedView.swift */; };
 		D3D757C82C246A1F00F127FF /* HomeConveyedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3D757C72C246A1F00F127FF /* HomeConveyedViewModel.swift */; };
 		D3D94EBC2CB536E000CC3C8F /* ConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3D94EBB2CB536CE00CC3C8F /* ConsoleView.swift */; };
+		D3E3BAC92E28DBDE008F2D5F /* HomePocketView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E3BAC82E28DBDE008F2D5F /* HomePocketView.swift */; };
+		D3E3BACC2E28DBFC008F2D5F /* HomePocketViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E3BACB2E28DBFC008F2D5F /* HomePocketViewModel.swift */; };
 		D3E75B992CEF479C00038827 /* DiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E75B982CEF479C00038827 /* DiaryView.swift */; };
 		D3E75B9B2CEF56E400038827 /* DiaryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E75B9A2CEF56E400038827 /* DiaryModel.swift */; };
 		D3F6D7982C74BEC200AC27B2 /* EmailOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F6D7972C74BEC200AC27B2 /* EmailOptionsView.swift */; };
@@ -243,6 +245,8 @@
 		7BCFC7572BDF882500839D05 /* SecurityQuestionsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityQuestionsModel.swift; sourceTree = "<group>"; };
 		D307910C2D9E627900AE0200 /* consoleModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = consoleModelData.swift; sourceTree = "<group>"; };
 		D30CE63F2DB22F4D009B215F /* WebSocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketManager.swift; sourceTree = "<group>"; };
+		D30DAC622E1C01D200F556A7 /* bottomSheetModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bottomSheetModelData.swift; sourceTree = "<group>"; };
+		D322C41C2E16A95500332A67 /* BottomSnoozeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSnoozeView.swift; sourceTree = "<group>"; };
 		D323C5DF2DD487680064566F /* StarredmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarredmailView.swift; sourceTree = "<group>"; };
 		D3283ADD2C36BE0B00CA88FB /* SaveEmailToDraftsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveEmailToDraftsModel.swift; sourceTree = "<group>"; };
 		D32A219E2C22AE0000765A23 /* AddNewGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewGroupView.swift; sourceTree = "<group>"; };
@@ -251,8 +255,6 @@
 		D32A21A82C22B44F00765A23 /* HomeRecordsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRecordsViewModel.swift; sourceTree = "<group>"; };
 		D32A21AA2C22E08C00765A23 /* CreateNewFolderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNewFolderView.swift; sourceTree = "<group>"; };
 		D32A21AC2C22E0B700765A23 /* CreateNewFolderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNewFolderViewModel.swift; sourceTree = "<group>"; };
-		D32A21B22C22EC4D00765A23 /* HomePocketView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePocketView.swift; sourceTree = "<group>"; };
-		D32A21B42C22ECA600765A23 /* HomePocketViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePocketViewModel.swift; sourceTree = "<group>"; };
 		D32FD1042BFF72B4004D8AA0 /* ResetForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetForgotPasswordView.swift; sourceTree = "<group>"; };
 		D32FD1062BFF7310004D8AA0 /* ResetForgotPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetForgotPasswordViewModel.swift; sourceTree = "<group>"; };
 		D33094202C00C6630016F32F /* SecurityAnswerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityAnswerModel.swift; sourceTree = "<group>"; };
@@ -377,6 +379,8 @@
 		D3D757C52C2469FD00F127FF /* HomeConveyedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeConveyedView.swift; sourceTree = "<group>"; };
 		D3D757C72C246A1F00F127FF /* HomeConveyedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeConveyedViewModel.swift; sourceTree = "<group>"; };
 		D3D94EBB2CB536CE00CC3C8F /* ConsoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleView.swift; sourceTree = "<group>"; };
+		D3E3BAC82E28DBDE008F2D5F /* HomePocketView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePocketView.swift; sourceTree = "<group>"; };
+		D3E3BACB2E28DBFC008F2D5F /* HomePocketViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePocketViewModel.swift; sourceTree = "<group>"; };
 		D3E75B982CEF479C00038827 /* DiaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryView.swift; sourceTree = "<group>"; };
 		D3E75B9A2CEF56E400038827 /* DiaryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DiaryModel.swift; path = Thapala/Modules/Authentication/Planner/DiaryModel.swift; sourceTree = SOURCE_ROOT; };
 		D3F6D7972C74BEC200AC27B2 /* EmailOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailOptionsView.swift; sourceTree = "<group>"; };
@@ -508,10 +512,10 @@
 				D398A6612CB557D30069CCD7 /* Info */,
 				D3D94EB72CB536A300CC3C8F /* Console */,
 				D34AAD672C2A93EA006C2507 /* Blueprint */,
+				D3E3BAC62E28DB7D008F2D5F /* Pocket */,
 				D392CF082C255E6F00636ACC /* Planner */,
 				D3D757C12C24669F00F127FF /* Conveyed */,
 				D3D757B72C24294A00F127FF /* PostBox */,
-				D32A21AE2C22EC0300765A23 /* Pocket */,
 				D32A21A22C22B3F700765A23 /* Record */,
 				D368BB2E2C21A33000AE2C7F /* Residence */,
 				D38241C42C13496E001CFF9E /* MailCompose */,
@@ -804,39 +808,6 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		D32A21AE2C22EC0300765A23 /* Pocket */ = {
-			isa = PBXGroup;
-			children = (
-				D32A21B12C22EC1500765A23 /* Model */,
-				D32A21B02C22EC0D00765A23 /* ViewModel */,
-				D32A21AF2C22EC0900765A23 /* View */,
-			);
-			path = Pocket;
-			sourceTree = "<group>";
-		};
-		D32A21AF2C22EC0900765A23 /* View */ = {
-			isa = PBXGroup;
-			children = (
-				D32A21B22C22EC4D00765A23 /* HomePocketView.swift */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		D32A21B02C22EC0D00765A23 /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-				D32A21B42C22ECA600765A23 /* HomePocketViewModel.swift */,
-			);
-			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		D32A21B12C22EC1500765A23 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
 		D33094222C00DBE80016F32F /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -1045,6 +1016,7 @@
 				D363A76C2DD3164300D42A2F /* MoveTo.swift */,
 				D363A76E2DD3206F00D42A2F /* MoreSheet.swift */,
 				D363A7702DD3476C00D42A2F /* postBoxMoreSheet.swift */,
+				D322C41C2E16A95500332A67 /* BottomSnoozeView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1060,6 +1032,7 @@
 		D363A7672DD3080800D42A2F /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				D30DAC622E1C01D200F556A7 /* bottomSheetModelData.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1653,6 +1626,39 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		D3E3BAC62E28DB7D008F2D5F /* Pocket */ = {
+			isa = PBXGroup;
+			children = (
+				D3E3BACD2E28DC11008F2D5F /* ModelData */,
+				D3E3BAC72E28DBB1008F2D5F /* View */,
+				D3E3BACA2E28DBED008F2D5F /* ViewModel */,
+			);
+			path = Pocket;
+			sourceTree = "<group>";
+		};
+		D3E3BAC72E28DBB1008F2D5F /* View */ = {
+			isa = PBXGroup;
+			children = (
+				D3E3BAC82E28DBDE008F2D5F /* HomePocketView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		D3E3BACA2E28DBED008F2D5F /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				D3E3BACB2E28DBFC008F2D5F /* HomePocketViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		D3E3BACD2E28DC11008F2D5F /* ModelData */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ModelData;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1782,6 +1788,7 @@
 				D38229772CC7B7A900BB1235 /* SnoozedMailsModel.swift in Sources */,
 				7BC5AD4F2BE0E6D90017D67F /* PicktCodeViewModel.swift in Sources */,
 				D3513E552DAE78FA005979A4 /* NotificationConsoleModelData.swift in Sources */,
+				D30DAC632E1C01D200F556A7 /* bottomSheetModelData.swift in Sources */,
 				D355F0232CC143190025391D /* StarredMailsView.swift in Sources */,
 				D37CA8E82C05E576000DE3C5 /* HomeMenuModel.swift in Sources */,
 				D38F3BF52CC8C6ED004FCB0C /* HomeDirectoryView.swift in Sources */,
@@ -1841,7 +1848,11 @@
 				D384E2DF2C16FE370044E631 /* SendEmailsModel.swift in Sources */,
 				D33B17912D93CF480011AED8 /* trashViewModel.swift in Sources */,
 				D3D47DCE2DA90DE6003B7387 /* GeneralConsoleModelData.swift in Sources */,
+<<<<<<< HEAD
 				D32A21B52C22ECA600765A23 /* HomePocketViewModel.swift in Sources */,
+=======
+				7BFAAF292C64872400A4D021 /* PostBoxViewModel.swift in Sources */,
+>>>>>>> 434797578b5597fdc9244ce67f2bcbe3464a757c
 				7B0F7FB82BD766D400BE2F5A /* FloatingTextField.swift in Sources */,
 				D392CF192C25A32600636ACC /* AddEventViewModel.swift in Sources */,
 				D3C8170C2DB79CF900BB0359 /* themesViewModel.swift in Sources */,
@@ -1886,6 +1897,7 @@
 				D38241BD2C1343D9001CFF9E /* ComposeEmailEncripted.swift in Sources */,
 				D3A8A1632E0021990046D36D /* SearchView.swift in Sources */,
 				D36963802DE5CFC90034F3E9 /* threeDotsModelData.swift in Sources */,
+				D3E3BACC2E28DBFC008F2D5F /* HomePocketViewModel.swift in Sources */,
 				7BCFC74D2BDF803700839D05 /* VerifyOTPViewModel.swift in Sources */,
 				D398A6642CB557F80069CCD7 /* InfoView.swift in Sources */,
 				D36222482C1187AB00D3B222 /* MailFullView.swift in Sources */,
@@ -1897,7 +1909,6 @@
 				7BC5AD592BE0F1590017D67F /* ChangePasswordViewModel.swift in Sources */,
 				D38229732CC7ACB000BB1235 /* LabelledMailsModel.swift in Sources */,
 				D3D94EBC2CB536E000CC3C8F /* ConsoleView.swift in Sources */,
-				D32A21B32C22EC4D00765A23 /* HomePocketView.swift in Sources */,
 				D38241C32C134664001CFF9E /* CreateLabelViewModel.swift in Sources */,
 				D3C08F872CE8D32C00F2BD50 /* draftView.swift in Sources */,
 				D374BE162C7871E600317058 /* MoveToFolderView.swift in Sources */,
@@ -1909,10 +1920,12 @@
 				D38C7F862C0F3CEF001FB36D /* HomeEmailsModel.swift in Sources */,
 				D33B178F2D93CE250011AED8 /* trashModelData.swift in Sources */,
 				D3A048A22C7F10BF0091B35A /* ReplyEmailViewModel.swift in Sources */,
+				D322C41D2E16A95500332A67 /* BottomSnoozeView.swift in Sources */,
 				D363A76B2DD308E100D42A2F /* BottomSheetViewModel.swift in Sources */,
 				7B545E372BDFAF15006CB8E1 /* QuestionsView.swift in Sources */,
 				D3391E282DB1167900135836 /* chatBoxView.swift in Sources */,
 				D363A7692DD3085A00D42A2F /* CreateTagLabel.swift in Sources */,
+				D3E3BAC92E28DBDE008F2D5F /* HomePocketView.swift in Sources */,
 				7B0F7FBD2BD7673300BE2F5A /* LoginViewModel.swift in Sources */,
 				D3D757BC2C24297900F127FF /* HomePostboxView.swift in Sources */,
 				D38241C12C13463D001CFF9E /* CreateLabelView.swift in Sources */,

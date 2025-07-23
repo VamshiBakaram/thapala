@@ -17,6 +17,7 @@ struct PasswordProtectedAccessView: View {
     @State private var PostBoxView: Bool = false
     @State private var SnoozedView: Bool = false
     @State private var AwaitingView: Bool = false
+    @State private var markAs : Int = 0
     var body: some View {
         ZStack{
             Color(red: 0, green: 0, blue: 0)
@@ -78,7 +79,7 @@ struct PasswordProtectedAccessView: View {
             .padding(.horizontal, 25)
         }
         .navigationDestination(isPresented: $passwordProtectedAccessViewModel.isPasswordProtected) {
-            MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView, conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, awaitingView: $AwaitingView, emailId: emailId, passwordHash: passwordProtectedAccessViewModel.password, StarreEmail: $mailComposeViewModel.mailStars).toolbar(.hidden)
+            MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView, conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, awaitingView: $AwaitingView, emailId: emailId, passwordHash: passwordProtectedAccessViewModel.password, StarreEmail: $mailComposeViewModel.mailStars, markAs: $markAs).toolbar(.hidden)
         }
         .toast(message: $passwordProtectedAccessViewModel.error)
     }

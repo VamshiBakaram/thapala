@@ -37,6 +37,8 @@ class MailComposeViewModel:ObservableObject{
     @Published var attachments: String = ""
     @Published var isArrow: Bool = false
     @Published var suggest: Bool = false
+    @Published var CCsuggest: Bool = false
+    @Published var BCCsuggest: Bool = false
     @Published var isEmailSend: Bool = false
     @Published var isPasswordProtected:Bool = false
     @Published var isSubMenu:Bool = false
@@ -53,7 +55,7 @@ class MailComposeViewModel:ObservableObject{
     @Published var EmailUserdata : EmailUser?
     @Published var mailFullView: Bool = false
     @Published var mailStars: Int = 0
-    
+    @State private var markAs : Int = 0
 //    @Published var SenderUserData : EmailUser? // for thread id
         
 

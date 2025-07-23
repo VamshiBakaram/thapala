@@ -18,8 +18,28 @@ struct LabelledMailsModel: Codable {
 struct LabelledMailsDataModel: Codable, Identifiable {
     let labelId: Int
     let labelName: String
-    var isChecked: Bool = false
+    var isChecked: Bool = false // Default when decoding
 
     var id: Int { labelId }
+
+    private enum CodingKeys: String, CodingKey {
+        case labelId
+        case labelName
+        case isChecked
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        labelId = try container.decode(Int.self, forKey: .labelId)
+        labelName = try container.decode(String.self, forKey: .labelName)
+        isChecked = try container.decodeIfPresent(Bool.self, forKey: .isChecked) ?? false
+    }
+
+    init(labelId: Int, labelName: String, isChecked: Bool = false) {
+        self.labelId = labelId
+        self.labelName = labelName
+        self.isChecked = isChecked
+    }
 }
+
 

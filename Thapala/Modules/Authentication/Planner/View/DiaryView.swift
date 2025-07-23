@@ -1189,6 +1189,7 @@ struct BottomTagSheetView: View {
     @Binding var isclicked: Bool
     @State var newid:Int = 0
     @State private var isDiaryTagActive: Bool = false
+    @State private var HomeawaitingViewVisible: Bool = false
     var body: some View {
         ZStack {
             // Main BottomTagSheetView content
@@ -1375,7 +1376,7 @@ struct BottomTagSheetView: View {
             }
 
             if isCreateLabelVisible {
-                createLabelView(iscreatelabelvisible: $isCreateLabelVisible, Textfill: $Textfill)
+                createLabelView(iscreatelabelvisible: $isCreateLabelVisible, Textfill: $Textfill , HomeawaitingVisible: $HomeawaitingViewVisible)
                     .transition(.move(edge: .bottom)) // Smooth transition
                     .animation(.easeInOut)
             }
@@ -1820,75 +1821,82 @@ extension Color {
 //    }
 //}
 
-struct createLabelView: View {
-    @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @Binding var iscreatelabelvisible: Bool
-//    @State private var Textfill: String = ""
-    @Binding var Textfill: String
-
-    var body: some View {
-        ZStack {
-            Color.white // Set the entire screen's background color
-                .ignoresSafeArea() // Ensure the color extends to the edges of the screen
-            
-            VStack {
-                HStack(alignment: .top) {
-                    // Left-aligned close button
-                    Button(action: {
-                        Textfill = ""
-                        iscreatelabelvisible = false
-                    }, label: {
-                        Image("wrongmark")
-                    })
-                    .padding(.leading, 16)
-                    .frame(height: 44) // Ensure consistent height
-                    
-                    // Centered "Create Label" text
-                    Spacer()
-                    Text("Create Label")
-                        .padding() // Add padding around the text
-                        .frame(height: 44) // Ensure consistent height
-                        .foregroundColor(Color.black)
-                    Spacer()
-                    
-                    // Conditionally display "Create" text
-                    if Textfill.count >= 1 {
-                        Text("Create")
-                            .padding() // Add padding around the text
-                            .frame(height: 44) // Ensure consistent height
-                            .foregroundColor(Color.blue)
-                            .padding(.trailing, 16)
-                            .onTapGesture {
-                                homePlannerViewModel.CreateLabelDiary(title: Textfill)
-                                print("CreateLabelDiary")
-                                iscreatelabelvisible = false
-                                Textfill = ""
-                            }
-                    }
-                }
-                .frame(maxWidth: .infinity) // Stretch HStack to full width
-
-                VStack(alignment: .leading) {
-                    Text("Name")
-                        .padding() // Add padding around the text
-                        .padding(.top, 10) // Add top padding
-                        .padding(.leading, 16)
-                        .foregroundColor(Color.black) // Correct color modifier
-                    
-                    TextField("", text: $Textfill)
-                        .padding()
-                        .background(Color(red: 238/255, green: 238/255, blue: 238/255, opacity: 2))
-                        .cornerRadius(8) // Rounded corners
-                        .padding(.horizontal)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading) // Make the VStack take up full width and align content to the leading
-
-                Spacer() // Push content up to fill space below
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity) // Fill the entire screen
-        }
-    }
-}
+//struct createLabelView: View {
+//    @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
+//    @StateObject var themesviewModel = themesViewModel()
+//    @Binding var iscreatelabelvisible: Bool
+////    @State private var Textfill: String = ""
+//    @Binding var Textfill: String
+//
+//    var body: some View {
+//        ZStack {
+//            themesviewModel.currentTheme.windowBackground
+//                .ignoresSafeArea() // Ensure the color extends to the edges of the screen
+//            
+//            VStack {
+//                HStack(alignment: .top) {
+//                    // Left-aligned close button
+//                    Button(action: {
+//                        Textfill = ""
+//                        iscreatelabelvisible = false
+//                    }, label: {
+//                        Image("wrongmark")
+//                            .renderingMode(.template)
+//                            .frame(width: 30 , height: 30)
+//                            .padding(.leading , 16)
+//                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+//                    })
+//                    .padding(.leading, 16)
+//                    .frame(height: 44) // Ensure consistent height
+//                    
+//                    // Centered "Create Label" text
+//                    Spacer()
+//                    Text("Create Label")
+//                        .padding() // Add padding around the text
+//                        .frame(height: 44) // Ensure consistent height
+//                        .foregroundColor(themesviewModel.currentTheme.textColor)
+//                    Spacer()
+//                    
+//                    // Conditionally display "Create" text
+//                    if Textfill.count >= 1 {
+//                        Text("Create")
+//                            .padding() // Add padding around the text
+//                            .frame(height: 44) // Ensure consistent height
+//                            .foregroundColor(themesviewModel.currentTheme.AllGray)
+//                            .padding(.trailing, 16)
+//                            .onTapGesture {
+//                                homePlannerViewModel.CreateLabelDiary(title: Textfill)
+//                                print("CreateLabelDiary")
+//                                iscreatelabelvisible = false
+//                                Textfill = ""
+//                            }
+//                    }
+//                }
+//                .frame(maxWidth: .infinity) // Stretch HStack to full width
+//
+//                VStack(alignment: .leading) {
+//                    Text("Name")
+//                        .padding() // Add padding around the text
+//                        .padding(.top, 10) // Add top padding
+//                        .padding(.leading, 16)
+//                        .foregroundColor(themesviewModel.currentTheme.textColor)
+//                    
+//                    TextField("", text: $Textfill)
+//                        .padding()
+//                        .foregroundColor(themesviewModel.currentTheme.textColor)
+//                        .background(themesviewModel.currentTheme.attachmentBGColor)
+//                        .cornerRadius(8) // Rounded corners
+//                        .padding(.horizontal)
+//                }
+//                .frame(maxWidth: .infinity, alignment: .leading) // Make the VStack take up full width and align content to the leading
+//
+//                Spacer() // Push content up to fill space below
+//            }
+//            .frame(maxWidth: .infinity, maxHeight: .infinity)
+//            .background(themesviewModel.currentTheme.windowBackground)
+//        }
+//    }
+//}
 
 struct DialogView<Content: View>: View {
     let title: String

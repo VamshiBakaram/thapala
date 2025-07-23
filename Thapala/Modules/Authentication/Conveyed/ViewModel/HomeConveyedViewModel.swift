@@ -22,11 +22,10 @@ class HomeConveyedViewModel:ObservableObject{
     @Published var conveyedEmailData:[ConveyedData] = []
     @Published var conveyedEmailCounaData:Count?
     @Published var selectedThreadIDs: [Int] = []
-
     
     func getConveyedEmailData() {
         self.isLoading = true
-        let endUrl = "\(EndPoint.allEmails)page=1&pageSize=10&status=conveyed"
+        let endUrl = "\(EndPoint.allEmails)page=1&pageSize=30&status=conveyed"
         NetworkManager.shared.request(type: ConveyedModel.self, endPoint: endUrl, httpMethod: .get,isTokenRequired: true) { [weak self]result in
             guard let self = self else { return }
             switch result {
