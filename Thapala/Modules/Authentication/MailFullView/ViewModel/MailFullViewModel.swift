@@ -62,9 +62,9 @@ class MailFullViewModel: ObservableObject {
         }
     }
     
-    func deleteEmailFromAwaiting(emailId:[Int]) {
+    func deleteEmailFromAwaiting(emailId: [Int]) {
         self.isLoading = true
-        let params = DeleteEmailpayload(
+        let params = DeleteEmailPayload(
             ids: emailId
         )
         let endUrl = "\(EndPoint.deleteEmailAwaiting)"
@@ -123,9 +123,11 @@ class MailFullViewModel: ObservableObject {
 //        }
 //    }
 
-    func markEmailAsUnRead(emailId: Int) {
+    func markEmailAsUnRead(emailId: [Int]) {
         self.isLoading = true
-        let params = ["ids": [emailId]]
+        let params = IdsPayload (
+            ids: emailId
+        )
         NetworkManager.shared.request(type: MarkAsReadEmailModel.self, endPoint: EndPoint.markAsUnReadEmail, httpMethod: .put, parameters: params, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -153,9 +155,11 @@ class MailFullViewModel: ObservableObject {
         }
     }
     
-    func markEmailAsRead(emailId: Int) {
+    func markEmailAsRead(emailId: [Int]) {
         self.isLoading = true
-        let params = ["ids": [emailId]]
+        let params = IdsPayload (
+            ids: emailId
+        )
         NetworkManager.shared.request(type: MarkAsReadEmailModel.self, endPoint: EndPoint.markAsReadEmail, httpMethod: .put, parameters: params, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
             switch result {

@@ -290,7 +290,7 @@ struct HomeMenuView: View {
         case "Conveyed":
             return AnyView(HomeConveyedView(imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person"))
         case "Postbox":
-            return AnyView(HomePostboxView(imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person", notificationTime: $notificationTime, selectedID: 0, emailId: 0, passwordHash: ""))
+            return AnyView(HomePostboxView(imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person", selectedID: 0, emailId: 0, passwordHash: ""))
         case "Planner":
             return AnyView(HomePlannerView())
         case "Pocket":

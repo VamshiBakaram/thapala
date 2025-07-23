@@ -45,7 +45,7 @@ struct HomeDraftsDataModel: Decodable, Identifiable, Hashable {
     let status: Status?
     let type: TypeEnum?
     let userID: Int?
-    let labels: [label]?
+    let labels: [QueueLabelItems]?
     let subject, body: String?
     let firstName: String?
     let lastName: String?
@@ -70,6 +70,7 @@ struct HomeDraftsDataModel: Decodable, Identifiable, Hashable {
     }
 }
 
+
 enum Status: String, Decodable {
     case draft = "draft"
     case scheduled = "scheduled"
@@ -78,6 +79,12 @@ enum Status: String, Decodable {
 enum TypeEnum: String, Decodable {
     case from = "from"
     case to = "to"
+}
+
+struct QueueLabelItems: Decodable, Hashable {
+    let labelId: Int
+    let labelName: String
+    var id: Int { labelId } // For Identifiable
 }
 
 struct Recipients: Decodable, Hashable {
@@ -91,13 +98,6 @@ struct RecipientUser: Decodable, Hashable {
     let lastname: String
     let firstname: String
     let tCodeHidden: Int
-}
-
-
-// Placeholder for Label structure if not already defined:
-struct label: Decodable, Hashable {
-    let id: Int
-    let name: String
 }
 
 
@@ -200,3 +200,41 @@ struct label: Decodable, Hashable {
 //    let firstname: String
 //    let tCodeHidden: Int
 //}
+
+
+//-----------------------------------------------
+// create Label post APi
+
+struct CreateLabelResponse: Codable {
+    let message: String
+    let data: Labeldata
+}
+
+// The `data` object inside the response
+struct Labeldata: Codable, Identifiable {
+    let id: Int
+    let userId: Int
+    let labelName: String
+    let updatedAt: String
+    let createdAt: String
+}
+
+// create label pay load
+
+struct CreateLabelRequest: Codable {
+    let labelName: String
+}
+
+
+//------------------------------------------------
+
+// Apply Label post APi
+struct ApplyLabelResponse: Codable {
+    let message: String
+}
+
+// payload
+struct ApplyLabelRequest: Codable {
+    let labelIds: [Int]
+    let threadIds: [Int]
+}

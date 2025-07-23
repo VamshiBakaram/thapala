@@ -28,6 +28,7 @@ class BlueprintViewModel:ObservableObject{
     @Published var composeEmail: String = ""
     @Published var tCodes: [tCode] = []
     @Published var suggest: Bool = false
+    @Published var tcodesuggest: TcodeSuggest?
     @Published var isArrow: Bool = false
     @Published var tcodeinfo: [TcodeData] = []
     @Published var beforeLongPress: Bool = true
@@ -53,15 +54,15 @@ class BlueprintViewModel:ObservableObject{
                 switch result {
                 case .success(let response):
                     self.userdatum = response.userData
+                    self.error = response.message
+                    print("success message: \(response.message)")
                 case .failure(let error):
                     switch error {
                     case .error(let message):
-                        self.error = message
+                        self.error = "Add atleast One Tcode"
                         print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
                     }
                 }
             }

@@ -19,6 +19,7 @@ class HomePostboxViewModel:ObservableObject{
     @Published var ContactsList: [contact] = []
     @Published var ChatContacts: [chatContacts] = []
     @Published var GetChatMessage: [ChatMessage] = []
+    @Published var selectedThreadIDs: [Int] = []
     @Published var beforeLongPress: Bool = true
     @Published var selectedID: Int? = nil
     @Published var passwordHint: String? = ""
@@ -36,7 +37,7 @@ class HomePostboxViewModel:ObservableObject{
     
     func getPostEmailData() {
         self.isLoading = true
-        let endUrl = "\(EndPoint.allEmails)page=1&pageSize=10&status=postbox"
+        let endUrl = "\(EndPoint.allEmails)page=1&pageSize=30&status=postbox"
         NetworkManager.shared.request(type: PostboxModel.self, endPoint: endUrl, httpMethod: .get,isTokenRequired: true) { [weak self]result in
             guard let self = self else { return }
             switch result {

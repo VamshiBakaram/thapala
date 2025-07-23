@@ -131,38 +131,8 @@ struct draftView: View {
                                                 .offset(y: 25) // Adjust this for spacing between the TextField and list
                                             }
                                             .zIndex(1) // Ensure this appears above other elements in the ZStack
-                                        }                             }
-                                    
-                                    
-                                    
-                                    
-                                    
-                                    //                                .padding()
-                                    
-                                    
-                                    // Helper function to check if the text contains at least 3 numbers
-                                    //                                func isThreeNumbers(_ text: String) -> Bool {
-                                    //                                    return text.count >= 3
-                                    //                                }
-                                    
-                                    
-                                    //                                VStack {
-                                    //                                            // Text showing the currently selected option
-                                    ////                                            Text(selectedItem)
-                                    ////                                                .font(.title)
-                                    //
-                                    //                                            // Picker view (dropdown)
-                                    //                                            Picker("", selection: $selectedItem) { // Removed the label text
-                                    //                                                ForEach(items, id: \.self) { item in
-                                    //                                                    Text(item)
-                                    //                                                }
-                                    //                                            }
-                                    //                                            .pickerStyle(MenuPickerStyle()) // Dropdown style
-                                    ////                                            .padding()
-                                    ////                                            .background(RoundedRectangle(cornerRadius: 8).stroke(Color.gray))
-                                    ////                                            .padding()
-                                    //                                        }
-                                    //                                        .padding()
+                                        }
+                                    }
                                     
                                     
                                 }
@@ -472,6 +442,7 @@ struct draftView: View {
             
             .toast(message: $mailComposeViewModel.error)
                 .onAppear {
+                    print("draft view appears")
                     if mailComposeViewModel.detailedEmailData.isEmpty {
                         print("getFullEmail(emailId: id)")
                         mailComposeViewModel.getFullEmail(emailId: id)

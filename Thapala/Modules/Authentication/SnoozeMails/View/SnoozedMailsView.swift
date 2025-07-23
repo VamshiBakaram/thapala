@@ -19,7 +19,7 @@ struct SnoozedMailsView:View{
     @State private var PostBoxView: Bool = false
     @State private var SnoozedView: Bool = false
     @State private var AwaitingView: Bool = false
-    
+    @State private var markAs : Int = 0
     var body: some View {
         GeometryReader{ reader in
             ZStack {
@@ -340,9 +340,9 @@ struct SnoozedMailsView:View{
         }
         .navigationDestination(isPresented: $snoozedMailsViewModel.isEmailScreen) {
             if $snoozedMailsViewModel.passwordHint != nil{
-                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, awaitingView: $AwaitingView, emailId: snoozedMailsViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars).toolbar(.hidden)
+                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, awaitingView: $AwaitingView, emailId: snoozedMailsViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars, markAs: $markAs).toolbar(.hidden)
             }else{
-                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, awaitingView: $AwaitingView, emailId: snoozedMailsViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars).toolbar(.hidden)
+                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, awaitingView: $AwaitingView, emailId: snoozedMailsViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars,markAs: $markAs).toolbar(.hidden)
             }
         }
     }
@@ -459,7 +459,6 @@ struct SnoozedMailsView:View{
                 
                 HStack(spacing:50) {
                     Button(action: {
-                       // homeAwaitingViewModel.deleteEmailFromAwaiting()
                     }) {
                         Image(systemName: "trash")
                             .frame(width: 25, height: 25)
@@ -506,7 +505,7 @@ struct SnoozedMailsView:View{
             }
         }
         .navigationDestination(isPresented: $snoozedMailsViewModel.isEmailScreen) {
-            MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, awaitingView: $AwaitingView, emailId: snoozedMailsViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars).toolbar(.hidden)
+            MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, awaitingView: $AwaitingView, emailId: snoozedMailsViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars,markAs: $markAs).toolbar(.hidden)
            }
     }
     
@@ -623,7 +622,6 @@ struct SnoozedMailsView:View{
                 .scrollContentBackground(.hidden)
                 HStack(spacing:50) {
                     Button(action: {
-                       // homeAwaitingViewModel.deleteEmailFromAwaiting()
                     }) {
                         Image(systemName: "trash")
                             .frame(width: 25, height: 25)

@@ -36,13 +36,19 @@ struct Emaildata: Codable, Identifiable {
     let tCode: String?
     let senderProfile: String?
     let attachments: [attachments]
-    let labels: [String]
+    let labels: [LabelItems]
     let emailCountInThread: Int
     let hasDraft: Int
 }
 
 struct EmailCount: Codable {
     let totalCount: Int
+}
+
+struct LabelItems: Codable, Identifiable, Equatable {
+    let labelId: Int
+    let labelName: String
+    var id: Int { labelId } // For Identifiable
 }
 
 struct attachments: Codable {

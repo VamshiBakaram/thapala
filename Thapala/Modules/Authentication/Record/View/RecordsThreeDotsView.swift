@@ -35,7 +35,7 @@ struct RecordsThreeDotsView: View {
     @State private var isMoreVisible: Bool = true
     @State private var DetailsViewVisible: Bool = false
     @State private var renameview: Bool = false
-
+    @State private var selectedIndices: Set<Int> = []
     
     var body: some View {
         ZStack {
@@ -182,7 +182,7 @@ struct RecordsThreeDotsView: View {
                     
                     VStack {
                         Spacer()
-                        MoveTo(isMoveToSheetVisible: $isMoveSheetvisible)
+                        MoveTo(isMoveToSheetVisible: $isMoveSheetvisible, selectedThreadID: $mailIDArray, selectedIndices: $selectedIndices)
                             .transition(.move(edge: .bottom))
                             .animation(.easeInOut, value: isMoveSheetvisible)
                         

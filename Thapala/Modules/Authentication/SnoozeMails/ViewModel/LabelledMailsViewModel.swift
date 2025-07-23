@@ -12,7 +12,6 @@ class LabelledMailsViewModel: ObservableObject {
     @Published var selectedLabelID: [Int] = [] // bottom tag
     @Published var selectedLabelNames: [String] = []
     @Published var labelledMailsDataModel:[LabelledMailsDataModel] = []
-    
 //    init() {
 //        self.getLabelledEmailData()
 //    }

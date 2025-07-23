@@ -81,7 +81,7 @@ class NetworkManager: NSObject {
                     return
                 case -1001:
                     DispatchQueue.main.async {
-                        completionHandler(.failure(.error(error: "Time out, please try again")))
+                        completionHandler(.failure(.error(error: "Time out connection server issue, please try again")))
                     }
                     return
                 default:break

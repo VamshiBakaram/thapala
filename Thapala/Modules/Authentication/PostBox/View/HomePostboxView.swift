@@ -14,7 +14,7 @@ struct HomePostboxView: View {
     @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
     @StateObject var mailComposeViewModel = MailComposeViewModel()
     @StateObject var themesviewModel = themesViewModel()
-    @State private var emailStarred: Int = 0
+//    @State private var emailStarred: Int = 0
     @State private var isSheetVisible = false
     @State private var isStarred: Bool = false // Track starred state
     @State private var isQuickAccessVisible = false
@@ -33,50 +33,49 @@ struct HomePostboxView: View {
     @State private var showingDeleteAlert = false
     @State private var isMoreSheetvisible: Bool = false
     @State private var isTagsheetvisible: Bool = false
-    @State private var isNotificationVisible: Bool = false
+    @State private var issnoozesheetvisible: Bool = false
+    @State private var isSnoozeSheetvisible: Bool = false
     @State private var isViewActive: Bool = false
-    @Binding var notificationTime: Int?
+    @State private var notificationTime: Int = 0
     var selectedID: Int
     let emailId: Int
     let passwordHash: String
     @State private var EmailStarred : Int = 0
     @State private var snoozeTime : Int = 0
-    @State private var selectedMailID: [Int] = []
     @State private var isPostBoxMailViewActive:Bool = false
+    @State private var markAs : Int = 0
+    @State private var HomeawaitingViewVisible: Bool = false
+    @State private var isMoveSheetvisible: Bool = false
     var body: some View {
         GeometryReader{ reader in
-            ZStack{
+            ZStack(alignment: .bottomTrailing){
                 VStack{
                     if homePostboxViewModel.beforeLongPress{
                         VStack {
                         HStack(spacing:20){
-                            AsyncImage(url: URL(string: imageUrl)) { phase in
-                                switch phase {
-                                case .empty:
-                                    ProgressView()
-                                case .success(let image):
-                                    image
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                        .aspectRatio(contentMode: .fit)
-                                        .clipShape(Circle())
-                                        .padding(.leading,20)
-                                case .failure:
-                                    Image("person")
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                        .aspectRatio(contentMode: .fit)
-                                        .clipShape(Circle())
-                                        .padding(.leading,20)
-                                @unknown default:
-                                    EmptyView()
-                                }
-                            }
+                            Image("contactW")
+                                .resizable()
+                                .renderingMode(.template)
+                                .frame(width: 35, height: 35)
+                                .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                .background(
+                                    Circle()
+                                        .fill(themesviewModel.currentTheme.colorPrimary) // Inner background
+                                )
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color.white, lineWidth: 2) // Border
+                                )
+                                .clipShape(Circle())
+                                .padding(.leading, 16)
+                            
                             Text("Postbox")
                                 .padding(.leading,5)
                                 .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
                                 .font(.custom(.poppinsBold, size: 16, relativeTo: .title))
+                            
                             Spacer()
+                            
                             Button(action: {
                                 print("search button pressed")
                                 appBarElementsViewModel.isSearch = true
@@ -86,37 +85,28 @@ struct HomePostboxView: View {
                                     .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
                                     .font(Font.title.weight(.medium))
                             }
-//                            Button(action: {
-//                                print("Pencil button pressed")
-//                                homePostboxViewModel.isComposeEmail = true
-//                            }) {
-//                                Image("pencil")
-//                                    .font(Font.title.weight(.medium))
-//                                    .foregroundColor(Color.white)
-//                            }
+                            .padding(.leading,15)
                             
                             Button(action: {
-                                print("bell button pressed")
                                 iNotificationAppBarView = true
                             }) {
                                 Image("notification")
-                                    .renderingMode(.template)
-                                    .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
-                                    .font(Font.title.weight(.medium))
                             }
+                            .padding(.leading,15)
                             
                             Button(action: {
-                                print("line.3.horizontal button pressed")
                                 withAnimation {
                                     isMenuVisible.toggle()
                                 }
                             }) {
-                                Image(systemName: "line.3.horizontal")
+                                Image("MenuIcon")
                                     .renderingMode(.template)
                                     .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
                                     .font(Font.title.weight(.medium))
                             }
-                            .padding(.trailing,15)
+                            .padding(.leading,15)
+                            .padding(.trailing , 30)
+                            
                             
                         }
                         .padding(.top, -reader.size.height * 0.01)
@@ -124,7 +114,7 @@ struct HomePostboxView: View {
                                 HStack{
                                     RoundedRectangle(cornerRadius: 10)
                                         .fill(self.homePostboxViewModel.isEmailsSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
-                                        .frame(width: reader.size.width/3 - 10, height: 50)
+                                        .frame(width: max(reader.size.width/3 - 10, 50), height: 50)
                                         .onTapGesture {
                                             homePostboxViewModel.getPostEmailData()
                                             self.homePostboxViewModel.selectedOption = .emails
@@ -135,16 +125,21 @@ struct HomePostboxView: View {
                                         .overlay(
                                             Group{
                                                 HStack{
-                                                    Image("emailG")
+                                                    Image("stacked_email")
+                                                        .resizable()
                                                         .renderingMode(.template)
                                                         .frame(width: 20, height: 20)
-                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                        .background(themesviewModel.currentTheme.tabBackground)
+                                                        .padding(5)
+                                                        .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 8)
+                                                                .fill(themesviewModel.currentTheme.tabBackground)
+                                                        )
                                                     
                                                         
                                                     VStack{
-                                                        Text("Emails")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                        Text("tEmails")
+                                                            .font(.custom(.poppinsMedium, size: 14, relativeTo: .title))
                                                             .foregroundColor(themesviewModel.currentTheme.textColor)
                                                     }
                                                 }
@@ -154,7 +149,7 @@ struct HomePostboxView: View {
                                     
                                     RoundedRectangle(cornerRadius: 10)
                                         .fill(self.homePostboxViewModel.isPrintSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
-                                        .frame(width: reader.size.width/3 - 10, height: 50)
+                                        .frame(width: max(reader.size.width/3 - 10, 50), height: 50)
                                         .onTapGesture {
                                             self.homePostboxViewModel.selectedOption = .print
                                             self.homePostboxViewModel.isEmailsSelected = false
@@ -164,13 +159,19 @@ struct HomePostboxView: View {
                                         .overlay(
                                             Group{
                                                 HStack{
-                                                     Image("printIcon")
+                                                     Image("tpersued")
+                                                        .resizable()
+                                                        .renderingMode(.template)
                                                         .frame(width: 20, height: 20)
-                                                        .background(themesviewModel.currentTheme.tabBackground)
-                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                        .padding(5)
+                                                        .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 8)
+                                                                .fill(themesviewModel.currentTheme.tabBackground)
+                                                        )
                                                     VStack{
-                                                        Text("Print")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                        Text("tPerused")
+                                                            .font(.custom(.poppinsMedium, size: 14, relativeTo: .title))
                                                             .foregroundColor(themesviewModel.currentTheme.textColor)
                                                     }
                                                 }
@@ -180,7 +181,7 @@ struct HomePostboxView: View {
                                     
                                     RoundedRectangle(cornerRadius: 10)
                                         .fill(self.homePostboxViewModel.isChatboxSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
-                                        .frame(width: reader.size.width/3 - 10, height: 50)
+                                        .frame(width: max(reader.size.width/3 - 10, 50), height: 50)
                                         .onTapGesture {
                                             homePostboxViewModel.getContactsList()
                                             self.homePostboxViewModel.selectedOption = .chatbox
@@ -191,13 +192,19 @@ struct HomePostboxView: View {
                                         .overlay(
                                             Group{
                                                 HStack{
-                                                    Image("chatBox")
+                                                    Image("tChat")
+                                                        .resizable()
+                                                        .renderingMode(.template)
                                                         .frame(width: 20, height: 20)
-                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                        .background(themesviewModel.currentTheme.tabBackground)
+                                                        .padding(5)
+                                                        .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 8)
+                                                                .fill(themesviewModel.currentTheme.tabBackground)
+                                                        )
                                                     VStack{
-                                                        Text("ChatBox")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                        Text("tChat")
+                                                            .font(.custom(.poppinsMedium, size: 14, relativeTo: .title))
                                                             .foregroundColor(themesviewModel.currentTheme.textColor)
                                                     }
                                                 }
@@ -227,37 +234,6 @@ struct HomePostboxView: View {
                         }
 
                         Spacer()
-
-                        VStack {
-                             HStack {
-                                 Spacer()
-                                 RoundedRectangle(cornerRadius: 30)
-                                     .fill(themesviewModel.currentTheme.colorPrimary)
-                                     .frame(width: 150, height: 48)
-                                     .overlay(
-                                         HStack {
-                                             Text("New Email")
-                                                 .font(.custom(.poppinsBold, size: 14))
-                                                 .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                                                 .padding(.trailing, 8)
-                                                 .onTapGesture {
-                                                     homePostboxViewModel.isComposeEmail = true
-                                                 }
-                                             Spacer()
-                                                 .frame(width: 1, height: 24)
-                                                 .background(themesviewModel.currentTheme.inverseIconColor)
-                                                 Image("dropdown 1")
-                                                 .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                     .onTapGesture {
-                                                         isQuickAccessVisible = true
-                                                         
-                                                     }
-                                         }
-                                     )
-                                     .padding(.trailing, 20)
-                                     .padding(.bottom, 20)
-                             }
-                         }
                         
                         TabViewNavigator()
                             .frame(height: 40)
@@ -271,38 +247,42 @@ struct HomePostboxView: View {
                                 Text("\(selectedIndices.count) selected")
                                     .font(.custom("Poppins-Regular", size: 16))
                                     .foregroundColor(themesviewModel.currentTheme.textColor)
-
+                                
                                 Spacer()
-
+                                
                                 Button {
+                                    selectedIndices = []
+                                    homePostboxViewModel.selectedThreadIDs = []
                                     homePostboxViewModel.beforeLongPress.toggle()
                                     selectedIndices.removeAll()
                                     isSelectAll = false
-                                    isPostBoxMailViewActive = false // for snooze view bool the view 
+                                    isPostBoxMailViewActive = false // for snooze view bool the view
                                 } label: {
                                     Text("Cancel")
                                         .foregroundColor(themesviewModel.currentTheme.iconColor)
                                 }
                                 .padding(.trailing, 15)
                             }
-
+                            
                             HStack {
                                 Text("Select All")
                                     .font(.custom("Poppins-Bold", size: 16))
                                     .foregroundColor(themesviewModel.currentTheme.textColor)
                                     .fontWeight(.bold)
                                     .padding(.leading, 16)
-
+                                
                                 Button(action: {
                                     if selectedIndices.count == homePostboxViewModel.postBoxEmailData.count {
                                         selectedIndices.removeAll()
                                         isSelectAll = false
-                                        selectedMailID = Array(selectedIndices)
+                                        homePostboxViewModel.selectedThreadIDs = []
+                                        print("homePostboxViewModel.selectedThreadIDs  \(homePostboxViewModel.selectedThreadIDs )")
                                     } else {
                                         selectedIndices = Set(homePostboxViewModel.postBoxEmailData.compactMap { $0.threadId })
                                         isSelectAll = true
-                                        homeAwaitingViewModel.selectedThreadIDs = Array(selectedIndices)
-                                        print("Select All selectedMailID \(selectedMailID)")
+                                        homePostboxViewModel.selectedThreadIDs = Array(selectedIndices)
+                                        print("homePostboxViewModel.selectedThreadIDs  \(homePostboxViewModel.selectedThreadIDs )")
+                                        
                                     }
                                 }) {
                                     Image(systemName: isSelectAll ? "checkmark.square.fill" : "square")
@@ -312,130 +292,197 @@ struct HomePostboxView: View {
                                         .padding(.trailing, 5)
                                         .foregroundColor(themesviewModel.currentTheme.iconColor)
                                 }
-
+                                
                                 Spacer()
                             }
                             .padding(.leading, 15)
                             .padding(.top, 10)
-
-                            List {
-                                ForEach($homePostboxViewModel.postBoxEmailData, id: \.threadId) { $data in
-                                    HStack {
-                                        Button(action: {
-                                            if let threadId = data.threadId {
-                                                if selectedIndices.contains(threadId) {
-                                                    selectedIndices.remove(threadId)
-                                                } else {
-                                                    selectedIndices.insert(threadId)
-                                                    homeAwaitingViewModel.selectedThreadIDs = [threadId]
-                                                    print("single check \(homeAwaitingViewModel.selectedThreadIDs)")
+                            ZStack(alignment: .bottomTrailing) {
+                                List($homePostboxViewModel.postBoxEmailData) { $data in
+                                    //                                ForEach($homePostboxViewModel.postBoxEmailData, id: \.threadId) { $data in
+                                    VStack {
+                                        HStack {
+                                            Button(action: {
+                                                if let threadId = data.threadId {
+                                                    if selectedIndices.contains(threadId) {
+                                                        selectedIndices.remove(threadId)
+                                                        homePostboxViewModel.selectedThreadIDs.removeAll { $0 == threadId }
+                                                    } else {
+                                                        selectedIndices.insert(threadId)
+                                                        homePostboxViewModel.selectedThreadIDs.append(threadId)
+                                                        print("single check \(homePostboxViewModel.selectedThreadIDs)")
+                                                        homePostboxViewModel.selectedID = threadId
+                                                        markAs = data.readReceiptStatus ?? 0
+                                                        print("check POST markAs  \(markAs)")
+                                                        EmailStarred = data.starred
+                                                        print("EmailStarred  \(EmailStarred)")
+                                                        print("homePostboxViewModel.selectedID  \(homePostboxViewModel.selectedID)")
+                                                    }
+                                                    isSelectAll = selectedIndices.count == homePostboxViewModel.postBoxEmailData.count
+                                                    
+                                                    print("homePostboxViewModel.selectedThreadIDs  \(homePostboxViewModel.selectedThreadIDs)")
                                                 }
-                                                isSelectAll = selectedIndices.count == homePostboxViewModel.postBoxEmailData.count
+                                            }) {
+                                                Image(selectedIndices.contains(data.threadId ?? -1) ? "selected" : "contactW")
+                                                    .resizable()
+                                                    .scaledToFill()
+                                                    .frame(width: 30, height: 30)
+                                                    .background(themesviewModel.currentTheme.colorAccent)
+                                                    .clipShape(Circle())
+                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                    .padding(.leading, 10)
+                                                    .contentShape(Rectangle())
                                             }
-                                        }) {
-                                            Image(selectedIndices.contains(data.threadId ?? -1) ? "selected" : "contactW")
-                                                .resizable()
-                                                .scaledToFill()
-                                                .frame(width: 30, height: 30)
-                                                .background(themesviewModel.currentTheme.colorAccent)
-                                                .clipShape(Circle())
-                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                .padding(.leading, 10)
-                                                .contentShape(Rectangle())
-                                        }
-
-                                        VStack(alignment: .leading) {
-                                            HStack {
-                                                Text(data.firstname ?? "")
-                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                    .font(.custom("Poppins-Medium", size: 16))
-                                                if data.hasDraft == 1 {
-                                                    Text("Draft")
-                                                        .foregroundColor(Color.red)
-                                                        .font(.custom("Poppins-Regular", size: 14))
-                                                }
-                                            }
-
-                                            Text(data.subject)
-                                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                .font(.custom("Poppins-Regular", size: 14))
-                                                .lineLimit(1)
-                                        }
-
-                                        Spacer()
-
-                                        VStack(alignment: .trailing) {
-                                            if let date = data.sentAt,
-                                               let istDateString = convertToIST(dateInput: date) {
-                                                Text(istDateString)
-                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                    .font(.custom("Poppins-Light", size: 14))
-                                            }
-
-                                            Image(data.starred == 1 ? "star" : "emptystar")
-                                                .resizable()
-                                                .frame(width: 14, height: 14)
-                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                .onTapGesture {
-                                                    data.starred = data.starred == 1 ? 0 : 1
-                                                    if let id = data.threadId {
-                                                        homePostboxViewModel.getStarredEmail(selectedEmail: id)
+                                            
+                                            VStack(alignment: .leading) {
+                                                HStack {
+                                                    Text(data.firstname ?? "")
+                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                        .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                    if data.hasDraft == 1 {
+                                                        Text("Draft")
+                                                            .foregroundColor(Color.red)
+                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
                                                     }
                                                 }
-                                        }
-                                    }
-                                    .listRowBackground(themesviewModel.currentTheme.windowBackground)
-                                    .swipeActions(edge: .leading) {
-                                        Button {
-                                            print("Deleting row")
-                                            showingDeleteAlert = true
-                                        } label: {
-                                            Image(systemName: "trash")
-                                                .foregroundColor(.white)
-                                        }
-                                        .tint(Color.themeColor)
-                                    }
-                                    .swipeActions(edge: .trailing) {
-                                        Button {
-                                            isSheetVisible = true
-                                        } label: {
-                                            Image(systemName: "ellipsis")
-                                                .foregroundColor(.white)
-                                        }
-                                        .tint(Color(red: 1.0, green: 0.5, blue: 0.5))
-                                    }
-                                }
-                            }
-                            .listStyle(PlainListStyle())
-                            .scrollContentBackground(.hidden)
-                            
-                            Spacer()
-                            HStack{
-                                Spacer()
-                                RoundedRectangle(cornerRadius: 30)
-                                    .fill(themesviewModel.currentTheme.colorPrimary)
-                                    .frame(width: 150,height: 48)
-                                    .overlay(alignment: .center) {
-                                        HStack {
-                                            Text("New Email")
-                                                .font(.custom(.poppinsBold, size: 14))
-                                                .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                                                .padding(.trailing, 8)
-                                                .onTapGesture {
-                                                    homeAwaitingViewModel.isComposeEmail = true
+                                                
+                                                Text(data.subject)
+                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                    .lineLimit(1)
+                                                
+                                                if let labels = data.labels, !labels.isEmpty {
+                                                    HStack {
+                                                        Image("Tags")
+                                                            .resizable()
+                                                            .renderingMode(.template)
+                                                            .frame(width: 20, height: 20)
+                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                        
+                                                        Text(labels.first?.labelName ?? "")
+                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                            .font(.custom(.poppinsRegular, size: 14))
+                                                            .background(Color.blueAccent)
+                                                            .cornerRadius(8)
+                                                        
+                                                        if labels.count > 1 {
+                                                            Text("+ \(labels.count - 1)")
+                                                                .font(.custom(.poppinsRegular, size: 12))
+                                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                .frame(width: 24, height: 24) // Make it a circle
+                                                                .padding(.all ,1)
+                                                                .background(Circle().fill(Color.clear)) // Transparent fill
+                                                                .overlay(
+                                                                    Circle()
+                                                                        .stroke(themesviewModel.currentTheme.textColor, lineWidth: 1.5) // White border
+                                                                )
+                                                        }
+                                                        
+                                                    }
                                                 }
+                                            }
                                             Spacer()
-                                                .frame(width: 1, height: 24)
-                                                .background(themesviewModel.currentTheme.inverseIconColor)
+                                            VStack(alignment: .trailing) {
+                                                HStack {
+                                                    if let timestamp = (data.snooze == 1 ? data.snoozeAt : data.sentAt ?? 0),
+                                                       let istDateString = convertToIST(dateInput: timestamp) {
+                                                        HStack(spacing: 5) {
+                                                            if (data.snooze == 1) {
+                                                                Image("snooze")
+                                                                    .renderingMode(.template)
+                                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                            }
+                                                            Text(istDateString)
+                                                                .font(.custom(.poppinsMedium, size: 14))
+                                                                .foregroundColor(data.snooze == 1 ? .orange : themesviewModel.currentTheme.iconColor)
+                                                            
+                                                            
+                                                        }
+                                                        .padding(.top, 0)
+                                                        .frame(maxWidth: .infinity, alignment: .trailing)
+                                                    }
+                                                }
+                                                .padding(.trailing , 10)
+                                                
+                                                
+                                                
+                                                Image(data.starred == 1 ? "star" : "emptystar")
+                                                    .resizable()
+                                                    .renderingMode(.template)
+                                                    .frame(width: 20, height: 20)
+                                                    .foregroundColor(data.starred == 1 ? themesviewModel.currentTheme.colorAccent : themesviewModel.currentTheme.iconColor)
+                                                    .padding(.trailing , 10)
+                                                    .onTapGesture {
+                                                        // Safely toggle starred state
+                                                        data.starred = data.starred == 1 ? 0 : 1
+                                                        homePostboxViewModel.getStarredEmail(selectedEmail: data.threadId ?? 0)
+                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.001) {
+                                                            homePostboxViewModel.isLoading = false
+                                                        }
+                                                    }
+                                            }
+                                            .frame(height: 34)
+                                        }
+                                        .listRowBackground(themesviewModel.currentTheme.windowBackground)
+                                        .swipeActions(edge: .leading) {
+                                            Button {
+                                                print("Deleting row")
+                                                showingDeleteAlert = true
+                                            } label: {
+                                                Image(systemName: "trash")
+                                                    .foregroundColor(.white)
+                                            }
+                                            .tint(Color.themeColor)
+                                        }
+                                        .swipeActions(edge: .trailing) {
+                                            Button {
+                                                isSheetVisible = true
+                                            } label: {
+                                                Image(systemName: "ellipsis")
+                                                    .foregroundColor(.white)
+                                            }
+                                            .tint(Color(red: 1.0, green: 0.5, blue: 0.5))
+                                        }
+                                        //                                }
+                                        Divider()
+                                            .frame(maxWidth: .infinity)
+                                            .frame(height: 1)
+                                            .background(themesviewModel.currentTheme.strokeColor.opacity(0.2))
+                                    }
+                                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                    .listRowBackground(themesviewModel.currentTheme.windowBackground)
+                                }
+                                .listStyle(PlainListStyle())
+                                .scrollContentBackground(.hidden)
+                                
+                                Spacer()
+                                HStack{
+                                    RoundedRectangle(cornerRadius: 30)
+                                        .fill(themesviewModel.currentTheme.colorPrimary)
+                                        .frame(width: 150,height: 48)
+                                        .overlay(alignment: .center) {
+                                            HStack {
+                                                Text("New Email")
+                                                    .font(.custom(.poppinsBold, size: 14))
+                                                    .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                                    .padding(.trailing, 8)
+                                                    .onTapGesture {
+                                                        homePostboxViewModel.isComposeEmail = true
+                                                    }
+                                                Spacer()
+                                                    .frame(width: 1, height: 24)
+                                                    .background(themesviewModel.currentTheme.inverseIconColor)
                                                 Image("dropdown 1")
-                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                     .onTapGesture {
                                                         isQuickAccessVisible = true
                                                     }
+                                            }
                                         }
-                                    }
-                                    .padding(.trailing)
-                                    .padding(.bottom)
+                                        .padding(.trailing)
+                                        .padding(.bottom)
+                                }
+                                .padding(.bottom, 50)
                             }
                         }
                         .onAppear {
@@ -458,7 +505,7 @@ struct HomePostboxView: View {
                             
                             Button(action: {
                                 print("snooze clicked")
-                                isNotificationVisible = true
+                                isSnoozeSheetvisible = true
                             }){
                                 Image("snooze")
                                     .renderingMode(.template)
@@ -479,7 +526,7 @@ struct HomePostboxView: View {
                                     .padding(.trailing ,20 )
                             }
                         }
-                        .background(themesviewModel.currentTheme.windowBackground.opacity(0.1))
+                        .background(themesviewModel.currentTheme.windowBackground)
                         
                         
                     }
@@ -488,7 +535,7 @@ struct HomePostboxView: View {
                 }
                 .background(themesviewModel.currentTheme.windowBackground)
                 .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         print("postBox view appears")
                         
                         homePostboxViewModel.getPostEmailData()
@@ -504,14 +551,61 @@ struct HomePostboxView: View {
                         }
                     }
                 }
+                
+                .onChange(of: isSnoozeSheetvisible || isMoreSheetvisible) { newValue in
+                    if newValue == false {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                            print("Zstack onchange postView Api calls")
+                            homePostboxViewModel.getPostEmailData()
+                            selectedIndices = []
+                            homePostboxViewModel.selectedThreadIDs = []
+                            print("Zstack get postView Api calls")
+                        }
+                    }
+                }
 
+                if homePostboxViewModel.beforeLongPress {
+                     HStack {
+                         Spacer()
+                         RoundedRectangle(cornerRadius: 30)
+                             .fill(themesviewModel.currentTheme.colorPrimary)
+                             .frame(width: 150, height: 48)
+                             .overlay(
+                                 HStack {
+                                     Text("New Email")
+                                         .font(.custom(.poppinsBold, size: 14))
+                                         .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                         .padding(.trailing, 8)
+                                         .onTapGesture {
+                                             homePostboxViewModel.isComposeEmail = true
+                                         }
+                                     Spacer()
+                                         .frame(width: 1, height: 24)
+                                         .background(themesviewModel.currentTheme.inverseIconColor)
+                                         Image("dropdown 1")
+                                         .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                             .onTapGesture {
+                                                 isQuickAccessVisible = true
+                                                 
+                                             }
+                                 }
+                             )
+                             .padding(.trailing, 20)
+                             .padding(.bottom, 20)
+                     }
+                     .padding(.bottom, 50)
+                 }
                 if isMenuVisible{
                     HomeMenuView(isSidebarVisible: $isMenuVisible)
                 }
+                
                 if isQuickAccessVisible {
-                        Color.white.opacity(0.8) // Optional: semi-transparent background
+                    ZStack {
+                        Color.gray.opacity(0.3)
                             .ignoresSafeArea()
-                            .blur(radius: 10) // Blur effect for the background
+                            .onTapGesture {
+                                isQuickAccessVisible = false
+                            }
                         QuickAccessView(isQuickAccessVisible: $isQuickAccessVisible)
                             .background(Color.white) // Background color for the Quick Access View
                             .cornerRadius(10)
@@ -520,6 +614,7 @@ struct HomePostboxView: View {
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing) // Align at the bottom right
                             .padding([.bottom, .trailing], 20)
                     }
+                }
                 
                 if iNotificationAppBarView {
                     ZStack {
@@ -547,14 +642,22 @@ struct HomePostboxView: View {
                         Color.gray.opacity(0.5) // Dimmed background
                             .ignoresSafeArea()
                             .transition(.opacity)                        
-                        // Centered DeleteNoteAlert
+                        // Centered DeleteNoteAler
                         DeleteAlert(isPresented: $showingDeleteAlert) {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                 print("delete alert")
-                                homeAwaitingViewModel.deleteEmailFromAwaiting()
+                                homeAwaitingViewModel.deleteEmailFromAwaiting(threadIDS: homePostboxViewModel.selectedThreadIDs)
                                 showingDeleteAlert = false
                                 homePostboxViewModel.beforeLongPress.toggle()
                             }
+                            
+                           
+                            homePostboxViewModel.postBoxEmailData.removeAll { item in
+                                homePostboxViewModel.selectedThreadIDs.contains(item.threadId ?? 0)
+                            }
+                            
+                            selectedIndices.removeAll()
+                            
                         }
                     }
                     .transition(.scale)
@@ -574,14 +677,15 @@ struct HomePostboxView: View {
                             }
                         VStack {
                             Spacer() // Pushes the sheet to the bottom
-                            MoreSheet(snoozetime: $snoozeTime, isMoreSheetVisible: $isMoreSheetvisible, emailId: emailId, passwordHash: passwordHash, isTagsheetvisible: $isTagsheetvisible, StarreEmail: $EmailStarred)
+                            MoreSheet(snoozetime: $snoozeTime, isMoreSheetVisible: $isMoreSheetvisible, emailId: homePostboxViewModel.selectedID ?? 0, passwordHash: passwordHash, isTagsheetvisible: $isTagsheetvisible, isSnoozeSheetvisible: $issnoozesheetvisible, StarreEmail: $EmailStarred, markedAs: $markAs, HomeawaitingViewVisible: $HomeawaitingViewVisible, isMoveSheetvisible: $isMoveSheetvisible)
                                 .transition(.move(edge: .bottom))
                                 .animation(.easeInOut, value: isMoreSheetvisible)
                         }
                     }
                 }
+            
                 
-                if isNotificationVisible {
+                if isSnoozeSheetvisible {
                     ZStack {
                         // Tappable background
                         Rectangle()
@@ -589,21 +693,24 @@ struct HomePostboxView: View {
                             .edgesIgnoringSafeArea(.all)
                             .onTapGesture {
                                 withAnimation {
-                                    print("Tapped isNotificationVisible")
-                                    isNotificationVisible = false
+                                    print("Tapped isSnoozeSheetvisible")
+                                    isSnoozeSheetvisible = false
                                 }
                             }
-
                         VStack {
-                            Spacer()
-                            BottomNotificationView(isNotificationVisible: $isNotificationVisible, notificationTime: $notificationTime, isViewActive: $isViewActive, ispostBoxMailViewActive: $isPostBoxMailViewActive, selectedID: selectedID)
-                            .transition(.move(edge: .bottom))
-                            .animation(.easeInOut, value: isNotificationVisible)
+                            Spacer() // Pushes the sheet to the bottom
+                            BottomSnoozeView(isBottomSnoozeViewVisible: $isSnoozeSheetvisible, SnoozeTime: $notificationTime, selectedID: homePostboxViewModel.selectedID ?? 0)
+                                .transition(.move(edge: .bottom))
+                                .animation(.easeInOut, value: isSnoozeSheetvisible)
+                        }
+                        .onAppear{
+                            print("snooze sheet works \(homePostboxViewModel.selectID)")
                         }
                     }
                 }
                 
             }
+
 //            .navigationDestination(isPresented: $homePostboxViewModel.isComposeEmail) {
 //                MailComposeView().toolbar(.hidden)
 //            }
@@ -641,7 +748,6 @@ struct HomePostboxView: View {
                 },
                                   starAction: {
                     print("star")
-                 //   homeAwaitingViewModel.getStarredEmail(selectedEmail: homeAwaitingViewModel.selectedID ?? 0)
                     dismissSheet()
                 },
                                   snoozeAction: {
@@ -664,7 +770,7 @@ struct HomePostboxView: View {
                     .toolbar(.hidden)
             }
             .navigationDestination(isPresented: $homePostboxViewModel.isEmailScreen) {
-                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, awaitingView: $AwaitingView, emailId: homePostboxViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $emailStarred).toolbar(.hidden)
+                MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, awaitingView: $AwaitingView, emailId: homePostboxViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $EmailStarred,markAs: $markAs).toolbar(.hidden)
             }
            //
             .toast(message: $homePostboxViewModel.error)
@@ -684,27 +790,42 @@ struct HomePostboxView: View {
             }else{
                     VStack{
                         if homePostboxViewModel.beforeLongPress{
-                            List {
-                                ForEach($homePostboxViewModel.postBoxEmailData, id: \.threadId) { $data in
+                            List($homePostboxViewModel.postBoxEmailData) { $data in
+                                VStack {
+//                                ForEach($homePostboxViewModel.postBoxEmailData, id: \.threadId) { $data in
                                     HStack {
                                         let image = data.senderProfile ?? "person"
                                         AsyncImage(url: URL(string: image)) { phase in
                                             switch phase {
                                             case .empty:
-                                                ProgressView()
-                                                    .foregroundColor(.white)
+                                                Image("contactW")
+                                                    .resizable()
+                                                    .renderingMode(.template)
+                                                    .scaledToFill()
+                                                    .frame(width: 30, height: 30)
+                                                    .background(themesviewModel.currentTheme.colorAccent)
+                                                    .clipShape(Circle())
+                                                    .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                    .padding(.leading, 10)
+                                                    .contentShape(Rectangle())
                                             case .success(let image):
                                                 image
                                                     .resizable()
                                                     .frame(width: 34, height: 34)
-                                                    .padding([.trailing, .leading], 5)
+                                                    .padding([.trailing,.leading],5)
                                                     .aspectRatio(contentMode: .fit)
                                                     .clipShape(Circle())
                                             case .failure:
-                                                Image("person")
+                                                Image("contactW")
                                                     .resizable()
-                                                    .frame(width: 34, height: 34)
-                                                    .foregroundColor(.blue)
+                                                    .renderingMode(.template)
+                                                    .scaledToFill()
+                                                    .frame(width: 30, height: 30)
+                                                    .background(themesviewModel.currentTheme.colorAccent)
+                                                    .clipShape(Circle())
+                                                    .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                    .padding(.leading, 10)
+                                                    .contentShape(Rectangle())
                                             @unknown default:
                                                 EmptyView()
                                             }
@@ -726,32 +847,84 @@ struct HomePostboxView: View {
                                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                                                 .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
                                                 .lineLimit(1)
+                                            
+                                            if let labels = data.labels, !labels.isEmpty {
+                                                HStack {
+                                                    Image("Tags")
+                                                        .resizable()
+                                                        .renderingMode(.template)
+                                                        .frame(width: 20, height: 20)
+                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                    
+                                                    Text(labels.first?.labelName ?? "")
+                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                        .font(.custom(.poppinsRegular, size: 14))
+                                                        .background(Color.blueAccent)
+                                                        .cornerRadius(8)
+                                                    
+                                                    if labels.count > 1 {
+                                                        Text("+ \(labels.count - 1)")
+                                                            .font(.custom(.poppinsRegular, size: 12))
+                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                            .frame(width: 24, height: 24) // Make it a circle
+                                                            .padding(.all ,1)
+                                                            .background(Circle().fill(Color.clear)) // Transparent fill
+                                                            .overlay(
+                                                                Circle()
+                                                                    .stroke(themesviewModel.currentTheme.textColor, lineWidth: 1.5) // White border
+                                                            )
+                                                    }
+                                                    
+                                                }
+                                            }
                                         }
                                         Spacer()
                                         VStack(alignment: .trailing) {
-                                            if let istDateStringFromTimestamp = convertToIST(dateInput: data.sentAt) {
-                                                Text(istDateStringFromTimestamp)
-                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                    .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
-                                                    .alignmentGuide(.top) { $0[.top] }
+                                            HStack {
+                                                if let timestamp = (data.snooze == 1 ? data.snoozeAt : data.sentAt ?? 0),
+                                                   let istDateString = convertToIST(dateInput: timestamp) {
+                                                    HStack(spacing: 5) {
+                                                        if (data.snooze == 1) {
+                                                        Image("snooze")
+                                                            .renderingMode(.template)
+                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                        }
+                                                            Text(istDateString)
+                                                                .font(.custom(.poppinsMedium, size: 14))
+                                                                .foregroundColor(data.snooze == 1 ? .orange : themesviewModel.currentTheme.iconColor)
+                                                                
+                                                        
+                                                    }
+                                                    .padding(.top, 0)
+                                                    .frame(maxWidth: .infinity, alignment: .trailing)
+                                                }
                                             }
+                                            .padding(.trailing , 10)
+
+
                                             
                                             Image(data.starred == 1 ? "star" : "emptystar")
                                                 .resizable()
-                                                .frame(width: 14, height: 14)
-                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                .renderingMode(.template)
+                                                .frame(width: 20, height: 20)
+                                                .foregroundColor(data.starred == 1 ? themesviewModel.currentTheme.colorAccent : themesviewModel.currentTheme.iconColor)
+                                                .padding(.trailing , 10)
                                                 .onTapGesture {
                                                     // Safely toggle starred state
                                                     data.starred = data.starred == 1 ? 0 : 1
                                                     homePostboxViewModel.getStarredEmail(selectedEmail: data.threadId ?? 0)
+                                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.001) {
+                                                        homePostboxViewModel.isLoading = false
+                                                    }
                                                 }
                                         }
+                                        .frame(height: 34)
                                     }
-                                    .listRowBackground(themesviewModel.currentTheme.windowBackground)
+                                    .padding(.top , 10)
                                     .onTapGesture {
                                         PostBoxView = true
-                                        homePostboxViewModel.starEmail = emailStarred
-                                        emailStarred = data.starred
+                                        homePostboxViewModel.starEmail = EmailStarred
+                                        EmailStarred = data.starred
                                         homePostboxViewModel.selectedID = data.threadId
                                         homePostboxViewModel.passwordHint = data.passwordHint
                                         homePostboxViewModel.isEmailScreen = true
@@ -760,9 +933,16 @@ struct HomePostboxView: View {
                                         LongPressGesture(minimumDuration: 1.0)
                                             .onEnded { _ in
                                                 withAnimation {
+                                                    selectedIndices.insert(data.threadId ?? 0)
+                                                    print("unchecked button selected threadId \(data.threadId ?? 0)")
+                                                    homePostboxViewModel.selectedID = data.threadId
+                                                    homePostboxViewModel.selectedThreadIDs.append(data.threadId ?? 0)
                                                     print("before clicked homePostboxViewModel.beforeLongPress \(homePostboxViewModel.beforeLongPress)")
                                                     homePostboxViewModel.beforeLongPress = false
                                                     print("after clicked homePostboxViewModel.beforeLongPress \(homePostboxViewModel.beforeLongPress)")
+                                                    markAs = data.readReceiptStatus
+                                                    EmailStarred = data.starred
+                                                    print("EmailStarred  \(EmailStarred)")
                                                 }
                                             }
                                     )
@@ -783,7 +963,14 @@ struct HomePostboxView: View {
                                         }
                                         .tint(Color(red: 255/255, green: 128/255, blue: 128/255))
                                     }
-                                }
+//                                }
+                                    Divider()
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 1)
+                                        .background(themesviewModel.currentTheme.strokeColor.opacity(0.2))
+                            }
+                                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                .listRowBackground(themesviewModel.currentTheme.windowBackground)
                             }
                             .listStyle(PlainListStyle())
                             .scrollContentBackground(.hidden)

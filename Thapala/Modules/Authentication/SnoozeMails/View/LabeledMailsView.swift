@@ -217,7 +217,6 @@ struct LabeledMailsView:View{
                 
                 HStack(spacing:50) {
                     Button(action: {
-                       // homeAwaitingViewModel.deleteEmailFromAwaiting()
                     }) {
                         Image(systemName: "trash")
                             .frame(width: 25, height: 25)

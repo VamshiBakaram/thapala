@@ -16,10 +16,15 @@ struct ReplyEmailView: View {
     @State private var isFilePickerPresented:Bool = false
     @State var isInsertTcode: Bool = false
     @State var isEmailAttachments:Bool = false
+    @Binding var isPresented: Bool
     var body: some View {
         VStack {
             HStack {
                 Button(action: {
+                    print("cancel clicked")
+                    print("before isPresented \(isPresented)")
+//                    isPresented = false
+                    print("After isPresented \(isPresented)")
                     presentationMode.wrappedValue.dismiss()
                 }) {
                     Image(systemName: "xmark")
@@ -39,6 +44,7 @@ struct ReplyEmailView: View {
                     .foregroundColor(themesviewModel.currentTheme.iconColor)
                     .onTapGesture {
                         replyEmailViewModel.sendEmail()
+                        presentationMode.wrappedValue.dismiss()
                     }
             }
             .padding()
@@ -244,10 +250,10 @@ struct ReplyEmailView: View {
                 TextEditor(text: $replyEmailViewModel.messageBody)
                     .scrollContentBackground(.hidden)
                     .background(themesviewModel.currentTheme.windowBackground)
-                    .foregroundColor(Color.blue)
+                    .foregroundColor(themesviewModel.currentTheme.textColor)
                     .padding(4)
                     .font(.custom(.poppinsLight, size: 14))
-                if replyEmailViewModel.composeEmail.isEmpty {
+                if replyEmailViewModel.messageBody.isEmpty {
                     Text("Compose email")
                         .font(.custom(.poppinsLight, size: 14))
                         .foregroundColor(themesviewModel.currentTheme.textColor)

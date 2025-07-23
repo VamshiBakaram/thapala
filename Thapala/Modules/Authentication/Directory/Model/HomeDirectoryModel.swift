@@ -7,11 +7,11 @@
 
 import Foundation
 
-enum DirectoryOption {
-    case tContacts
-    case test
-    case test2
-}
+//enum DirectoryOption {
+//    case tContacts
+//    case test
+//    case test2
+//}
 
 struct DirectoryResponse: Decodable {
     let message: String
@@ -19,7 +19,7 @@ struct DirectoryResponse: Decodable {
 }
 
 struct DirectoryUserData: Decodable {
-    let blockedUsers: [Int]?
+    let currentUserBlockedUsers: [Int]?
     let results: [Users]
     let totalCount: DirectoryTotalCount
 }
@@ -37,32 +37,14 @@ struct Users: Decodable, Identifiable {
     let croppedProfile: String?
     let state: String?
     let blockedUsers: [Int]?
-    
     // Computed property for full name
     var fullName: String {
         "\(firstname) \(lastname)"
     }
     
     // Conforming to Identifiable
-    var id: Int {
-        userId
-    }
-    
-    // CodingKeys if needed for different case conventions
-    enum CodingKeys: String, CodingKey {
-        case userId
-        case firstname
-        case lastname
-        case tCode
-        case groupIds
-        case country
-        case place
-        case city
-        case profile
-        case croppedProfile
-        case state
-        case blockedUsers
-    }
+    var id: Int {userId}
+
 }
 
 struct DirectoryTotalCount: Decodable {
@@ -99,7 +81,7 @@ struct BioData: Decodable {
     var nationality: String?
     var languages: String?
     var hobbies: String?
-    var profile: String
+    var profile: String?
     var croppedProfile: String
     var azureProfileName: String
     var privateKey: String?
@@ -150,9 +132,9 @@ struct GroupResponse: Codable {
 struct GroupList: Codable, Identifiable {
     let id: Int
     let groupName: String
-    let createdAt: String
-    let updatedAt: String
-    let totalMembers: Int
+    let createdAt: String?
+    let updatedAt: String?
+    let totalMembers: Int?
 }
 
 // country codes
@@ -191,4 +173,175 @@ struct States: Codable, Identifiable, Hashable {
         case stateName = "StateName"
         case cities = "Cities"
     }
+}
+
+
+
+// get search Data
+
+import Foundation
+
+struct searchAPIResponse: Codable {
+    let message: String
+    let data: searchData
+}
+
+struct searchData: Codable {
+    let currentUserBlockedUsers: [Int]
+    let results: [Usersearch]
+    let totalCount: TotalsearchCount
+}
+
+struct Usersearch: Codable, Identifiable {
+    var id: Int { userId } // For SwiftUI Lists
+    let userId: Int
+    let firstname: String
+    let lastname: String
+    let tCode: String
+    let userType: String
+    let country: String?
+    let highlight: Int
+    let groupIds: [Int]
+    let place: String?
+    let city: String?
+    let profile: String?
+    let croppedProfile: String?
+    let state: String?
+    let blockedUsers: [Int]?
+}
+
+struct TotalsearchCount: Codable {
+    let totalCount: Int
+}
+
+//---------------------------------------------------------------------------------------------------------------------------------------
+
+// add contacts
+
+struct Contactresponse: Codable {
+    let message: String
+}
+// payload of add contacts
+struct AddContactRequest: Codable {
+    let contact: Int
+    let type: String
+}
+
+//---------------------------------------------------------------------------------------------------------------------------------------
+
+// move to groups post Api
+
+struct MoveToresponse: Codable {
+    let message: String
+}
+
+// payload of move to groups
+struct MoveToRequest: Codable {
+    let userIds: [Int]
+}
+
+//---------------------------------------------------------------------------------------------------------------------------------------
+
+
+// report contact post Api
+
+struct reportContactresponse: Codable {
+    let message: String
+}
+
+// payload of move to groups
+struct ReportRequest: Codable {
+    let description: String
+    let reportType: String
+    let reportJSON: ReportJSON
+}
+
+struct ReportJSON: Codable {
+    let tCode: String
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------------------------
+
+// block Contact
+
+struct BlockUserResponse: Codable {
+    let message: String
+    let data: BlockUserData
+}
+
+struct BlockUserData: Codable {
+    let blockedUserId: [Int]
+    let chatBlockedUsers: [Int]
+}
+
+// payload of block contact
+
+struct blockPayloadRequest: Codable {
+    let type: String
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------------------------
+
+//Get Group list items Data
+
+struct MembersResponse: Codable {
+    let message: String?
+    let blockedUsers: [Int]?
+    let data: [MemberData]?
+    let totalCount: Int?
+    let currentPage: Int?
+    let totalPages: Int?
+}
+
+struct MemberData: Codable, Identifiable {
+    let id: Int
+    let groupId: Int?
+    let userId: Int?
+    let user: UsersData?
+    let userBio: UserBio?
+}
+
+struct UsersData: Codable {
+    let tcode: String?
+    let lastName: String?
+    let firstName: String?
+    let phoneNumber: String?
+}
+
+struct UserBio: Codable {
+    let city: String?
+    let place: String?
+    let state: String?
+    let country: String?
+    let profile: String?
+    let croppedProfile: String?
+}
+
+
+// Rename the Group put Api
+
+
+struct RenameGroupResponse: Codable {
+    let message: String
+    let data: renameData
+}
+
+struct renameData: Codable, Identifiable {
+    let id: Int
+    let groupName: String
+    let updatedAt: String // or Date if you prefer date decoding
+}
+
+
+struct UpdateGroupRequest: Codable {
+    let groupName: String
+}
+
+
+//Group  delete api
+
+struct DeleteUserResponse: Codable {
+    let message: String
 }

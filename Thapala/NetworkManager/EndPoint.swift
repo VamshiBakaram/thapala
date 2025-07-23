@@ -50,7 +50,7 @@ struct EndPoint {
     static let GetTagLabels = "/get-labels" // Diary Tag
     static let ApplyTagLabel = "planner/add-label" // Diary Tag
     static let removeTagLabel = "planner/remove-label?" // remove Tag
-    
+    static let verifyCredentials = "/record/verify-credentials"
     // postBox
     static let deleteEmailAwaiting = "emails/delete"
     
@@ -58,8 +58,10 @@ struct EndPoint {
     
     // Home awaiting
     
-    static let snoozedmail = "emails/snooze-by-id/"
+    static let snoozedmail = "emails/snooze-by-id"
     static let trash = "emails/clear-draft" // draft trash
+    static let createLabel = "emails/create-label"
+    static let ApplyLabel = "emails/add-emails-to-labels"
     
     //Note
     static let historySchedule = "planner/get-planner-history/" // history bottom sheet
@@ -82,6 +84,14 @@ struct EndPoint {
     static let GetProfileByID = "navigator/get-bio-by-id/"
     static let createGroup = "groups/create"
     static let GetGroupList = "groups/get-all"
+    static let searchByAddress = "user/get-all-users?"
+    static let addContacts = "chat/add-contact"
+    static let movetoDirectoryGroup = "groups/add-member/"
+    static let reportContact = "user/report-issue"
+    static let blockContact = "user/"
+    static let groupListItems = "groups/get-all-members/"
+    static let Renamegroup = "groups/update/"
+    static let deleteGroup = "groups/delete/"
     
     // trash module
     

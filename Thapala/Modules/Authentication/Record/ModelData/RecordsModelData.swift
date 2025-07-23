@@ -83,13 +83,24 @@ struct EmailRecord: Codable, Identifiable, Equatable{
     let tCode: String
     let senderProfile: String? // <-- Must be optional if it can be null
     let attachments: [Attachments]
-    let labels: [String]
+    let labels: [Labelitems]
     let emailCountInThread: Int
     let hasDraft: Int
 }
 
-struct Attachments: Codable ,Equatable{
-    // Still empty as per current JSON
+struct Labelitems: Codable, Identifiable, Equatable {
+    let labelId: Int
+    let labelName: String
+
+    var id: Int { labelId } // For Identifiable
+}
+
+
+struct Attachments: Codable, Identifiable, Equatable {
+    let id: Int
+    let azureFileName: String
+    let fileName: String
+    let fileSize: String
 }
 
 struct FieldID: Codable {
@@ -97,7 +108,7 @@ struct FieldID: Codable {
     let azureFileName: String
 }
 
-
+// ------------------------------------------------------------------------------------------------------------------------
 //create folder post Api
 
 struct CreateFolderResponse: Codable {
@@ -129,6 +140,7 @@ struct CreateFolderRequest: Codable {
 }
 
 
+// ------------------------------------------------------------------------------------------------------------------------
 
 // file attacment - post api
 
@@ -149,7 +161,7 @@ struct AttachmentDataModels: Codable, Identifiable {
     }
 }
 
-//--------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------
 
 // file upload
 
@@ -173,7 +185,7 @@ struct FileRecords: Codable, Identifiable {
     let updatedAt: String
 }
 
-// file paayload
+// file payload
 
 struct UploadPayload: Codable {
     let files: [UploadFile]
@@ -190,6 +202,7 @@ struct UploadFile: Codable {
 }
 
 
+// ------------------------------------------------------------------------------------------------------------------------
 
 //get main records - get api
 struct RecordsResponse: Codable {
@@ -197,7 +210,7 @@ struct RecordsResponse: Codable {
     let mainRecords: [MainRecord]
 }
 
-struct MainRecord: Codable, Identifiable {
+struct MainRecord: Codable, Identifiable , Equatable{
     let id: Int
     let folderName: String?
     let userId: Int
