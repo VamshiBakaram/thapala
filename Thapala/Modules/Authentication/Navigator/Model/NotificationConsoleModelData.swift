@@ -52,10 +52,10 @@ struct AlertData: Codable {
 
 struct AlertSettingsResponse: Codable {
     let message: String
-    let data: AlertSettingsData
+    let data: alertSettingsData
 }
 
-struct AlertSettingsData: Codable {
+struct alertSettingsData: Codable {
     let id: Int
     let userId: Int
     let AllNotifications: Bool

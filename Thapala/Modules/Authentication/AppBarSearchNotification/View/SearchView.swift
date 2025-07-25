@@ -40,16 +40,6 @@ struct SearchView: View {
                                 .padding(.leading, 16)
                         })
 
-//                        Image("backButton")
-//                            .resizable()
-//                            .renderingMode(.template)
-//                            .frame(width: 20, height: 20)
-//                            .foregroundColor(themesviewModel.currentTheme.iconColor)
-//                            .padding(.leading, 16)
-//                            .onTapGesture {
-//                                appBarElementsViewModel.isSearch = false
-//                            }
-
                         // Search Field
                         ZStack(alignment: .leading) {
                             if searchMail.isEmpty {
@@ -261,9 +251,6 @@ struct SearchView: View {
                                 }
                                 .listRowBackground(themesviewModel.currentTheme.windowBackground)
                             }
-//                            .refreshable{
-//                            }
-                            
                             .listStyle(PlainListStyle())
                             .scrollContentBackground(.hidden)
                             .background(themesviewModel.currentTheme.windowBackground)

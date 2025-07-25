@@ -18,7 +18,6 @@ class MailComposeViewModel:ObservableObject{
     @Published var tCodes: [TCode] = []
     @Published var ccTCodes: [TCode] = []
     @Published var bccTCodes: [TCode] = []
-//    @Published var isInsertTcode: Bool = false
     @Published var subject: String = ""
     @Published var image: String = ""
     @Published var scheduledtime: String = ""
@@ -45,23 +44,17 @@ class MailComposeViewModel:ObservableObject{
     @Published var isSchedule:Bool = false
     @Published var sendEmailResponse:SendEmailsModel?
     @Published var backToscreen:Bool = false
-  //  @Published var isFilePickerPresented = false
     @Published var isInsertFromRecords:Bool = false
     @Published var selectedFiles: [URL] = []
     @Published var attachmentDataIn: [AttachmentDataModel] = []
     @Published var detailedEmailData: [DetailedEmailData] = []
     @Published var trashMessage: String = ""
-    // created at 17/11/2024
     @Published var EmailUserdata : EmailUser?
     @Published var mailFullView: Bool = false
     @Published var mailStars: Int = 0
-    @State private var markAs : Int = 0
-//    @Published var SenderUserData : EmailUser? // for thread id
-        
-
+    @Published private var markAs : Int = 0
     @Published var tcodeinfo: [TcodeData] = []
         @Published var tcodesuggest: TcodeSuggest?
-//    @Published var Tcod = tCode?
     
     func sendEmail() {
         isLoading = true
@@ -229,165 +222,6 @@ class MailComposeViewModel:ObservableObject{
            }
        }
     
-//    func fileupload(folderID: Int, fileType: String, subfoldertype: String, fileName: String, azureFileName: String, fileLink: String, fileSize: String) {
-//        isLoading = true
-//
-//        let uploadFile = UploadFile(
-//            fileName: fileName,
-//            azureFileName: azureFileName,
-//            fileLink: fileLink,
-//            fileSize: fileSize
-//        )
-//
-//        let params = UploadPayload(
-//            files: [uploadFile],
-//            folderId: folderID,
-//            type: fileType,
-//            subFolderType: subfoldertype
-//        )
-//
-//        let endPoint = "\(EndPoint.uploadfile)"
-//
-//        NetworkManager.shared.request(type: UploadResponses.self, endPoint: endPoint, httpMethod: .post, parameters: params, isTokenRequired: true) { [weak self] result in
-//            guard let self = self else { return }
-//            DispatchQueue.main.async {
-//                self.isLoading = false
-//                switch result {
-//                case .success(let response):
-//                    print("Upload successful: \(response.message)")
-//                    // You can set a success message or handle response further here.
-//                case .failure(let error):
-//                    switch error {
-//                    case .error(let message):
-//                        self.error = message
-//                        print("Error: \(message)")
-//                    case .sessionExpired:
-//                        self.error = "Session expired. Please log in again."
-//                    default:
-//                        self.error = "An unexpected error occurred."
-//                    }
-//                }
-//            }
-//        }
-//    }
-    
-//    func uploadImages(_ images: [UIImage]) {
-//        let url = URL(string: "http://128.199.21.237:8080/api/v1/attachments")!
-//        var request = URLRequest(url: url)
-//        let sessionManager = SessionManager()
-//        request.httpMethod = "POST"
-//        request.setValue("Bearer \(sessionManager.token)", forHTTPHeaderField: "Authorization")
-//
-//        let boundary = UUID().uuidString
-//        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-//
-//        let body = createImageBody(boundary: boundary, images: images)
-//        
-//        let task = URLSession.shared.uploadTask(with: request, from: body) { responseData, response, error in
-//            if let error = error {
-//                print("Error uploading images: \(error)")
-//                return
-//            }
-//
-//            if let response = response as? HTTPURLResponse, let responseData = responseData {
-//                print("Status code: \(response.statusCode)")
-//                do {
-//                    let attachmentResponse = try JSONDecoder().decode(AttachmentModel.self, from: responseData)
-//                    print("Response: \(attachmentResponse)")
-//                    DispatchQueue.main.async {
-//                        self.handleAttachmentResponse(attachmentResponse)
-//                        if let attachments = attachmentResponse.attachments {
-//                            for attachment in attachments {
-//                                self.fileupload(
-//                                    folderID: 1060,
-//                                    fileType: "work",
-//                                    subfoldertype: "files",
-//                                    fileName: attachment.fileName ?? "",
-//                                    azureFileName: attachment.fileName ?? "",
-//                                    fileLink: attachment.fileLink ?? "",
-//                                    fileSize: attachment.fileSize ?? ""
-//                                )
-//                            }
-//                        }
-//                        
-//                    }
-//                } catch {
-//                    print("Failed to decode response: \(error)")
-//                }
-//            }
-//        }
-//        task.resume()
-//    }
-//
-//    func createImageBody(boundary: String, images: [UIImage]) -> Data {
-//        var body = Data()
-//
-//        for (index, image) in images.enumerated() {
-//            guard let imageData = image.jpegData(compressionQuality: 0.8) else { continue }
-//
-//            let filename = "image\(index).jpg"
-//            let mimeType = "image/jpeg"
-//
-//            body.append("--\(boundary)\r\n".data(using: .utf8)!)
-//            body.append("Content-Disposition: form-data; name=\"attachment\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
-//            body.append("Content-Type: \(mimeType)\r\n\r\n".data(using: .utf8)!)
-//            body.append(imageData)
-//            body.append("\r\n".data(using: .utf8)!)
-//        }
-//
-//        body.append("--\(boundary)--\r\n".data(using: .utf8)!)
-//        return body
-//    }
-//    func handleAttachmentResponse(_ response: AttachmentModel) {
-//        if let attachments = response.attachments {
-//            self.attachmentDataIn.append(contentsOf: attachments)
-//        }
-//        self.error = response.message
-//    }
-    
-//        func getFullEmail(emailId:Int) {
-//            print(emailId)
-//            self.isLoading = true
-//            let endUrl = "\(EndPoint.emailsById)\(emailId)"
-//            NetworkManager.shared.request(type: EmailsByIdModel.self, endPoint: endUrl, httpMethod: .get,isTokenRequired: true) { result in
-//             //   guard let self = self else { return }
-//                switch result {
-//                case .success(let response):
-//                    DispatchQueue.main.async {
-//                        self.isLoading = false
-//                        self.error = response.message ?? ""
-//                        self.emailByIdData = response
-//                        let stringValue = response.email?[0].body ?? ""
-//                        self.composeText = (convertHTMLToAttributedString(html: stringValue))?.string ?? ""
-//                        self.attachmentsData = response.email?[0].attachments ?? []
-//                        print("Data updated: \(self.composeText)")
-//                    }
-//                case .failure(let error):
-//                    DispatchQueue.main.async {
-//                        self.isLoading = false
-//                        switch error {
-//                        case .error(error: let error):
-//                            DispatchQueue.main.async {
-//                                self.error = error
-//                            }
-//                        case .sessionExpired(error: _ ):
-//                            self.error = "Please try again later"
-//                        }
-//                    }
-//                }
-//            }
-//        }
-    
-//    func getFullEmail(emailId: Int, completion: @escaping (Result<EmailsByIdModel, NetworkError>) -> Void) {
-//        self.isLoading = true
-//        let endUrl = "\(EndPoint.emailsById)\(emailId)"
-//        NetworkManager.shared.request(type: EmailsByIdModel.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { result in
-//            DispatchQueue.main.async {
-//                self.isLoading = false
-//                completion(result)
-//            }
-//        }
-//    }
     
     func getFullEmail(emailId: Int) {
         self.isLoading = true
@@ -416,37 +250,6 @@ class MailComposeViewModel:ObservableObject{
             }
         }
     }
-//    //on click of draft mail
-//
-//    func emaildraftdata(threadID : Int) {  // created at 17/11/2024 
-//        self.isLoading = true
-//        let endUrl = "\(EndPoint.emailsById)\(threadID)"
-//        NetworkManager.shared.request(type: EmailUser.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
-//            guard let self = self else { return }
-//            switch result {
-//            case .success(let response):
-//                DispatchQueue.main.async {
-//                    self.isLoading = false
-//                    self.EmailUserdata = response
-//                    self.tCode = response.tCode
-////                    completion(result)
-//                    print("suggested t code response \(response)")
-//                }
-//            case .failure(let error):
-//                DispatchQueue.main.async {
-//                    self.isLoading = false
-//                    switch error {
-//                    case .error(error: let error):
-//                        DispatchQueue.main.async {
-//                            self.error = error
-//                        }
-//                    case .sessionExpired(error: _):
-//                        self.error = "Please try again later"
-//                    }
-//                }
-//            }
-//        }
-//    }
 
     
     func getSerachTcode(searchKey: String) {

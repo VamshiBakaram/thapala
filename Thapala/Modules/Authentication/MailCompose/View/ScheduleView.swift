@@ -105,13 +105,7 @@ struct ScheduleView: View {
                                             Text(maskedUsertcode)
                                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                                                 .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
-                                            
-//                                            Spacer()
-                                            
-                                            // Dropdown menu using Menu
-                                             
-                                            
-                                           
+                                                                                        
                                                 HStack {
                                                     Image(systemName: "chevron.down")
                                                         .resizable()
@@ -148,7 +142,6 @@ struct ScheduleView: View {
                                                                               bodycontent : composeText,
                                                                               isVisible: $showEditProfileDialog
                                                             )
-//                                                                .zIndex(1)
                                                                 .padding(.top, 150) // Adjust this value to position the dialog
                                                                 .padding(.leading, 150)
                                                             }
@@ -176,7 +169,6 @@ struct ScheduleView: View {
                                             Image("dots")
                                                 .renderingMode(.template)
                                                 .foregroundColor(themesviewModel.currentTheme.iconColor)
-//                                                .padding(1) // Padding inside the button for spacing around the dots
                                                 .background(
                                                     RoundedRectangle(cornerRadius: 2) // Apply corner radius to make it rounded
                                                         .stroke(themesviewModel.currentTheme.textColor, lineWidth: 1) // Border color and width
@@ -319,8 +311,6 @@ struct ScheduleView: View {
                                 }
                             }
                         }
-                        //                    .padding([.trailing], 50)
-//                      .padding([.leading, .top, .bottom], 15)
                         .padding()
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
@@ -329,57 +319,6 @@ struct ScheduleView: View {
                         )
 
                     }
-                    //
-                    /*
-                     .overlay(
-                     RoundedRectangle(cornerRadius: 20)
-                     .stroke(Color.gray, lineWidth: 1)
-                     )
-                     .padding()
-                     */
-                    
-//                    HStack (spacing:0){
-//                        Button(action: {
-//                            self.presentationMode.wrappedValue.dismiss()
-//                        }) {
-//                            Image(systemName: "trash")
-//                                .renderingMode(.template)
-//                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-//                                .padding(.leading , 16)
-//                        }
-//                        Spacer()
-//                        
-//                        Button(action: {
-//                            isMoveSheetvisible.toggle()
-//                        }) {
-//                            Image(systemName: "folder")
-//                                .renderingMode(.template)
-//                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-//                        }
-//                        Spacer()
-//                        
-//                        Button(action: {
-//                            isTagsheetvisible.toggle()
-////                            BottomsheetviewModel.isLabelView = true
-////                            mailComposeViewModel.isInsertFromRecords = true
-//                        }) {
-//                            Image("Tags")
-//                                .renderingMode(.template)
-//                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-//                        }
-//                        Spacer()
-//                        
-//                        Button(action: {
-//                            isMoreSheetvisible.toggle()
-//                        }) {
-//                            Image("threeDots")
-//                                .renderingMode(.template)
-//                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-//                        }
-//                        Spacer()
-//                    }
-//                    .padding([.leading,.trailing],20)
-                    
                 }
             .background(themesviewModel.currentTheme.windowBackground)
             
@@ -453,68 +392,6 @@ struct ScheduleView: View {
                         mailComposeViewModel.saveDraftData()
                     }
                 }
-//                if isTagsheetvisible {
-//                    ZStack {
-//                        // Tappable background
-//                        Rectangle()
-//                            .fill(Color.black.opacity(0.3))
-//                            .edgesIgnoringSafeArea(.all)
-//                            .onTapGesture {
-//                                withAnimation {
-//                                    print("Tapped isTagsheetvisible")
-//                                    isTagsheetvisible = false
-//                                }
-//                            }
-//                        VStack {
-//                            Spacer() // Pushes the sheet to the bottom
-//                            CreateTagLabel(isTagSheetVisible: $isTagsheetvisible, isActive: $isactive, selectedNewDiaryTag: $selectednewDiaryTag, selectedNames: $selectednames, selectedID: selectedid, isclicked: $isClicked)
-//                                .transition(.move(edge: .bottom))
-//                                .animation(.easeInOut, value: isTagsheetvisible)
-//                        }
-//                    }
-//                }
-//            
-//                if isMoveSheetvisible {
-//                    ZStack {
-//                        // Tappable background
-//                        Rectangle()
-//                            .fill(Color.black.opacity(0.3))
-//                            .edgesIgnoringSafeArea(.all)
-//                            .onTapGesture {
-//                                withAnimation {
-//                                    print("Tapped isMoveSheetvisible")
-//                                    isMoveSheetvisible = false
-//                                }
-//                            }
-//                        VStack {
-//                            Spacer() // Pushes the sheet to the bottom
-//                            MoveTo(isMoveToSheetVisible: $isMoveSheetvisible)
-//                                .transition(.move(edge: .bottom))
-//                                .animation(.easeInOut, value: isMoveSheetvisible)
-//                        }
-//                    }
-//                }
-//                if isMoreSheetvisible {
-//                    ZStack {
-//                        // Tappable background
-//                        Rectangle()
-//                            .fill(Color.black.opacity(0.3))
-//                            .edgesIgnoringSafeArea(.all)
-//                            .onTapGesture {
-//                                withAnimation {
-//                                    print("Tapped isMoreSheetvisible")
-//                                    isMoreSheetvisible = false
-//                                }
-//                            }
-//                        VStack {
-//                            Spacer() // Pushes the sheet to the bottom
-//                            MoreSheet(isMoreSheetVisible: $isMoreSheetvisible)
-//                                .transition(.move(edge: .bottom))
-//                                .animation(.easeInOut, value: isMoreSheetvisible)
-//                        }
-//                    }
-//                }
-    
         
             
                 if mailComposeViewModel.isSchedule {

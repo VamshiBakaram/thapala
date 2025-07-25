@@ -67,7 +67,6 @@
 		D33271F22DE4806C0058AA4C /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = D33271F12DE4806C0058AA4C /* Kingfisher */; };
 		D333A9852CEB612B00081062 /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D333A9842CEB612B00081062 /* ScheduleView.swift */; };
 		D3391E1E2DB0EC4900135836 /* themesConsoleModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3391E1D2DB0EC4900135836 /* themesConsoleModelData.swift */; };
-		D3391E222DB0ED1A00135836 /* ConsoleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3391E212DB0ED1A00135836 /* ConsoleViewModel.swift */; };
 		D3391E262DB10A4700135836 /* ConsoleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3391E252DB10A4700135836 /* ConsoleViewModel.swift */; };
 		D3391E282DB1167900135836 /* chatBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3391E272DB1167900135836 /* chatBoxView.swift */; };
 		D339CF7C2D352FF20069B9AB /* DateBookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D339CF7B2D352FF20069B9AB /* DateBookModel.swift */; };
@@ -256,7 +255,6 @@
 		D33271EE2DE42E5A0058AA4C /* RecordsModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsModelData.swift; sourceTree = "<group>"; };
 		D333A9842CEB612B00081062 /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
 		D3391E1D2DB0EC4900135836 /* themesConsoleModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = themesConsoleModelData.swift; sourceTree = "<group>"; };
-		D3391E212DB0ED1A00135836 /* ConsoleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleViewModel.swift; sourceTree = "<group>"; };
 		D3391E252DB10A4700135836 /* ConsoleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleViewModel.swift; sourceTree = "<group>"; };
 		D3391E272DB1167900135836 /* chatBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = chatBoxView.swift; sourceTree = "<group>"; };
 		D339CF7B2D352FF20069B9AB /* DateBookModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DateBookModel.swift; path = Thapala/Modules/Authentication/Planner/DateBookModel.swift; sourceTree = SOURCE_ROOT; };
@@ -1587,7 +1585,6 @@
 		D3D94EB92CB536AF00CC3C8F /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				D3391E212DB0ED1A00135836 /* ConsoleViewModel.swift */,
 				D3391E252DB10A4700135836 /* ConsoleViewModel.swift */,
 			);
 			path = ViewModel;
@@ -1741,7 +1738,6 @@
 				D37CA8FE2C05E80E000DE3C5 /* NavigatorEditViewModel.swift in Sources */,
 				D3D557122C7628A400B0E64E /* InsertTCodeModel.swift in Sources */,
 				D38E5B562CB64A9700901F91 /* InfoModelData.swift in Sources */,
-				D3391E222DB0ED1A00135836 /* ConsoleViewModel.swift in Sources */,
 				D363A76D2DD3164300D42A2F /* MoveTo.swift in Sources */,
 				D36888F02CC66686002897EA /* StarredEmailModel.swift in Sources */,
 				D37CA8FA2C05E7BD000DE3C5 /* NavigatorEditView.swift in Sources */,

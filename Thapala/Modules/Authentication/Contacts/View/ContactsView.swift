@@ -74,7 +74,6 @@ struct ContactsView:View{
                     .listRowBackground(themesviewModel.currentTheme.windowBackground)
                     .padding(.vertical, 2) // Reduced padding between items
                 }
-//                .listRowSeparator(.hidden)
             }
             .listStyle(PlainListStyle())
             .scrollContentBackground(.hidden)

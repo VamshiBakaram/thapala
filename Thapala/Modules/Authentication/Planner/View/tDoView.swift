@@ -15,14 +15,12 @@ struct tDoView: View {
     @ObservedObject var themesviewModel = ThemesViewModel()
     @State private var text: String = "let's Start"
     @State private var tasktext: String = "write the task"
-//    @State private var subtasktext: String = ""
     @State private var isSubTaskVisible: Bool = false
     @State private var subtasks: [String] = [] // Array to store subtask texts
     @State private var newSubTaskText: String = ""
     @State private var isSubTaskCommitted = false
 
     var body: some View {
-//        NavigationView {
         ZStack {
             themesviewModel.currentTheme.windowBackground
                 .ignoresSafeArea()
@@ -73,22 +71,6 @@ struct tDoView: View {
                 .foregroundColor(themesviewModel.currentTheme.textColor)
                 .padding(.leading, 16) // Adds 10-point padding to the leading edge
                 .padding(.trailing, 16) // Adds 15-point padding to the trailing edge
-              
-//            if isSubTaskVisible {
-//                HStack {
-////                    Image("plus")
-//                    TextField("+ SubTask", text: $subtasktext, onEditingChanged: { editing in
-//                        if !editing && !subtasktext.isEmpty {
-//                            isSubTaskVisible = false
-//                        }
-//                    })
-//                    .font(.headline)
-//                        .foregroundColor(.gray)
-//                        .padding(.leading, 16) // Adds 10-point padding to the leading edge
-//                        .padding(.trailing, 16) // Adds 15-point padding to the trailing edge
-//                }
-//            }
-
 
 
             ForEach(subtasks.indices, id: \.self) { index in
@@ -135,7 +117,6 @@ struct tDoView: View {
                     isSubTaskVisible = true
                 })
                 .foregroundColor(themesviewModel.currentTheme.textColor)
-//                .accentColor(themesviewModel.currentTheme.textColor)
                 .padding(.leading, 16)
                 .padding(.trailing, 16)
             }
@@ -378,7 +359,6 @@ struct ListitemView: View {
                                         .onTapGesture {
                                             formattedDateTime = ""
                                             isTextFieldVisible = false // Hide TextField when tapped
-//                                                homePlannerViewModel.removescheduleDiary(selectedID: selectedID, reminder: nil)
                                         }
                                 }
                             }
@@ -433,57 +413,6 @@ struct ListitemView: View {
                                 }
                             }
                         }
-//                            let column = [GridItem(.adaptive(minimum: 100), spacing: 10)]
-//
-//                            LazyVGrid(columns: column, spacing: 10) {
-//                                if isclicked {
-//                                // Find the selected diary based on the `selectedID`
-//                                if let selectedDiary = homePlannerViewModel.listData.first(where: { $0.id == homePlannerViewModelselectedID }) {
-//                                    // Get labels that match the selectedLabelIDs
-//                                    let filteredTags = selectedDiary.labels?.filter { tag in
-//                                        homePlannerViewModel.selectedLabelID.contains(tag.labelId)
-//                                    } ?? []
-//
-//                                    // Iterate over the filtered tags and display them
-//                                    ForEach(filteredTags, id: \.labelId) { label in
-//                                        if !label.labelName.isEmpty {
-//                                            // TextField to edit label name
-//                                            TextField("", text: Binding(
-//                                                get: { label.labelName },
-//                                                set: { newValue in
-//                                                    // Update label name (if necessary)
-//                                                    if let index = selectedDiary.labels?.firstIndex(where: { $0.labelId == label.labelId }) {
-//                                                        selectedDiary.labels?[index].labelName = newValue
-//                                                    }
-//                                                }
-//                                            ))
-//                                            .frame(height: 35)
-//                                            .padding(.leading, 10)
-//                                            .foregroundColor(.black)
-//                                            .disabled(!canEdit())
-//
-//                                            // Image to remove the tag
-//                                            Image("wrongmark")
-//                                                .resizable()
-//                                                .frame(width: 16, height: 16)
-//                                                .padding(.trailing, 5)
-//                                                .onTapGesture {
-//                                                    // Clear label name
-//                                                    if let index = selectedDiary.labels?.firstIndex(where: { $0.labelId == label.labelId }) {
-//                                                        selectedDiary.labels?[index].labelName = ""
-//                                                    }
-//
-//                                                    // Call the view model's remove function
-//                                                    homePlannerViewModel.removeTag(selectedID: selectedID, Tagid: label.labelId)
-//                                                }
-//                                        }
-//                                    }
-//                                } else {
-//                                    // Handle case where no diary was found
-//                                    Text("No diary found with the selected ID")
-//                                }
-//                            }
-//                            }
 
                         Spacer().frame(height: 15)
 
@@ -504,9 +433,7 @@ struct ListitemView: View {
                         .padding(.leading, 1)
                 }
                 .padding(.trailing, 16)
-                
-                //                .padding(.trailing , 20)
-                
+                                
                 // ScrollView for tags
                 
                 Spacer()
@@ -569,7 +496,6 @@ struct ListitemView: View {
                 .background(themesviewModel.currentTheme.windowBackground)
               }
             }
-//                .background(themesviewModel.currentTheme.windowBackground)
             .onAppear {
                 if homePlannerViewModel.doitlistData.isEmpty {
                     homePlannerViewModel.GetDoitList()
@@ -647,8 +573,6 @@ struct ListitemView: View {
                 VStack {
                     Spacer() // Pushes the sheet to the bottom
                     HistoryBottomView(isHistoryVisible: $isHistoryVisible, selectedID: selectedID)
-//                        .transition(.move(edge: .bottom)) // Smooth transition
-//                        .animation(.easeInOut)
                 }
                 .background(
                     Color.black.opacity(0.3)
@@ -754,8 +678,6 @@ struct NotificationView: View {
     @State private var selectedDate = Date() // Holds the current date or time
     @State private var isDatePickerVisible = false // Controls date picker dialog
     @State private var isTimePickerVisible = false
-//    @ObservedObject private var options = ClockLooks()
-    
     var body: some View {
         VStack(spacing: 16) {
             VStack(alignment: .leading) {
@@ -849,9 +771,6 @@ struct NotificationView: View {
             .background(themesviewModel.currentTheme.windowBackground)
             .cornerRadius(16)
             .shadow(radius: 10)
-        }
-        .onAppear {
-//            options.withHands = true
         }
         .overlay(
             Group {
@@ -954,8 +873,7 @@ struct timeDialogView<Content: View>: View {
             RoundedRectangle(cornerRadius: 16)
                 .stroke(Color.red.opacity(0.2), lineWidth: 1)
         )
-//        .frame(maxWidth: .infinity, maxHeight: .infinity)
-//        .background(Color.clear.edgesIgnoringSafeArea(.all))
+
     }
 }
 
@@ -969,7 +887,6 @@ struct TagView: View {
     var selectedID: Int
     @State private var searchText: String = ""
     @State private var isCreateLabelVisible: Bool = false // Tracks visibility of createLabelView
-//    @State var labelname: String = ""
     @State private var Textfill: String = ""
     @State private var isChecked: Bool = false
     @Binding var isclicked: Bool
@@ -1058,7 +975,6 @@ struct TagView: View {
                         
                             Button(action: {
                                 withAnimation {
-    //                                    isTagSheetVisible = false // Dismiss BottomTagSheetView
                                     isCreateLabelVisible = true
                                 }
                             }, label: {
@@ -1213,7 +1129,6 @@ struct HistoryBottomView: View {
                             .padding(.horizontal, 16)
                             .padding(.leading ,16)
                             .padding(.trailing,16)
-//                            .background(themesviewModel.currentTheme.windowBackground)
                             .overlay(
                                 Rectangle()
                                     .stroke(themesviewModel.currentTheme.strokeColor, lineWidth: 1)
@@ -1363,7 +1278,6 @@ struct BottomBackgroundView: View {
         "#ffffff", "#f9b0a8", "#f39f76", "#fff8b9", "#e2f6d3", "#b5ddd4", "#d5e2e9","#aeccdc", "#d3c0db", "#f6e2dd", "#e9e2d4", "#efeff0"
     ]
     
-//    let availableBackgrounds: [Background] = [
         let availableBackgrounds: [Background] = [
             Background(type: .image,
                       value: "fruits-7434339_1920",
@@ -1561,15 +1475,6 @@ struct BottomBackgroundView: View {
                         SubImage(value: "assets/plannerBackground/work/work-4997565_1280.png", tooltip: ""),
                        ]),
         ]
-        
-        // Food backgrounds
-
-//
-//               ],
-
-    
-    // Array of image names for icons
-
 
     var body: some View {
         VStack {
@@ -1616,7 +1521,6 @@ struct BottomBackgroundView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 36, height: 36)
-                            //                                .background(Color.red) // Add this line for debugging
                                 .clipShape(Circle())
                                 .overlay(
                                     Circle().stroke(Color.black, lineWidth: 0.5) // Add a border with your desired color and width
@@ -1646,12 +1550,10 @@ struct BottomBackgroundView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 5) {
                         ForEach(subImage, id: \.self) { imageName in
-//                            let themeimage = background.value
                             Image(imageName)
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: 36, height: 36)
-                            //                                .background(Color.red) // Add this line for debugging
                                 .clipShape(Circle())
                                 .overlay(
                                     Circle().stroke(Color.black, lineWidth: 0.5) // Add a border with your desired color and width

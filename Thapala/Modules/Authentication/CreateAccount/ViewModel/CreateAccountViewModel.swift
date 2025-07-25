@@ -16,9 +16,9 @@ class CreateAccountViewModel: ObservableObject {
     @Published var isLoading = false
     
     @Published var isNavigateToOtpView = false
-    @Published var countryCodes: [CountryCode] = []
-    @Published var selectedCountryCode: CountryCode? = nil
-    @Published var selectedCountryName:CountryCode? = nil
+    @Published var countryCodes: [countriesCode] = []
+    @Published var selectedCountryCode: countriesCode? = nil
+    @Published var selectedCountryName:countriesCode? = nil
     @Published var isShowCountryDropdown = false
     
     private var sessionManager: SessionManager
@@ -80,7 +80,6 @@ class CreateAccountViewModel: ObservableObject {
                         self.error = response.message ?? ""
                     }else{
                         self.error = response.message ?? ""
-//                        self.sessionManager.sessionId = response.sessionId ?? ""
                         UserDataManager.shared.sessionId = response.sessionId ?? ""
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
                             self.isNavigateToOtpView = true
@@ -107,7 +106,7 @@ class CreateAccountViewModel: ObservableObject {
         }
         do {
             let jsonData = try Data(contentsOf: fileURL)
-            let countryCodes = try JSONDecoder().decode([CountryCode].self, from: jsonData)
+            let countryCodes = try JSONDecoder().decode([countriesCode].self, from: jsonData)
             DispatchQueue.main.async {
                 self.countryCodes = countryCodes
                 let defaultCode = self.countryCodes.filter({ $0.code == (Locale.current.region?.identifier ?? "") })

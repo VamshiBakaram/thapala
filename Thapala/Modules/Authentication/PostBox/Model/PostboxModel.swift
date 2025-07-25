@@ -177,22 +177,3 @@ struct ChatMessage: Codable, Identifiable {
     }
 }
 
-//struct StringOrInt: Codable {
-//    let value: String?
-//
-//    init(from decoder: Decoder) throws {
-//        let container = try decoder.singleValueContainer()
-//        if let intValue = try? container.decode(Int.self) {
-//            self.value = String(intValue)
-//        } else if let stringValue = try? container.decode(String.self) {
-//            self.value = stringValue
-//        } else {
-//            self.value = nil
-//        }
-//    }
-//
-//    func encode(to encoder: Encoder) throws {
-//        var container = encoder.singleValueContainer()
-//        try container.encode(value)
-//    }
-//}

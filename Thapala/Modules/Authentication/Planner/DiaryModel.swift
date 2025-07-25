@@ -149,17 +149,6 @@ struct Comment: Decodable{
 
 
 
-//struct TagLabel: Decodable {
-//    let labelId: Int
-//    var labelName: String
-//    
-//    enum CodingKeys: String, CodingKey {
-//        case labelId
-//        case labelName
-//    }
-//}
-
-
 
 
 struct AddCommentResponse: Codable {
@@ -172,21 +161,6 @@ struct CommentPayload: Codable {
     var comment: String
     var type: String
 }
-
-
-// comments Delete method
-
-
-
-//struct DeleteCommentResponse: Decodable {
-//    let message: String
-//}
-
-//struct DeleteCommentRequest: Encodable , Decodable {
-//    let parentId: [Int]   // Accepts an array of parentIds
-//    let commentId: [Int]  // Accepts an array of commentIds
-//    let type: String
-//}
 
 struct DeleteCommentResponse: Decodable {
     let message: String

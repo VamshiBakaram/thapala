@@ -16,7 +16,6 @@ struct InsertTCodeView: View {
     var body: some View {
         ZStack{
             Color(red: 0, green: 0, blue: 0)
-            //  .opacity(0.3)
                 .ignoresSafeArea()
                 .onTapGesture {
                     isInsertVisible = false
@@ -93,7 +92,6 @@ struct InsertTCodeView: View {
                     List($insertTCodeViewModel.contactsData) { $data in
                         VStack {
                             HStack{
-//                                Image("unchecked")
                                 Image(data.isSelected ? "checkbox" : "Check")
                                     .resizable()
                                     .foregroundColor(themesviewModel.currentTheme.iconColor)

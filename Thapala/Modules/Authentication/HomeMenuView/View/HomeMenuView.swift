@@ -25,7 +25,6 @@ struct HomeMenuView: View {
         .init(image: "blueprintW", menuType: "Blueprint"),
         .init(image: "plannerW", menuType: "Planner"),
         .init(image: "pocketW", menuType: "Pocket"),
-        //  .init(image: "directory", menuType: "Directory")
         .init(image: "direct", menuType: "Directory"),
         .init(image: "recordsW", menuType: "Records"),
         .init(image: "navigatorW", menuType: "Navigator")
@@ -51,8 +50,6 @@ struct HomeMenuView: View {
     @Binding var isSidebarVisible: Bool
     @State private var selectedOption: HomeMenuData?
     @State private var path: [HomeMenuData] = []
-//    @State private var isEditProfile: Bool = false
-    //    @State private var isCancel: Bool = false
     @State private var showAlert = false
     @State private var isCancel = false
     @State private var navigateToLoginView = false
@@ -124,9 +121,7 @@ struct HomeMenuView: View {
                     }
                 }
                 .frame(width: UIScreen.main.bounds.width * 0.75)
-//                .frame(height: UIScreen.main.bounds.height)
                 .background(themesviewModel.currentTheme.colorPrimary)
-//                .ignoresSafeArea(edges: [.bottom])
             }
         }
     }

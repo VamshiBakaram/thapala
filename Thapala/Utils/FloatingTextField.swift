@@ -91,7 +91,7 @@ struct floatingTextField: View {
             Text(placeHolder)
                 .font(.custom(.poppinsRegular, size: 14))
                 .background(themesviewModel.currentTheme.windowBackground)
-                .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                .foregroundColor(themesviewModel.currentTheme.allBlack)
                 .scaleEffect((isFocused || !text.isEmpty) ? 0.8 : 1.0, anchor: .leading)
                 .offset(x: 12, y: (isFocused || !text.isEmpty) ? -28 : 0)
                 .padding(.horizontal, 4)
@@ -101,7 +101,7 @@ struct floatingTextField: View {
             TextField("", text: $text)
                 .focused($isFocused)
                 .font(.custom(.poppinsRegular, size: 14))
-                .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                .foregroundColor(themesviewModel.currentTheme.allBlack)
                 .padding(.horizontal, 12)
                 .frame(height: 55)
         }

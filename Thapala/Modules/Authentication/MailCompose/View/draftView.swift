@@ -32,7 +32,6 @@ struct draftView: View {
             VStack {
                 HStack {
                     Button(action: {
-//                        self.mailComposeViewModel.resetComposeEmailData()
                         mailComposeViewModel.saveDraftData()
                         self.presentationMode.wrappedValue.dismiss()
                     }) {
@@ -100,7 +99,6 @@ struct draftView: View {
                                                 text: $to // Bind directly to local state
                                             )
                                             .foregroundColor(themesviewModel.currentTheme.textColor)
-                                            //                                        .background(themesviewModel.currentTheme.attachmentBGColor)
                                             .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
                                         }
                                         // Display suggestions
@@ -116,9 +114,6 @@ struct draftView: View {
                                                         mailComposeViewModel.suggest = false
                                                     }) {
                                                         Text(tCode.tCode ?? "Unknown")
-                                                        
-                                                        //                                                                                    .foregroundColor(.black)
-                                                        // Ensure text is visible
                                                     }                                                }
                                                 .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                 .frame(height: min(CGFloat(data.count * 40), 200)) // Dynamically adjust height
@@ -313,20 +308,6 @@ struct draftView: View {
                                         .padding(.vertical, 8)
                                 }
                             }
-                            
-                            //                        ZStack(alignment: .leading) {
-                            //                            TextEditor(text: $composeText)
-                            //                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                            //                                .padding(4)
-                            //                                .font(.custom(.poppinsLight, size: 14))
-                            //                            if composeText.isEmpty {
-                            //                                Text("Compose email")
-                            //                                    .font(.custom(.poppinsLight, size: 14))
-                            //                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                            //                                    .padding(.horizontal, 4)
-                            //                                    .padding(.vertical, 8)
-                            //                            }
-                            //                        }
                             Spacer()
                             if mailComposeViewModel.attachmentDataIn.count != 0{
                                 Rectangle()
@@ -428,15 +409,6 @@ struct draftView: View {
                     .presentationDetents([.medium])
                     .presentationDragIndicator(.hidden)
             })
-//            .fileImporter(isPresented: $isFilePickerPresented, allowedContentTypes: [.image, .pdf, .plainText], allowsMultipleSelection: true) { result in
-//                switch result {
-//                case .success(let urls):
-//                    mailComposeViewModel.selectedFiles.append(contentsOf: urls)
-//                    mailComposeViewModel.uploadFiles(fileURLs: urls)
-//                case .failure(let error):
-//                    print("Failed to select files: \(error.localizedDescription)")
-//                }
-//            }
             
             .toast(message: $mailComposeViewModel.error)
                 .onAppear {

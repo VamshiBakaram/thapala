@@ -30,7 +30,6 @@ struct RecordsThreeDotsView: View {
     @State private var Files: [FieldID] = []
     @State private var mailIDArray: [Int] = []
     @State private var recordIDArray: [Int] = []
-//    @Binding var isMoreSheetvisible: Bool
     @State private var isMoveSheetvisible: Bool = false
     @State private var isMoreVisible: Bool = true
     @State private var DetailsViewVisible: Bool = false
@@ -148,11 +147,6 @@ struct RecordsThreeDotsView: View {
                             }
                             mailIDArray = [emailIds]
                             recordIDArray = [recordIDs]
-                            //                    ConvertedcreatedTime = createdTime
-                            //                    if let unixTimestamp = ConvertedcreatedTime,
-                            //                       let createdTime = convertToIST(dateInput: unixTimestamp) {
-                            //                        ConvertedcreatedTime = createdTime
-                            //                    }
                         }
                     }
                     .toast(message: $homeRecordsViewModel.error)

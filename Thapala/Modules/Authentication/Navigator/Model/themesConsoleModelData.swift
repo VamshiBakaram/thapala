@@ -64,6 +64,6 @@ struct Theme {
     let attachmentBGColor: Color
     let bottomSheetBG: Color
     
-    let AllBlack: Color
-    let AllGray: Color
+    let allBlack: Color
+    let allGray: Color
 }

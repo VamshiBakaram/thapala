@@ -79,10 +79,6 @@ class ReplyEmailViewModel:ObservableObject{
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.error = response.message ?? ""
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-//                        self.emailData = response.data ?? []
-//                        self.emailFullData = response
-//                    })
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -224,7 +220,8 @@ class ReplyEmailViewModel:ObservableObject{
        }
     
     func uploadFiles(fileURLs: [URL]) {
-        let url = URL(string: "http://128.199.21.237:8080/api/v1/attachments")!
+        let url = URL(string: "\(EndPoint.attachmentsReplyMail)")!
+//        let url = URL(string: "http://128.199.21.237:8080/api/v1/attachments")!
         var request = URLRequest(url: url)
         let sessionManager = SessionManager()
         request.httpMethod = "POST"

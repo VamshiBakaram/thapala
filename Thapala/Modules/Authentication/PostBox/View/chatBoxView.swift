@@ -18,7 +18,6 @@ struct ChatBoxView: View {
     @State private var profile: String = ""
     @State private var chatMessage: [String] = []
     @State private var messages: [Message] = []
-//    @State private var Getmessages: [ChatMessage] = []
     private var socketManager = WebSocketManager()
     init(selectID: Int, roomid: String, homePostboxViewModel: HomePostboxViewModel = HomePostboxViewModel()) {
         self.selectID = selectID
@@ -78,7 +77,7 @@ struct ChatBoxView: View {
                                         .padding()
                                         .padding(.trailing , 16)
                                         .background(themesviewModel.currentTheme.attachmentBGColor)
-                                        .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                        .foregroundColor(themesviewModel.currentTheme.allBlack)
                                         .cornerRadius(12)
                                         .id(index) // Assign unique ID for scrolling
                                 }
@@ -92,13 +91,13 @@ struct ChatBoxView: View {
                                         Text(message.text)
                                             .padding()
                                             .background(themesviewModel.currentTheme.attachmentBGColor)
-                                            .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                            .foregroundColor(themesviewModel.currentTheme.allBlack)
                                             .foregroundColor(.white)
                                             .cornerRadius(12)
                                     } else {
                                         Text(message.text)
                                             .padding()
-                                            .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                            .foregroundColor(themesviewModel.currentTheme.allBlack)
                                             .background(Color.gray.opacity(0.2))
                                             .cornerRadius(12)
                                         Spacer()

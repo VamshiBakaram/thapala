@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ControlHeaderView: View {
-    @ObservedObject var ConsoleviewModel = consoleviewModel()
+    @ObservedObject var ConsoleviewModel = ConsoleNavigatiorViewModel()
     @ObservedObject var themesviewModel = ThemesViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
     @State private var selectedTab = 0
@@ -63,7 +63,6 @@ struct ControlHeaderView: View {
         GeometryReader{ reader in
             ZStack {
                 themesviewModel.currentTheme.windowBackground
-//                    .ignoresSafeArea() // Makes sure it fills the entire screen
                 ScrollView(.vertical) {
                     VStack(spacing: 16) {
                         // Top Tab Bar
@@ -596,7 +595,6 @@ struct ControlHeaderView: View {
                                         }
                                         .onTapGesture {
                                             selectedTheme = " Mode"
-                                            //                                        ConsoleviewModel.Themchange(themes: "dark", accentcolour: "white")
                                         }
                                         
                                         Text("")
@@ -676,30 +674,26 @@ struct ControlHeaderView: View {
                             DoIt = alert.doIt
                             Note = alert.note
                             Reminder = alert.reminder
-                            if NewEmail || Scheduledsent == true {
-                                if NewEmail || Scheduledsent == true {
-                                    mail = true
-                                }
-                                else {
-                                    mail = false
-                                }
+                            if NewEmail || Scheduledsent {
+                                mail = true
+                            } else {
+                                mail = false
                             }
-                            if NewMessage || AddOrRemove || ChatDetails || ConnectionExpired == true {
+                            
                                 if NewMessage || AddOrRemove || ChatDetails || ConnectionExpired == true {
                                     chatBox = true
                                 }
                                 else {
                                     chatBox = false
                                 }
-                            }
-                            if Datebook || Diary || DoIt || Note || Reminder == true {
+                            
                                 if Datebook || Diary || DoIt || Note || Reminder == true {
                                     planner = true
                                 }
                                 else {
                                     planner = false
                                 }
-                            }
+                            
                         }
                     }
                 }
@@ -895,8 +889,6 @@ struct ControlHeaderView: View {
                                         allowedCharacter: .defaultType,
                                         isSecure: !isnewPasswordVisible // <- Add support in your custom FloatingTextField
                                     )
-//                                    .padding(.horizontal, 10)
-                                    
                                     Button(action: {
                                         isnewPasswordVisible.toggle()
                                     }) {
@@ -914,7 +906,6 @@ struct ControlHeaderView: View {
                                         allowedCharacter: .defaultType,
                                         isSecure: !isconfirmPasswordVisible // <- Add support in your custom FloatingTextField
                                     )
-//                                    .padding(.horizontal, 10)
                                     
                                     Button(action: {
                                         isconfirmPasswordVisible.toggle()
@@ -1609,23 +1600,6 @@ struct ControlHeaderView: View {
                     }
 
                 }
-//                HStack {
-//                    Text("Chat:")
-//                        .font(.system(size: 14))
-//                    
-//                    Spacer()
-//                    
-//                    Toggle("", isOn: Binding(
-//                        get: { isChatEnabled != 0 },
-//                        set: { newValue in
-//                            isChatEnabled = newValue ? 1 : 0
-//                                let payload = tNote(notePageSize: note)
-//                                ConsoleviewModel.saveSettings(payload: payload)
-//                            consoleViewModel.SaveSettingschat(chats: newValue) // `newValue` is already `true/false`
-//                        }
-//                    ))
-//                    .tint(Color.blue)
-//                }
                 
             case 4: // Chat
                 VStack(alignment: .leading, spacing: 16) {
@@ -1685,10 +1659,6 @@ struct ControlHeaderView: View {
                         
                     }
                 }
-                
-    //            case 5: // Chat
-    //                VStack(alignment: .leading, spacing: 16) {
-    //                }
                 
             case 6:
                 VStack{
@@ -1852,18 +1822,7 @@ struct ControlHeaderView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundColor(themesviewModel.currentTheme.textColor)
             }
-//            @State private var isToggleAllNotificationsOn = false
-//            @State private var isToggleNewEmailOn = false
-//            @State private var isToggleScheduledsentOn = false
-//            @State private var isToggleNewMessageOn = false
-//            @State private var isToggleAddOrRemoveOn = false
-//            @State private var isToggleChatDetailsOn = false
-//            @State private var isToggleConnectionExpiredOn = false
-//            @State private var isToggleDatebookOn = false
-//            @State private var isToggleDiaryOn = false
-//            @State private var isToggleDoItOn = false
-//            @State private var isToggleNoteOn = false
-//            @State private var isToggleReminderOn = false
+
         case 2: // Notifications Tab
             switch index {
             case 0: // Push Notifications

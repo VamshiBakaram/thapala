@@ -214,7 +214,7 @@ struct MailFullView: View {
                                     .scrollContentBackground(.hidden)
                                     .background(themesviewModel.currentTheme.attachmentBGColor)
                                     .cornerRadius(15)
-                                    .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                    .foregroundColor(themesviewModel.currentTheme.allBlack)
                                     .padding(.leading, 10)
                                     .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
                                     .padding(.trailing, 10)
@@ -279,8 +279,6 @@ struct MailFullView: View {
                                         HStack {
                                             Button {
                                                 isreplyView = true
-                                                //                                            mailFullViewModel.isReply = true
-                                                //                                            mailFullViewModel.replyViewModel = replyViewModel
                                                 
                                             } label: {
                                                 Text("Reply")
@@ -415,8 +413,6 @@ struct MailFullView: View {
                             
                             Button(action: {
                                 isTagsheetvisible.toggle()
-                                //                            BottomsheetviewModel.isLabelView = true
-                                //                            mailComposeViewModel.isInsertFromRecords = true
                             }) {
                                 Image("Tags")
                                     .renderingMode(.template)
@@ -739,26 +735,15 @@ struct MailFullView: View {
             .navigationDestination(isPresented: $mailFullViewModel.isCreateLabel) {
                 CreateLabelView().toolbar(.hidden)
             }
-            //        .navigationDestination(isPresented: $mailFullViewModel.isReply) {
-            //            if let replyViewModel = mailFullViewModel.replyViewModel {
-            //                ReplyEmailView(replyEmailViewModel: replyViewModel).toolbar(.hidden)
-            //            }
-            //        }
             .navigationDestination(isPresented: $mailFullViewModel.isReplyAll) {
                 if let replyViewModel = mailFullViewModel.replyViewModel {
                     ReplyEmailView(replyEmailViewModel: replyViewModel, isPresented: $mailFullViewModel.isReplyAll).toolbar(.hidden)
                 }
             }
-            //        .navigationDestination(isPresented: $mailFullViewModel.isForward) {
-            //            if let replyViewModel = mailFullViewModel.replyViewModel {
-            //                ReplyEmailView(replyEmailViewModel: replyViewModel).toolbar(.hidden)
-            //            }
-            //        }
+
             .toast(message: $mailFullViewModel.error)
         }
     }
-//    private func dismissSheet() {
-//    }
 }
 //#Preview {
 //    MailFullView(emailId: 0, passwordHash: "")

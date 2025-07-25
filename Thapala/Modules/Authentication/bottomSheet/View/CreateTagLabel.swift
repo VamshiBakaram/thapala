@@ -70,10 +70,6 @@ struct CreateTagLabel: View {
                                             }
                                         }
                                     }
-                                        
-//                                        else if HomeawaitingViewVisible {
-//                                            homeAwaitingViewModel.ApplyLabel(LabelId:  LabelsMailViewModel.selectedLabelID, threadId: [selectedID])
-//                                        }
                                             
                                         else {
                                             homeAwaitingViewModel.ApplyLabel(LabelId:  LabelsMailViewModel.selectedLabelID, threadId: selectedID)
@@ -332,7 +328,7 @@ struct createLabelView: View {
                     
                     TextField("", text: $Textfill)
                         .padding()
-                        .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                        .foregroundColor(themesviewModel.currentTheme.allBlack)
                         .background(themesviewModel.currentTheme.attachmentBGColor)
                         .cornerRadius(8) // Rounded corners
                         .padding(.horizontal)

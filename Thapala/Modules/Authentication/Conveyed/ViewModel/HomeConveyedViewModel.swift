@@ -34,7 +34,6 @@ class HomeConveyedViewModel:ObservableObject{
                     self.isLoading = false
                         self.error = response.message ?? ""
                     self.conveyedEmailData = response.data ?? []
-                 //   self.conveyedEmailCounaData = response.count
                 }
             case .failure(let error):
                 DispatchQueue.main.async {

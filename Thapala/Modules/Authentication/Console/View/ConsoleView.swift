@@ -106,7 +106,6 @@ struct ConsoleView: View {
                                 .padding(.horizontal, 16)
                                 .background(themesviewModel.currentTheme.windowBackground)
                                 .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                                //                            .listRowSeparator(.hidden)
                             }
                         }
                         .listStyle(PlainListStyle())
@@ -219,7 +218,7 @@ struct ConsoleView: View {
                     .cornerRadius(8)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(themesviewModel.currentTheme.AllGray, lineWidth: 1)
+                            .stroke(themesviewModel.currentTheme.allGray, lineWidth: 1)
                     )
                 }
             }
@@ -256,7 +255,7 @@ struct ConsoleView: View {
                     .cornerRadius(8)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(themesviewModel.currentTheme.AllGray, lineWidth: 1)
+                            .stroke(themesviewModel.currentTheme.allGray, lineWidth: 1)
                     )
                 }
                 
@@ -290,7 +289,7 @@ struct ConsoleView: View {
                     .cornerRadius(8)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(themesviewModel.currentTheme.AllGray, lineWidth: 1)
+                            .stroke(themesviewModel.currentTheme.allGray, lineWidth: 1)
                     )
                 }
                 
@@ -324,7 +323,7 @@ struct ConsoleView: View {
                     .cornerRadius(8)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(themesviewModel.currentTheme.AllGray, lineWidth: 1)
+                            .stroke(themesviewModel.currentTheme.allGray, lineWidth: 1)
                     )
                 }
                 
@@ -358,7 +357,7 @@ struct ConsoleView: View {
                     .cornerRadius(8)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(themesviewModel.currentTheme.AllGray, lineWidth: 1)
+                            .stroke(themesviewModel.currentTheme.allGray, lineWidth: 1)
                     )
                 }
             }

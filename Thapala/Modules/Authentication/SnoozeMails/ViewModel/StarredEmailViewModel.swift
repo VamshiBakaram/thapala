@@ -56,7 +56,6 @@ class StarredEmailViewModel: ObservableObject {
             switch result {
             case .success(let response):
                 DispatchQueue.main.async {
-//                    self.isLoading = false
                     self.error = response.message ?? ""
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
                         self.starredemail = response.message ?? ""

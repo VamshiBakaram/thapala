@@ -15,7 +15,6 @@ struct ComposeEmailEncripted: View {
     var body: some View {
         ZStack{
             Color(red: 255/255, green: 255/255, blue: 255/255)
-              //  .opacity(0.3)
                 .ignoresSafeArea()
                 .onTapGesture {
                     isEmailEncript = false
@@ -42,19 +41,7 @@ struct ComposeEmailEncripted: View {
                         .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
                         .padding(.top,25)
                         .padding(.leading,10)
-                       // .padding(.horizontal)
                     Spacer()
-                   /*
-                    Button(action: {
-                        self.isEmailEncript = false
-                    }, label: {
-                        Image("cross")
-                    })
-                    .padding(.top,25)
-                    .padding(.trailing, 15)
-                    */
-                    
-                    
                 }
                 
                 HStack {
@@ -62,14 +49,12 @@ struct ComposeEmailEncripted: View {
                         .foregroundColor(themesviewModel.currentTheme.textColor)
                         .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
                         .padding(.leading,10)
-                    //.padding(.horizontal)
                     .padding(.top,5)
                     Spacer()
                 }
            
                 HStack {
                     Floatingtextfield(text: $composeEmailEncriptedViewModel.password, placeHolder: "Password", allowedCharacter: .defaultType)
-                       // .padding(.horizontal)
                         .foregroundColor(themesviewModel.currentTheme.textColor)
                         .padding(.top,10)
                         .padding(.leading,10)
@@ -90,10 +75,6 @@ struct ComposeEmailEncripted: View {
                     Image("copy")
                         .renderingMode(.template)
                         .foregroundColor(themesviewModel.currentTheme.iconColor)
-                       // .padding(.trailing)
-//                        .onTapGesture {
-//                            UIPasteboard.general.string = composeEmailEncriptedViewModel.password
-//                        }
                 }
                 
                 HStack {
@@ -126,8 +107,6 @@ struct ComposeEmailEncripted: View {
                 Spacer()
             }
             .background(themesviewModel.currentTheme.windowBackground)
-//            .clipShape(RoundedRectangle(cornerRadius: 15.3))
-//            .padding(.horizontal, 25)
         }
         .navigationDestination(isPresented: $composeEmailEncriptedViewModel.isPasswordProtected) {
             MailComposeView().toolbar(.hidden)

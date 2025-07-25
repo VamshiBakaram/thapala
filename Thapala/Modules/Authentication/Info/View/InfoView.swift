@@ -37,8 +37,6 @@ struct InfoView: View {
                             }
                         } label: {
                             Image(systemName: "arrow.backward")
-//                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-                            
                         }
                         .foregroundColor(themesviewModel.currentTheme.iconColor)
                         .padding(.leading, 20)
@@ -97,11 +95,10 @@ struct InfoView: View {
                                                 .foregroundColor(themesviewModel.currentTheme.iconColor)
                                             Text(infoItems[index].title)
                                                 .font(.system(size: 16, weight: .medium))
-                                                .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                                .foregroundColor(themesviewModel.currentTheme.allBlack)
                                             Spacer()
                                         }
                                         .padding()
-                                        //                                .frame(maxWidth: .infinity)
                                         .background(themesviewModel.currentTheme.attachmentBGColor)
                                         .onTapGesture {
                                             withAnimation(.easeInOut(duration: 0.3)) {
@@ -125,7 +122,7 @@ struct InfoView: View {
                                     .padding(.horizontal,16)
                                     if index < infoItems.count - 1 {
                                         Rectangle()
-                                            .fill(themesviewModel.currentTheme.AllGray) // Background color of divider
+                                            .fill(themesviewModel.currentTheme.allGray) // Background color of divider
                                             .frame(height: 1) // Set divider thickness
                                             .overlay(Divider().background(Color.white)) // Add gray line inside
                                             .padding(.horizontal,16)
@@ -154,7 +151,7 @@ struct InfoView: View {
                                                         .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                     Text(category.content[index].title)
                                                         .font(.system(size: 16, weight: .medium))
-                                                        .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                                        .foregroundColor(themesviewModel.currentTheme.allBlack)
                                                     Spacer()
                                                 }
                                                 .padding()
@@ -211,11 +208,10 @@ struct InfoView: View {
                                                         .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                     Text(category.content[index].title)
                                                         .font(.system(size: 16, weight: .medium))
-                                                        .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                                        .foregroundColor(themesviewModel.currentTheme.allBlack)
                                                     Spacer()
                                                 }
                                                 .padding()
-                                                //.frame(maxWidth: .infinity)
                                                 .background(themesviewModel.currentTheme.attachmentBGColor)
                                                 .onTapGesture {
                                                     withAnimation(.easeInOut(duration: 0.3)) {
@@ -245,7 +241,6 @@ struct InfoView: View {
                     }
                     
                     VStack {
-                        //                        Spacer().frame(height: 100)
                         HStack {
                             Spacer()
                             RoundedRectangle(cornerRadius: 30)

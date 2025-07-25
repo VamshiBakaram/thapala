@@ -15,13 +15,6 @@ class VerifyOTPViewModel: ObservableObject {
     @Published var error: String?
     @Published var isNavigateToSecurutyQuestions = false
     @Published var isNavigateToPassword = false
-    /*
-     var resetToken:String = ""
-     let tCode:String
-     init(tCode:String){
-         self.tCode = tCode
-     }
-     */
     let isfromForgot:Bool
     var resetToken:String = ""
     let tCode:String
@@ -69,7 +62,6 @@ class VerifyOTPViewModel: ObservableObject {
                         self.error = response.message ?? ""
                     }else{
                         self.error = response.message ?? ""
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
                             switch navigateTo {
                             case .securityQuestions:
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
@@ -80,7 +72,6 @@ class VerifyOTPViewModel: ObservableObject {
                                     self.isNavigateToPassword = true
                                 })
                             }
-//                        })
                     }
                 }
             case .failure(let error):
@@ -111,10 +102,6 @@ class VerifyOTPViewModel: ObservableObject {
                         self.error = "OTP sent successfully."
                         UserDataManager.shared.sessionId = response.sessionId ?? ""
                         self.resetToken = response.message ?? ""
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-//                            self.isOtpTapNextNavigateView = true
-//                            self.isPresenter = true
-//                        })
                     }
                 }
             case .failure(let error):

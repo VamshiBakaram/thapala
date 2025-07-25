@@ -7,7 +7,7 @@
 
 import Foundation
 
-class consoleviewModel:ObservableObject{
+class ConsoleNavigatiorViewModel:ObservableObject{
     @Published var isLoading = false
     @Published var error: String?
     @Published var GetUserSettings: [UserSetting] = []
@@ -18,18 +18,13 @@ class consoleviewModel:ObservableObject{
     @Published var currentPassword: String = ""
     @Published var NewPassword: String = ""
     @Published var isContactsDialogVisible = false
-    @Published var countryCodes: [Countrycode] = []
-    @Published var selectedCountryCode: CountryCode? = nil
+    @Published var countryCodes: [countryCode] = []
+    @Published var selectedCountryCode: countriesCode? = nil
     @Published var isShowCountryDropdown = false
     @Published var successMessage: String = ""
     @Published var GetAllNotificationAlerts: [AlertData] = []
-    @Published var updateNotificationAlerts: [AlertSettingsData] = []
+    @Published var updateNotificationAlerts: [alertSettingsData] = []
     @Published var theme: String?
-//    @Published var selectedTheme: String = "light"
-//
-//    var currentTheme: Theme {
-//        ThemeManager.getTheme(AppTheme(rawValue: selectedTheme) ?? .dark)
-//    }
     
     //Get User Settings
     
@@ -119,7 +114,7 @@ class consoleviewModel:ObservableObject{
     
     func getUserSecurityQuestions() {
         self.isLoading = true
-        let endUrl = "\(EndPoint.ConsolesecurityQuestions)"
+        let endUrl = "\(EndPoint.consoleSecurityQuestions)"
         NetworkManager.shared.request(type: SecurityQuestionsResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -188,7 +183,7 @@ class consoleviewModel:ObservableObject{
     
     func getAllAlertNotifications() {
         self.isLoading = true
-        let endUrl = "\(EndPoint.GetAllAlerts)"
+        let endUrl = "\(EndPoint.getAllAlerts)"
         NetworkManager.shared.request(type: AlertResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
             switch result {

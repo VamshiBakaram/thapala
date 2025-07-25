@@ -27,7 +27,6 @@ struct MailComposeView: View {
             VStack {
                 HStack {
                     Button(action: {
-//                        self.mailComposeViewModel.resetComposeEmailData()
                         mailComposeViewModel.saveDraftData()
                         self.presentationMode.wrappedValue.dismiss()
                     }) {
@@ -47,7 +46,6 @@ struct MailComposeView: View {
                     .padding(.trailing,10)
                     
                     Button(action: {
-//                        mailComposeViewModel.sendEmail()
                         mailComposeViewModel.to = tCodeText
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                             mailComposeViewModel.sendEmail()

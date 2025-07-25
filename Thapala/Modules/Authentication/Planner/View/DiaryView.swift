@@ -77,10 +77,6 @@ struct DiaryView: View {
                         .padding(.top, 30) // Add top padding to the TextField
                         .padding(.horizontal, 16) // Add horizontal padding
                         .foregroundStyle(Color.black)
-//                        .disabled(!canEdit())
-
-                    // Add a Spacer here to force the correct spacing if needed
-//                            Spacer().frame(height: 1) // Add space between TextField and Rectangle
 
                     Rectangle()
                         .frame(maxWidth: .infinity)
@@ -98,7 +94,6 @@ struct DiaryView: View {
                         .padding(.top, 15)
                         .padding(.horizontal, 16)
                         .foregroundStyle(Color.black)
-//                        .disabled(!canEdit())
                 }
                 Spacer() // Push content upwards
                 // Align the tags image at the bottom
@@ -235,7 +230,6 @@ struct DiaryUpdateView: View {
     @State var isCommentAdded: Bool = false
     @State private var label: [RemoveLabelRequest] = []
     @State private var isTextFieldVisible = true // Add a state to track visibility
-//    @State private var selectedLabelIDs: Int?
     @State var selectedLabelID: [Int] = []
     @State private var isclicked: Bool = false
     @State private var isDiaryViewActive: Bool = false
@@ -273,14 +267,6 @@ struct DiaryUpdateView: View {
 
             }
 
-
-            
-//            else {
-//                // Default theme color if `themeImage` is empty
-//                Color.white
-//                    .ignoresSafeArea()
-//            }
-
             VStack {
                 HStack {
                     Button(action: {
@@ -303,17 +289,12 @@ struct DiaryUpdateView: View {
                     VStack (alignment: .leading) {
                         VStack(alignment: .leading, spacing: 1) { // Set spacing explicitly between the elements
                             TextField("What's new", text: $titlediary)
-//                                .padding()
                                 .background(Color.clear)
                                 .cornerRadius(8)
                                 .padding(.top, 30) // Add top padding to the TextField
                                 .padding(.horizontal, 16) // Add horizontal padding
                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                                 .disabled(!canEdit())
-
-                            // Add a Spacer here to force the correct spacing if needed
-//                            Spacer().frame(height: 1) // Add space between TextField and Rectangle
-
                             Rectangle()
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 1)
@@ -340,7 +321,6 @@ struct DiaryUpdateView: View {
                             
                             if let selectedDiary = homePlannerViewModel.listData.first(where: { $0.id == selectedID }),
                                let reminderTimestamp = selectedDiary.reminder {
-                                // Convert Int (timestamp) to Date
                                 let reminderDate = Date(timeIntervalSince1970: TimeInterval(reminderTimestamp) ?? 0)
                                 
                                 // Format the date and time
@@ -385,7 +365,6 @@ struct DiaryUpdateView: View {
                                             .onTapGesture {
                                                 formattedDateTime = ""
                                                 isTextFieldVisible = false // Hide TextField when tapped
-                                                //                                                homePlannerViewModel.removescheduleDiary(selectedID: selectedID, reminder: nil)
                                             }
                                     }
                                     
@@ -398,20 +377,6 @@ struct DiaryUpdateView: View {
                                         .stroke(themesviewModel.currentTheme.strokeColor, lineWidth: 1) // Border color conditionally
                                 )
                             }
-                            
-                            
-                            //                            if isclicked {
-                            //                                ForEach(selectedNames, id: \.self) { name in
-                            //                                    Text(name)
-                            //                                        .padding()
-                            //                                        .background(Color.clear)
-                            //                                        .cornerRadius(8)
-                            //                                        .padding(.top, 15)
-                            //                                        .padding(.horizontal, 16)
-                            //                                        .foregroundStyle(Color.black)
-                            //                                        .disabled(!canEdit())
-                            //                                }
-                            //                            }
                             Spacer().frame(height: 15)
                             // ScrollView for tags
                             
@@ -436,7 +401,6 @@ struct DiaryUpdateView: View {
                                                     .padding(.trailing, 5)
                                                     .onTapGesture {
                                                         label.labelName = ""
-                                                        //                                                        label.isRemoved = true
                                                         if let selectedDiary = homePlannerViewModel.listData.first(where: { $0.id == selectedID }) {
                                                             homePlannerViewModel.removeTag(selectedID: selectedID, Tagid: label.labelId)
                                                         }
@@ -473,25 +437,6 @@ struct DiaryUpdateView: View {
                                                     .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                     .frame(width: 16, height: 16)
                                                     .padding(.trailing, 5)
-                                                    .onTapGesture {
-//                                                        ForEach($tagslabel, id: \.labelId) { $label in
-//                                                            if $label.labelName.wrappedValue == name {
-//                                                                let id = $label.labelId.wrappedValue
-//                                                                let ide = $label.plannerId.wrappedValue
-//                                                                // Do something with `id`
-//                                                                if let selectedDiary = homePlannerViewModel.listData.first(where: { $0.id == ide }) {
-//                                                                    homePlannerViewModel.removeTag(selectedID: ide, Tagid: id)
-//                                                                }
-//                                                                else {
-//                                                                    // Handle case where no matching diary was found
-//                                                                }
-//                                                            }
-//                                                        }
-
-//                                                        //                                                        label.isRemoved = true
-
-                                                        
-                                                    }
                                             
                                         }
                                         .background(themesviewModel.currentTheme.windowBackground)
@@ -504,64 +449,6 @@ struct DiaryUpdateView: View {
                                 }
                             }
                         }
-                            
-//                            if isclicked {
-//                                let columnss = [GridItem(.adaptive(minimum: 100), spacing: 10)]
-//                                LazyVGrid(columns: columnss, spacing: 10) {
-//                                    ForEach(selectedNames, id: \.self) { name in
-//                                        Text(name)
-//                                            .frame(height: 35)
-//                                            .padding(.leading, 10)
-//                                            .foregroundColor(.black)
-//                                            .disabled(!canEdit())
-//                                    }
-//                                }
-//                            } else {
-//                                // Optionally, display a message or placeholder when isclicked is false
-//                                Text("No names to display")
-//                            }
-                        
-                            
-//                            let columns = [GridItem(.adaptive(minimum: 100), spacing: 10)]
-//                            LazyVGrid(columns: columns, spacing: 10) {
-//                                ForEach(selectedNames, id: \.self) { $name in
-//                                        HStack {
-//                                            
-//                                            if isclicked && !selectedNames.isEmpty {
-//                                                TextField("", text: $name)
-//                                                    .frame(height: 35)
-//                                                    .padding(.leading, 10)
-//                                                    .foregroundColor(.black)
-//                                                    .disabled(!canEdit())
-//                                                
-//                                                Image("wrongmark")
-//                                                    .resizable()
-//                                                    .frame(width: 16, height: 16)
-//                                                    .padding(.trailing, 5)
-//                                                    .onTapGesture {
-//                                                        label.labelName = ""
-////                                                        label.isRemoved = true
-//                                                        if let selectedDiary = homePlannerViewModel.listData.first(where: { $0.id == selectedID }) {
-//                                                            homePlannerViewModel.removeTag(selectedID: selectedID, Tagid: label.labelId)
-//                                                        }
-//                                                        else {
-//                                                            // Handle case where no matching diary was found
-//                                                        }
-//                                                        
-//                                                    }
-//                                            }
-//                                            }
-//
-////                                        planner/remove-label?plannerId=332&labelId=106
-//                                        .background(Color(red: 187/255, green: 190/255, blue: 238/255)) // Background color
-//                                        .cornerRadius(8)
-//                                        .overlay(
-//                                            RoundedRectangle(cornerRadius: 8)
-//                                                .stroke(Color.black, lineWidth: 1) // Border around the TextField
-//                                        )
-//                                    
-//                                }
-//                            }
 
                             Spacer().frame(height: 15)
 
@@ -746,7 +633,6 @@ struct DiaryUpdateView: View {
             if isLabelSheetVisible {
                 VStack {
                     Spacer() // Pushes the sheet to the bottom
-//                    BottomSheetView(homePlannerViewModel: homePlannerViewModel, isLabelSheetVisible: $isLabelSheetVisible, comment: $comment, isCommentAdded: $isCommentAdded, selectedID: selectedID)
                     BottomSheetView(homePlannerViewModel: homePlannerViewModel, isLabelSheetVisible: $isLabelSheetVisible, selectedID: selectedID)
                         .transition(.move(edge: .bottom)) // Smooth transition
                         .animation(.easeInOut)
@@ -844,9 +730,6 @@ struct BottomSheetView: View {
     @ObservedObject var homePlannerViewModel: HomePlannerViewModel
     @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var isLabelSheetVisible: Bool
-//    @State var comment: String = ""
-//    @Binding var comment: String
-//    @Binding var isCommentAdded: Bool
     var selectedID: Int
     @State private var subtasks: [Subtask] = [] // State to store subtasks
     @State private var comment: String = "" // State for comment input
@@ -1046,8 +929,8 @@ struct BottomSheetNotificationView: View {
                     }
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        if let Diary = homePlannerViewModel.listData.first {
-                            let incrementedId = Diary.id // `id` is a non-optional Int
+                        if let diary = homePlannerViewModel.listData.first {
+                            let incrementedId = diary.id // `id` is a non-optional Int
                             id = incrementedId + 1
                         } else {
                         }
@@ -1121,7 +1004,6 @@ struct BottomTagSheetView: View {
     var selectedID: Int
     @State private var searchText: String = ""
     @State private var isCreateLabelVisible: Bool = false // Tracks visibility of createLabelView
-//    @State var labelname: String = ""
     @State private var Textfill: String = ""
     @State private var isChecked: Bool = false
     @Binding var isclicked: Bool
@@ -1278,8 +1160,8 @@ struct BottomTagSheetView: View {
                     }
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        if let Diary = homePlannerViewModel.listData.first {
-                            let incrementedId = Diary.id
+                        if let diary = homePlannerViewModel.listData.first {
+                            let incrementedId = diary.id
                             newid = incrementedId + 1
                         }
                     }
@@ -1600,7 +1482,6 @@ struct BottomBackgroundSheetView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 36, height: 36)
-                            //                                .background(Color.red) // Add this line for debugging
                                 .clipShape(Circle())
                                 .overlay(
                                     Circle().stroke(Color.black, lineWidth: 0.5) // Add a border with your desired color and width
@@ -1636,7 +1517,6 @@ struct BottomBackgroundSheetView: View {
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: 36, height: 36)
-                            //                                .background(Color.red) // Add this line for debugging
                                 .clipShape(Circle())
                                 .overlay(
                                     Circle().stroke(Color.black, lineWidth: 0.5) // Add a border with your desired color and width
@@ -1710,88 +1590,6 @@ extension Color {
 }
 
 
-//
-//struct BottomSheetView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        BottomSheetView()
-//    }
-//}
-
-//struct createLabelView: View {
-//    @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-//    @StateObject var themesviewModel = themesViewModel()
-//    @Binding var iscreatelabelvisible: Bool
-////    @State private var Textfill: String = ""
-//    @Binding var Textfill: String
-//
-//    var body: some View {
-//        ZStack {
-//            themesviewModel.currentTheme.windowBackground
-//                .ignoresSafeArea() // Ensure the color extends to the edges of the screen
-//            
-//            VStack {
-//                HStack(alignment: .top) {
-//                    // Left-aligned close button
-//                    Button(action: {
-//                        Textfill = ""
-//                        iscreatelabelvisible = false
-//                    }, label: {
-//                        Image("wrongmark")
-//                            .renderingMode(.template)
-//                            .frame(width: 30 , height: 30)
-//                            .padding(.leading , 16)
-//                            .foregroundColor(themesviewModel.currentTheme.iconColor)
-//                    })
-//                    .padding(.leading, 16)
-//                    .frame(height: 44) // Ensure consistent height
-//                    
-//                    // Centered "Create Label" text
-//                    Spacer()
-//                    Text("Create Label")
-//                        .padding() // Add padding around the text
-//                        .frame(height: 44) // Ensure consistent height
-//                        .foregroundColor(themesviewModel.currentTheme.textColor)
-//                    Spacer()
-//                    
-//                    // Conditionally display "Create" text
-//                    if Textfill.count >= 1 {
-//                        Text("Create")
-//                            .padding() // Add padding around the text
-//                            .frame(height: 44) // Ensure consistent height
-//                            .foregroundColor(themesviewModel.currentTheme.AllGray)
-//                            .padding(.trailing, 16)
-//                            .onTapGesture {
-//                                homePlannerViewModel.CreateLabelDiary(title: Textfill)
-//                                iscreatelabelvisible = false
-//                                Textfill = ""
-//                            }
-//                    }
-//                }
-//                .frame(maxWidth: .infinity) // Stretch HStack to full width
-//
-//                VStack(alignment: .leading) {
-//                    Text("Name")
-//                        .padding() // Add padding around the text
-//                        .padding(.top, 10) // Add top padding
-//                        .padding(.leading, 16)
-//                        .foregroundColor(themesviewModel.currentTheme.textColor)
-//                    
-//                    TextField("", text: $Textfill)
-//                        .padding()
-//                        .foregroundColor(themesviewModel.currentTheme.textColor)
-//                        .background(themesviewModel.currentTheme.attachmentBGColor)
-//                        .cornerRadius(8) // Rounded corners
-//                        .padding(.horizontal)
-//                }
-//                .frame(maxWidth: .infinity, alignment: .leading) // Make the VStack take up full width and align content to the leading
-//
-//                Spacer() // Push content up to fill space below
-//            }
-//            .frame(maxWidth: .infinity, maxHeight: .infinity)
-//            .background(themesviewModel.currentTheme.windowBackground)
-//        }
-//    }
-//}
 
 struct DialogView<Content: View>: View {
     let title: String
@@ -1841,8 +1639,6 @@ struct DialogView<Content: View>: View {
             RoundedRectangle(cornerRadius: 16)
                 .stroke(Color.red.opacity(0.2), lineWidth: 1)
         )
-//        .frame(maxWidth: .infinity, maxHeight: .infinity)
-//        .background(Color.clear.edgesIgnoringSafeArea(.all))
     }
 }
 

@@ -34,21 +34,6 @@ struct DatebookItem: Codable {
     let deletedAt: String?
     let createdAt: String
     let updatedAt: String
-    
-    // Date formatters to handle the timestamps if needed
-//    var startDate: Date? {
-//        if let start = startDateTime {
-//            return Date(timeIntervalSince1970: TimeInterval(start))
-//        }
-//        return nil
-//    }
-//    
-//    var endDate: Date? {
-//        if let end = endDateTime {
-//            return Date(timeIntervalSince1970: TimeInterval(end))
-//        }
-//        return nil
-//    }
 }
 
 

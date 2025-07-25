@@ -52,7 +52,7 @@ class HomeDirectoryViewModel: ObservableObject {
 
     func GetDirectoryList() {
         self.isLoading = true
-        let endUrl = "\(EndPoint.GetDirectoryList)"
+        let endUrl = "\(EndPoint.getDirectoryList)"
         
         NetworkManager.shared.request(type: DirectoryResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -81,7 +81,7 @@ class HomeDirectoryViewModel: ObservableObject {
     
     func GetProfileByID(selectId: Int) {
         self.isLoading = true
-        let endUrl = "\(EndPoint.GetProfileByID)\(selectId)"
+        let endUrl = "\(EndPoint.getProfileByID)\(selectId)"
         
         NetworkManager.shared.request(type: ProfileResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -139,7 +139,7 @@ class HomeDirectoryViewModel: ObservableObject {
     
     func GetGroupList() {
         self.isLoading = true
-        let endUrl = "\(EndPoint.GetGroupList)"
+        let endUrl = "\(EndPoint.getGroupList)"
         
         NetworkManager.shared.request(type: GroupResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -418,7 +418,7 @@ class HomeDirectoryViewModel: ObservableObject {
     
     func RenameGroup(id: Int , groupname: String) {
         self.isLoading = true
-        let url = "\(EndPoint.Renamegroup)\(id)"
+        let url = "\(EndPoint.renameGroup)\(id)"
         
         // Create the request body using the struct
         let requestBody = UpdateGroupRequest(
@@ -481,37 +481,3 @@ class HomeDirectoryViewModel: ObservableObject {
     
    
 }
-
-
-//func converttoIST(dateInput: Any) -> String? {
-//    var date: Date?
-//
-//    if let timestamp = dateInput as? Int {
-//        date = Date(timeIntervalSince1970: TimeInterval(timestamp))
-//    } else if let dateString = dateInput as? String {
-//        let isoDateFormatter = ISO8601DateFormatter()
-//        isoDateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-//
-//        date = isoDateFormatter.date(from: dateString)
-//        if date == nil {
-//            isoDateFormatter.formatOptions = [.withInternetDateTime]
-//            date = isoDateFormatter.date(from: dateString)
-//        }
-//
-//        if date == nil {
-//            print("⚠️ Could not parse dateString: \(dateString)")
-//        }
-//    } else {
-//        return nil
-//    }
-//
-//    guard let date = date else { return nil }
-//
-//    let dateFormatter = DateFormatter()
-//    dateFormatter.timeZone = TimeZone(identifier: "Asia/Kolkata")
-//    dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-//    dateFormatter.dateFormat = "dd-MMM-yyyy h:mm a"
-//
-//    return dateFormatter.string(from: date)
-//}
-

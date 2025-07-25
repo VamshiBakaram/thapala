@@ -29,12 +29,6 @@ class HomePostboxViewModel:ObservableObject{
     @Published var roomid: String = ""
     @Published var starEmail: Int = 0
     
-    
-//    init(){
-//        getPostEmailData()
-//    }
-    
-    
     func getPostEmailData() {
         self.isLoading = true
         let endUrl = "\(EndPoint.allEmails)page=1&pageSize=30&status=postbox"
@@ -147,7 +141,7 @@ class HomePostboxViewModel:ObservableObject{
     // Get All chat history
     func getAllChats(senderID: Int , recieverId: Int) {
         self.isLoading = true
-        let endUrl = "\(EndPoint.GetchatMessages)senderId=\(senderID)&receiverId=\(recieverId)&page=1&pageSize=500"
+        let endUrl = "\(EndPoint.getChatMessages)senderId=\(senderID)&receiverId=\(recieverId)&page=1&pageSize=500"
         NetworkManager.shared.request(type: ChatAPIResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
             switch result {

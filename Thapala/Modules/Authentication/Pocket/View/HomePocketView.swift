@@ -163,7 +163,6 @@ struct HomePocketView: View {
                         
                     }
                     .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top ?? 30)
-//                    .frame(height: reader.size.height * 0.16)
                     .background(themesviewModel.currentTheme.tabBackground)
                     ZStack {
                         Color.clear // Background to help center the image

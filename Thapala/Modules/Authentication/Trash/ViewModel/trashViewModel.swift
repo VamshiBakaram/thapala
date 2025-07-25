@@ -25,7 +25,7 @@ class TrashViewModel:ObservableObject{
     // GetAllTrash
     func GetTrashData() {
         self.isLoading = true
-        let endUrl = "\(EndPoint.GetAlltrash)"
+        let endUrl = "\(EndPoint.getAlltrash)"
         
         NetworkManager.shared.request(type: trashResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -54,7 +54,7 @@ class TrashViewModel:ObservableObject{
     
     func GetFileTrashData() {
         self.isLoading = true
-        let endUrl = "\(EndPoint.GetRecordsFileTrash)"
+        let endUrl = "\(EndPoint.getRecordsFileTrash)"
         
         NetworkManager.shared.request(type: FileTrashResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -83,7 +83,7 @@ class TrashViewModel:ObservableObject{
     // Get folder Trash Data
     func GetFolderTrashData() {
         self.isLoading = true
-        let endUrl = "\(EndPoint.GetRecordsFoldersTrash)"
+        let endUrl = "\(EndPoint.getRecordsFoldersTrash)"
         
         NetworkManager.shared.request(type: TrashResponseModel.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -141,7 +141,7 @@ class TrashViewModel:ObservableObject{
 
     func restorePlanner(selectedID: [Int]) {
         self.isLoading = true
-        let url = "\(EndPoint.RestorePlanner)"
+        let url = "\(EndPoint.restorePlanner)"
         
         // Create the request body using the struct
         let requestBody = UpdateRequest(
@@ -176,7 +176,7 @@ class TrashViewModel:ObservableObject{
     
     func deleteplanner(selectedID: [Int]) {
         self.isLoading = true
-        let url = "\(EndPoint.DeletePlanner)"
+        let url = "\(EndPoint.deletePlanner)"
         
         // Create the request body using the struct
         let requestBody = RequestBody(
@@ -241,7 +241,7 @@ class TrashViewModel:ObservableObject{
     func deleteFiles(RecordIds: [Int] , selectedFieldID: Int , AzureFileName: String , FileSize: String) {
         isLoading = true
         
-        let Field = FileID(
+        let field = FileID(
                 id: selectedFieldID,
                 azureFileName: AzureFileName,
                 type: "work" ,
@@ -250,10 +250,10 @@ class TrashViewModel:ObservableObject{
         
         let params = DeleteFileRequests(
             recordIds: RecordIds,
-            fileIds: [Field]
+            fileIds: [field]
         )
         
-        let endPoint = "\(EndPoint.DeleteFiles)"
+        let endPoint = "\(EndPoint.deleteFiles)"
         if let jsonData = try? JSONEncoder().encode(params),
            let jsonString = String(data: jsonData, encoding: .utf8) {
         }
@@ -286,7 +286,7 @@ class TrashViewModel:ObservableObject{
             fileIds: FileIds
         )
         
-        let endPoint = "\(EndPoint.DeleteFiles)"
+        let endPoint = "\(EndPoint.deleteFiles)"
         if let jsonData = try? JSONEncoder().encode(params),
            let jsonString = String(data: jsonData, encoding: .utf8) {
         }

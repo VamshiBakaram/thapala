@@ -120,7 +120,6 @@ struct HomeResidenceView: View {
                                     Group{
                                         HStack{
                                             self.homeResidenceViewModel.isAddNewGroupSelected ? Image("addGroup") : Image("addGroupG")
-                                            //  .padding()
                                             VStack{
                                                 Text("Add new group")
                                                     .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
@@ -215,7 +214,6 @@ struct HomeResidenceView: View {
                                     .listStyle(PlainListStyle())
                                     .scrollContentBackground(.hidden)
                                 }
-//                            }
                         case .family:
                             VStack{
                                 Text("Coming Soon")

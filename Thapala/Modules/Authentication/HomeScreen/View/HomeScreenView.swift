@@ -10,7 +10,7 @@ import SwiftUI
 struct HomeScreenView: View {
     @EnvironmentObject var sessionManager: SessionManager
     @ObservedObject var homeScreenViewModel = HomeScreenViewModel()
-    @ObservedObject var ConsoleviewModel = consoleviewModel()
+    @ObservedObject var ConsoleviewModel = ConsoleNavigatiorViewModel()
     @ObservedObject var themesviewModel = ThemesViewModel()
     @State var Gettheme: String = ""
     

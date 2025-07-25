@@ -91,26 +91,6 @@ struct NoteView: View {
                     .frame(height: 1)
                     .foregroundColor(themesviewModel.currentTheme.strokeColor)
                     .padding(.horizontal, 16) // Horizontal padding for the Rectangle
-//
-//                VStack(alignment: .leading, spacing: 1) { // Set spacing explicitly between the elements
-//                    TextField("What's new", text: $title)
-////                                .padding()
-//                        .background(Color.clear)
-//                        .cornerRadius(8)
-//                        .padding(.top, 30) // Add top padding to the TextField
-//                        .padding(.horizontal, 16) // Add horizontal padding
-//                        .foregroundColor(themesviewModel.currentTheme.textColor)
-////                        .disabled(!canEdit())
-//
-//                    // Add a Spacer here to force the correct spacing if needed
-////                            Spacer().frame(height: 1) // Add space between TextField and Rectangle
-//
-//                    Rectangle()
-//                        .frame(maxWidth: .infinity)
-//                        .frame(height: 1)
-//                        .foregroundColor(themesviewModel.currentTheme.strokeColor)
-//                        .padding(.horizontal, 16) // Horizontal padding for the Rectangle
-//                }
 
                 ZStack(alignment: .leading) {
                     if note.isEmpty {
@@ -272,7 +252,6 @@ struct NoteUpdateView: View {
     @State private var isHistorySheetVisible: Bool = false
     @State private var isclicked: Bool = false
     @State private var isTextFieldVisible = true
-//    @State private var taglabel: [LabelTags] = []
     @State private var showingDeleteAlert = false
     @State private var isEditable = false
     @State private var tagslabels: [TagLabels] = []
@@ -335,7 +314,6 @@ struct NoteUpdateView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 VStack(alignment: .leading, spacing: 1) { // Set spacing explicitly between the elements
                     TextField("What's new", text: $tNotetitle)
-//                                .padding()
                         .background(Color.clear)
                         .cornerRadius(8)
                         .padding(.top, 30) // Add top padding to the TextField
@@ -345,11 +323,6 @@ struct NoteUpdateView: View {
                         .onSubmit {
                             isEditable = false // Set `isEditable` to false when tick mark is pressed
                         }
-                     
-
-                    // Add a Spacer here to force the correct spacing if needed
-//                            Spacer().frame(height: 1) // Add space between TextField and Rectangle
-
                     Rectangle()
                         .frame(maxWidth: .infinity)
                         .frame(height: 1)
@@ -412,18 +385,12 @@ struct NoteUpdateView: View {
                                         .resizable()
                                         .frame(width: 16, height: 16)
                                         .padding(.trailing, 5)
-//                                        .onTapGesture {
                                             .onTapGesture {
                                                 if let selectedDiary = homePlannerViewModel.NotelistData.first(where: { $0.id == selectedID }) {
                                                     homePlannerViewModel.removescheduleNote(selectedID: selectedID) // Pass nil for null
                                                     isTextFieldVisible = false // Hide TextField when tapped
                                                 }
                                             }
-
-//                                            homePlannerViewModel.removescheduleNote(selectedID: selectedID)
-//                                            isTextFieldVisible = false // Hide TextField when tapped
-//
-//                                        }
                                 }
                             }
                             .frame(width: 200, height: 35)
@@ -434,8 +401,6 @@ struct NoteUpdateView: View {
                                     .stroke(isTextFieldVisible ? Color.black : Color.clear, lineWidth: 1) // Border color conditionally
                             )
                         }
-                        //                    Spacer().frame(height: 10)
-                        
                         let columns = [GridItem(.adaptive(minimum: 100), spacing: 10)]
                         LazyVGrid(columns: columns, spacing: 10) {
                             ForEach($tagslabels, id: \.labelId) { $label in
@@ -462,8 +427,6 @@ struct NoteUpdateView: View {
                                                 }
                                         }
                                     }
-                                    
-                                    //                                        planner/remove-label?plannerId=332&labelId=106
                                     .background(Color(red: 187/255, green: 190/255, blue: 238/255)) // Background color
                                     .cornerRadius(8)
                                     .overlay(
@@ -482,8 +445,6 @@ struct NoteUpdateView: View {
                     
                     // Align the tags image at the bottom
                     HStack {
-                        //                    Color.gray
-                        //                    Spacer()
                         Button(action: {
                             isEditable = true
                         }, label: {
@@ -550,12 +511,12 @@ struct NoteUpdateView: View {
                 }
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    if let Note = homePlannerViewModel.NotelistData.first(where: { $0.id == selectedID }) {
-                        tNotetitle = Note.title
-                        tNotenote = Note.note
-                        tagslabels = Note.labels ?? []
-                        tNoteType = Note.type
-                        if let theme = Note.theme {
+                    if let note = homePlannerViewModel.NotelistData.first(where: { $0.id == selectedID }) {
+                        tNotetitle = note.title
+                        tNotenote = note.note
+                        tagslabels = note.labels ?? []
+                        tNoteType = note.type
+                        if let theme = note.theme {
                             themeImage = theme
                             if let fileName = theme.components(separatedBy: "/").last?.replacingOccurrences(of: ".png", with: "") {
                                 themeImage = fileName
@@ -739,12 +700,6 @@ struct BottomNotificationView: View {
                                 isNotificationVisible = false
                             }
                         }
-//                        if let selectedDateTime = homePlannerViewModel.selectedDateTime {
-//                            // Convert the Date to an Int (e.g., timestamp)
-//                            let reminderInt = Int(selectedDateTime.timeIntervalSince1970)
-//                            homePlannerViewModel.onclickDone(selectedID: selectedID, reminder: reminderInt)
-//                            self.isNotificationSheetVisible = false
-//                        }
                     }, label: {
                         Text("Done")
                             .foregroundColor(themesviewModel.currentTheme.colorAccent)
@@ -903,7 +858,6 @@ struct BottomTagView: View {
     var selectedID: Int
     @State private var searchText: String = ""
     @State private var isCreateLabelVisible: Bool = false // Tracks visibility of createLabelView
-//    @State var labelname: String = ""
     @State private var Textfill: String = ""
     @State private var isChecked: Bool = false
     @Binding var isclicked: Bool
@@ -986,11 +940,6 @@ struct BottomTagView: View {
                             )
                             .padding(.leading, 13)
                             .foregroundColor(themesviewModel.currentTheme.textColor)
-
-//                            TextField("Filter label", text: $searchText)
-//                                .foregroundColor(themesviewModel.currentTheme.textColor)
-//                                .font(.custom("Poppins-Regular", size: 12))
-//                                .padding(.leading, 13)
                         }
                         .padding()
                         .background(themesviewModel.currentTheme.windowBackground)
@@ -1014,7 +963,6 @@ struct BottomTagView: View {
                         
                             Button(action: {
                                 withAnimation {
-    //                                    isTagSheetVisible = false // Dismiss BottomTagSheetView
                                     isCreateLabelVisible = true
                                 }
                             }, label: {
@@ -1175,8 +1123,6 @@ struct DialogViews<Content: View>: View {
             RoundedRectangle(cornerRadius: 16)
                 .stroke(Color.red.opacity(0.2), lineWidth: 1)
         )
-//        .frame(maxWidth: .infinity, maxHeight: .infinity)
-//        .background(Color.clear.edgesIgnoringSafeArea(.all))
     }
 }
 
@@ -1184,7 +1130,6 @@ struct createTagView: View {
     @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
     @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var iscreatelabelvisible: Bool
-//    @State private var Textfill: String = ""
     @Binding var Textfill: String
 
     var body: some View {
@@ -1198,7 +1143,7 @@ struct createTagView: View {
                     }, label: {
                         Image("wrongmark")
                             .renderingMode(.template)
-                            .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                            .foregroundColor(themesviewModel.currentTheme.allBlack)
                     })
                     .padding(.leading, 16)
                     .frame(height: 44) // Ensure consistent height
@@ -1208,7 +1153,7 @@ struct createTagView: View {
                     Text("Create Label")
                         .padding() // Add padding around the text
                         .frame(height: 44) // Ensure consistent height
-                        .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                        .foregroundColor(themesviewModel.currentTheme.allBlack)
                     Spacer()
                     
                     // Conditionally display "Create" text
@@ -1229,15 +1174,15 @@ struct createTagView: View {
 
                 VStack(alignment: .leading) {
                     Text("Name")
-                        .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                        .foregroundColor(themesviewModel.currentTheme.allBlack)
                         .padding() // Add padding around the text
                         .padding(.top, 10) // Add top padding
                         .padding(.leading, 16)
                     
                     TextField("", text: $Textfill)
                         .padding()
-                        .background(themesviewModel.currentTheme.AllGray)
-                        .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                        .background(themesviewModel.currentTheme.allGray)
+                        .foregroundColor(themesviewModel.currentTheme.allBlack)
                         .cornerRadius(8) // Rounded corners
                         .padding(.horizontal)
                 }
@@ -1309,7 +1254,6 @@ struct HistoryView: View {
                             .padding(.horizontal, 16)
                             .padding(.leading ,16)
                             .padding(.trailing,16)
-//                            .background(Color(red: 231 / 255, green: 228 / 255, blue: 234 / 255))
                             .overlay(
                                 Rectangle()
                                     .stroke(themesviewModel.currentTheme.textColor, lineWidth: 1)
@@ -1652,14 +1596,6 @@ struct BottomThemeView: View {
                         SubImage(value: "assets/plannerBackground/work/work-4997565_1280.png", tooltip: ""),
                        ]),
         ]
-        
-        // Food backgrounds
-
-//
-//               ],
-
-    
-    // Array of image names for icons
 
 
     var body: some View {
@@ -1694,9 +1630,6 @@ struct BottomThemeView: View {
                     }
                 }
                 .padding(.horizontal)
-                
-                // Image Picker Section (Second Row)
-                // Inside the Image Picker Section (Second Row)
                 
                 // Background Picker Section (Third Row)
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -1743,7 +1676,6 @@ struct BottomThemeView: View {
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: 36, height: 36)
-                            //                                .background(Color.red) // Add this line for debugging
                                 .clipShape(Circle())
                                 .overlay(
                                     Circle().stroke(Color.black, lineWidth: 0.5) // Add a border with your desired color and width
@@ -1778,7 +1710,6 @@ struct BottomThemeView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 if let diary = homePlannerViewModel.NotelistData.first(where: { $0.id == selectedID }) {
                     selectedID = diary.id
-//                    selectedIconIndex = diary.theme
                     if let theme = diary.theme {
                         selectedIconIndex = theme
                         if let fileName = theme.components(separatedBy: "/").last?.replacingOccurrences(of: ".png", with: "") {
@@ -1793,28 +1724,6 @@ struct BottomThemeView: View {
         }
     }
 }
-
-//extension Color {
-//    // Custom initializer to convert hex color string to Color
-//    init?(hex: String) {
-//        var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
-//        
-//        if hexSanitized.hasPrefix("#") {
-//            hexSanitized.removeFirst()
-//        }
-//        
-//        guard hexSanitized.count == 6 else { return nil }
-//        
-//        var rgb: UInt64 = 0
-//        Scanner(string: hexSanitized).scanHexInt64(&rgb)
-//        
-//        let r = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
-//        let g = CGFloat((rgb & 0x00FF00) >> 8) / 255.0
-//        let b = CGFloat(rgb & 0x0000FF) / 255.0
-//        
-//        self.init(red: r, green: g, blue: b)
-//    }
-//}
 
 
 

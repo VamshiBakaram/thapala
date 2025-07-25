@@ -225,6 +225,3 @@ struct MainRecord: Codable, Identifiable , Equatable{
 }
 
 
-// sub records Data - Get api
-
-

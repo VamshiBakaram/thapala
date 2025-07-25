@@ -40,8 +40,6 @@ class HomeRecordsViewModel:ObservableObject{
     @Published var selectedId: Int? = nil
     @Published var setPin: String = ""
     @Published var password: String = ""
-//    @Published var viewtype: Bool = true
-        
     
     func getMainRecordsData() {
         self.isLoading = true
@@ -271,9 +269,7 @@ class HomeRecordsViewModel:ObservableObject{
                     if ["jpg", "jpeg", "png"].contains(fileExtension) {
                         self.saveImageToPhotoLibrary(fileURL: destinationURL)
                     }
-//                    else if ["mp4", "mov", "m4v", "3gp", "asf", "avi", "f4v", "flv" , "hevc" , "m2ts" , "m2v" , "m4v" , "mjpeg" , "mpg" , "mts" , "mxf" , "ogv" , "rm" , "swf" , "ts" , "vob" , "webm" , "wmv" , "wtv"].contains(fileExtension) {
-//                        self.saveVideoToPhotoLibrary(fileURL: destinationURL)
-//                    }
+                    
                     else if ["mp4", "mov", "m4v", "3gp"].contains(fileExtension) {
                         self.saveVideoToPhotoLibrary(fileURL: destinationURL)
                     }
@@ -494,7 +490,8 @@ class HomeRecordsViewModel:ObservableObject{
     }
 
     func uploadImages(_ images: [UIImage]) {
-        let url = URL(string: "http://128.199.21.237:8080/api/v1/attachments")!
+        let url = URL(string: "\(EndPoint.attachmentsReplyMail)")!
+//        let url = URL(string: "http://128.199.21.237:8080/api/v1/attachments")!
         var request = URLRequest(url: url)
         let sessionManager = SessionManager()
         request.httpMethod = "POST"

@@ -210,10 +210,7 @@ struct updateItem: Decodable {
     let deletedAt: String?
     let createdAt: String
 }
-//struct DiaryUpdateRequest: Encodable {
-//    let note: String
-//    let title: String
-//}
+
 struct UpdateDoitPayload: Codable {
     let reminder: Int?
 //    let task: [String]

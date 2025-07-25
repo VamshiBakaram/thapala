@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct CountryCode: Decodable, Hashable {
+struct countriesCode: Decodable, Hashable {
     let name: String
     let dial_code: String
     let code: String

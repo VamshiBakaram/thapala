@@ -89,7 +89,6 @@ class HomeNavigatorViewModel:ObservableObject{
                     self.isLoading = false
                         self.error = response.message ?? ""
                     self.navigatorBioData = response
-//                    self.UserData = response.user
                 }
             case .failure(let error):
                 DispatchQueue.main.async {

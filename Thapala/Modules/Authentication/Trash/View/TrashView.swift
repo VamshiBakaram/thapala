@@ -715,7 +715,7 @@ struct TrashView: View {
                                     
                                     LazyVGrid(columns: columns, alignment: .leading, spacing: 5) {
                                         ForEach(TrashedViewModel.folderData.indices, id: \.self) { index in
-                                            let Folders = TrashedViewModel.folderData[index]
+                                            let folders = TrashedViewModel.folderData[index]
                                             
                                             VStack(alignment: .center) {
                                                 Spacer()
@@ -754,7 +754,7 @@ struct TrashView: View {
                                                     .padding([.leading, .trailing], 2)
                                                 
                                                 
-                                                Text(Folders.folderName)
+                                                Text(folders.folderName)
                                                     .foregroundColor(themesviewModel.currentTheme.textColor)
                                                     .font(.custom(.poppinsRegular, size: 14))
                                                     .lineLimit(1)
@@ -941,8 +941,6 @@ struct TrashView: View {
                     bottomIcons = false
                     selectAll = false
                     isSelectAll = false
-                    
-//                    selectedFileTab
                     // Optionally dismiss the trash view if needed
                     isTrashViewVisible = false
                 }
@@ -956,10 +954,6 @@ struct TrashView: View {
         .onAppear {
             TrashedViewModel.GetTrashData()
             TrashedViewModel.GetPlannerTrashData()
-//            if TrashedViewModel.PlanData.isEmpty {
-//                TrashedViewModel.GetPlannerTrashData()
-//            }
-
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 if selectedPlannerTab == "tDo" {
                     doitItems = TrashedViewModel.PlanData.filter { $0.type == "doit" }

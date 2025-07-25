@@ -56,7 +56,6 @@ struct StarredMailsView: View {
                                     .background(selectedTab == "awaited" ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
                                     .foregroundColor(themesviewModel.currentTheme.textColor)
                                     .cornerRadius(20)
-                                //                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.black.opacity(0.2), lineWidth: 1))
                             }
                         
                         Button(action: { selectedTab = "postbox";
@@ -70,7 +69,6 @@ struct StarredMailsView: View {
                                     .background(selectedTab == "postbox" ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
                                     .foregroundColor(themesviewModel.currentTheme.textColor)
                                     .cornerRadius(10)
-                                //                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.black.opacity(0.2), lineWidth: 1))
                             }
                         
                         Button(action: { selectedTab = "conveyed" ;
@@ -84,7 +82,6 @@ struct StarredMailsView: View {
                                     .background(selectedTab == "conveyed" ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
                                     .foregroundColor(themesviewModel.currentTheme.textColor)
                                     .cornerRadius(10)
-                                //                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.black.opacity(0.2), lineWidth: 1))
                             }
                     }
                     .overlay(
@@ -96,8 +93,6 @@ struct StarredMailsView: View {
                     .cornerRadius(20)
                     .padding(.horizontal)
                     .padding(.top)
-                    //            .background(Color.primary)
-                    
                     if selectedTab == "awaited" {
                         QueueSnoozedMailsView
                     }
@@ -111,7 +106,6 @@ struct StarredMailsView: View {
                     
                     Spacer()
                 }
-                //        .frame(height: reader.size.height * 0.16)
                 .background(themesviewModel.currentTheme.windowBackground)
                 .onAppear {
                     // Initialize with "awaited" to show QueueSnoozedMailsView on appear
@@ -189,11 +183,6 @@ struct StarredMailsView: View {
                                         }
                                 }
                             }
-                            //                        Text("\(email.sentAt ?? 0)")
-                            //                            .padding(.top, -30)
-                            
-                            
-                            
                         }
                         .listRowBackground(themesviewModel.currentTheme.windowBackground)
                         .onTapGesture {
@@ -232,8 +221,6 @@ struct StarredMailsView: View {
                                 .font(.custom(.poppinsLight, size: 14))
                                 .lineLimit(1)
                         }
-                        //                        Text("\(email.sentAt ?? 0)")
-                        //                            .padding(.top, -30)
                         let unixTimestamp = email.sentAt ?? 0
                         if let istDateStringFromTimestamp = convertToIST(dateInput: unixTimestamp) {
                             Text(istDateStringFromTimestamp)
@@ -352,11 +339,6 @@ struct StarredMailsView: View {
                                         }
                                 }
                             }
-                            //                        Text("\(email.sentAt ?? 0)")
-                            //                            .padding(.top, -30)
-                            
-                            
-                            
                         }
                         .listRowBackground(themesviewModel.currentTheme.windowBackground)
                         .onTapGesture {
@@ -395,8 +377,6 @@ struct StarredMailsView: View {
                                 .font(.custom(.poppinsLight, size: 14))
                                 .lineLimit(1)
                         }
-                        //                        Text("\(email.sentAt ?? 0)")
-                        //                            .padding(.top, -30)
                         let unixTimestamp = email.sentAt ?? 0
                         if let istDateStringFromTimestamp = convertToIST(dateInput: unixTimestamp) {
                             Text(istDateStringFromTimestamp)
@@ -507,11 +487,6 @@ struct StarredMailsView: View {
                                         }
                                 }
                             }
-                            //                        Text("\(email.sentAt ?? 0)")
-                            //                            .padding(.top, -30)
-                            
-                            
-                            
                         }
                         .listRowBackground(themesviewModel.currentTheme.windowBackground)
                         .onTapGesture {
@@ -550,8 +525,6 @@ struct StarredMailsView: View {
                                 .font(.custom(.poppinsLight, size: 14))
                                 .lineLimit(1)
                         }
-                        //                        Text("\(email.sentAt ?? 0)")
-                        //                            .padding(.top, -30)
                         let unixTimestamp = email.sentAt ?? 0
                         if let istDateStringFromTimestamp = convertToIST(dateInput: unixTimestamp) {
                             Text(istDateStringFromTimestamp)

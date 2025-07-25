@@ -39,12 +39,9 @@ class HomePlannerViewModel:ObservableObject{
     @Published var labelcomments: [Comment] = []
     @Published var diaryData: PlannerItem?
     @Published var NoteData: PlannerItems?
-//    @2891Published var diaryDatas: PlannerItems?
-//    @Published var diaryDatas: PlannerItems?
     @Published var sessionManager = SessionManager()
     @Published var listData: [Diary] = []
     @Published var NotelistData: [Note] = []
-//    @Published var notepostData: Note?
     @Published var successMessage: String?
     @Published var type: [String] = []
     @Published var commentdelete:[DeleteCommentRequest] = []
@@ -63,7 +60,6 @@ class HomePlannerViewModel:ObservableObject{
     @Published var DiaryUpdateRespons: [DiaryUpdateResponse]?
     @Published var LabelID: [Int] = []
     @Published var HistoryscheduleData: [PlannerHistory] = []
-//    @Published var Labeltags : [LabelTags] = []
     @Published var isPlusBtn:Bool = false
     @Published var doitlistData: [Doit] = []
     @Published var selectedItem: Int?
@@ -85,7 +81,7 @@ class HomePlannerViewModel:ObservableObject{
     // Diary get method
     func GetDiaryDataList() {
         self.isLoading = true
-        let endUrl = "\(EndPoint.Diarylist)"
+        let endUrl = "\(EndPoint.diaryList)"
         
         NetworkManager.shared.request(type: DiaryResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -156,7 +152,6 @@ class HomePlannerViewModel:ObservableObject{
         // Create the request body using the struct
         let requestBody = PlannerPayload(
             reminder: reminder,
-//            task: [] ,
             type: "diary"
         )
         
@@ -215,10 +210,6 @@ class HomePlannerViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        
-//                        self.DiaryUpdateRespons = response.message
-                    }
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -257,9 +248,6 @@ class HomePlannerViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-//                        self.diaryDatas = response.updatedPlannerItems // Update local data with response
-//                    }
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -294,10 +282,6 @@ class HomePlannerViewModel:ObservableObject{
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.error = response.message
-//                   
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-//                        self.GetDiaryDataList()
-//                    })
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -393,7 +377,7 @@ class HomePlannerViewModel:ObservableObject{
     func GetTagLabelList() {
         
         self.isLoading = true
-        let endUrl = "\(EndPoint.GetTagLabels)"
+        let endUrl = "\(EndPoint.getTagLabels)"
         
         NetworkManager.shared.request(type: ApiResponses.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -425,7 +409,7 @@ class HomePlannerViewModel:ObservableObject{
             labelIds: tagIds // Pass the array of IDs here
         )
         
-        let endPoint = "\(EndPoint.ApplyTagLabel)"
+        let endPoint = "\(EndPoint.applyTagLabel)"
         if let jsonData = try? JSONEncoder().encode(params),
            let jsonString = String(data: jsonData, encoding: .utf8) {
         }
@@ -481,9 +465,6 @@ class HomePlannerViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-//                        self.diaryDatas = response.updatedPlannerItems // Update local data with response
-//                    }
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -571,7 +552,7 @@ class HomePlannerViewModel:ObservableObject{
     //Note Get
     func GetNoteDataList() {
         self.isLoading = true
-        let endUrl = "\(EndPoint.Notelist)"
+        let endUrl = "\(EndPoint.noteList)"
         
         NetworkManager.shared.request(type: NotesResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -683,7 +664,7 @@ class HomePlannerViewModel:ObservableObject{
 // Get tag
     func GetTagNoteLabelList() {
         self.isLoading = true
-        let endUrl = "\(EndPoint.GetTagLabels)"
+        let endUrl = "\(EndPoint.getTagLabels)"
         
         NetworkManager.shared.request(type: ApiRespons.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -790,10 +771,6 @@ class HomePlannerViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-//                        
-//                        self.NoteData = response.updatedPlannerItem // Update local data with response
-//                    }
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -853,7 +830,7 @@ class HomePlannerViewModel:ObservableObject{
     // Get doit List
     func GetDoitList() {
         self.isLoading = true
-        let endUrl = "\(EndPoint.Getdoit)"
+        let endUrl = "\(EndPoint.getDoIt)"
         
         NetworkManager.shared.request(type: DoitResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -902,10 +879,6 @@ class HomePlannerViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        
-//                        self.commentResponse = response.message
-                    }
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -924,7 +897,7 @@ class HomePlannerViewModel:ObservableObject{
     
     func GetDoitHistory(selectedID: Int) {
         self.isLoading = true
-        let endUrl = "\(EndPoint.DoitHistory)\(selectedID)"
+        let endUrl = "\(EndPoint.doItHistory)\(selectedID)"
         
         NetworkManager.shared.request(type: PlannerDoitResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -933,7 +906,6 @@ class HomePlannerViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-//                    self.doitHistoryData = response.data.history
                     self.doitHistoryData = response.data.history
                 }
             case .failure(let error):
@@ -959,7 +931,7 @@ class HomePlannerViewModel:ObservableObject{
             task: tasks,
             note: notes
         )
-        let endPoint = "\(EndPoint.AddTask)"
+        let endPoint = "\(EndPoint.addTask)"
         if let jsonData = try? JSONEncoder().encode(params),
            let jsonString = String(data: jsonData, encoding: .utf8) {
         }
@@ -1006,10 +978,6 @@ class HomePlannerViewModel:ObservableObject{
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.error = response.message
-//
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-//                        self.GetDiaryDataList()
-//                    })
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -1039,7 +1007,7 @@ class HomePlannerViewModel:ObservableObject{
             comment: comment
         )
         // API Endpoint
-        let endUrl = "\(EndPoint.AddingTask)"
+        let endUrl = "\(EndPoint.addingTask)"
 
         // Encode the payload to JSON and log it for debugging
         if let jsonData = try? JSONEncoder().encode(params),
@@ -1092,10 +1060,6 @@ class HomePlannerViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        
-//                        self.diaryData = response.updatedPlannerItem // Update local data with response
-                    }
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -1155,7 +1119,7 @@ class HomePlannerViewModel:ObservableObject{
     // Get Tags
     func GetTagDoitLabelList() {
         self.isLoading = true
-        let endUrl = "\(EndPoint.GetTagLabels)"
+        let endUrl = "\(EndPoint.getTagLabels)"
         
         NetworkManager.shared.request(type: TagApiRespons.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }

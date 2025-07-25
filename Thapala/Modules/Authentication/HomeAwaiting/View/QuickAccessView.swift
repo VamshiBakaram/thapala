@@ -11,7 +11,6 @@ struct QuickAccessView: View {
     @StateObject var homeAwaitingViewModel = HomeAwaitingViewModel()
     @StateObject var themesviewModel = ThemesViewModel()
     @Binding var isQuickAccessVisible: Bool
-//    @Binding var homeAwaitingViewModel: Bool
     
     var body: some View {
         ZStack {
@@ -32,7 +31,6 @@ struct QuickAccessView: View {
                     Button {
                         if !homeAwaitingViewModel.isComposeEmail {
                             homeAwaitingViewModel.isComposeEmail = true
-//                            isQuickAccessVisible = true
                         }
                     } label: {
                         Image("pencil")
@@ -96,18 +94,11 @@ struct QuickAccessView: View {
                     }
                 }
                 Spacer()
-//                Button {
-//                    isQuickAccessVisible = false
-//                } label: {
-//                    Image("close")
-//                }
             }
             .padding(.bottom, 10)
         }
         .frame(width: 220, height: 250)
     }
-//        .frame(width: .infinity, height: .infinity)
-//        .background(Color.black)
 }
 #Preview {
     QuickAccessView(isQuickAccessVisible: .constant(true))

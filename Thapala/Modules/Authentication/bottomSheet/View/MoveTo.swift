@@ -13,7 +13,7 @@ struct MoveTo: View {
     @StateObject private var homeAwaitingViewModel = HomeAwaitingViewModel()
     @ObservedObject var themesviewModel = ThemesViewModel()
     @StateObject var homeRecordsViewModel = HomeRecordsViewModel()
-    @StateObject var consoleViewModel = consoleviewModel()
+    @StateObject var consoleViewModel = ConsoleNavigatiorViewModel()
     @StateObject var bottomSheetViewModel = BottomSheetViewModel()
     @Binding var isMoveToSheetVisible: Bool
     @Binding var selectedThreadID: [Int]
@@ -365,8 +365,6 @@ struct MoveTo: View {
                                 selectedIndices = []
                             }
                         }
-//                        selectedIndices.removeAll()
-
                     }
                 }
                 .transition(.scale)

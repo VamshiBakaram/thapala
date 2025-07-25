@@ -100,7 +100,6 @@ struct InsertFileFromRecordsView: View {
                 }
                 .padding(.horizontal)
                 .padding(.bottom)
-//                Spacer()
             }
             .background(themesviewModel.currentTheme.windowBackground)
         

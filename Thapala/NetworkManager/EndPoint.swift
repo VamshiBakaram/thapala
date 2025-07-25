@@ -40,17 +40,19 @@ struct EndPoint {
     static  let searchTcode = "emails/suggestions"
     static let createNewDiary = "planner?type=diary"
     static let plannerDiarySave = "planner/update/"
-    static let Diarylist = "planner?type=diary&page=1&pageSize=10"
-    static let Notelist = "planner?type=note&page=1&pageSize=10"
+    static let diaryList = "planner?type=diary&page=1&pageSize=10"
+    static let noteList = "planner?type=note&page=1&pageSize=10"
     static let plannerNoteSave = "planner?type=note"
     static let addComment = "planner/add-comment"
     static let delcomment = "planner/delete-comment?"
     static let updateComment = "planner/update-comment" // edit comment
     static let createLabels = "planner/create-label"
-    static let GetTagLabels = "/get-labels" // Diary Tag
-    static let ApplyTagLabel = "planner/add-label" // Diary Tag
+    static let getTagLabels = "/get-labels" // Diary Tag
+    static let applyTagLabel = "planner/add-label" // Diary Tag
     static let removeTagLabel = "planner/remove-label?" // remove Tag
     static let verifyCredentials = "/record/verify-credentials"
+    
+    static let attachmentsReplyMail = "attachments"
     // postBox
     static let deleteEmailAwaiting = "emails/delete"
     
@@ -58,7 +60,7 @@ struct EndPoint {
     
     // Home awaiting
     
-    static let snoozedmail = "emails/snooze-by-id"
+    static let snoozedMail = "emails/snooze-by-id"
     static let trash = "emails/clear-draft" // draft trash
     static let createLabel = "emails/create-label"
     static let ApplyLabel = "emails/add-emails-to-labels"
@@ -66,12 +68,12 @@ struct EndPoint {
     //Note
     static let historySchedule = "planner/get-planner-history/" // history bottom sheet
     static let deletenote = "planner/move-to-trash"
-    static let Getdoit = "planner?type=doit&page=1&pageSize=10"
+    static let getDoIt = "planner?type=doit&page=1&pageSize=10"
     static let updateDoitcomment = "planner/update-comment"
-    static let DoitHistory = "planner/get-planner-history/"
-    static let AddTask = "planner?type=doit"
+    static let doItHistory = "planner/get-planner-history/"
+    static let addTask = "planner?type=doit"
     static let removeTask = "planner/add-comment" // delete Task
-    static let AddingTask = "planner/add-comment" // task add to existing doit
+    static let addingTask = "planner/add-comment" // task add to existing doit
     static let changeStatus = "planner/change-status"
     
     // Date Book
@@ -80,28 +82,28 @@ struct EndPoint {
     
     // Directory
     
-    static let GetDirectoryList = "user/get-all-users?page=1&pageSize=50&orderby="
-    static let GetProfileByID = "navigator/get-bio-by-id/"
+    static let getDirectoryList = "user/get-all-users?page=1&pageSize=50&orderby="
+    static let getProfileByID = "navigator/get-bio-by-id/"
     static let createGroup = "groups/create"
-    static let GetGroupList = "groups/get-all"
+    static let getGroupList = "groups/get-all"
     static let searchByAddress = "user/get-all-users?"
     static let addContacts = "chat/add-contact"
     static let movetoDirectoryGroup = "groups/add-member/"
     static let reportContact = "user/report-issue"
     static let blockContact = "user/"
     static let groupListItems = "groups/get-all-members/"
-    static let Renamegroup = "groups/update/"
+    static let renameGroup = "groups/update/"
     static let deleteGroup = "groups/delete/"
     
     // trash module
     
-    static let GetAlltrash = "emails/get-all?page=1&pageSize=30&status=trash"
-    static let GetRecordsFileTrash = "record/get-trash?type=files"
-    static let GetRecordsFoldersTrash = "record/get-trash?type=folders"
+    static let getAlltrash = "emails/get-all?page=1&pageSize=30&status=trash"
+    static let getRecordsFileTrash = "record/get-trash?type=files"
+    static let getRecordsFoldersTrash = "record/get-trash?type=folders"
     static let plannerTrash = "trash"
-    static let RestorePlanner = "planner/restore-planner"
-    static let DeletePlanner = "planner/delete-planner-items"
-    static let DeleteFiles = "record/delete-from-trash"
+    static let restorePlanner = "planner/restore-planner"
+    static let deletePlanner = "planner/delete-planner-items"
+    static let deleteFiles = "record/delete-from-trash"
     static let restoreFiles = "record/restore"
     static let emailRestore = "emails/restore"
     static let emailDelete = "emails/delete-from-trash"
@@ -135,18 +137,18 @@ struct EndPoint {
     static let userSettings = "user/user-settings"
     static let getTotalStorage = "get-total-storage"
     static let saveSettings = "user/save-user-settings"
-    static let ConsolesecurityQuestions = "questions/user-security-questions"
+    static let consoleSecurityQuestions = "questions/user-security-questions"
     static let navigatorBio = "navigator/get-bio-by-id/"
     
     // Navigator -> Console > Security Accont
     static let setPin = "set-pin"
-    static let GetAllAlerts = "navigator/get-all-alerts"
+    static let getAllAlerts = "navigator/get-all-alerts"
     static let updateAlerts = "navigator/update-alerts"
     
     //postBox
     
     static let contacts = "chat/contacts" // chatBox
-    static let GetchatMessages = "chat/get-chat?"
+    static let getChatMessages = "chat/get-chat?"
     
     // Blue print
     

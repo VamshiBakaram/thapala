@@ -16,7 +16,6 @@ struct BlueprintView: View {
     @EnvironmentObject private var sessionManager: SessionManager
     @ObservedObject private var themesviewModel = ThemesViewModel()
     @State private var isQuickAccessVisible = false
-//    @State private var isMailViewActive = false
     @State var isInsertTcode: Bool = false
     @State private var selectedTcode: String = ""
     @State private var selectedCCcode: String = ""
@@ -189,7 +188,6 @@ struct BlueprintView: View {
                             
                         }
                         .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top ?? 30)
-//                        .frame(height: reader.size.height * 0.16)
                         .background(themesviewModel.currentTheme.tabBackground)
                         
                         if let selectedOption = blueprintViewModel.selectedOption {
@@ -203,9 +201,7 @@ struct BlueprintView: View {
                             }
                         }
                         Spacer()
-                        
-                        //                    Spacer().frame(height: 20)
-                        
+                                            
                         TabViewNavigator()
                             .frame(height: 40)
                             .padding(.bottom , 10)
@@ -341,7 +337,7 @@ struct BlueprintView: View {
                                 Rectangle()
                                     .frame(maxWidth: .infinity)
                                     .frame(height: 1)
-                                    .foregroundColor(themesviewModel.currentTheme.AllGray)
+                                    .foregroundColor(themesviewModel.currentTheme.allGray)
                             }
                             
                             VStack(spacing: 2) {
@@ -399,7 +395,7 @@ struct BlueprintView: View {
                                                 }) {
                                                     Image(systemName: "xmark")
                                                         .renderingMode(.template)
-                                                        .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                                        .foregroundColor(themesviewModel.currentTheme.allBlack)
                                                 }
                                                 .padding([.leading , .trailing] , 5)
 
@@ -470,7 +466,7 @@ struct BlueprintView: View {
                                 Rectangle()
                                     .frame(maxWidth: .infinity)
                                     .frame(height: 1)
-                                    .foregroundColor(themesviewModel.currentTheme.AllGray)
+                                    .foregroundColor(themesviewModel.currentTheme.allGray)
                             }
                
                                 
@@ -524,7 +520,7 @@ struct BlueprintView: View {
                                                         }) {
                                                             Image(systemName: "xmark")
                                                                 .renderingMode(.template)
-                                                                .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                                                .foregroundColor(themesviewModel.currentTheme.allBlack)
                                                         }
                                                         .padding([.leading , .trailing] , 5)
 
@@ -595,7 +591,7 @@ struct BlueprintView: View {
                                         Rectangle()
                                             .frame(maxWidth: .infinity)
                                             .frame(height: 1)
-                                            .foregroundColor(themesviewModel.currentTheme.AllGray)
+                                            .foregroundColor(themesviewModel.currentTheme.allGray)
                                     }
                                     
                                     VStack(spacing: 10) {
@@ -646,7 +642,7 @@ struct BlueprintView: View {
                                                         }) {
                                                             Image(systemName: "xmark")
                                                                 .renderingMode(.template)
-                                                                .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                                                .foregroundColor(themesviewModel.currentTheme.allBlack)
                                                         }
                                                         .padding([.leading , .trailing] , 5)
 
@@ -717,7 +713,7 @@ struct BlueprintView: View {
                                         Rectangle()
                                             .frame(maxWidth: .infinity)
                                             .frame(height: 1)
-                                            .foregroundColor(themesviewModel.currentTheme.AllGray)
+                                            .foregroundColor(themesviewModel.currentTheme.allGray)
                                     }
                                 }
                                 
@@ -742,7 +738,7 @@ struct BlueprintView: View {
                                 Rectangle()
                                     .frame(maxWidth: .infinity)
                                     .frame(height: 1)
-                                    .foregroundColor(themesviewModel.currentTheme.AllGray)
+                                    .foregroundColor(themesviewModel.currentTheme.allGray)
                             }
 
                                 
@@ -832,8 +828,7 @@ struct tCode: Identifiable {
     let id = UUID()
     let code: String
 }
-//
-//
+
 #Preview {
     BlueprintView(imageUrl: "")
         .environmentObject(SessionManager())

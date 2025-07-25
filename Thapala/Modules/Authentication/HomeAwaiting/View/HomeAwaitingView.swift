@@ -27,7 +27,6 @@ struct HomeAwaitingView: View {
     @State private var conveyedView: Bool = false
     @State private var PostBoxView: Bool = false
     @State private var SnoozedView: Bool = false
-//    @State private var AwaitingView: Bool = false
     @State private var beforeLongPress = true
     @State private var AppBar = true
     @State private var selectedCheck = false
@@ -164,7 +163,6 @@ struct HomeAwaitingView: View {
                                 
                             }
                             .padding(.top, -reader.size.height * 0.01)
-                            //   ScrollView(.horizontal,showsIndicators: false){
                             HStack{
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(self.homeAwaitingViewModel.isEmailSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
@@ -272,7 +270,6 @@ struct HomeAwaitingView: View {
                             .padding(.bottom , 10)
                         }
                         .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top ?? 30)
-//                        .frame(height: reader.size.height * 0.16)
                         .background(themesviewModel.currentTheme.colorPrimary)
                         
                         HStack{
@@ -299,7 +296,6 @@ struct HomeAwaitingView: View {
                                                         self.homeAwaitingViewModel.istLetersSelected = false
                                                         self.homeAwaitingViewModel.istCardsSelected = false
                                                         self.homeAwaitingViewModel.getDraftsData()
-//                                                        homeAwaitingViewModel.error = "Draft Mails fetched successfully"
                                                     }
                                                     .overlay(
                                                         Text("Drafts")
@@ -318,7 +314,6 @@ struct HomeAwaitingView: View {
                                                         self.homeAwaitingViewModel.istLetersSelected = false
                                                         self.homeAwaitingViewModel.istCardsSelected = false
                                                         self.homeAwaitingViewModel.getTDraftsData()
-//                                                        homeAwaitingViewModel.error = "tDraft Mails fetched successfully"
                                                     }
                                                     .overlay(
                                                         Text("tDrafts")
@@ -337,7 +332,6 @@ struct HomeAwaitingView: View {
                                                         self.homeAwaitingViewModel.istLetersSelected = false
                                                         self.homeAwaitingViewModel.istCardsSelected = false
                                                         self.homeAwaitingViewModel.getScheduleEmailsData()
-//                                                        homeAwaitingViewModel.error = "scheduled mails fetched successfully"
                                                     }
                                                     .overlay(
                                                         Text("Scheduled")
@@ -617,7 +611,6 @@ struct HomeAwaitingView: View {
                                                                             homeAwaitingViewModel.isLoading = false
                                                                         }
                                                                     } else {
-//                                                                        print("threadID is nil")
                                                                     }
                                                                 }
                                                         }
@@ -809,7 +802,6 @@ struct HomeAwaitingView: View {
                                             .onAppear{
                                                 HomeawaitingViewVisible = true
                                                 isCheckedLabelID
-                                                //                                                self.isCheckedLabelID = response.email?.flatMap { $0.labels }.compactMap { $0.labelId } ?? []
                                                 if let thread = homeAwaitingViewModel.emailData.first(where: { $0.threadID == emailId }) {
                                                     let labelIDs = thread.labels?.compactMap { $0.labelId } ?? []
                                                     isCheckedLabelID = labelIDs
@@ -1728,12 +1720,6 @@ struct HomeAwaitingView: View {
                             .frame(height: 40)
                             .padding(.bottom, 10)
                     }
-                    
-//                    Spacer()
-                    
-
-                    
-                    
                 }
                 .toast(message: $homeAwaitingViewModel.error)
                 .navigationBarBackButtonHidden(true)
@@ -2069,9 +2055,6 @@ struct HomeAwaitingView: View {
                 .presentationDragIndicator(.hidden)
             })
             .sheet(isPresented: $isMoveToFolder, content: {
-                //                MoveToFolderView()
-                //                    .presentationDetents([.medium])
-                //                    .presentationDragIndicator(.hidden)
             })
             .sheet(isPresented: $isCreateLabel, content: {
                 CreateLabelView()
@@ -2130,26 +2113,7 @@ struct HomeAwaitingView: View {
             
         }
     }
-    
-    
-//    private func selectEmail(data: HomeEmailsDataModel) {
-//        if let index = homeAwaitingViewModel.emailData.firstIndex(where: { $0.threadID == data.threadID }) {
-//            homeAwaitingViewModel.emailData[index].isSelected.toggle()
-//            if homeAwaitingViewModel.emailData[index].isSelected {
-//                homeAwaitingViewModel.selectedThreadIDs.append(data.threadID ?? 0)
-//            } else {
-//                homeAwaitingViewModel.selectedThreadIDs.removeAll { $0 == data.threadID }
-//            }
-//        }
-//    }
-    
-//    private func selectAllEmails() {
-//        let allSelected = homeAwaitingViewModel.emailData.allSatisfy { $0.isSelected }
-//        homeAwaitingViewModel.emailData.indices.forEach { index in
-//            homeAwaitingViewModel.emailData[index].isSelected = !allSelected
-//        }
-//        homeAwaitingViewModel.selectedThreadIDs = allSelected ? [] : homeAwaitingViewModel.emailData.compactMap { $0.threadID }
-//    }
+
     private func dismissSheet() {
         presentationMode.wrappedValue.dismiss()
     }

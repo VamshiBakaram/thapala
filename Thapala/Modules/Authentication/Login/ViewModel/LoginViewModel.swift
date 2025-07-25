@@ -59,7 +59,6 @@ class LoginViewModel: ObservableObject {
                 case .success(let response):
                     DispatchQueue.main.async {
                         self.isLoading = false
-                       // self.userData = response
                         let sessionManager = SessionManager()
                         sessionManager.token = response.token ?? "hlo"
                         sessionManager.userName = response.model?.user?.firstname ?? ""
@@ -84,7 +83,6 @@ class LoginViewModel: ObservableObject {
                         self.isLoading = false
                         switch error {
                         case .error(let error):
-                          //  self.error = error
                             self.error = "Incorrect or invalid password."
                             if error == "Server error with status code: 401"{
                                 self.error = "Incorrect or invalid password."

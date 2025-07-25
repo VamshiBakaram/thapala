@@ -103,7 +103,6 @@ struct HomeDirectoryView: View {
                         .padding(.trailing , 30)
                         
                     }
-//                    .padding(.top, 10) // ADD SOME SPACE INSIDE
                     
                     
                     ScrollView(.horizontal,showsIndicators: false){
@@ -219,13 +218,13 @@ struct HomeDirectoryView: View {
                     HStack {
                         Image(systemName: "magnifyingglass")
                             .renderingMode(.template)
-                            .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                            .foregroundColor(themesviewModel.currentTheme.allBlack)
                             .frame(width: 24, height: 24)
                             .padding(.leading, 12)
 
                         Text("Search by tcode or Name")
                             .font(.custom(.poppinsRegular, size: 14))
-                            .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                            .foregroundColor(themesviewModel.currentTheme.allBlack)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.leading, 8)
                     }
@@ -243,7 +242,7 @@ struct HomeDirectoryView: View {
                         Image("createGroup")
                             .renderingMode(.template)
                             .frame(width: 24, height: 24)
-                            .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                            .foregroundColor(themesviewModel.currentTheme.allBlack)
                     }
                     .padding()
                     .background(themesviewModel.currentTheme.attachmentBGColor)
@@ -267,9 +266,6 @@ struct HomeDirectoryView: View {
                                                             .frame(width: 40, height: 40)
                                                             .background(themesviewModel.currentTheme.colorAccent)
                                                             .clipShape(Circle())
-//                                                            .overlay(
-//                                                                Circle().stroke(isblocked ? Color.red : Color.clear, lineWidth: 2)
-//                                                            )
                                                             .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
                                                             .padding(.leading, 20)
                                                             .contentShape(Rectangle())
@@ -280,9 +276,6 @@ struct HomeDirectoryView: View {
                                                             .scaledToFill()
                                                             .aspectRatio(contentMode: .fit)
                                                             .clipShape(Circle())
-//                                                            .overlay(
-//                                                                Circle().stroke(isblocked ? Color.red : Color.clear, lineWidth: 2)
-//                                                            )
                                                             .padding(.leading, 20)
                                                             .contentShape(Rectangle())
                                                         
@@ -294,9 +287,6 @@ struct HomeDirectoryView: View {
                                                             .frame(width: 40, height: 40)
                                                             .background(themesviewModel.currentTheme.colorAccent)
                                                             .clipShape(Circle())
-//                                                            .overlay(
-//                                                                Circle().stroke(isblocked ? Color.red : Color.clear, lineWidth: 2)
-//                                                            )
                                                             .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
                                                             .padding(.leading, 20)
                                                             .contentShape(Rectangle())
@@ -575,10 +565,6 @@ struct HomeDirectoryView: View {
                                 .compactMap { $0.groupName }
                                 .flatMap { $0.components(separatedBy: ",") }
                                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-//                            for (index, group) in groupNamesArray.enumerated() {
-//                                print("Group \(index + 1): \(group)")
-//                            }
-
                         }
                         
                     }
@@ -990,9 +976,6 @@ struct HomeDirectoryView: View {
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                             homeDirectoryViewModel.GetsearchData(country: homeDirectoryViewModel.country , state: homeDirectoryViewModel.state, city: homeDirectoryViewModel.city)
                                         }
-//                                    homeDirectoryViewModel.selectedCountryIndex = nil
-//                                    homeDirectoryViewModel.selectedStateIndex = nil
-//                                    homeDirectoryViewModel.selectedCityIndex = nil
                                     }
                                 }) {
                                     Text("Search")
@@ -1226,7 +1209,7 @@ struct HomeDirectoryView: View {
                                     HStack {
                                         Text("Rename")
                                             .font(.custom(.poppinsRegular, size: 14))
-                                            .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                            .foregroundColor(themesviewModel.currentTheme.allBlack)
                                         Spacer()
                                     }
                                     .padding(.leading, 16)
@@ -1239,7 +1222,7 @@ struct HomeDirectoryView: View {
                                     HStack {
                                         Text("Delete")
                                             .font(.custom(.poppinsRegular, size: 14))
-                                            .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                            .foregroundColor(themesviewModel.currentTheme.allBlack)
                                         Spacer()
                                     }
                                     .padding(.leading, 16)
@@ -1252,7 +1235,7 @@ struct HomeDirectoryView: View {
                                     HStack {
                                         Text("Details")
                                             .font(.custom(.poppinsRegular, size: 14))
-                                            .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                            .foregroundColor(themesviewModel.currentTheme.allBlack)
                                         Spacer()
                                     }
                                     .padding(.leading, 16)
@@ -1449,12 +1432,6 @@ struct HomeDirectoryView: View {
                                         }
                                     
                                 }
-
-                            
-                            
-//                            floatingtextfield(text: $homeDirectoryViewModel.groupName, placeHolder: "Group name*", allowedCharacter: .defaultType)
-//                                .padding(.horizontal, 10)
-//                                .foregroundColor(themesviewModel.currentTheme.textColor)
                             
                             floatingTextField(placeHolder : "Group name*", text:  $homeDirectoryViewModel.groupName)
                                 .padding(.top , 15)

@@ -18,12 +18,6 @@ class InfoViewViewModel: ObservableObject {
     @Published var guidecontentItems: [GuideContent] = []
     @Published var isComposeEmail: Bool = false
     
-//    let endUrl = "\(EndPoint.info)contentType=\(selectedOption)&page=1&limit=10"
-    
-//    init() {
-//        self.getInfoData(selectedOption: "info")
-//    }
-    
     func getInfoData(selectedOption: String) {
         self.isLoading = true
         let endUrl = "\(EndPoint.info)contentType=\(selectedOption)&page=1&limit=10"

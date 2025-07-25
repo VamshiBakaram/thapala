@@ -11,11 +11,8 @@ import UIKit
 class MailFullViewModel: ObservableObject {
     @Published var error: String?
     @Published var isLoading = false
-//    @Published var composeText: String = ""
     @Published var backToAwaiting: Bool = false
     @Published var attachFromFolder: Bool = false
-//    @Published var emailByIdData: EmailsByIdModel?
-//    @Published var attachmentsData: [Attachment] = []
     @Published var isEmailOptions: Bool = false
     @Published var isUploadFromFolder: Bool = false
     @Published var isCreateLabel: Bool = false
@@ -92,37 +89,6 @@ class MailFullViewModel: ObservableObject {
         }
     }
     
-//    func getEmailsData() {
-//        self.isLoading = true
-//        let endUrl = "\(EndPoint.allEmails)status=awaited"
-//        NetworkManager.shared.request(type: HomeEmailsModel.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
-//            guard let self = self else { return }
-//            switch result {
-//            case .success(let response):
-//                DispatchQueue.main.async {
-//                    self.isLoading = false
-//                    self.error = response.message ?? ""
-////                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-////                        self.emailData = response.data ?? []
-////                        self.emailFullData = response
-////                    })
-//                }
-//            case .failure(let error):
-//                DispatchQueue.main.async {
-//                    self.isLoading = false
-//                    switch error {
-//                    case .error(error: let error):
-//                        DispatchQueue.main.async {
-//                            self.error = error
-//                        }
-//                    case .sessionExpired(error: _):
-//                        self.error = "Please try again later"
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     func markEmailAsUnRead(emailId: [Int]) {
         self.isLoading = true
         let params = IdsPayload (
@@ -135,9 +101,6 @@ class MailFullViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.error = response.message ?? ""
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-//                        self.getEmailsData()
-//                    })
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -167,9 +130,6 @@ class MailFullViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.error = response.message ?? ""
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-//                        self.getEmailsData()
-//                    })
                 }
             case .failure(let error):
                 DispatchQueue.main.async {

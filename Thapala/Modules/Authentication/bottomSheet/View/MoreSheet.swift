@@ -372,11 +372,6 @@ struct MoreSheet: View {
         )
         .toast(message: $mailFullViewModel.error)
         .toast(message: $homeAwaitingViewModel.error)
-//        .navigationDestination(isPresented: $mailFullViewModel.isReply) {
-//            if let replyViewModel = mailFullViewModel.replyViewModel {
-//                ReplyEmailView(replyEmailViewModel: replyViewModel).toolbar(.hidden)
-//            }
-//        }
     }
     func calculateTotalHeight() -> CGFloat {
         let baseHeight: CGFloat = 200 // Base height for fixed elements

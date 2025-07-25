@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct AddNewGroupView: View {
-    // @Environment(\.presentationMode) var presentationMode
      @Binding var isNewGroupVisible: Bool
     @ObservedObject var homeResidenceViewModel = HomeResidenceViewModel()
      var body: some View {

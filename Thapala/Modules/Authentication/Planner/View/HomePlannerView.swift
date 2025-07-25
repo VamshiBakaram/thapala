@@ -105,7 +105,7 @@ struct HomePlannerView: View {
                         HStack {
                             HStack {
                                 Image(systemName: "magnifyingglass")
-                                    .foregroundColor(themesviewModel.currentTheme.AllGray)
+                                    .foregroundColor(themesviewModel.currentTheme.allGray)
                                     .frame(width: 24, height: 24)
                                     .padding(.leading, 12)
                                     .onTapGesture {
@@ -113,7 +113,7 @@ struct HomePlannerView: View {
                                     }
 
                                 TextField("Search", text: $searchText)  // Bind the TextField to the searchText state variable
-                                    .foregroundColor(themesviewModel.currentTheme.AllGray)
+                                    .foregroundColor(themesviewModel.currentTheme.allGray)
                                     .font(.custom("Poppins-Regular", size: 12))  // Correct font name
                                     .padding(.leading, 13)
                                     .onTapGesture {
@@ -123,8 +123,6 @@ struct HomePlannerView: View {
                             .padding()
                             .background(themesviewModel.currentTheme.attachmentBGColor)
                             .cornerRadius(10)
-//                            .frame(height: 48)  // Set height explicitly for the entire HStack
-//                                        .padding(.top , 10)
                                         Button(action: {
                                                     }) {
                                         Image("notification1")
@@ -132,7 +130,6 @@ struct HomePlannerView: View {
                                             .frame(width: 18, height: 18)
                                             .padding(.trailing , 16)
                                             .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
-//                                            .padding(.top , 10)
                                         }
                                         
                                         Button(action: {}) {
@@ -140,11 +137,9 @@ struct HomePlannerView: View {
                                                 .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
                                                 .frame(width: 18, height: 18)
                                                 .padding(.trailing , 20)
-//                                                .padding(.top , 10)
                                         }
                                     }
                                     .padding(.horizontal)
-//                                    .padding()
                     }
                    
                     .frame(height: reader.size.height * 0.20)
@@ -223,7 +218,6 @@ struct HomePlannerView: View {
                                 .cornerRadius(20)
                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                             }
-//                            .padding(.horizontal, 30) // Add horizontal padding for the HStack
                         }
                         .padding(.leading, 30)
                     }
@@ -233,25 +227,7 @@ struct HomePlannerView: View {
                         switch selectedOption {
                         case .doit:
                             HStack{
-//                                Text("To do list(9)")
-//                                    .foregroundColor(Color.blue)
-//                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-//                                    .padding(.leading,20)
-//                                Spacer()
-//                                HStack {
-//                                    Text("Add new task")
-//                                        .foregroundColor(Color.white)
-//                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-//                                    Image("add")
-//                                }
-//                                .padding([.leading,.trailing],10)
-//                                .padding([.top,.bottom],5)
-//                                .background(Color.blue)
-//                                .cornerRadius(10)
-//                                .padding(.trailing,20)
-//                                .onTapGesture {
-//                                    homePlannerViewModel.addtask = true
-//                                }
+
                             }
                         case .diary:
                             if var diary = homePlannerViewModel.listData.first{
@@ -265,11 +241,6 @@ struct HomePlannerView: View {
                                             .font(.custom("Poppins-Regular", size: 14, relativeTo: .subheadline))
                                             .padding(.leading , 9)
                                         Spacer()
-                                        //                                Text("Add Note")
-                                        //                                    .foregroundColor(Color.black) // Apply the text color
-                                        //                                    .fontWeight(.bold)
-                                        //                                    .padding(.leading , 9)
-                                        //                                    .font(.custom("Poppins-Regular", size: 14, relativeTo: .title)) // Make sure the font name is correct
                                         
                                     }
                                     .padding(.top , 10)
@@ -296,10 +267,6 @@ struct HomePlannerView: View {
                                 
                                 Spacer()
                                             
-//                                            Text(getCurrentDateWithMonthYear()) // Display both date and month-year
-//                                                .foregroundColor(Color.black)
-//                                                .font(.custom("Poppins-Regular", size: 10, relativeTo: .title))
-//                                                .padding(.trailing, 18)
                             }
                             .padding(.top , 10)
                             .onTapGesture {
@@ -307,18 +274,7 @@ struct HomePlannerView: View {
                             }
                         case .Date:
                             HStack{
-//                                Spacer()
-//                                HStack {
-//                                    Text("Add new event")
-//                                        .foregroundColor(Color.white)
-//                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-//                                    Image("add")
-//                                }
-//                                .padding([.leading,.trailing],10)
-//                                .padding([.top,.bottom],5)
-//                                .background(Color.blue)
-//                                .cornerRadius(10)
-//                                .padding(.trailing,20)
+
                             }
                         }
                     }
@@ -336,22 +292,7 @@ struct HomePlannerView: View {
                             
                         }
                     }
-                    
-                    
-                    /*
-                     Spacer()
-                     HStack{
-                     Spacer()
-                     Button(action: {
-                     
-                     }) {
-                     Image("plus")
-                     .font(Font.title.weight(.medium))
-                     .foregroundColor(Color.white)
-                     }
-                     .padding(.trailing,15)
-                     }
-                     */
+
                     TabViewNavigator()
                         .frame(height: 40)
                         .padding(.bottom, 10)
@@ -391,7 +332,6 @@ struct HomePlannerView: View {
                      .opacity(0.4)
                      .edgesIgnoringSafeArea(.all)
                      PlannerAddTaskView(isAddTaskVisible: $homePlannerViewModel.addtask)
-    //                 .transition(.opacity)
                      .padding(.bottom,330 )
                 }
                 if homePlannerViewModel.Diarytask {
@@ -402,13 +342,11 @@ struct HomePlannerView: View {
                      .transition(.opacity)
                 }
                 if homePlannerViewModel.Notetask {
-    //                PlannerAddTaskView(isAddTaskVisible: $homePlannerViewModel.addtask)
                     Color.black
                      .opacity(0.4)
                      .edgesIgnoringSafeArea(.all)
                     NoteView(isNoteVisible: $homePlannerViewModel.Notetask, notificationTime: $homePlannerViewModel.NotificationNotetime, isTagActive: $homePlannerViewModel.isTagActive)
                      .transition(.opacity)
-    //                 .padding(.bottom,330 )
                 }
                 if homePlannerViewModel.Diaryupdate {
                     Color.black
@@ -474,11 +412,6 @@ struct HomePlannerView: View {
                             }
                     )
                 }
-    //            if homePlannerViewModel.selectedtodo {
-    //                ListitemView(isListItemVisible: $homePlannerViewModel.selectedtodo, selectedID: homePlannerViewModel.selectedItem ?? 0)
-    //                    .transition(.move(edge: .bottom)) // Smooth transition
-    //                    .animation(.easeInOut)
-    //            }
                 if isEventVisible {
                     VStack {
                         Spacer() // Pushes the sheet to the bottom
@@ -526,7 +459,6 @@ struct HomePlannerView: View {
                 .toolbar(.hidden)
         }
         .navigationDestination(isPresented: $homePlannerViewModel.isComposeEmail) {
-          //  MailComposeView().toolbar(.hidden)
                     }
         .toast(message: $homePlannerViewModel.error)
 
@@ -813,16 +745,13 @@ struct HomePlannerView: View {
                                     .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
                             }
                             .padding(.leading , 16)
-                            
-                            //                    padding()
-                            
+                                                        
                         }
                         Spacer()
                     }
                     .listRowBackground(themesviewModel.currentTheme.windowBackground)
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        //                    homePlannerViewModel.updateDiaryData(selectedID: data.id)
                         homePlannerViewModel.selectedID = data.id ?? 0
                         homePlannerViewModel.Diaryupdate = true
                     }
@@ -852,11 +781,6 @@ struct HomePlannerView: View {
                     HStack{
                         let senderDate: TimeInterval = TimeInterval(data.createdTimeStamp) ?? 0
                         let finalDate = convertTime(timestamp: senderDate)
-                        //                    if homePlannerViewModel.listData.firstIndex(where: { $0.id == data.id }) == 0 {
-                        //                        Image("addnote")
-                        //                            .padding([.trailing, .leading], 5)
-                        //                            .frame(width: 34, height: 34)
-                        //                            .clipShape(Circle())
                         VStack {
                             HStack {
                                 Text(data.title)
@@ -880,18 +804,11 @@ struct HomePlannerView: View {
                                 .padding(.leading, 20)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
-                        
-                        
-                        
-                        
-                        //                    padding()
-                        //                    }
                         Spacer()
                     }
                     .listRowBackground(themesviewModel.currentTheme.windowBackground)
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        //                    homePlannerViewModel.updateDiaryData(selectedID: data.id)
                         homePlannerViewModel.selectedID = data.id ?? 0
                         homePlannerViewModel.Noteupdate = true
                     }
@@ -906,13 +823,6 @@ struct HomePlannerView: View {
     
     var dateView:some View{
         VStack {
-//            if !formattedDate.isEmpty {
-//                 Text("Future Date: \(formattedDate)")
-//                     .font(.body)
-//                     .foregroundColor(.green)
-//             }
-             
-             // Select a date using DatePicker
              DatePicker(
                  "Select a Date:",
                  selection: $selectedDate,
@@ -1153,22 +1063,6 @@ struct EventView: View {
                     
                     
                 }
-                
-//            HStack {
-//                TextField("No repeat", text: $title)
-//                    .foregroundColor(.black)
-//                    .font(.custom("Poppins-Regular", size: 16))
-//                    .padding()
-//                    .background(Color.clear)
-//                    .cornerRadius(8)
-//                    .overlay(
-//                        RoundedRectangle(cornerRadius: 8)
-//                            .stroke(Color.black, lineWidth: 1)
-//                    )
-//                    .padding(.horizontal, 10)
-//                
-//
-//            }
             Menu {
                 Button("Daily") { repeatOption = "everyday" }
                 Button("Weekly") { repeatOption = "everyweek" }

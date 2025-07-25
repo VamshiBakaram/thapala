@@ -27,7 +27,6 @@ class HomeAwaitingViewModel: ObservableObject {
     @Published var draftsFullData: HomeDraftsModel?
     @Published var tDraftsData: [HomeDraftsDataModel] = []
     @Published var scheduleData: [HomeDraftsDataModel] = []
-//    @Published var snoozedmail: [SnoozeResponse] = []
     @Published var createLabelData: [Labeldata] = []
     @Published var isLoading: Bool = false
     @Published var threadID: [Int] = []
@@ -41,7 +40,6 @@ class HomeAwaitingViewModel: ObservableObject {
     @Published var isPlusBtn: Bool = false
     @Published var beforeLongPress: Bool = true
     @Published var draftBeforeLongPress: Bool = true
-  //  @Published var isSheet: Bool = false
     @Published var replyViewModel: ReplyEmailViewModel? = nil
     @Published var isReply:Bool = false
     @Published var to = ""
@@ -224,20 +222,6 @@ class HomeAwaitingViewModel: ObservableObject {
         let selectedEmails = emailFullData.data?.filter { selectedThreadIDs.contains($0.threadID ?? 0) }
         return ((selectedEmails?.contains { $0.readReceiptStatus == 0 }) != nil)
     }
-
-//    func toggleReadStatusForSelectedEmails() {
-//        guard let emailFullData = emailFullData else { return }
-//
-//        let selectedEmails = emailFullData.data!.filter { selectedThreadIDs.contains($0.threadID!) }
-//        for email in selectedEmails {
-//            if email.readReceiptStatus == 0 {
-//                markEmailAsRead(email: [email])
-//            } else {
-//                markEmailAsUnRead(email: [email])
-//            }
-//            self.beforeLongPress = true
-//        }
-//    }
     
     func getStarredEmail(selectedEmail:Int) {
         self.isLoading = true
@@ -247,7 +231,6 @@ class HomeAwaitingViewModel: ObservableObject {
             switch result {
             case .success(let response):
                 DispatchQueue.main.async {
-//                    self.isLoading = false
                     self.error = response.message ?? ""
                         self.starredemail = [response]
                         print("starred email, response")
@@ -272,7 +255,7 @@ class HomeAwaitingViewModel: ObservableObject {
 
     func snoozedEmail(snoozedAt: Int , selectedThreadID : [Int]) {
         self.isLoading = true
-        let url = "\(EndPoint.snoozedmail)"
+        let url = "\(EndPoint.snoozedMail)"
         let params = SnoozeRequest(
             status: true,
             snoozedAt: snoozedAt,
@@ -283,11 +266,8 @@ class HomeAwaitingViewModel: ObservableObject {
             switch result {
             case .success(let response):
                 DispatchQueue.main.async {
-    //                    self.isLoading = false
                     self.error = response.message
-//                        self.snoozedmail = [response]
                         print("starred email, response")
-                    
                 }
             case .failure(let error):
                 DispatchQueue.main.async {

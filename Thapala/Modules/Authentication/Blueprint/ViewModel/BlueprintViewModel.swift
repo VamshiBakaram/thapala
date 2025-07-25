@@ -16,7 +16,6 @@ class BlueprintViewModel:ObservableObject{
     @Published var isLettersSelected = false
     @Published var isCardsSelected = false
     @Published var emailEditor:String = ""
-//    @Published var isPlusBtn:Bool = false
     @Published var isSchedule:Bool = false
     @Published var ccTCodes: [tCode] = []
     @Published var bccTCodes: [tCode] = []

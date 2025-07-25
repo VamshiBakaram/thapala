@@ -16,7 +16,7 @@ struct HomeRecordsView: View {
     @StateObject var homeRecordsViewModel = HomeRecordsViewModel()
     @StateObject var homeAwaitingViewModel = HomeAwaitingViewModel()
     @StateObject var mailComposeViewModel = MailComposeViewModel()
-    @StateObject var consoleViewModel = consoleviewModel()
+    @StateObject var consoleViewModel = ConsoleNavigatiorViewModel()
     @StateObject var themesviewModel = ThemesViewModel()
     @State private var selectedTabID : Int = 1059
     @State private var Foldertype : String = "work"
@@ -60,7 +60,6 @@ struct HomeRecordsView: View {
     @State private var newPinView: Bool = false
     @State private var subFolderView: Bool = false
     @State private var subFolderViewFiles: Bool = false
-//    @State private var setPin: String = ""
     @State private var password: String = ""
     @State private var newPin: String = ""
     @State private var confirmPin: String = ""
@@ -213,7 +212,6 @@ struct HomeRecordsView: View {
                                                         .frame(width: 20, height: 20)
                                                         .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                         .background(themesviewModel.currentTheme.tabBackground)
-                                                    //  .padding()
                                                     VStack{
                                                         Text("Archive")
                                                             .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
@@ -262,8 +260,6 @@ struct HomeRecordsView: View {
                             }
                             
                         }
-//                        .padding(.top , 1)
-                      
                     }
                     
                     .frame(height: reader.size.height * 0.16)
@@ -648,27 +644,11 @@ struct HomeRecordsView: View {
                                 )
                             }
                         }
-//                        else {
-//                            print("mainRecords is still empty.")
-//                        }
                     }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                         homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
                     }
                 }
-
-
-//                .fileImporter(isPresented: $isFilePickerPresent, allowedContentTypes: [.image, .pdf, .plainText], allowsMultipleSelection: true) { result in
-//                    switch result {
-//                    case .success(let urls):
-//                        mailComposeViewModel.selectedFiles.append(contentsOf: urls)
-//                        mailComposeViewModel.uploadFiles(fileURLs: urls)
-//                    case .failure(let error):
-//                    }
-//                }
-//                if homeRecordsViewModel.isLoading {
-//                    CustomProgressView()
-//                }
                 if isMenuVisible{
                     HomeMenuView(isSidebarVisible: $isMenuVisible)
                 }
@@ -723,19 +703,6 @@ struct HomeRecordsView: View {
                                                 .frame(width: 20, height: 20)
                                                 .padding(.trailing , 10)
                                                 .foregroundColor(folder.starred == 1 ? themesviewModel.currentTheme.colorAccent : .white)
-                                            //                                            .onTapGesture {
-                                            //                                                let threadID = homeRecordsViewModel.emailsData[index].threadId
-                                            //                                                if let threadID {
-                                            //                                                    print("thread id:", threadID)
-                                            //                                                    // Toggle the 'starred' status
-                                            //                                                    homeRecordsViewModel.emailsData[index].starred =
-                                            //                                                        homeRecordsViewModel.emailsData[index].starred == 1 ? 0 : 1
-                                            //                                                    homeAwaitingViewModel.getStarredEmail(selectedEmail: threadID)
-                                            //                                                } else {
-                                            //                                                    print("threadID is nil")
-                                            //                                                }
-                                            //                                            }
-                                            
                                         }
                                     }
                                 }
@@ -1387,23 +1354,6 @@ struct HomeRecordsView: View {
                                                     fileType = "folder"
                                                     fileclicks = true
                                                     homeRecordsViewModel.getSubRecordsData(selectedTabID: subfoldersViewIds, Type: subfoldersViewType)
-//                                                    isMoreSheetvisible.toggle()
-//                                                    selectedTabID = subfoldersViewIds
-//                                                    print("isMoreSheetvisible \(isMoreSheetvisible)")
-//                                                    print("selectedTabID \(selectedTabID) Foldertype \(Foldertype) SubFoldersType \(subFoldertype)")
-//                                                    emailID = 0
-//                                                    fieldID = file.id
-//                                                    recordID = 0
-//                                                    FileAzureName = file.azureFileName
-//                                                    foldername = file.fileName
-//                                                    createdAt = file.createdAt
-//                                                    UpdatedAt = file.updatedAt
-//                                                    filesize = file.fileSize
-//                                                    AzureLink = file.fileLink
-//                                                    fileType = "file"
-//                                                    fileFormat = URL(fileURLWithPath: file.fileName).pathExtension.lowercased()
-//                                                    fileclicks = true
-//                                                    print("foldername \(foldername) createdAt \(createdAt) UpdatedAt \(UpdatedAt) filesize \(filesize) AzureLink \(AzureLink)")
                                                 }) {
                                                     Image("dots")
                                                         .resizable()
@@ -1568,7 +1518,6 @@ struct HomeRecordsView: View {
                                 
                                 HStack {
                                     Button {
-//                                        isFilePickerPresent = true
                                         showPhotoPicker = true
                                     } label: {
                                         Image("uploadFile")
@@ -1724,12 +1673,9 @@ struct HomeRecordsView: View {
                                             lockerView = false
                                             homeRecordsViewModel.setPin = LockerPin
                                                 homeRecordsViewModel.getLockerData(selectedTabID: MainselectedTabID[2], Type: "locker", SubFoldersType: "locker")
-//                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                                 workspace = true
-//                                                lockerfilesView = true
-                                            
-                                            LockerPin = ""
-                                            Lockerpassword = ""
+                                                LockerPin = ""
+                                                Lockerpassword = ""
                                         }label: {
                                             Text("Submit")
                                                 .padding()

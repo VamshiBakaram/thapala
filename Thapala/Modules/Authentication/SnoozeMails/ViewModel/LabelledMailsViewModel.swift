@@ -9,13 +9,9 @@ import SwiftUI
 class LabelledMailsViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var error: String?
-    @Published var selectedLabelID: [Int] = [] // bottom tag
+    @Published var selectedLabelID: [Int] = []
     @Published var selectedLabelNames: [String] = []
     @Published var labelledMailsDataModel:[LabelledMailsDataModel] = []
-//    init() {
-//        self.getLabelledEmailData()
-//    }
-    
     func getLabelledEmailData() {
         self.isLoading = true
         let endUrl = "\(EndPoint.labelledEmails)"

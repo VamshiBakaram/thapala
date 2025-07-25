@@ -30,29 +30,6 @@ struct BioView: View {
                 VStack {
                     VStack(alignment: .leading, spacing: 6) {
                         HStack {
-//                            AsyncImage(url: URL(string: imageUrl)) { phase in
-//                                switch phase {
-//                                case .empty:
-//                                    ProgressView()
-//                                case .success(let image):
-//                                    image
-//                                        .resizable()
-//                                        .frame(width: 40, height: 40)
-//                                        .aspectRatio(contentMode: .fit)
-//                                        .clipShape(Circle())
-//                                        .padding(.leading,20)
-//                                case .failure:
-//                                    Image("person")
-//                                        .resizable()
-//                                        .frame(width: 40, height: 40)
-//                                        .aspectRatio(contentMode: .fit)
-//                                        .clipShape(Circle())
-//                                        .background(themesviewModel.currentTheme.iconColor)
-//                                        .padding(.leading,20)
-//                                @unknown default:
-//                                    EmptyView()
-//                                }
-//                            }
                             Image("person")
                                 .resizable()
                                 .frame(width: 40, height: 40)

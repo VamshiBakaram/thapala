@@ -59,10 +59,6 @@ struct SnoozedMailsView:View{
                                 .background(selectedTab == "awaited" ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                                 .cornerRadius(10)
-                            //                        .overlay(
-                            //                            RoundedRectangle(cornerRadius: 10)
-                            //                                .stroke(Color.black.opacity(0.2), lineWidth: 1)
-                            //                        )
                         }
                         
                         Button(action: {
@@ -77,10 +73,6 @@ struct SnoozedMailsView:View{
                                 .background(selectedTab == "postbox" ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                                 .cornerRadius(10)
-                            //                        .overlay(
-                            //                            RoundedRectangle(cornerRadius: 10)
-                            //                                .stroke(Color.black.opacity(0.2), lineWidth: 1)
-                            //                        )
                         }
                         
                         Button(action: {
@@ -95,10 +87,6 @@ struct SnoozedMailsView:View{
                                 .background(selectedTab == "conveyed" ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                                 .cornerRadius(10)
-                            //                        .overlay(
-                            //                            RoundedRectangle(cornerRadius: 10)
-                            //                                .stroke(Color.black.opacity(0.2), lineWidth: 1)
-                            //                        )
                         }
                     }
                     .overlay(
@@ -229,14 +217,8 @@ struct SnoozedMailsView:View{
                                     .font(.custom(.poppinsLight, size: 14))
                                     .lineLimit(1)
                                 Spacer()
-                                //                                 Image("star.fill")
                             }
                         }
-                        //                        Text("\(email.sentAt ?? 0)")
-                        //                            .padding(.top, -30)
-                        
-                        
-                        
                     }
                     .onTapGesture {
                         SnoozedView = true
@@ -282,9 +264,6 @@ struct SnoozedMailsView:View{
                                 .font(.custom(.poppinsLight, size: 14))
                                 .lineLimit(1)
                         }
-    //                    Text("\(email.sentAt ?? 0)")
-    //                        .padding(.top,-30)
-    //                    Spacer()
                     }
                     .listRowBackground(themesviewModel.currentTheme.windowBackground)
                     .gesture(
@@ -383,14 +362,8 @@ struct SnoozedMailsView:View{
                                     .font(.custom(.poppinsLight, size: 14))
                                     .lineLimit(1)
                                 Spacer()
-                                //                                 Image("star.fill")
                             }
                         }
-                        //                        Text("\(email.sentAt ?? 0)")
-                        //                            .padding(.top, -30)
-                        
-                        
-                        
                     }
                     .listRowBackground(themesviewModel.currentTheme.windowBackground)
                     .onTapGesture {
@@ -433,9 +406,6 @@ struct SnoozedMailsView:View{
                             .font(.custom(.poppinsLight, size: 14))
                             .lineLimit(1)
                     }
-//                    Text("\(email.sentAt ?? 0)")
-//                        .padding(.top,-30)
-//                    Spacer()
                 }
                 .listRowBackground(themesviewModel.currentTheme.windowBackground)
                 .gesture(
@@ -463,7 +433,6 @@ struct SnoozedMailsView:View{
                     
                     
                     Button(action: {
-                      //  homeAwaitingViewModel.toggleReadStatusForSelectedEmails()
                     }) {
                         Image(systemName: "envelope.open")
                             .frame(width: 25, height: 25)
@@ -472,7 +441,6 @@ struct SnoozedMailsView:View{
                     
                     
                     Button(action: {
-                      //  isMoveToFolder = true
                     }) {
                         Image(systemName: "folder")
                             .frame(width: 25, height: 25)
@@ -480,7 +448,6 @@ struct SnoozedMailsView:View{
                     }
                     
                     Button(action: {
-                     //   isCreateLabel = true
                     }) {
                         Image(systemName: "tag")
                             .frame(width: 25, height: 25)
@@ -545,14 +512,8 @@ struct SnoozedMailsView:View{
                                     .font(.custom(.poppinsLight, size: 14))
                                     .lineLimit(1)
                                 Spacer()
-                                //                                 Image("star.fill")
                             }
                         }
-                        //                        Text("\(email.sentAt ?? 0)")
-                        //                            .padding(.top, -30)
-                        
-                        
-                        
                     }
                     .listRowBackground(themesviewModel.currentTheme.windowBackground)
                     .gesture(
@@ -596,9 +557,6 @@ struct SnoozedMailsView:View{
                             .font(.custom(.poppinsLight, size: 14))
                             .lineLimit(1)
                     }
-//                    Text("\(email.sentAt ?? 0)")
-//                        .padding(.top,-30)
-//                    Spacer()
                 }
                 .listRowBackground(themesviewModel.currentTheme.windowBackground)
                 .gesture(
@@ -626,7 +584,6 @@ struct SnoozedMailsView:View{
                     
                     
                     Button(action: {
-                      //  homeAwaitingViewModel.toggleReadStatusForSelectedEmails()
                     }) {
                         Image(systemName: "envelope.open")
                             .frame(width: 25, height: 25)
@@ -635,7 +592,6 @@ struct SnoozedMailsView:View{
                     
                     
                     Button(action: {
-                      //  isMoveToFolder = true
                     }) {
                         Image(systemName: "folder")
                             .frame(width: 25, height: 25)
@@ -643,7 +599,6 @@ struct SnoozedMailsView:View{
                     }
                     
                     Button(action: {
-                     //   isCreateLabel = true
                     }) {
                         Image(systemName: "tag")
                             .frame(width: 25, height: 25)

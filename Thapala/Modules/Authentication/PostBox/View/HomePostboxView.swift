@@ -14,7 +14,6 @@ struct HomePostboxView: View {
     @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
     @StateObject var mailComposeViewModel = MailComposeViewModel()
     @StateObject var themesviewModel = ThemesViewModel()
-//    @State private var emailStarred: Int = 0
     @State private var isSheetVisible = false
     @State private var isStarred: Bool = false // Track starred state
     @State private var isQuickAccessVisible = false
@@ -297,7 +296,6 @@ struct HomePostboxView: View {
                             .padding(.top, 10)
                             ZStack(alignment: .bottomTrailing) {
                                 List($homePostboxViewModel.postBoxEmailData) { $data in
-                                    //                                ForEach($homePostboxViewModel.postBoxEmailData, id: \.threadId) { $data in
                                     VStack {
                                         HStack {
                                             Button(action: {
@@ -689,9 +687,6 @@ struct HomePostboxView: View {
                 
             }
 
-//            .navigationDestination(isPresented: $homePostboxViewModel.isComposeEmail) {
-//                MailComposeView().toolbar(.hidden)
-//            }
             .sheet(isPresented: $isSheetVisible, content: {
                 EmailOptionsView( replyAction: {
                     // Perform reply action
@@ -740,7 +735,6 @@ struct HomePostboxView: View {
             .navigationDestination(isPresented: $homePostboxViewModel.isEmailScreen) {
                 MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, awaitingView: $AwaitingView, emailId: homePostboxViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $EmailStarred,markAs: $markAs).toolbar(.hidden)
             }
-           //
             .toast(message: $homePostboxViewModel.error)
         }
     }
@@ -760,7 +754,6 @@ struct HomePostboxView: View {
                         if homePostboxViewModel.beforeLongPress{
                             List($homePostboxViewModel.postBoxEmailData) { $data in
                                 VStack {
-//                                ForEach($homePostboxViewModel.postBoxEmailData, id: \.threadId) { $data in
                                     HStack {
                                         let image = data.senderProfile ?? "person"
                                         AsyncImage(url: URL(string: image)) { phase in
@@ -950,25 +943,6 @@ struct HomePostboxView: View {
     
     var printView:some View{
             VStack{
-//                List(homePostboxViewModel.postBoxPrintRead){ data in
-//                    HStack{
-//                        Image(data.image)
-//                            .padding([.trailing,.leading],5)
-//                            .frame(width: 34,height: 34)
-//                            .clipShape(Circle())
-//                        VStack(alignment: .leading){
-//                            Text(data.title)
-//                                .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
-//                            Text(data.subTitle)
-//                                .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-//                        }
-//                        Spacer()
-//                        Text(data.time)
-//                            .font(.custom(.poppinsLight, size: 10, relativeTo: .title))
-//                    }
-//                }
-//                .listStyle(PlainListStyle())
-//                .scrollContentBackground(.hidden)
                 ZStack {
                     Color.clear // Background to help center the image
                     Image("coming soon") // Replace with the actual image name
@@ -1026,7 +1000,6 @@ struct HomePostboxView: View {
                                     .onEnded { _ in
                                         withAnimation {
                                             homePostboxViewModel.beforeLongPress = false
-                                            //  selectEmail(data: data)
                                         }
                                     }
                             )
