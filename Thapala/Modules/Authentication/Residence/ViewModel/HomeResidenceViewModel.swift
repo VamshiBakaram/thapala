@@ -18,7 +18,7 @@ class HomeResidenceViewModel:ObservableObject{
     @Published var isComposeEmail:Bool = false
     @Published var isDetailedData:Bool = false
     @Published var isCreateNewGroup:Bool = false
-    
+    @Published var groupName = ""
     @Published var directoryData:[DummyData] = [.init(image: "person", title: "Coopoer", subTitle: "Doctor", finalTitle: "Palwancha.India"),.init(image: "person", title: "Coopoer", subTitle: "Doctor", finalTitle: "Palwancha.India"),.init(image: "person", title: "Coopoer", subTitle: "Doctor", finalTitle: "Palwancha.India"),.init(image: "person", title: "Coopoer", subTitle: "Doctor", finalTitle: "Palwancha.India")]
     
 }

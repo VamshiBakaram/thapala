@@ -10,7 +10,7 @@ import SwiftUI
 struct ReplyEmailView: View {
     @ObservedObject var replyEmailViewModel:ReplyEmailViewModel
     @ObservedObject var mailComposeViewModel = MailComposeViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject private var sessionManager: SessionManager
     @State private var isFilePickerPresented:Bool = false

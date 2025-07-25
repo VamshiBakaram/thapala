@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ControlHeaderView: View {
     @ObservedObject var ConsoleviewModel = consoleviewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
     @State private var selectedTab = 0
     @State private var expandedIndex: Int? = nil

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct RecordsThreeDotsView: View {
     @StateObject var homeRecordsViewModel = HomeRecordsViewModel()
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @State private var isDotsVisible: Bool = false
     @State private var showingDeleteAlert = false
     @Binding var selectedTabID: Int

@@ -11,7 +11,7 @@ struct InfoView: View {
     @State private var selectedTab: String = "info"
     @State private var expandedSections: Set<String> = []
     @ObservedObject var infoViewViewModel = InfoViewViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Environment(\.presentationMode) var presentationMode
     @State var titles: String = ""
     @State var descriptions: String = ""

@@ -11,7 +11,7 @@ struct MoveTo: View {
     @EnvironmentObject private var sessionManager: SessionManager
     @StateObject var moveToFolderViewModel = MoveToFolderViewModel()
     @StateObject private var homeAwaitingViewModel = HomeAwaitingViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @StateObject var homeRecordsViewModel = HomeRecordsViewModel()
     @StateObject var consoleViewModel = consoleviewModel()
     @StateObject var bottomSheetViewModel = BottomSheetViewModel()

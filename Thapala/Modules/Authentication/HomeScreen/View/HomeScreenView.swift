@@ -11,7 +11,7 @@ struct HomeScreenView: View {
     @EnvironmentObject var sessionManager: SessionManager
     @ObservedObject var homeScreenViewModel = HomeScreenViewModel()
     @ObservedObject var ConsoleviewModel = consoleviewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @State var Gettheme: String = ""
     
     var body: some View {

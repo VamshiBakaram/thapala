@@ -11,7 +11,7 @@ struct ScheduleView: View {
     @ObservedObject var mailComposeViewModel = MailComposeViewModel()
     @ObservedObject var BottomsheetviewModel = BottomSheetViewModel()
     @ObservedObject var homeNavigatorViewModel = HomeNavigatorViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
     @State var id:Int = 0
     @State var emailByIdData:EmailsByIdModel?

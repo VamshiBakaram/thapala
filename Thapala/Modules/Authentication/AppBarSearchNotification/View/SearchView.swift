@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SearchView: View {
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @ObservedObject var appBarElementsViewModel: AppBarElementsViewModel
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var homeAwaitingViewModel = HomeAwaitingViewModel()
@@ -285,7 +285,7 @@ struct FilterButton: View {
     var isSelected: Bool
     var width: CGFloat
     var action: () -> Void
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
 
     var body: some View {
         RoundedRectangle(cornerRadius: 10)

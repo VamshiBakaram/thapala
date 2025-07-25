@@ -25,7 +25,6 @@ class VerifyCodeViewModel: ObservableObject {
     func borderAlert(){
         if otpTapBorderColor == false && otherWayTapBorderColor == false{
             self.error = "Please select any of the above options"
-            return
         }
     }
     

@@ -10,7 +10,7 @@ import AVFoundation
 import _AVKit_SwiftUI
 struct TrashView: View {
     @StateObject var TrashedViewModel = TrashViewModel()
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @StateObject var mailComposeViewModel = MailComposeViewModel()
     @State private var selectedTab = "Mails"
     @State private var selectedFiles: Set<Int> = []

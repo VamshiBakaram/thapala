@@ -7,7 +7,7 @@
 
 import Foundation
 
-class themesViewModel:ObservableObject{
+class ThemesViewModel:ObservableObject{
     @Published var selectedTheme: String = ""
     @Published var sessionManager = SessionManager()
     

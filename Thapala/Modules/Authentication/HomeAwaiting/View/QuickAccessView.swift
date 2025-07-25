@@ -9,7 +9,7 @@ import SwiftUI
 struct QuickAccessView: View {
     @Environment(\.presentationMode) var closeView
     @StateObject var homeAwaitingViewModel = HomeAwaitingViewModel()
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Binding var isQuickAccessVisible: Bool
 //    @Binding var homeAwaitingViewModel: Bool
     

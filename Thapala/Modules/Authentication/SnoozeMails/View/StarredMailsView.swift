@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct StarredMailsView: View {
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @StateObject var mailComposeViewModel = MailComposeViewModel()
     @State private var selectedTab = "awaited"
     @State private var beforeLongPress = true

@@ -12,7 +12,7 @@ struct HomeAwaitingView: View {
     @StateObject var mailComposeViewModel = MailComposeViewModel()
     @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
     @StateObject var mailFullViewModel = MailFullViewModel()
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Environment(\.presentationMode) var presentationMode
     @State private var isSheetVisible = false
     @State private var isMultiSelectionSheetVisible = false
@@ -667,7 +667,7 @@ struct HomeAwaitingView: View {
                                                             moreIcon
                                                                 .foregroundStyle(.white)
                                                         }
-                                                        .tint(Color(red:255/255, green: 128/255, blue: 128/255))
+                                                        .tint(Color(red: 1.0, green: 0.5, blue: 0.5))
                                                     }
                                                     Divider()
                                                         .frame(maxWidth: .infinity)

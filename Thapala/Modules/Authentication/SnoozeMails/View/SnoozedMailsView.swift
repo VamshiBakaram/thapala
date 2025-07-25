@@ -9,7 +9,7 @@ import SwiftUI
 struct SnoozedMailsView:View{
     @ObservedObject var snoozedMailsViewModel = SnoozedMailsViewModel()
     @StateObject var mailComposeViewModel = MailComposeViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @State private var selectedTab = "Queue"
     @State private var beforeLongPress = true
     @State private var isMultiSelectionSheetVisible: Bool = false
@@ -395,7 +395,6 @@ struct SnoozedMailsView:View{
                     .listRowBackground(themesviewModel.currentTheme.windowBackground)
                     .onTapGesture {
                         SnoozedView = true
-                        print("snoozed postbox clicked")
                         snoozedMailsViewModel.selectedID = email.emailId
                         snoozedMailsViewModel.passwordHint = email.passwordHint
                         snoozedMailsViewModel.isEmailScreen = true

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CreateTagLabel: View {
     @StateObject var BottomsheetviewModel = BottomSheetViewModel()
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @StateObject var LabelsMailViewModel = LabelledMailsViewModel()
     @StateObject private var homePostboxViewModel = HomePostboxViewModel()
     @StateObject private var homeAwaitingViewModel = HomeAwaitingViewModel()
@@ -268,7 +268,7 @@ struct CreateTagLabel: View {
 struct createLabelView: View {
     @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
     @StateObject private var homeAwaitingViewModel = HomeAwaitingViewModel()
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Binding var iscreatelabelvisible: Bool
 //    @State private var Textfill: String = ""
     @Binding var Textfill: String

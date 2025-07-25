@@ -12,7 +12,7 @@ struct HomeNavigatorView: View {
     @StateObject var homeNavigatorViewModel = HomeNavigatorViewModel()
     @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @State private var isQuickAccessVisible = false
     @StateObject var ConsoleviewModel = consoleviewModel()
     let imageUrl: String
@@ -422,7 +422,6 @@ struct HomeNavigatorView: View {
 //            .edgesIgnoringSafeArea(.top)
 //        }
 //        
-//        @ViewBuilder
 //        private func getExpandedContent(for index: Int) -> some View {
 //            switch index {
 //            case 0:

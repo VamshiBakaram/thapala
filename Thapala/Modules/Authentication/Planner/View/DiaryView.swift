@@ -12,7 +12,7 @@ struct DiaryView: View {
     @Binding var isDiaryVisible: Bool
     @ObservedObject private var plannerAddTaskViewModel = PlannerAddTaskViewModel()
     @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var DiarynotificationTime: Int?
     @Binding var isDiaryTagActive: Bool
     @State private var textInput: String = ""
@@ -211,7 +211,7 @@ struct DiaryUpdateView: View {
     @Binding var DiarynotificationTime: Int?
     @ObservedObject private var plannerAddTaskViewModel = PlannerAddTaskViewModel()
     @StateObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @State private var textInput: String = ""
     @State private var text: String = ""
     var selectedID: Int
@@ -338,7 +338,7 @@ struct DiaryUpdateView: View {
 //
                         VStack(alignment: .leading, spacing: 10) { // Set spacing to 15 between views
                             
-                            if var selectedDiary = homePlannerViewModel.listData.first(where: { $0.id == selectedID }),
+                            if let selectedDiary = homePlannerViewModel.listData.first(where: { $0.id == selectedID }),
                                let reminderTimestamp = selectedDiary.reminder {
                                 // Convert Int (timestamp) to Date
                                 let reminderDate = Date(timeIntervalSince1970: TimeInterval(reminderTimestamp) ?? 0)
@@ -355,10 +355,9 @@ struct DiaryUpdateView: View {
                                             .foregroundColor(themesviewModel.currentTheme.iconColor)
                                             .frame(width: 16, height: 16)
                                             .padding(.leading, 5)
-                                    }
+                                    
                                     
                                     // Conditionally render TextField based on isTextFieldVisible
-                                    if isTextFieldVisible {
                                         TextField("", text: Binding(
                                             get: { formattedDateTime },
                                             set: { newValue in
@@ -374,10 +373,9 @@ struct DiaryUpdateView: View {
                                         .font(.system(size: 12))
                                         .disabled(!canEdit())
                                         .frame(height: 30)
-                                    }
+                                    
                                     
                                     // Remove icon aligned on the right
-                                    if isTextFieldVisible {
                                         Image("wrongmark")
                                             .resizable()
                                             .renderingMode(.template)
@@ -585,9 +583,8 @@ struct DiaryUpdateView: View {
                                                     .cornerRadius(8)
                                                     .foregroundColor(themesviewModel.currentTheme.textColor)
                                                     .disabled(!comment.isEditable)  // Enable or disable based on isEditable
-                                            }
                                             
-                                            if !comment.comment.isEmpty {
+                                            
                                                 Button(action: {
                                                     comment.isEditable.toggle() // Toggle isEditable state
                                                     if !comment.isEditable {
@@ -599,9 +596,8 @@ struct DiaryUpdateView: View {
                                                         .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                         .padding(.trailing, 50)
                                                 })
-                                            }
+                                            
 
-                                            if !comment.comment.isEmpty {
                                                 Button(action: {
                                                     // Handle comment deletion
                                                     comment.comment = "" // Empty the comment text to hide the TextField
@@ -846,7 +842,7 @@ struct DiaryUpdateView: View {
 
 struct BottomSheetView: View {
     @ObservedObject var homePlannerViewModel: HomePlannerViewModel
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var isLabelSheetVisible: Bool
 //    @State var comment: String = ""
 //    @Binding var comment: String
@@ -926,7 +922,7 @@ struct BottomSheetView: View {
 
 struct BottomSheetNotificationView: View {
     @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var isNotificationSheetVisible: Bool
     @Binding var DiarynotificationTime: Int?
     @Binding var isDiaryViewActive: Bool
@@ -1116,7 +1112,7 @@ struct BottomSheetNotificationView: View {
 
 struct BottomTagSheetView: View {
     @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var isTagSheetVisible: Bool
     @Binding var isActive: Bool
     @Binding var selectedNewDiaryTag: [Int]

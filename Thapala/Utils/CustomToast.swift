@@ -15,7 +15,7 @@ extension View {
 }
 
 struct ToastModifier: ViewModifier {
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var message: String?
     let duration: TimeInterval
     

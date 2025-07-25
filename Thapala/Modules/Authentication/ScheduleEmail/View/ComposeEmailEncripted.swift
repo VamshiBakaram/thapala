@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ComposeEmailEncripted: View {
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var isEmailEncript: Bool
     @ObservedObject private var composeEmailEncriptedViewModel = ComposeEmailEncriptedViewModel()
     

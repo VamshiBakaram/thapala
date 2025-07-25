@@ -8,7 +8,7 @@ import SwiftUI
 struct ContactsView:View{
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var contactsViewModel = ContactsViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @State private var isMenuVisible = false
     var body: some View {
         VStack(spacing: 0) {

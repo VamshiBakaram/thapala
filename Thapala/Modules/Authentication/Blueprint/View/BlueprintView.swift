@@ -14,7 +14,7 @@ struct BlueprintView: View {
     @StateObject var mailComposeViewModel = MailComposeViewModel()
     @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
-    @ObservedObject private var themesviewModel = themesViewModel()
+    @ObservedObject private var themesviewModel = ThemesViewModel()
     @State private var isQuickAccessVisible = false
 //    @State private var isMailViewActive = false
     @State var isInsertTcode: Bool = false

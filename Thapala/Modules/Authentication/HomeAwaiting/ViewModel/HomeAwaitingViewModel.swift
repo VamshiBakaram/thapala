@@ -393,14 +393,7 @@ func convertToIST(dateInput: Any) -> String? {
     
     let currentYear = Calendar.current.component(.year, from: Date())
     let dateYear = Calendar.current.component(.year, from: date)
-    
-    // The formats were the same anyway; you can adjust if you want different ones.
-    if dateYear == currentYear {
         dateFormatter.dateFormat = "dd-MMM-yyyy h:mm a"
-    } else {
-        dateFormatter.dateFormat = "dd-MMM-yyyy h:mm a"
-    }
-    
     let formattedDateString = dateFormatter.string(from: date)
     return formattedDateString
 }

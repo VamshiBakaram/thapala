@@ -12,7 +12,7 @@ import SwiftUI
 struct HomeDirectoryView: View {
     @EnvironmentObject private var sessionManager: SessionManager
     @StateObject var homeDirectoryViewModel = HomeDirectoryViewModel()
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
     @Binding var isHomeDirectoryVisible: Bool
     let imageUrl: String
@@ -790,13 +790,8 @@ struct HomeDirectoryView: View {
                                         isProfileDialogue = false
                                         let blockedUserIDs = homeDirectoryViewModel.blockedUsers.compactMap { $0.currentUserBlockedUsers }.flatMap { $0 }
                                         let isBlocked = homeDirectoryViewModel.blockedUsers.contains { $0.currentUserBlockedUsers?.contains(diary.userId) ?? false }
-                                        if isBlocked {
                                             showingBlockAlert = true
-                                        } else {
-                                            showingBlockAlert = true
-//                                            homeDirectoryViewModel.blockContact(id: diary.userId, type: "block")
-                                        }
-                                        isblocked.toggle()
+                                            isblocked.toggle()
                                         
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                             homeDirectoryViewModel.GetDirectoryList()
@@ -1587,7 +1582,7 @@ struct DirectoryView_Previews: PreviewProvider {
 
 struct blockAlert: View {
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var isPresented: Bool
     var AlertText: String
     var onDelete: () -> Void

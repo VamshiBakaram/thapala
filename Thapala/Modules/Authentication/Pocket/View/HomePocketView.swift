@@ -11,7 +11,7 @@ struct HomePocketView: View {
     @State private var isQuickAccessVisible = false
     @StateObject var homePocketViewModel = HomePocketViewModel()
     @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     let imageUrl: String
     @State private var isSearchView = false
     @State private var iNotificationAppBarView = false

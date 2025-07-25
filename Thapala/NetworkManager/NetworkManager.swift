@@ -47,7 +47,6 @@ class NetworkManager: NSObject {
             let sessionManager = SessionManager()
         //    request.setValue(sessionManager.token, forHTTPHeaderField: "token")
             request.setValue("Bearer \(sessionManager.token)", forHTTPHeaderField: "Authorization")
-            print("sessionManager.token",sessionManager.token)
         }
         if passwordHash != nil{
             request.setValue(passwordHash, forHTTPHeaderField: "password")
@@ -65,14 +64,12 @@ class NetworkManager: NSObject {
                 request.httpBody = httpBody
             }
         }
-        print("parameters",parameters)
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 60
         configuration.timeoutIntervalForResource = 60
         let session = URLSession(configuration: configuration)
         session.dataTask(with: request) { (data, response, error) in
             if let error = error{
-                print(error)
                 switch error._code {
                 case -1009:
                     DispatchQueue.main.async {
@@ -112,13 +109,11 @@ class NetworkManager: NSObject {
             do
             {
                 let jsonData = try JSONSerialization.jsonObject(with: httpData)
-                print(jsonData)
                 let json = try JSONDecoder().decode(T.self, from: httpData)
                 DispatchQueue.main.async {
                     completionHandler(.success(json))
                 }
             }catch{
-                print(error)
                 DispatchQueue.main.async {
                     completionHandler(.failure(.error(error: "Please try again later")))
                 }
@@ -189,11 +184,9 @@ class NetworkManager: NSObject {
             {
                 if isFromForgot{
                     let jsonData = try JSONSerialization.jsonObject(with: httpData)
-                    print(jsonData)
                     let json = try JSONDecoder().decode(ResetpasswordModel.self, from: httpData)
                     let headers = (response as? HTTPURLResponse)?.allHeaderFields
                     let sessionId = headers?["sessionId"] as? String
-                    print("sessionId Forgot==>",sessionId)
                     DispatchQueue.main.async {
                         completionHandler(.success(CreateAccountModel(message: json.resetToken ?? "", status: json.status, sessionId: sessionId ?? "")))
                     }
@@ -252,12 +245,11 @@ class NetworkManager: NSObject {
                if let data = data {
                    do {
                        let decodedResponse = try JSONSerialization.jsonObject(with: data)
-                       print(decodedResponse)
                        let json = try JSONDecoder().decode(LoginModel.self, from: data)
                        let headers = (httpResponse).allHeaderFields
-                       if let token = headers["token"] {
-                           print("token header",token)
-                       }
+//                       if let token = headers["token"] {
+//                           print("token header",token)
+//                       }
                        completion(.success(LoginResponse(model: json as? LoginModel, token: headers["token"] as? String) as! T))
                        
                    } catch {

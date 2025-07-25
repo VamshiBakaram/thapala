@@ -16,7 +16,7 @@ struct HomeMenuView: View {
     @ObservedObject var infoViewViewModel = InfoViewViewModel()
     @ObservedObject var TrashedViewModel = TrashViewModel()
     @ObservedObject var consoleViewModel = ConsoleViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @State private var notificationTime: Int?
     let menuData: [HomeMenuData] = [
         .init(image: "queue", menuType: "Queue"),

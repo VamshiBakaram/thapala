@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TabViewNavigator: View {
     @ObservedObject var consoleViewModel = ConsoleViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @StateObject var mailComposeViewModel = MailComposeViewModel()
     @State private var isMailViewActive = false
     @State private var isBluePrintViewActive = false

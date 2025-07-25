@@ -13,7 +13,7 @@ struct HomeConveyedView: View {
     @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
     @StateObject private var homeAwaitingViewModel = HomeAwaitingViewModel()
     @StateObject var mailComposeViewModel = MailComposeViewModel()
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @State private var isSheetVisible = false
     @State private var isStarred: Bool = false // Track starred state
     @State private var isQuickAccessVisible = false
@@ -414,7 +414,7 @@ struct HomeConveyedView: View {
                                                                 moreIcon
                                                                     .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                             }
-                                                            .tint(Color(red: 255/255, green: 128/255, blue: 128/255))
+                                                            .tint(Color(red: 1.0, green: 0.5, blue: 0.5))
                                                         }
                                                         
                                                         Divider()
@@ -951,7 +951,7 @@ struct HomeConveyedView: View {
 //                                moreIcon
 //                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
 //                            }
-//                            .tint(Color(red: 255/255, green: 128/255, blue: 128/255))
+//                            ..tint(Color(red: 1.0, green: 0.5, blue: 0.5))
 //                        }
 //                        
 //                    }
@@ -1006,7 +1006,7 @@ struct HomeConveyedView: View {
 ////                            moreIcon
 ////                                .foregroundStyle(.white)
 ////                        }
-////                        .tint(Color(red:255/255, green: 128/255, blue: 128/255))
+////                       .tint(Color(red: 1.0, green: 0.5, blue: 0.5))
 ////                    }
 ////                    .onTapGesture {
 ////                        homeConveyedViewModel.selectedID = homeConveyedViewModel.conveyedEmailData.first?.threadID ?? 0

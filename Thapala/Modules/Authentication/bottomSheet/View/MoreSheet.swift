@@ -12,7 +12,7 @@ struct MoreSheet: View {
     @ObservedObject var BottomsheetviewModel = BottomSheetViewModel()
     @StateObject private var homePostboxViewModel = HomePostboxViewModel()
     @StateObject private var homeAwaitingViewModel = HomeAwaitingViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @StateObject var mailFullViewModel = MailFullViewModel()
     @StateObject var starredEmailViewModel = StarredEmailViewModel()
     @Binding var snoozetime: Int

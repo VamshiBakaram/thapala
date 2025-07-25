@@ -11,7 +11,7 @@ struct draftView: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject var mailComposeViewModel = MailComposeViewModel()
     @ObservedObject var mailFullViewModel = MailFullViewModel()
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
     @Binding var isdraftViewVisible: Bool
     @State var id:Int = 0
@@ -513,7 +513,7 @@ struct draftView: View {
 
 struct DeleteTrashAlert: View {
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var isPresented: Bool
     var onDelete: () -> Void    
     var body: some View {

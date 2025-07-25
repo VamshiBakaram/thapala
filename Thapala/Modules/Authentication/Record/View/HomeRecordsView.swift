@@ -17,7 +17,7 @@ struct HomeRecordsView: View {
     @StateObject var homeAwaitingViewModel = HomeAwaitingViewModel()
     @StateObject var mailComposeViewModel = MailComposeViewModel()
     @StateObject var consoleViewModel = consoleviewModel()
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @State private var selectedTabID : Int = 1059
     @State private var Foldertype : String = "work"
     @State private var subFoldertype : String = "files"

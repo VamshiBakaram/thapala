@@ -12,7 +12,7 @@ import ClockTimePicker
 struct tDoView: View {
     @Binding var isCreateVisible: Bool
     @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @State private var text: String = "let's Start"
     @State private var tasktext: String = "write the task"
 //    @State private var subtasktext: String = ""
@@ -167,7 +167,7 @@ struct tDoView: View {
 struct ListitemView: View {
     @Binding var isListItemVisible: Bool
     @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @State private var text: String = "let's Start"
     @State private var tasktext: String = "write the task"
     @State private var isSubTaskVisible: Bool = false
@@ -332,7 +332,7 @@ struct ListitemView: View {
                 }
                     VStack(alignment: .leading, spacing: 10) { // Set spacing to 15 between views
                         
-                        if var selectedDiary = homePlannerViewModel.doitlistData.first(where: { $0.id == selectedID }),
+                        if let selectedDiary = homePlannerViewModel.doitlistData.first(where: { $0.id == selectedID }),
                            let reminderTimestamp = selectedDiary.reminder {
                             // Convert Int (timestamp) to Date
                             let reminderDate = Date(timeIntervalSince1970: TimeInterval(reminderTimestamp) ?? 0)
@@ -348,10 +348,9 @@ struct ListitemView: View {
                                         .foregroundColor(themesviewModel.currentTheme.iconColor)
                                         .frame(width: 16, height: 16)
                                         .padding(.leading, 5)
-                                }
+                                
                                 
                                 // Conditionally render TextField based on isTextFieldVisible
-                                if isTextFieldVisible {
                                     TextField("", text: Binding(
                                         get: { formattedDateTime },
                                         set: { newValue in
@@ -367,10 +366,9 @@ struct ListitemView: View {
                                     .font(.system(size: 12))
                                     .disabled(!canEdit())
                                     .frame(height: 30)
-                                }
+                                
                                 
                                 // Remove icon aligned on the right
-                                if isTextFieldVisible {
                                     Image("wrongmark")
                                         .renderingMode(.template)
                                         .resizable()
@@ -749,7 +747,7 @@ struct ListitemView: View {
 
 struct NotificationView: View {
     @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var isNotificationVisible: Bool
     @State var comment: String = ""
     var selectedID: Int
@@ -965,7 +963,7 @@ struct timeDialogView<Content: View>: View {
 
 struct TagView: View {
     @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var isTagViewVisible: Bool
     @State var comment: String = ""
     var selectedID: Int
@@ -1160,7 +1158,7 @@ struct TagView: View {
 struct HistoryBottomView: View {
     @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
     @ObservedObject var homeNavigatorViewModel = HomeNavigatorViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var isHistoryVisible: Bool
     @State var comment: String = ""
     var selectedID: Int
@@ -1274,7 +1272,7 @@ struct HistoryBottomView: View {
 
 
 struct DeleteAlertView : View {
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var isPresented: Bool
     var onDelete: () -> Void
     
@@ -1350,7 +1348,7 @@ struct DeleteAlertView : View {
 struct BottomBackgroundView: View {
     @Binding var isBackgroundViewVisible: Bool
     @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var themeimage: String?
     @State private var selectedColor: Color = .blue
     @State var selectedIconIndex: String

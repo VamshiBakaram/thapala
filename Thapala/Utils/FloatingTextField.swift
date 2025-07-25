@@ -34,7 +34,7 @@ struct FloatingTextField: View {
 }
 
 struct floatingtextfield: View {
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var text: String
     var placeHolder: String
     var allowedCharacter: AllowedCharacter
@@ -73,7 +73,7 @@ struct floatingtextfield: View {
 
 struct floatingTextField: View {
     var placeHolder: String = ""
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var text: String
     @FocusState private var isFocused: Bool
 
@@ -114,7 +114,7 @@ struct floatingTextField: View {
 
 
 struct Floatingtextfield: View {
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Binding var text: String
     var placeHolder: String
     var allowedCharacter: AllowedCharacter

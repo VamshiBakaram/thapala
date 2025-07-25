@@ -9,7 +9,7 @@ import SwiftUI
 struct ConsoleView: View {
     @ObservedObject var consoleViewModel = ConsoleViewModel()
     @ObservedObject var homeNavigatorViewModel = HomeNavigatorViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Environment(\.presentationMode) var presentationMode
     @State private var isQuickAccessVisible = false
     @State private var expandedIndex: Int? = nil

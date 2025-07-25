@@ -10,7 +10,7 @@ struct ChatBoxView: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var homePostboxViewModel = HomePostboxViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @State private var messageText: String = ""
     var selectID: Int
     var roomid: String

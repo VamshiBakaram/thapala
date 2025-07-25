@@ -11,7 +11,7 @@ struct InsertTCodeView: View {
     @Binding var isInsertVisible: Bool
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var insertTCodeViewModel = InsertTCodeViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     var onInsert: (([TCode], [TCode], [TCode]) -> Void)?
     var body: some View {
         ZStack{

@@ -13,7 +13,7 @@ struct NoteView: View {
     @Binding var isTagActive: Bool
     @ObservedObject private var plannerAddTaskViewModel = PlannerAddTaskViewModel()
     @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @State private var title: String = ""
     @State private var note: String = ""
     @State private var selectedID : Int?
@@ -379,7 +379,7 @@ struct NoteUpdateView: View {
                             let reminderDate = Date(timeIntervalSince1970: TimeInterval(reminderTimestamp))
                             
                             // Format the date and time
-                            var formattedDateTime = formatDateTime(reminderDate)
+                            let formattedDateTime = formatDateTime(reminderDate)
                             
                             HStack(spacing: 10) {
                                 // Notification icon aligned on the left
@@ -388,10 +388,8 @@ struct NoteUpdateView: View {
                                         .resizable()
                                         .frame(width: 16, height: 16)
                                         .padding(.leading, 5)
-                                }
                                 
                                 // Conditionally render TextField based on isTextFieldVisible
-                                if isTextFieldVisible {
                                     TextField("", text: Binding(
                                         get: { formattedDateTime },
                                         set: { newValue in
@@ -407,10 +405,9 @@ struct NoteUpdateView: View {
                                     .font(.system(size: 12))
                                     .disabled(!canEdit())
                                     .frame(height: 30)
-                                }
+                                
                                 
                                 // Remove icon aligned on the right
-                                if isTextFieldVisible {
                                     Image("wrongmark")
                                         .resizable()
                                         .frame(width: 16, height: 16)
@@ -700,7 +697,7 @@ struct NoteUpdateView: View {
 
 struct BottomNotificationView: View {
     @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @ObservedObject var snoozedMailsViewModel = SnoozedMailsViewModel()
     @Binding var isNotificationVisible: Bool
     @Binding var notificationTime: Int?
@@ -900,7 +897,7 @@ struct BottomNotificationView: View {
 
 struct BottomTagView: View {
     @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var isTagVisible: Bool
     @State var comment: String = ""
     var selectedID: Int
@@ -1185,7 +1182,7 @@ struct DialogViews<Content: View>: View {
 
 struct createTagView: View {
     @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var iscreatelabelvisible: Bool
 //    @State private var Textfill: String = ""
     @Binding var Textfill: String
@@ -1257,7 +1254,7 @@ struct createTagView: View {
 struct HistoryView: View {
     @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
     @ObservedObject var homeNavigatorViewModel = HomeNavigatorViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var isHistorySheetVisible: Bool
     @State var comment: String = ""
     var selectedID: Int
@@ -1367,7 +1364,7 @@ struct HistoryView: View {
     }
 }
 struct DeleteNoteAlert: View {
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var isPresented: Bool
     var onDelete: () -> Void
     

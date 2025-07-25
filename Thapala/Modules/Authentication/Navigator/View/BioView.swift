@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct BioView: View {
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @ObservedObject var homeNavigatorViewModel = HomeNavigatorViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
     @State private var firstName: String = ""

@@ -12,7 +12,7 @@ struct BottomSnoozeView: View {
     @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
     @StateObject var mailFullViewModel = MailFullViewModel()
     @StateObject private var homeAwaitingViewModel = HomeAwaitingViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var isBottomSnoozeViewVisible: Bool
     @Binding var SnoozeTime: Int
     @State var comment: String = ""

@@ -12,7 +12,7 @@ struct MailFullView: View {
     @StateObject var mailComposeViewModel = MailComposeViewModel()
     @StateObject var snoozedMailsViewModel = SnoozedMailsViewModel()
     @StateObject private var homeAwaitingViewModel = HomeAwaitingViewModel()
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
     @Binding var isMailFullViewVisible: Bool
     @State private var emailData: EmailsByIdModel?
@@ -59,8 +59,7 @@ struct MailFullView: View {
                     HStack {
                         Button(action: {
                             presentationMode.wrappedValue.dismiss()
-                        })
-                        {
+                        }) {
                             Image(systemName: "arrow.backward")
                                 .renderingMode(.template)
                                 .foregroundColor(themesviewModel.currentTheme.iconColor)
