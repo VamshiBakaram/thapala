@@ -48,7 +48,7 @@ struct StarredMailsView: View {
                     HStack {
                         Button(action: { selectedTab = "awaited";
                             starredEmailViewModel.getStarredEmailData(selectedTabItem: selectedTab);
-                            print("Selected Tab: \(selectedTab)") }) {
+                            }) {
                                 Text("Queue")
                                     .fontWeight(.medium)
                                     .frame(maxWidth: .infinity)
@@ -61,7 +61,8 @@ struct StarredMailsView: View {
                         
                         Button(action: { selectedTab = "postbox";
                             starredEmailViewModel.getStarredEmailData(selectedTabItem: selectedTab);
-                            print("Selected Tab: \(selectedTab)")}) {
+                         
+                        }) {
                                 Text("Postbox")
                                     .fontWeight(.medium)
                                     .frame(maxWidth: .infinity)
@@ -74,7 +75,8 @@ struct StarredMailsView: View {
                         
                         Button(action: { selectedTab = "conveyed" ;
                             starredEmailViewModel.getStarredEmailData(selectedTabItem: selectedTab);
-                            print("Selected Tab: \(selectedTab)")}) {
+                       
+                        }) {
                                 Text("Conveyed")
                                     .fontWeight(.medium)
                                     .frame(maxWidth: .infinity)
@@ -183,7 +185,7 @@ struct StarredMailsView: View {
                                     Image("star.fill")
                                         .onTapGesture {
                                             starredEmailViewModel.getStarredEmail(selectedID: email.threadId ?? 0)
-                                            print("thread id \(email.threadId ?? 0)")
+                                            
                                         }
                                 }
                             }
@@ -346,7 +348,7 @@ struct StarredMailsView: View {
                                     Image("star.fill")
                                         .onTapGesture {
                                             starredEmailViewModel.getStarredEmail(selectedID: email.threadId ?? 0)
-                                            print("thread id \(email.threadId ?? 0)")
+                                           
                                         }
                                 }
                             }
@@ -502,7 +504,6 @@ struct StarredMailsView: View {
                                     Image("star.fill")
                                         .onTapGesture {
                                             starredEmailViewModel.getStarredEmail(selectedID: email.threadId ?? 0)
-                                            print("thread id \(email.threadId ?? 0)")
                                         }
                                 }
                             }

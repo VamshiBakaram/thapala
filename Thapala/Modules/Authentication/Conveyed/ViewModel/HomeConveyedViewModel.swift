@@ -95,7 +95,6 @@ class HomeConveyedViewModel:ObservableObject{
                     self.error = response.message ?? ""
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
                         self.starredemail = [response]
-                        print("starred email, response")
                     })
                 }
             case .failure(let error):

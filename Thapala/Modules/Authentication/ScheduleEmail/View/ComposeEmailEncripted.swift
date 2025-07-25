@@ -77,7 +77,6 @@ struct ComposeEmailEncripted: View {
                             HStack{
                                 Spacer()
                                 Button(action: {
-                                    print("eye clicked")
                                 }, label: {
                                     Image(systemName: "eye")
                                         .renderingMode(.template)
@@ -92,9 +91,9 @@ struct ComposeEmailEncripted: View {
                         .renderingMode(.template)
                         .foregroundColor(themesviewModel.currentTheme.iconColor)
                        // .padding(.trailing)
-                        .onTapGesture {
-                            UIPasteboard.general.string = composeEmailEncriptedViewModel.password
-                        }
+//                        .onTapGesture {
+//                            UIPasteboard.general.string = composeEmailEncriptedViewModel.password
+//                        }
                 }
                 
                 HStack {

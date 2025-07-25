@@ -21,10 +21,7 @@ struct ReplyEmailView: View {
         VStack {
             HStack {
                 Button(action: {
-                    print("cancel clicked")
-                    print("before isPresented \(isPresented)")
 //                    isPresented = false
-                    print("After isPresented \(isPresented)")
                     presentationMode.wrappedValue.dismiss()
                 }) {
                     Image(systemName: "xmark")

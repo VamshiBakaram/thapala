@@ -94,7 +94,6 @@ struct MoreSheet: View {
                             if HomeawaitingViewVisible {
                                 HStack {
                                     Button {
-                                        print("emailId \(emailId)")
                                         if markedAs == 0 {
                                             mailFullViewModel.markEmailAsRead(emailId: [emailId])
                                         }
@@ -139,7 +138,6 @@ struct MoreSheet: View {
                             
                             HStack {
                                 Button {
-                                    print("emailId \(emailId)")
                                     starredEmailViewModel.getStarredEmail(selectedID: emailId)
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                         isMoreSheetVisible = false
@@ -160,8 +158,6 @@ struct MoreSheet: View {
                             
                             HStack {
                                 Button {
-                                    print("clicked on snooze")
-//                                    isMoreSheetVisible = false
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                         isSnoozeSheetvisible = true
                                     }
@@ -181,7 +177,6 @@ struct MoreSheet: View {
                             if HomeawaitingViewVisible {
                                 HStack {
                                     Button {
-                                        print("clicked on move")
                                         isMoreSheetVisible = false
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                             isMoveSheetvisible = true
@@ -205,11 +200,7 @@ struct MoreSheet: View {
                         .frame(maxWidth: .infinity, alignment: .leading)  // stretch HStack full-width
                         .padding(.leading, 10)
                         .onAppear{
-                            print("isMoreSheetVisible more sheet \(isMoreSheetVisible)")
-                            print("email id \(emailId)")
                             StarEmail = StarreEmail
-                            print("StarEmail  \(StarEmail)")
-                            print("homePostboxViewModel.starEmail \(homePostboxViewModel.starEmail)")
                             mailFullViewModel.getFullEmail(emailId: emailId, passwordHash: passwordHash) { result in
                                 switch result {
                                 case .success(let response):
@@ -252,7 +243,6 @@ struct MoreSheet: View {
                         .ignoresSafeArea()
                         .onTapGesture {
                             withAnimation {
-                                print("Tapped reply mail view")
                                 isreplyMailView = false
                             }
                         }
@@ -290,7 +280,6 @@ struct MoreSheet: View {
                         .edgesIgnoringSafeArea(.all)
                         .onTapGesture {
                             withAnimation {
-                                print("Tapped isTagsheetvisible")
                                 isTagsheetvisible = false
                             }
                         }
@@ -311,7 +300,6 @@ struct MoreSheet: View {
                         .edgesIgnoringSafeArea(.all)
                         .onTapGesture {
                             withAnimation {
-                                print("Tapped isMoveSheetvisible")
                                 isSnoozeSheetvisible = false
                             }
                         }
@@ -320,9 +308,6 @@ struct MoreSheet: View {
                         BottomSnoozeView(isBottomSnoozeViewVisible: $isSnoozeSheetvisible, SnoozeTime: $snoozetime, selectedID: emailId)
                             .transition(.move(edge: .bottom))
                             .animation(.easeInOut, value: isSnoozeSheetvisible)
-                    }
-                    .onAppear{
-                        print("snooze sheet works")
                     }
                 }
             }
@@ -337,7 +322,6 @@ struct MoreSheet: View {
                         .edgesIgnoringSafeArea(.all)
                         .onTapGesture {
                             withAnimation {
-                                print("Tapped isMoveSheetvisible")
                                 isMoveSheetvisible = false
                             }
                         }

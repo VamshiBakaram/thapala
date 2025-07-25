@@ -127,7 +127,6 @@ class ReplyEmailViewModel:ObservableObject{
         }
         
         let endPoint = "\(EndPoint.sendEmail)\(ComposeEmailData.shared.isScheduleCreated)&passwordProtected=\(ComposeEmailData.shared.isPasswordProtected)&reply=\(true)"
-        print("endPoint",endPoint)
         NetworkManager.shared.request(type: SendEmailsModel.self, endPoint: endPoint, httpMethod: .post, parameters: emailParams, isTokenRequired: true,passwordHash: ComposeEmailData.shared.passwordHash, isSessionIdRequited: false) { [weak self]result in
             guard let self = self else { return }
             switch result {
@@ -238,21 +237,17 @@ class ReplyEmailViewModel:ObservableObject{
         
         let task = URLSession.shared.uploadTask(with: request, from: data) { responseData, response, error in
             if let error = error {
-                print("Error uploading files: \(error)")
                 return
             }
             
             if let response = response as? HTTPURLResponse, let responseData = responseData {
-                print("Status code: \(response.statusCode)")
                 do {
                     let attachmentResponse = try JSONDecoder().decode(AttachmentModel.self, from: responseData)
-                    print("Response: \(attachmentResponse)")
                     DispatchQueue.main.async {
                         // Handle the response, e.g., update the view model
                         self.handleAttachmentResponse(attachmentResponse)
                     }
                 } catch {
-                    print("Failed to decode response: \(error)")
                 }
             }
         }
@@ -273,7 +268,6 @@ class ReplyEmailViewModel:ObservableObject{
                        let fileData = try Data(contentsOf: fileURL)
                        body.append(fileData)
                    } catch {
-                       print("Error reading file data for \(filename): \(error.localizedDescription)")
                        continue
                    }
             body.append("\r\n".data(using: .utf8)!)

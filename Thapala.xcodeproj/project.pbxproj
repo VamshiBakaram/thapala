@@ -13,7 +13,6 @@
 		7B0F7FBD2BD7673300BE2F5A /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0F7FBC2BD7673300BE2F5A /* LoginViewModel.swift */; };
 		7B0F7FC12BD7694200BE2F5A /* CreateAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0F7FC02BD7694200BE2F5A /* CreateAccountView.swift */; };
 		7B0F7FC42BD7699000BE2F5A /* CreateAccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0F7FC32BD7699000BE2F5A /* CreateAccountViewModel.swift */; };
-		7B1852B02BE10D9800FE61FC /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B1852AF2BE10D9800FE61FC /* MainView.swift */; };
 		7B1852B22BE110AB00FE61FC /* NavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B1852B12BE110AB00FE61FC /* NavigationView.swift */; };
 		7B22B3572BD6CAB700020111 /* ThapalaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B22B3562BD6CAB700020111 /* ThapalaApp.swift */; };
 		7B22B35B2BD6CAB800020111 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7B22B35A2BD6CAB800020111 /* Assets.xcassets */; };
@@ -35,7 +34,6 @@
 		7B8168822BECB61300E825EC /* SuggestTCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8168812BECB61300E825EC /* SuggestTCodeView.swift */; };
 		7B8168842BECB8A700E825EC /* PicktCodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8168832BECB8A700E825EC /* PicktCodeModel.swift */; };
 		7BA42B862BD79C9E00D93450 /* VerifyOTPView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA42B852BD79C9E00D93450 /* VerifyOTPView.swift */; };
-		7BABFF082C6B2F5B003C4A6C /* PostBoxEmailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BABFF072C6B2F5B003C4A6C /* PostBoxEmailsView.swift */; };
 		7BC5AD4B2BE0E2600017D67F /* PicktCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC5AD4A2BE0E2600017D67F /* PicktCodeView.swift */; };
 		7BC5AD4F2BE0E6D90017D67F /* PicktCodeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC5AD4E2BE0E6D90017D67F /* PicktCodeViewModel.swift */; };
 		7BC5AD532BE0F12E0017D67F /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC5AD522BE0F12E0017D67F /* ChangePasswordView.swift */; };
@@ -51,14 +49,10 @@
 		7BCFC7522BDF87F600839D05 /* SecurityQuestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCFC7512BDF87F600839D05 /* SecurityQuestionsView.swift */; };
 		7BCFC7562BDF881700839D05 /* SecurityQuestionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCFC7552BDF881700839D05 /* SecurityQuestionsViewModel.swift */; };
 		7BCFC7582BDF882500839D05 /* SecurityQuestionsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCFC7572BDF882500839D05 /* SecurityQuestionsModel.swift */; };
-		7BFAAF252C64850000A4D021 /* PostBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BFAAF242C64850000A4D021 /* PostBoxView.swift */; };
-		7BFAAF292C64872400A4D021 /* PostBoxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BFAAF282C64872400A4D021 /* PostBoxViewModel.swift */; };
-		7BFAAF2B2C64873B00A4D021 /* PostBoxModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BFAAF2A2C64873B00A4D021 /* PostBoxModel.swift */; };
 		D307910D2D9E627900AE0200 /* consoleModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D307910C2D9E627900AE0200 /* consoleModelData.swift */; };
 		D30CE6402DB22F4D009B215F /* WebSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D30CE63F2DB22F4D009B215F /* WebSocketManager.swift */; };
 		D30DAC632E1C01D200F556A7 /* bottomSheetModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D30DAC622E1C01D200F556A7 /* bottomSheetModelData.swift */; };
 		D322C41D2E16A95500332A67 /* BottomSnoozeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D322C41C2E16A95500332A67 /* BottomSnoozeView.swift */; };
-		D323C5E02DD487680064566F /* StarredmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D323C5DF2DD487680064566F /* StarredmailView.swift */; };
 		D3283ADE2C36BE0B00CA88FB /* SaveEmailToDraftsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3283ADD2C36BE0B00CA88FB /* SaveEmailToDraftsModel.swift */; };
 		D3283AEA2CFF08CA0036F139 /* ClockTimePicker in Frameworks */ = {isa = PBXBuildFile; productRef = D3283AE92CFF08CA0036F139 /* ClockTimePicker */; };
 		D32A219F2C22AE0000765A23 /* AddNewGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32A219E2C22AE0000765A23 /* AddNewGroupView.swift */; };
@@ -210,7 +204,6 @@
 		7B0F7FBC2BD7673300BE2F5A /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		7B0F7FC02BD7694200BE2F5A /* CreateAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccountView.swift; sourceTree = "<group>"; };
 		7B0F7FC32BD7699000BE2F5A /* CreateAccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccountViewModel.swift; sourceTree = "<group>"; };
-		7B1852AF2BE10D9800FE61FC /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		7B1852B12BE110AB00FE61FC /* NavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationView.swift; sourceTree = "<group>"; };
 		7B22B3532BD6CAB700020111 /* Thapala.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Thapala.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B22B3562BD6CAB700020111 /* ThapalaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThapalaApp.swift; sourceTree = "<group>"; };
@@ -234,7 +227,6 @@
 		7B8168812BECB61300E825EC /* SuggestTCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestTCodeView.swift; sourceTree = "<group>"; };
 		7B8168832BECB8A700E825EC /* PicktCodeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicktCodeModel.swift; sourceTree = "<group>"; };
 		7BA42B852BD79C9E00D93450 /* VerifyOTPView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyOTPView.swift; sourceTree = "<group>"; };
-		7BABFF072C6B2F5B003C4A6C /* PostBoxEmailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostBoxEmailsView.swift; sourceTree = "<group>"; };
 		7BC5AD4A2BE0E2600017D67F /* PicktCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicktCodeView.swift; sourceTree = "<group>"; };
 		7BC5AD4E2BE0E6D90017D67F /* PicktCodeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicktCodeViewModel.swift; sourceTree = "<group>"; };
 		7BC5AD522BE0F12E0017D67F /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
@@ -250,14 +242,10 @@
 		7BCFC7512BDF87F600839D05 /* SecurityQuestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityQuestionsView.swift; sourceTree = "<group>"; };
 		7BCFC7552BDF881700839D05 /* SecurityQuestionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityQuestionsViewModel.swift; sourceTree = "<group>"; };
 		7BCFC7572BDF882500839D05 /* SecurityQuestionsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityQuestionsModel.swift; sourceTree = "<group>"; };
-		7BFAAF242C64850000A4D021 /* PostBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostBoxView.swift; sourceTree = "<group>"; };
-		7BFAAF282C64872400A4D021 /* PostBoxViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostBoxViewModel.swift; sourceTree = "<group>"; };
-		7BFAAF2A2C64873B00A4D021 /* PostBoxModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostBoxModel.swift; sourceTree = "<group>"; };
 		D307910C2D9E627900AE0200 /* consoleModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = consoleModelData.swift; sourceTree = "<group>"; };
 		D30CE63F2DB22F4D009B215F /* WebSocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketManager.swift; sourceTree = "<group>"; };
 		D30DAC622E1C01D200F556A7 /* bottomSheetModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bottomSheetModelData.swift; sourceTree = "<group>"; };
 		D322C41C2E16A95500332A67 /* BottomSnoozeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSnoozeView.swift; sourceTree = "<group>"; };
-		D323C5DF2DD487680064566F /* StarredmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarredmailView.swift; sourceTree = "<group>"; };
 		D3283ADD2C36BE0B00CA88FB /* SaveEmailToDraftsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveEmailToDraftsModel.swift; sourceTree = "<group>"; };
 		D32A219E2C22AE0000765A23 /* AddNewGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewGroupView.swift; sourceTree = "<group>"; };
 		D32A21A02C22AE3D00765A23 /* AddNewGroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewGroupViewModel.swift; sourceTree = "<group>"; };
@@ -468,31 +456,6 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		7B1852AC2BE10D6A00FE61FC /* Main */ = {
-			isa = PBXGroup;
-			children = (
-				7BFAAF222C6484E200A4D021 /* PostBox */,
-				7B1852AD2BE10D7600FE61FC /* MainView */,
-			);
-			path = Main;
-			sourceTree = "<group>";
-		};
-		7B1852AD2BE10D7600FE61FC /* MainView */ = {
-			isa = PBXGroup;
-			children = (
-				7B1852AE2BE10D8E00FE61FC /* View */,
-			);
-			path = MainView;
-			sourceTree = "<group>";
-		};
-		7B1852AE2BE10D8E00FE61FC /* View */ = {
-			isa = PBXGroup;
-			children = (
-				7B1852AF2BE10D9800FE61FC /* MainView.swift */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
 		7B22B34A2BD6CAB700020111 = {
 			isa = PBXGroup;
 			children = (
@@ -595,7 +558,6 @@
 		7B22B3692BD6CC1800020111 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				7B1852AC2BE10D6A00FE61FC /* Main */,
 				7B22B3642BD6CB9400020111 /* Authentication */,
 				7B1852B12BE110AB00FE61FC /* NavigationView.swift */,
 			);
@@ -815,41 +777,6 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		7BFAAF222C6484E200A4D021 /* PostBox */ = {
-			isa = PBXGroup;
-			children = (
-				7BFAAF272C64850B00A4D021 /* Model */,
-				7BFAAF262C64850500A4D021 /* ViewModel */,
-				7BFAAF232C6484EB00A4D021 /* View */,
-			);
-			path = PostBox;
-			sourceTree = "<group>";
-		};
-		7BFAAF232C6484EB00A4D021 /* View */ = {
-			isa = PBXGroup;
-			children = (
-				7BFAAF242C64850000A4D021 /* PostBoxView.swift */,
-				7BABFF072C6B2F5B003C4A6C /* PostBoxEmailsView.swift */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		7BFAAF262C64850500A4D021 /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-				7BFAAF282C64872400A4D021 /* PostBoxViewModel.swift */,
-			);
-			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		7BFAAF272C64850B00A4D021 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				7BFAAF2A2C64873B00A4D021 /* PostBoxModel.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
 		D32A21A22C22B3F700765A23 /* Record */ = {
 			isa = PBXGroup;
 			children = (
@@ -1006,7 +933,6 @@
 			children = (
 				D355F0242CC148130025391D /* LabeledMailsView.swift */,
 				D355F0222CC143140025391D /* StarredMailsView.swift */,
-				D323C5DF2DD487680064566F /* StarredmailView.swift */,
 				D355F0202CC11F380025391D /* SnoozedMailsView.swift */,
 			);
 			path = View;
@@ -1111,7 +1037,6 @@
 		D368BB2E2C21A33000AE2C7F /* Residence */ = {
 			isa = PBXGroup;
 			children = (
-				D368BB312C21A34900AE2C7F /* Model */,
 				D368BB302C21A34200AE2C7F /* ViewModel */,
 				D368BB2F2C21A33C00AE2C7F /* View */,
 			);
@@ -1138,13 +1063,6 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		D368BB312C21A34900AE2C7F /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
 		D37B89DD2DB757BC00ED8E68 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1157,16 +1075,8 @@
 			children = (
 				D37CA8DE2C05E450000DE3C5 /* View */,
 				D37CA8DD2C05E449000DE3C5 /* ViewModel */,
-				D37CA8DC2C05E441000DE3C5 /* Model */,
 			);
 			path = HomeScreen;
-			sourceTree = "<group>";
-		};
-		D37CA8DC2C05E441000DE3C5 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		D37CA8DD2C05E449000DE3C5 /* ViewModel */ = {
@@ -1852,7 +1762,6 @@
 				D37CA8F22C05E6E4000DE3C5 /* HomeAwaitingViewModel.swift in Sources */,
 				D307910D2D9E627900AE0200 /* consoleModelData.swift in Sources */,
 				D3D557102C76214E00B0E64E /* InsertTCodeView.swift in Sources */,
-				D323C5E02DD487680064566F /* StarredmailView.swift in Sources */,
 				D35FC0582C57B47E00CD088A /* EditProfileView.swift in Sources */,
 				D37A260C2D15857900EAE1C0 /* DoitModel.swift in Sources */,
 				D392CF132C257FF600636ACC /* PlannerAddTaskViewModel.swift in Sources */,
@@ -1866,7 +1775,6 @@
 				D362224E2C119FA200D3B222 /* EmailsByIdModel.swift in Sources */,
 				7BC6DF442BD9072300F427B0 /* CustomToast.swift in Sources */,
 				D37CA8E02C05E463000DE3C5 /* HomeScreenView.swift in Sources */,
-				7BABFF082C6B2F5B003C4A6C /* PostBoxEmailsView.swift in Sources */,
 				7B22B3672BD6CBD400020111 /* SplashView.swift in Sources */,
 				D368BB392C21C74A00AE2C7F /* ResidenceUserProfileView.swift in Sources */,
 				7B00FA322BE0FE7800E100FF /* PasswordSuccessView.swift in Sources */,
@@ -1895,7 +1803,6 @@
 				D369637E2DE5BF5E0034F3E9 /* RecordsThreeDotsView.swift in Sources */,
 				7B22B3872BD7433200020111 /* FontExtensions.swift in Sources */,
 				D33094212C00C6630016F32F /* SecurityAnswerModel.swift in Sources */,
-				7B1852B02BE10D9800FE61FC /* MainView.swift in Sources */,
 				7B0F7FC12BD7694200BE2F5A /* CreateAccountView.swift in Sources */,
 				D32A21AD2C22E0B700765A23 /* CreateNewFolderViewModel.swift in Sources */,
 				D3A8A15F2E00212E0046D36D /* AppBarElemenetsModelData.swift in Sources */,
@@ -1921,7 +1828,6 @@
 				D384E2DF2C16FE370044E631 /* SendEmailsModel.swift in Sources */,
 				D33B17912D93CF480011AED8 /* trashViewModel.swift in Sources */,
 				D3D47DCE2DA90DE6003B7387 /* GeneralConsoleModelData.swift in Sources */,
-				7BFAAF292C64872400A4D021 /* PostBoxViewModel.swift in Sources */,
 				7B0F7FB82BD766D400BE2F5A /* FloatingTextField.swift in Sources */,
 				D392CF192C25A32600636ACC /* AddEventViewModel.swift in Sources */,
 				D3C8170C2DB79CF900BB0359 /* themesViewModel.swift in Sources */,
@@ -1948,7 +1854,6 @@
 				D38241CA2C134E1B001CFF9E /* MailComposeViewModel.swift in Sources */,
 				7B0F7FC42BD7699000BE2F5A /* CreateAccountViewModel.swift in Sources */,
 				D3B4E39E2DD5E56E0098CD6B /* BluePrintModel.swift in Sources */,
-				7BFAAF252C64850000A4D021 /* PostBoxView.swift in Sources */,
 				D38229792CC7B84900BB1235 /* SnoozedMailsViewModel.swift in Sources */,
 				D3CCD5152DB2904E007700B9 /* socketServiceManager.swift in Sources */,
 				D3B75F612BFDCA6E008DA18C /* ResetpasswordModel.swift in Sources */,
@@ -1958,7 +1863,6 @@
 				D38E5B582CB64B2300901F91 /* InfoViewViewModel.swift in Sources */,
 				D33D4B4C2C883909004DB3E4 /* GetFolderModel.swift in Sources */,
 				7BC5AD4B2BE0E2600017D67F /* PicktCodeView.swift in Sources */,
-				7BFAAF2B2C64873B00A4D021 /* PostBoxModel.swift in Sources */,
 				D392CF1B2C25A33300636ACC /* AddEventView.swift in Sources */,
 				D38C7F842C0ED4C4001FB36D /* HomeScreenViewModel.swift in Sources */,
 				D347F1A72D9195F100B42E9F /* TabViewNavigator.swift in Sources */,

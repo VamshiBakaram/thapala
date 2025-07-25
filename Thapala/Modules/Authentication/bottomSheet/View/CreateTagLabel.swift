@@ -60,31 +60,18 @@ struct CreateTagLabel: View {
                                 withAnimation {
                                     selectedNewBottomTag = LabelsMailViewModel.selectedLabelID
                                     if !LabelsMailViewModel.selectedLabelID.isEmpty { // Check if the array is not empty
-                                        print("selectedLabelIDs: \(LabelsMailViewModel.selectedLabelID)") // Print the array of selected IDs
-                                        print("isActive    \(isActive)")
-                                        print("selected Names :\(selectedNames)")
-//                                        homePlannerViewModel.selectedLabelNames = selectedNames
-                                        print("LabelsMailViewModel.selectedLabelNames   \($LabelsMailViewModel.selectedLabelNames)")
                                         if isActive {
-                                            print("appears isActive ")
                                             isBottomTagActive = true
-                                            print("isBottomTagActive \(isBottomTagActive)")
-//                                            BottomsheetviewModel.ApplyTag(listId: newid, tagIds: homePlannerViewModel.selectedLabelID) // Pass the array
                                             self.isTagSheetVisible = false // Dismiss the sheet
                                             isclicked = true
-                                            print("isclicked\(isclicked)")
-                                        //                                        print("homePlannerViewModel.selectedLabelID\(homePlannerViewModel.selectedLabelID)")
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 200 / 1000.0) {
                                             if homePostboxViewModel.postBoxEmailData.isEmpty {
-                                                print("get diary list api is calling")
                                                 homePostboxViewModel.getPostEmailData()
-                                                print("get diary list api is calling")
                                             }
                                         }
                                     }
                                         
 //                                        else if HomeawaitingViewVisible {
-//                                            print("click on HomeawaitingViewVisible items")
 //                                            homeAwaitingViewModel.ApplyLabel(LabelId:  LabelsMailViewModel.selectedLabelID, threadId: [selectedID])
 //                                        }
                                             
@@ -92,12 +79,9 @@ struct CreateTagLabel: View {
                                             homeAwaitingViewModel.ApplyLabel(LabelId:  LabelsMailViewModel.selectedLabelID, threadId: selectedID)
                                             self.isTagSheetVisible = false // Dismiss the sheet
                                             isclicked = true
-                                            print("isclicked\(isclicked)")
 
 
                                         }
-                                    } else {
-                                        print("No labels selected") // Log if no labels are selected
                                     }
                                 }
                             }, label: {
@@ -172,18 +156,12 @@ struct CreateTagLabel: View {
                                             Button(action: {
                                                 toggleCheck(for: label.id)
                                                 
-                                                print("Tapped on label.id: \(label.id)")
-
                                                 if !label.isChecked {
                                                     if !selectedNames.contains(label.labelName.lowercased()) {
                                                         selectedNames.append(label.labelName.lowercased())
-                                                        print("Added: \(selectedNames)")
-                                                        print("Add LabelsMailViewModel.selectedLabelID \( LabelsMailViewModel.selectedLabelID)")
                                                     }
                                                 } else {
                                                     selectedNames.removeAll { $0 == label.labelName.lowercased() }
-                                                    print("Removed: \(selectedNames)")
-                                                    print("remove LabelsMailViewModel.selectedLabelID \( LabelsMailViewModel.selectedLabelID)")
                                                 }
                                             }) {
                                                 Image(systemName: LabelsMailViewModel.selectedLabelID.contains(label.id) ? "checkmark.square" : "square")
@@ -194,7 +172,6 @@ struct CreateTagLabel: View {
                                             }
 
                                             Button(action: {
-                                                print("Label name tapped: \(label.labelName)")
                                             }) {
                                                 Text(label.labelName)
                                                     .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -218,12 +195,7 @@ struct CreateTagLabel: View {
                 .cornerRadius(16)
                 .shadow(radius: 10)
                 .onAppear{
-                    print("selectedID  \(selectedID)")
                     LabelsMailViewModel.selectedLabelID = isCheckedLabelID
-                    print("isCheckedLabelID \(isCheckedLabelID)")
-                    print("LabelsMailViewModel.selectedLabelID \(LabelsMailViewModel.selectedLabelID)")
-                    print("HomeawaitingViewVisible  \(HomeawaitingViewVisible)")
-                    print("selectedID  \(selectedID)")
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                         LabelsMailViewModel.getLabelledEmailData()
                     }
@@ -236,10 +208,6 @@ struct CreateTagLabel: View {
                         if let Diary = homePostboxViewModel.postBoxEmailData.first {
                             let incrementedId = Diary.id
                             newid = incrementedId! + 1
-                            print("Let's check the first newid: \(incrementedId), Incremented newid: \(newid)")
-                        }
-                            else {
-                            print("No diary found with newid: \((newid))")
                         }
                     }
                 }
@@ -268,20 +236,12 @@ struct CreateTagLabel: View {
             LabelsMailViewModel.labelledMailsDataModel[index].isChecked.toggle()
             if LabelsMailViewModel.labelledMailsDataModel[index].isChecked ?? false {
                 LabelsMailViewModel.selectedLabelID.append(id)
-                print("if case toggle check")
             } else {
-                print("else case toggle check ")
                 LabelsMailViewModel.selectedLabelID.removeAll { $0 == id }
             }
             // keep in sync!
         }
     }
-
-
-    
-//    func handleCheckedLabel(id: Int) {
-//        print("Checked label ID: \(id)")
-//    }
 
         
     func calculateTotalHeight() -> CGFloat {
@@ -351,15 +311,11 @@ struct createLabelView: View {
                             .padding(.trailing, 16)
                             .onTapGesture {
                                 if HomeawaitingVisible {
-                                    print("if case executes create label")
                                     homeAwaitingViewModel.createLabel(createLabelName: Textfill)
                                 }
                                 else {
-                                    print("else case executes create label")
                                     homePlannerViewModel.CreateLabelDiary(title: Textfill)
                                 }
-                                print("CreateLabelDiary")
-                                print("Textfill \(Textfill)")
                                 iscreatelabelvisible = false
                                 Textfill = ""
                             }
@@ -384,9 +340,6 @@ struct createLabelView: View {
                 .frame(maxWidth: .infinity, alignment: .leading) // Make the VStack take up full width and align content to the leading
 
                 Spacer() // Push content up to fill space below
-            }
-            .onAppear{
-                print("HomeawaitingVisible \(HomeawaitingVisible)")
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(themesviewModel.currentTheme.windowBackground)

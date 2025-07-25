@@ -116,11 +116,7 @@ class HomeRecordsViewModel:ObservableObject{
                     self.recordsData = response.records.filter { $0.parentId == selectedTabID }
                     self.FilesData = response.files
                     self.emailsData = response.emails
-                    
-                    print("Fetched \(self.recordsData.count) folders")
-                    if let first = self.recordsData.first {
-                        print("First folder: \(first.folderName), parentId: \(first.parentId), id: \(first.id)")
-                    }
+
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -190,7 +186,6 @@ class HomeRecordsViewModel:ObservableObject{
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:
@@ -222,7 +217,6 @@ class HomeRecordsViewModel:ObservableObject{
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:
@@ -273,7 +267,6 @@ class HomeRecordsViewModel:ObservableObject{
                     try fileManager.removeItem(at: destinationURL)
                 }
                 try fileManager.copyItem(at: localURL, to: destinationURL)
-                print("✅ File saved at: \(destinationURL)")
                 DispatchQueue.main.async {
                     if ["jpg", "jpeg", "png"].contains(fileExtension) {
                         self.saveImageToPhotoLibrary(fileURL: destinationURL)
@@ -289,7 +282,6 @@ class HomeRecordsViewModel:ObservableObject{
                         }
                     
                     else {
-                        print("showUnsupportedFormatAlert")
                         self.showUnsupportedFormatAlert(for: destinationURL)
                     }
                 }
@@ -453,7 +445,6 @@ class HomeRecordsViewModel:ObservableObject{
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:
@@ -488,18 +479,14 @@ class HomeRecordsViewModel:ObservableObject{
             DispatchQueue.main.async {
                 self.isLoading = false
                 switch result {
-                case .success(let response):
-                    print("Upload successful: \(response.message)")
+                case .success(let response): break
                     // You can set a success message or handle response further here.
                 case .failure(let error):
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
                     }
                 }
             }
@@ -520,15 +507,12 @@ class HomeRecordsViewModel:ObservableObject{
         
         let task = URLSession.shared.uploadTask(with: request, from: body) { responseData, response, error in
             if let error = error {
-                print("Error uploading images: \(error)")
                 return
             }
 
             if let response = response as? HTTPURLResponse, let responseData = responseData {
-                print("Status code: \(response.statusCode)")
                 do {
                     let attachmentResponse = try JSONDecoder().decode(AttachmentModel.self, from: responseData)
-                    print("Response: \(attachmentResponse)")
                     DispatchQueue.main.async {
                         self.handleAttachmentResponse(attachmentResponse)
                         if let attachments = attachmentResponse.attachments {
@@ -547,7 +531,6 @@ class HomeRecordsViewModel:ObservableObject{
                         
                     }
                 } catch {
-                    print("Failed to decode response: \(error)")
                 }
             }
         }

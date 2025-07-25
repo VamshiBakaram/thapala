@@ -333,7 +333,6 @@ class HomePlannerViewModel:ObservableObject{
         // Encode the payload to JSON and log it for debugging
         if let jsonData = try? JSONEncoder().encode(params),
            let jsonString = String(data: jsonData, encoding: .utf8) {
-            print("Request JSON: \(jsonString)")
         }
     
         
@@ -344,7 +343,6 @@ class HomePlannerViewModel:ObservableObject{
                 self.isLoading = false
                 switch result {
                 case .success(let response):
-                    print("Comment added successfully: \(response.message)")
                     self.successMessage = response.message
 
                 case .failure(let error):
@@ -352,7 +350,6 @@ class HomePlannerViewModel:ObservableObject{
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:
@@ -382,7 +379,6 @@ class HomePlannerViewModel:ObservableObject{
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:
@@ -428,12 +424,10 @@ class HomePlannerViewModel:ObservableObject{
             plannerId: listId,
             labelIds: tagIds // Pass the array of IDs here
         )
-        print("Params: \(params)") // Debug print the payload
         
         let endPoint = "\(EndPoint.ApplyTagLabel)"
         if let jsonData = try? JSONEncoder().encode(params),
            let jsonString = String(data: jsonData, encoding: .utf8) {
-            print("Encoded JSON: \(jsonString)") // Debug print the JSON payload
         }
         
         NetworkManager.shared.request(
@@ -449,12 +443,10 @@ class HomePlannerViewModel:ObservableObject{
                 switch result {
                 case .success(let response):
                     self.labelMessage = response.message
-                    print("Success: \(response.message)")
                 case .failure(let error):
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:
@@ -536,7 +528,6 @@ class HomePlannerViewModel:ObservableObject{
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:
@@ -560,10 +551,6 @@ class HomePlannerViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-//                        print("nschgdvhjsks")
-//                        self.NoteData = response // Update local data with response
-//                    }
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -683,7 +670,6 @@ class HomePlannerViewModel:ObservableObject{
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:
@@ -845,10 +831,6 @@ class HomePlannerViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-//                        print("nschgdvhjsks")
-//                        self.NoteData = response // Update local data with response
-//                    }
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -999,7 +981,6 @@ class HomePlannerViewModel:ObservableObject{
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:
@@ -1058,29 +1039,26 @@ class HomePlannerViewModel:ObservableObject{
             comment: comment
         )
         // API Endpoint
-        let endPoint = "\(EndPoint.AddingTask)"
+        let endUrl = "\(EndPoint.AddingTask)"
 
         // Encode the payload to JSON and log it for debugging
         if let jsonData = try? JSONEncoder().encode(params),
            let jsonString = String(data: jsonData, encoding: .utf8) {
-            print("Request JSON: \(jsonString)")
         }
         // Perform API request
-        NetworkManager.shared.request(type: AddResponse.self,endPoint: endPoint,httpMethod: .post,parameters: params,isTokenRequired: true) { [weak self] result in
+        NetworkManager.shared.request(type: AddResponse.self,endPoint: endUrl,httpMethod: .post,parameters: params,isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
             
             DispatchQueue.main.async {
                 self.isLoading = false
                 switch result {
                 case .success(let response):
-                    print("Comment added successfully: \(response.message)")
                     self.successMessage = response.message
                 case .failure(let error):
                     // Handle the error scenarios
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:
@@ -1265,7 +1243,6 @@ class HomePlannerViewModel:ObservableObject{
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:

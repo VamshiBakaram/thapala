@@ -24,7 +24,6 @@ struct CreateLabelView: View {
                             .padding([.leading,.top],20)
                         Spacer()
                         Button {
-                            print("Done")
                           
                         } label: {
                             Text("Done")
@@ -56,7 +55,6 @@ struct CreateLabelView: View {
                     .foregroundColor(Color.themeColor)
                     .padding(.leading,20)
                     .onTapGesture {
-                        print("H clicked")
                         createLabelViewModel.moveToCreateNewlabelView = true
                     }
                     

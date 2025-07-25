@@ -90,7 +90,6 @@ struct HomeDirectoryView: View {
                         
                         
                         Button(action: {
-                            print("line.3.horizontal button pressed")
                             withAnimation {
                                 isMenuVisible.toggle()
                             }
@@ -115,7 +114,6 @@ struct HomeDirectoryView: View {
                                         .fill(directoryView ? themesviewModel.currentTheme.attachmentBGColor : themesviewModel.currentTheme.customButtonColor)
                                         .frame(width: max(reader.size.width/3 - 10, 50), height: 50)
                                         .onTapGesture {
-                                            print("Emailed clicked")
                                             homeDirectoryViewModel.GetDirectoryList()
                                             selectedGroupID = nil
                                             directoryView = true
@@ -183,10 +181,8 @@ struct HomeDirectoryView: View {
                                                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                                                                 .lineLimit(1)
                                                                 .padding(.leading , 5)
-                                                                .fixedSize()
                                                             
                                                             Button(action: {
-                                                                print("clicked on dots")
                                                                 threeDotsView = true
                                                                 homeDirectoryViewModel.RenameGroupName = item.groupName
                                                                 homeDirectoryViewModel.groupID = item.id
@@ -324,7 +320,6 @@ struct HomeDirectoryView: View {
                                                 homeDirectoryViewModel.GetProfileByID(selectId: item.id)
                                                 isProfileDialogue.toggle()
                                                 id = item.id
-                                                print("let check the id     \(id)")
                                                 
                                                 isProfileDialogue = true
                                             }
@@ -421,7 +416,6 @@ struct HomeDirectoryView: View {
                                         homeDirectoryViewModel.GetProfileByID(selectId: item.id)
                                         isProfileDialogue.toggle()
                                         id = item.id
-                                        print("let check the id     \(id)")
                                         
                                         isProfileDialogue = true
                                     }
@@ -509,8 +503,6 @@ struct HomeDirectoryView: View {
                                         homeDirectoryViewModel.GetProfileByID(selectId: item.id)
                                         isProfileDialogue.toggle()
                                         id = item.id
-                                        print("let check the id     \(id)")
-                                        
                                         isProfileDialogue = true
                                     }
                                     .padding(.vertical, 5)
@@ -544,12 +536,10 @@ struct HomeDirectoryView: View {
                 
             .edgesIgnoringSafeArea(.top)
             .onAppear {
-                    print("View appeared")
                     homeDirectoryViewModel.getStatesAndCities()
                 if homeDirectoryViewModel.DirectoryData.isEmpty {
                     homeDirectoryViewModel.GetDirectoryList()
                     if homeDirectoryViewModel.groupList.isEmpty {
-                        print("GetGroupList Data")
                         homeDirectoryViewModel.GetGroupList()
                     }
                 }
@@ -560,10 +550,8 @@ struct HomeDirectoryView: View {
                         // Map all titles into an array
                         let allTitles = homeDirectoryViewModel.DirectoryData.map { $0.firstname }
                         firstname = allTitles.joined(separator: ", ")
-//                        print("firstname \(firstname)")
                         
                         let profiles = homeDirectoryViewModel.DirectoryData.map { $0.profile }
-                        print("firstname \(firstname) , profiles \(profiles)")
                     }
                     
                     if !homeDirectoryViewModel.groupList.isEmpty {
@@ -571,37 +559,25 @@ struct HomeDirectoryView: View {
                             .compactMap { $0.groupName }
                             .flatMap { $0.components(separatedBy: ",") }
                             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-
-                        print("groupNamesArray: \(groupNamesArray)")
-
-                        for (index, group) in groupNamesArray.enumerated() {
-                            print("Group \(index + 1): \(group)")
-                        }
-                    }
-
-                    else {
-                        print("DirectoryData is empty or invalid")
+//                        for (index, group) in groupNamesArray.enumerated() {
+//                            print("Group \(index + 1): \(group)")
+//                        }
                     }
                 }
             }
                 
             .onChange(of: homeDirectoryViewModel.groupitems) { newValue in
                 if newValue == false {
-                        print("DirectoryViewModel.groups \(homeDirectoryViewModel.groupitems)")
                         homeDirectoryViewModel.GetGroupList()
-                        print("onchange of  homeDirectoryViewModel.groups")
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                         if !homeDirectoryViewModel.groupList.isEmpty {
                             groupNamesArray = homeDirectoryViewModel.groupList
                                 .compactMap { $0.groupName }
                                 .flatMap { $0.components(separatedBy: ",") }
                                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-
-                            print("groupNamesArray: \(groupNamesArray)")
-
-                            for (index, group) in groupNamesArray.enumerated() {
-                                print("Group \(index + 1): \(group)")
-                            }
+//                            for (index, group) in groupNamesArray.enumerated() {
+//                                print("Group \(index + 1): \(group)")
+//                            }
 
                         }
                         
@@ -710,7 +686,6 @@ struct HomeDirectoryView: View {
                                         .padding([.top , .bottom], 10)
                                         .padding(.trailing, 10)
                                         .onTapGesture {
-                                            print("diary.profile \(diary.profile ?? "")")
                                             withAnimation {
                                                 isProfileDialogue = false // Close dialog on tap
                                             }
@@ -778,7 +753,6 @@ struct HomeDirectoryView: View {
                                     
                                     Button(action: {
                                         homeDirectoryViewModel.AddContact(contacts: diary.userId)
-                                        print("diary.userId  \(diary.userId)")
                                         isProfileDialogue = false
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                             homeDirectoryViewModel.GetGroupList()
@@ -815,16 +789,10 @@ struct HomeDirectoryView: View {
                                     Button(action: {
                                         isProfileDialogue = false
                                         let blockedUserIDs = homeDirectoryViewModel.blockedUsers.compactMap { $0.currentUserBlockedUsers }.flatMap { $0 }
-                                        print("Currently blocked user IDs: \(blockedUserIDs)")
-
                                         let isBlocked = homeDirectoryViewModel.blockedUsers.contains { $0.currentUserBlockedUsers?.contains(diary.userId) ?? false }
-                                        print("Checking if user ID \(diary.userId) is blocked: \(isBlocked)")
-
                                         if isBlocked {
-                                            print("Unblock works")
                                             showingBlockAlert = true
                                         } else {
-                                            print("Block works")
                                             showingBlockAlert = true
 //                                            homeDirectoryViewModel.blockContact(id: diary.userId, type: "block")
                                         }
@@ -886,7 +854,6 @@ struct HomeDirectoryView: View {
                                     Button {
                                         homeDirectoryViewModel.selectCountry(at: index)
                                         homeDirectoryViewModel.country = homeDirectoryViewModel.countryCodes[index].countryName
-                                        print("country name  \(homeDirectoryViewModel.country)")
                                     } label: {
                                         Text(homeDirectoryViewModel.countryCodes[index].countryName)
                                     }
@@ -920,7 +887,6 @@ struct HomeDirectoryView: View {
                                     Button {
                                         homeDirectoryViewModel.selectState(at: index)
                                         homeDirectoryViewModel.state = homeDirectoryViewModel.allStates[index].stateName
-                                        print("state name  \(homeDirectoryViewModel.state)")
                                     } label: {
                                         Text(homeDirectoryViewModel.allStates[index].stateName)
                                     }
@@ -956,7 +922,6 @@ struct HomeDirectoryView: View {
                                     Button {
                                         homeDirectoryViewModel.selectCity(at: index)
                                         homeDirectoryViewModel.city = homeDirectoryViewModel.citiesInSelectedState[index]
-                                        print("city name  \(homeDirectoryViewModel.city)")
                                     } label: {
                                         Text(homeDirectoryViewModel.citiesInSelectedState[index])
                                     }
@@ -988,7 +953,6 @@ struct HomeDirectoryView: View {
                             HStack {
                                 Spacer()
                                 Button(action: {
-                                    print("Button clicked!")
                                     homeDirectoryViewModel.selectedCountryIndex = nil
                                     homeDirectoryViewModel.selectedStateIndex = nil
                                     homeDirectoryViewModel.selectedCityIndex = nil
@@ -1025,7 +989,6 @@ struct HomeDirectoryView: View {
                                         homeDirectoryViewModel.error = "Please Enter The City"
                                     }
                                     else {
-                                        print("click on search")
                                         isSearchDialogVisible = false
                                         directoryView = false
                                         serachView = true
@@ -1059,7 +1022,6 @@ struct HomeDirectoryView: View {
                     }
                     .zIndex(1) // Ensure this is on top of other views
                     .onTapGesture {
-                        print("zstack prints")
                         homeDirectoryViewModel.getStatesAndCities()
                         
                     }
@@ -1092,10 +1054,8 @@ struct HomeDirectoryView: View {
                                 ForEach(groupNamesArray, id: \.self) { groupName in
                                     HStack {
                                         Button(action: {
-                                            print("Clicked on group: \(groupName)")
                                             if let data = homeDirectoryViewModel.groupList.first(where: {$0.groupName == groupName}) {
                                                 homeDirectoryViewModel.movetoGroups(GroupdID: data.id, userIDs: [id])
-                                                print("data.id  \(data.id)   , user id \(id)")
                                                 moveToNewGroup = false
                                             }
                                            
@@ -1118,9 +1078,7 @@ struct HomeDirectoryView: View {
                             .animation(.easeInOut, value: moveToNewGroup) // Animate ZStack change
                         }
                         .onAppear {
-                            print("id \(id)")
                             homeDirectoryViewModel.GetGroupList()
-                            print("groupNamesArray  \(groupNamesArray)")
                         }
                     }
                     
@@ -1226,9 +1184,6 @@ struct HomeDirectoryView: View {
                                 HStack {
                                     Spacer()
                                     Button(action: {
-                                        print("click on submit")
-                                        print("homeDirectoryViewModel.reportissue \(homeDirectoryViewModel.reportissue)")
-                                        print("diary.tCode  \(diary.tCode)")
                                         homeDirectoryViewModel.reportContact(descriptions: homeDirectoryViewModel.reportissue, tcode: diary.tCode)
                                         reportView = false
                                     }) {
@@ -1283,7 +1238,6 @@ struct HomeDirectoryView: View {
                                 }
 
                                 Button(action: {
-                                    print("clicked on delete icon")
                                     threeDotsView = false
                                     showingDeleteAlert = true
                                 }) {
@@ -1513,15 +1467,12 @@ struct HomeDirectoryView: View {
                             HStack {
                                 Spacer()
                                 Button(action: {
-                                    print("$homeDirectoryViewModel.groupName \(homeDirectoryViewModel.groupName)")
                                     homeDirectoryViewModel.createGRoup(groupname: homeDirectoryViewModel.groupName)
                                     isContactsDialogVisible = false
                                     homeDirectoryViewModel.groupitems = true
-                                    print("before homeDirectoryViewModel.groupitems \(homeDirectoryViewModel.groupitems)")
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                         homeDirectoryViewModel.GetGroupList()
                                         homeDirectoryViewModel.groupitems = false
-                                        print("After Dispatch homeDirectoryViewModel.groupitems \(homeDirectoryViewModel.groupitems)")
                                     }
                                 }) {
                                     Text("Create")
@@ -1556,7 +1507,6 @@ struct HomeDirectoryView: View {
                         // Centered DeleteNoteAlert
                         if isblocked {
                             blockAlert(isPresented: $showingBlockAlert , AlertText: "Are you sure that you want to Block this user?") {
-                                    print("delete alert")
                                     homeDirectoryViewModel.blockContact(id: id, type: "block")
                                     self.showingBlockAlert = false
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -1567,7 +1517,6 @@ struct HomeDirectoryView: View {
                         }
                         else {
                             blockAlert(isPresented: $showingBlockAlert , AlertText: "Are you sure that you want to UnBlock this user?") {
-                                    print("delete alert")
                                     homeDirectoryViewModel.blockContact(id: id, type: "unblock")
                                     self.showingBlockAlert = false
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -1605,7 +1554,6 @@ struct HomeDirectoryView: View {
             
             .zIndex(0)
             .onTapGesture {
-                print("main view zstack clicked")
                 isSearchDialogVisible = false
                 homeDirectoryViewModel.getStatesAndCities()
             }

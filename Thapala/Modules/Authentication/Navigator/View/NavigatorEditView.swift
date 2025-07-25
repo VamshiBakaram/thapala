@@ -200,7 +200,6 @@ struct NavigatorEditView: View {
                         HStack {
                             Spacer()
                             Button {
-                                print("update clicked")
                             } label: {
                                 Text("Update Details")
                                     .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))

@@ -126,7 +126,6 @@ struct TrashView: View {
                         TrashedViewModel.GetPlannerTrashData()
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             doitItems = TrashedViewModel.PlanData.filter { $0.type == "doit" }
-                            print("planner DoitItems: \(doitItems)")
                         }
                     }) {
                         Text("Planner")
@@ -170,11 +169,9 @@ struct TrashView: View {
                                     } else {
                                         selectedIndices = Set(TrashedViewModel.trashData.map { $0.id })
                                         isSelectAll = true
-                                        print("select all selectedIndices \(selectedIndices)")
                                     }
                                     feildIDs = Array(selectedIndices)
                                     bottomIcons = !selectedIndices.isEmpty
-                                    print("select all id's \(feildIDs)")
                                 }) {
                                     Image(systemName: isSelectAll ? "checkmark.square.fill" : "square")
                                         .resizable()
@@ -217,9 +214,6 @@ struct TrashView: View {
                                                 .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
                                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                                                 .padding(.leading, 10)
-                                                .onTapGesture {
-                                                    print("firstname: \(item.firstname ?? "")")
-                                                }
 
                                             Text(item.subject ?? "")
                                                 .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -313,13 +307,11 @@ struct TrashView: View {
                         HStack {
                             Button(action: {
                                 selectedPlannerTab = "tDo"
-                                print("selectedPlannerTab\(selectedPlannerTab)")
                                 isfilesView = false
                                 isfoldersView = false
                                 TrashedViewModel.GetPlannerTrashData()
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                     doitItems = TrashedViewModel.PlanData.filter { $0.type == "doit" }
-                                    print("Updated DoitItems: \(doitItems)")
                                 }
                             }) {
                                 Text("tDo")
@@ -337,14 +329,12 @@ struct TrashView: View {
                             
                             Button(action: {
                                 selectedPlannerTab = "tNote"
-                                print("selectedPlannerTab: \(selectedPlannerTab)")
                                 isfilesView = false
                                 isfoldersView = false
                                 TrashedViewModel.GetPlannerTrashData()
                                 
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                     NoteItems = TrashedViewModel.PlanData.filter { $0.type == "note" }
-                                    print("Updated NoteItems: \(NoteItems)")
                                 }
                             }) {
                                 Text("tNote")
@@ -380,7 +370,6 @@ struct TrashView: View {
                                             let id = doitItems[index].id
                                             if !selectedID.contains(id) {  // Avoid duplicates
                                                 selectedID.append(id)
-                                                print("Select all do it: \(selectedID)")  // Corrected print statement
                                             }
                                         }
                                     }
@@ -395,7 +384,6 @@ struct TrashView: View {
                                             let id = NoteItems[index].id
                                             if !selectedID.contains(id) {  // Avoid duplicates
                                                 selectedID.append(id)
-                                                print("Select all Note: \(selectedID)")  // Corrected print statement
                                             }
                                         }
                                     }
@@ -422,7 +410,6 @@ struct TrashView: View {
                                                 bottomIcons = (doitItems[index].isChecked == 1);
                                                 if (doitItems[index].isChecked == 1) {
                                                     selectedID = [doitItems[index].id]
-                                                    print("selected do it \(selectedID) ")
                                                 }
                                             }) {
                                                 Image(systemName: (doitItems[index].isChecked != 0) ? "checkmark.square.fill" : "square")
@@ -476,7 +463,6 @@ struct TrashView: View {
                                                 bottomIcons = (NoteItems[index].isChecked == 1);
                                                 if (NoteItems[index].isChecked == 1) {
                                                     selectedID = [NoteItems[index].id]
-                                                    print("selected Note \(selectedID) ")
                                                 }
                                                 
                                             }) {
@@ -543,8 +529,6 @@ struct TrashView: View {
                                             selectedIndices.removeAll()
                                         }
                                         bottomIcons = !selectedIndices.isEmpty
-                                        
-                                        print("select all select indexes \(selectedIndices)")
                                     }) {
                                         Image(systemName: isSelectAll ? "checkmark.square.fill" : "square")
                                             .resizable()
@@ -581,7 +565,6 @@ struct TrashView: View {
                                                                 feildIDs = selectedIndices.map { TrashedViewModel.fileData[$0].id }
                                                             }
                                                             
-                                                            print("selected index \(selectedIndices)")
                                                             azureFileName = file.azureFileName
                                                             fileSize = file.fileSize
                                                             selectedFieldID = file.id
@@ -613,10 +596,7 @@ struct TrashView: View {
                                                                             .frame(width: 60, height: 100)
                                                                             .foregroundColor(.black)
                                                                     }
-                                                                    .onTapGesture {
-                                                                        print("on click of video")
-                                                                    }
-                                                                    
+        
                                                                     
                                                                     
                                                                 }
@@ -712,7 +692,6 @@ struct TrashView: View {
                                         
                                     }
                                     bottomIcons = !selectedIndices.isEmpty
-                                    print("select all select indexes \(selectedIndices)")
                                 }) {
                                     Image(systemName: isSelectAll ? "checkmark.square.fill" : "square")
                                         .resizable()
@@ -747,13 +726,9 @@ struct TrashView: View {
                                                             selectedIndices.remove(index)
                                                         } else {
                                                             selectedIndices.insert(index)
-                                                            print("insert selected index \(selectedIndices)")
                                                             feildIDs = []
                                                             recordIDs = selectedIndices.map { TrashedViewModel.folderData[$0].id }
-                                                            print("folders feildIDs  \(feildIDs)")
-                                                            print("folders recordIDs  \(recordIDs)")
                                                         }
-                                                        print("selected index \(selectedIndices)")
                                                         
                                                         // Optional: update selectAll state based on selection count
                                                         isSelectAll = selectedIndices.count == TrashedViewModel.folderData.count
@@ -823,7 +798,6 @@ struct TrashView: View {
                         
                         Button(action: {
                             showingDeleteAlert = true
-                            print("delete button tapped")
                         }) {
                             Image("deleteIcon")
                                 .resizable()
@@ -856,12 +830,10 @@ struct TrashView: View {
                     }
                     else if selectedFileTab == "Allfiles" {
                             TrashedViewModel.deleteFiles(RecordIds: recordIDs ?? [] , selectedFieldID: selectedFieldID, AzureFileName: azureFileName, FileSize: fileSize)
-                            print("restore selectedFileTab  \(selectedFileTab)")
                         }
                     
                     else if selectedFileTab == "folders" {
                         TrashedViewModel.deleteFolders(RecordIds: recordIDs ?? [], FileIds: feildIDs ?? [])
-                            print("restore selectedFileTab  \(selectedFileTab)")
                         }
                     
                     else if selectedTab == "Mails" {
@@ -923,16 +895,13 @@ struct TrashView: View {
                     // Delete action
                     if selectedPlannerTab == "tDo" || selectedPlannerTab == "tNote" {
                         TrashedViewModel.restorePlanner(selectedID: selectedID)
-                        print("selectedTab = \(selectedTab), selectedPlannerTab = \(selectedPlannerTab)")
                     }
                     else if selectedTab == "Mails" {
                         TrashedViewModel.restoreMails(threadID: feildIDs ?? [])
-                        print("restore the Mails")
                     }
                     
                     else if selectedTab == "files" {
                         TrashedViewModel.restoreFiles(RecordIds: recordIDs ?? [], FieldIDs: feildIDs ?? [])
-                        print("selectedTab = \(selectedTab), selectedPlannerTab = \(selectedPlannerTab)")
                     }
                     
                     // Remove the deleted items from the respective list
@@ -989,14 +958,12 @@ struct TrashView: View {
             TrashedViewModel.GetPlannerTrashData()
 //            if TrashedViewModel.PlanData.isEmpty {
 //                TrashedViewModel.GetPlannerTrashData()
-//                print("API is running")
 //            }
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 if selectedPlannerTab == "tDo" {
                     doitItems = TrashedViewModel.PlanData.filter { $0.type == "doit" }
                 }
-                print("Fetched \(selectedPlannerTab) items count: \(doitItems.count)")
             }
         }
         .fullScreenCover(isPresented: $TrashedViewModel.isEmailScreen) {

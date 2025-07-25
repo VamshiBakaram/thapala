@@ -55,8 +55,6 @@ struct BlueprintView: View {
                                 
                                 Button(action: {
                                     appBarElementsViewModel.isSearch = true
-                                    
-                                    print("After appBarElementsViewModel.isSearch \(appBarElementsViewModel.isSearch)")
                                 }) {
                                     Image("magnifyingglass")
                                         .renderingMode(.template)
@@ -67,7 +65,6 @@ struct BlueprintView: View {
                                 
                                 
                                 Button(action: {
-                                    print("bell button pressed")
                                     iNotificationAppBarView = true
                                 }) {
                                     Image("notification")
@@ -76,7 +73,6 @@ struct BlueprintView: View {
                                 
                                 
                                 Button(action: {
-                                    print("line.3.horizontal button pressed")
                                     withAnimation {
                                         isMenuVisible.toggle()
                                     }
@@ -192,10 +188,9 @@ struct BlueprintView: View {
                                     .padding(.bottom , 10)
                             
                         }
-                        .frame(height: reader.size.height * 0.16)
+                        .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top ?? 30)
+//                        .frame(height: reader.size.height * 0.16)
                         .background(themesviewModel.currentTheme.tabBackground)
-                        
-                        
                         
                         if let selectedOption = blueprintViewModel.selectedOption {
                             switch selectedOption {
@@ -276,11 +271,7 @@ struct BlueprintView: View {
 
                 .fullScreenCover(isPresented: $blueprintViewModel.isComposeEmail) {
                     MailComposeView().toolbar(.hidden)
-                        .onAppear {
-                            print("MailFullView appeared")
-                        }
                 }
-
             }
 
 
@@ -291,11 +282,6 @@ struct BlueprintView: View {
             HStack {
                 Spacer()
                 Button(action: {
-                    print("to text \(blueprintViewModel.to) ")
-                    print("to cc \(blueprintViewModel.cc) ")
-                    print("to bcc \(blueprintViewModel.bcc) ")
-                    print("to subject \(blueprintViewModel.subject) ")
-                    print("to composeEmail \(blueprintViewModel.composeEmail) ")
                     blueprintViewModel.saveToTdraft(To: [blueprintViewModel.to], CC: [blueprintViewModel.cc], BCC: [blueprintViewModel.bcc], Subject: blueprintViewModel.subject, Body: blueprintViewModel.composeEmail)
                     blueprintViewModel.to = ""
                     blueprintViewModel.cc = ""
@@ -326,7 +312,6 @@ struct BlueprintView: View {
                     selectedBCCcode = ""
                     blueprintViewModel.isArrow = false
                     blueprintViewModel.error = "delete successfully"
-                    print("click on delete button")
                 }) {
                     Image("del")
                         .renderingMode(.template)
@@ -438,7 +423,6 @@ struct BlueprintView: View {
                                             }
                                         Button(action: {
                                             blueprintViewModel.isArrow.toggle()
-                                            print("arrow clicked")
                                         }, label: {
                                             Image(blueprintViewModel.isArrow ? "dropup" : "dropdown")
                                                 .renderingMode(.template)
@@ -564,7 +548,6 @@ struct BlueprintView: View {
                                                     }
                                                 Button(action: {
                                                     blueprintViewModel.isArrow.toggle()
-                                                    print("arrow clicked")
                                                 }, label: {
                                                     Image(blueprintViewModel.isArrow ? "dropup" : "dropdown")
                                                         .renderingMode(.template)
@@ -687,7 +670,6 @@ struct BlueprintView: View {
                                                     }
                                                 Button(action: {
                                                     blueprintViewModel.isArrow.toggle()
-                                                    print("arrow clicked")
                                                 }, label: {
                                                     Image(blueprintViewModel.isArrow ? "dropup" : "dropdown")
                                                         .renderingMode(.template)

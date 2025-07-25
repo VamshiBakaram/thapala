@@ -33,7 +33,6 @@ struct QuickAccessView: View {
                         if !homeAwaitingViewModel.isComposeEmail {
                             homeAwaitingViewModel.isComposeEmail = true
 //                            isQuickAccessVisible = true
-                            print("Messages button clicked, isComposeEmail set to true")
                         }
                     } label: {
                         Image("pencil")
@@ -64,7 +63,6 @@ struct QuickAccessView: View {
                         .foregroundColor(themesviewModel.currentTheme.textColor)
                         .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
                     Button {
-                        print("plus clicked")
                     } label: {
                         Image("event")
                             .resizable()
@@ -85,7 +83,6 @@ struct QuickAccessView: View {
                         .foregroundColor(themesviewModel.currentTheme.textColor)
                         .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
                     Button {
-                        print("plus clicked")
                     } label: {
                         Image("chat")
                             .resizable()

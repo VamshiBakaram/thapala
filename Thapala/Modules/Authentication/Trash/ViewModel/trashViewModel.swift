@@ -121,7 +121,6 @@ class TrashViewModel:ObservableObject{
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.PlanData = response.data.plannerTrash // Use `response.data` to access `DiaryData`
-                    print("PlannerData fetched: \(self.PlanData.count)")
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -231,7 +230,6 @@ class TrashViewModel:ObservableObject{
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     }
@@ -271,7 +269,6 @@ class TrashViewModel:ObservableObject{
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     }
@@ -305,7 +302,6 @@ class TrashViewModel:ObservableObject{
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     }

@@ -52,7 +52,6 @@ struct draftView: View {
                     .padding(.trailing,10)
                     
                     Button(action: {
-                        print("on click of send: \(mailComposeViewModel.sendEmail())")
                         mailComposeViewModel.sendEmail()
                         presentationMode.wrappedValue.dismiss()// This will pop the current view
                     }) {
@@ -147,7 +146,6 @@ struct draftView: View {
                                             }
                                         Button(action: {
                                             mailComposeViewModel.isArrow.toggle()
-                                            print("arrow clicked")
                                         }, label: {
                                             Image(mailComposeViewModel.isArrow ? "dropup" : "dropdown")
                                                 .renderingMode(.template)
@@ -442,9 +440,7 @@ struct draftView: View {
             
             .toast(message: $mailComposeViewModel.error)
                 .onAppear {
-                    print("draft view appears")
                     if mailComposeViewModel.detailedEmailData.isEmpty {
-                        print("getFullEmail(emailId: id)")
                         mailComposeViewModel.getFullEmail(emailId: id)
                     }
                     
@@ -456,14 +452,9 @@ struct draftView: View {
                             mailComposeViewModel.composeEmail = composeText
                             subject = diary.subject ?? ""
                             attachmentsData = diary.attachments ?? []
-                            print("composeText \(composeText)")
-                            print("subject \(subject)")
-                            print("attachmentsData \(attachmentsData)")
-                            //                    selectedIconIndex = diary.theme
                             if let recipients = diary.recipients {
                                 if let toRecipient = recipients.first(where: { $0.type == "to" }) {
                                     to = toRecipient.user?.tCode ?? ""
-                                    print("emailByIdData.to \(to))")
                                 }
                                 
                             }
@@ -481,7 +472,6 @@ struct draftView: View {
                         DeleteTrashAlert(isPresented: $showingDeleteAlert) {
                             mailFullViewModel.deleteEmailFromAwaiting(emailId: [id])
                             self.isdraftViewVisible = false
-                            print("Note deleted")
                         }
                         .transition(.scale)
                     }

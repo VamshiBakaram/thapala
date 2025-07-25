@@ -30,7 +30,6 @@ struct SearchView: View {
                     HStack(alignment: .center) {
                         // Back Button
                         Button(action: {
-                            print("clicked")
                             self.presentationMode.wrappedValue.dismiss()
                         }, label: {
                             Image("backButton")
@@ -200,12 +199,8 @@ struct SearchView: View {
                                             .onTapGesture {
                                                 if let threadID = EmailData.threadId,
                                                    let index = appBarElementsViewModel.emailData.firstIndex(where: { $0.threadId == threadID }) {
-                                                    print("thread id:", threadID)
-                                                    // Toggle the 'starred' status between 1 and 0
                                                     appBarElementsViewModel.emailData[index].starred = (appBarElementsViewModel.emailData[index].starred == 1) ? 0 : 1
                                                     homeAwaitingViewModel.getStarredEmail(selectedEmail: threadID)
-                                                } else {
-                                                    print("threadID is nil")
                                                 }
                                             }
                                     }
@@ -253,9 +248,6 @@ struct SearchView: View {
                                                     Text(draftData.firstname ?? "")
                                                         .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
                                                         .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                        .onTapGesture {
-                                                            print("recipient.user.firstname \(draftData.firstname)")
-                                                        }
                                             }
                                                 Text(draftData.subject ?? "")
                                                     .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -268,12 +260,6 @@ struct SearchView: View {
                                     }
                                 }
                                 .listRowBackground(themesviewModel.currentTheme.windowBackground)
-                                .onTapGesture {
-                                    if appBarElementsViewModel.beforeLongPress {
-                                        print("appBarElementsViewModel.beforeLongPress")
-//                                        appBarElementsViewModel.selectedID = draftData.threadID
-                                    }
-                                }
                             }
 //                            .refreshable{
 //                            }
@@ -284,10 +270,6 @@ struct SearchView: View {
                         }
                     
                     }
-                .onAppear{
-                        print("appBarElementsViewModel.isSearch appears  \(appBarElementsViewModel.isSearch)")
-                    
-                }
                 .toast(message: $appBarElementsViewModel.error)
 
                     Spacer()
@@ -316,7 +298,6 @@ struct FilterButton: View {
             )
             .onTapGesture {
                 action()
-                print("isSelected \(isSelected)")
             }
     }
 }

@@ -35,7 +35,6 @@ class ConsoleViewModel: ObservableObject {
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:
@@ -66,7 +65,6 @@ class ConsoleViewModel: ObservableObject {
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:
@@ -97,7 +95,6 @@ class ConsoleViewModel: ObservableObject {
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:
@@ -126,7 +123,6 @@ class ConsoleViewModel: ObservableObject {
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:
@@ -157,7 +153,6 @@ class ConsoleViewModel: ObservableObject {
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:
@@ -188,7 +183,6 @@ class ConsoleViewModel: ObservableObject {
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:
@@ -248,7 +242,6 @@ class ConsoleViewModel: ObservableObject {
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:

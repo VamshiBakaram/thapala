@@ -71,10 +71,6 @@ struct HomePlannerView: View {
                             Spacer()
                             
                             Button(action: {
-                                print("search button pressed")
-                                print("Before appBarElementsViewModel.isSearch \(appBarElementsViewModel.isSearch)")
-                                    appBarElementsViewModel.isSearch = true
-                                print("After appBarElementsViewModel.isSearch \(appBarElementsViewModel.isSearch)")
                             }) {
                                 Image("magnifyingglass")
                                     .renderingMode(.template)
@@ -82,7 +78,6 @@ struct HomePlannerView: View {
                                     .font(Font.title.weight(.medium))
                             }
                             Button(action: {
-                                print("bell button pressed")
                                 iNotificationAppBarView = true
                             }) {
                                 Image("notification")
@@ -94,7 +89,6 @@ struct HomePlannerView: View {
                             
                             
                             Button(action: {
-                                print("line.3.horizontal button pressed")
                                 withAnimation {
                                     isMenuVisible.toggle()
                                 }
@@ -132,7 +126,6 @@ struct HomePlannerView: View {
 //                            .frame(height: 48)  // Set height explicitly for the entire HStack
 //                                        .padding(.top , 10)
                                         Button(action: {
-                                                print("bell button pressed")
                                                     }) {
                                         Image("notification1")
                                             .resizable()
@@ -186,7 +179,6 @@ struct HomePlannerView: View {
                                     selectedOption = .diary
                                     self.homePlannerViewModel.selectedOption = .diary
                                     homePlannerViewModel.GetDiaryDataList()
-                                    print("hlo testing ")
                                     self.homePlannerViewModel.isDoItSelected = false
                                     self.homePlannerViewModel.isDairySelected = true
                                     self.homePlannerViewModel.isNoteSelected = false
@@ -371,7 +363,6 @@ struct HomePlannerView: View {
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 300 / 1000.0) {
                         themeArray = homePlannerViewModel.doitlistData.compactMap { $0.theme }
-                        print("Themes: \(themeArray)")
                         
                         if !themeArray.isEmpty {
                             // Extract themes from doitlistData
@@ -382,7 +373,6 @@ struct HomePlannerView: View {
                                 theme.components(separatedBy: "/").last?.replacingOccurrences(of: ".png", with: "")
                             }
                             
-                            print("themeImage \(themeArray)")
                             for (index, theme) in themeArray.enumerated() {
                                 print("Theme Image \(index + 1): \(theme)")
                             }
@@ -573,11 +563,6 @@ struct HomePlannerView: View {
                                                 .scaledToFill()
                                                 .frame(height: 200)
                                                 .clipped()
-//                                                .onTapGesture {
-//                                                    print("Tapped on theme: \(themeArray[index])") // This prints the theme
-//                                                    print("Index: \(index)") // This prints the index
-//                                                    print("Full theme array: \(themeArray)")
-//                                                }
                                         }
                                         .frame(height: 200)
                                         .cornerRadius(12)
@@ -607,7 +592,6 @@ struct HomePlannerView: View {
                                             // Set the selected comment's id
                                             TaskCommentId = data.id
                                             isStatusVisible.toggle()
-                                            print("themeArray \(themeArray)")
                                         }
                                 }
                                 
@@ -841,10 +825,6 @@ struct HomePlannerView: View {
                         //                    homePlannerViewModel.updateDiaryData(selectedID: data.id)
                         homePlannerViewModel.selectedID = data.id ?? 0
                         homePlannerViewModel.Diaryupdate = true
-                        print("Selected ID: \(data.id)")
-                        //                    homePlannerViewModel.Diaryupdate = true
-                        //                    index = data.id
-                        print("api called, \(data.id)")
                     }
                     
                     .tint(Color(red:255/255, green: 128/255, blue: 128/255))
@@ -914,10 +894,6 @@ struct HomePlannerView: View {
                         //                    homePlannerViewModel.updateDiaryData(selectedID: data.id)
                         homePlannerViewModel.selectedID = data.id ?? 0
                         homePlannerViewModel.Noteupdate = true
-                        print("Selected ID: \(data.id)")
-                        //                    homePlannerViewModel.Diaryupdate = true
-                        //                    index = data.id
-                        print("api called, \(data.id)")
                     }
                     
                     .tint(Color(red:255/255, green: 128/255, blue: 128/255))
@@ -950,8 +926,6 @@ struct HomePlannerView: View {
                  isEventVisible = true
                  clickedDate = formatDate(newDate) // Format the date
                  clickedTime = formatTime(newDate) // Format the time
-                 print("Date: \(clickedDate)") // Console log for the date
-                 print("Time: \(clickedTime)") // Console log for the time
              }
              
              Spacer()

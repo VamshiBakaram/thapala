@@ -139,7 +139,6 @@ struct ChatBoxView: View {
                         Button(action: {
                             guard !messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
                             messages.append(Message(text: messageText, isSentByUser: true, timestamp: Date()))
-                            print("messageText \(messageText)")
                             messageText = ""
                         }) {
                             Image(systemName: "paperplane.fill")
@@ -160,28 +159,20 @@ struct ChatBoxView: View {
         .onAppear {
             if homePostboxViewModel.ContactsList.isEmpty {
                 homePostboxViewModel.getContactsList()
-                print("Fetching getContactsList()...")
-                print("selected id \(selectID)")
                 
             }
             if homePostboxViewModel.GetChatMessage.isEmpty {
-                print("fetching before GetChatMessage")
                 homePostboxViewModel.getAllChats(senderID: sessionManager.userId, recieverId: selectID)
-                print("fetching before GetChatMessage")
             }
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 if let settings = homePostboxViewModel.ContactsList.first(where: { $0.id == selectID }) {
                     firstname = settings.firstname
                     profile = settings.profile ?? ""
-                    print("first name \(firstname)")
-                    print("profile  \(profile)")
                 }
                 chatMessage = homePostboxViewModel.GetChatMessage.map { $0.message }
             }
-            print("before socketManager calls")
             socketManager.connect()
-            print("After socketManager calls")
         }
         .navigationBarHidden(true)
     }

@@ -77,7 +77,6 @@ struct HomePostboxView: View {
                             Spacer()
                             
                             Button(action: {
-                                print("search button pressed")
                                 appBarElementsViewModel.isSearch = true
                             }) {
                                 Image("magnifyingglass")
@@ -215,7 +214,8 @@ struct HomePostboxView: View {
                                 .padding(.bottom , 10)
                             
                     }
-                        .frame(height: reader.size.height * 0.16)
+                        .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top ?? 30)
+//                        .frame(height: reader.size.height * 0.16)
                         .background(themesviewModel.currentTheme.tabBackground)
                         
 
@@ -276,12 +276,10 @@ struct HomePostboxView: View {
                                         selectedIndices.removeAll()
                                         isSelectAll = false
                                         homePostboxViewModel.selectedThreadIDs = []
-                                        print("homePostboxViewModel.selectedThreadIDs  \(homePostboxViewModel.selectedThreadIDs )")
                                     } else {
                                         selectedIndices = Set(homePostboxViewModel.postBoxEmailData.compactMap { $0.threadId })
                                         isSelectAll = true
                                         homePostboxViewModel.selectedThreadIDs = Array(selectedIndices)
-                                        print("homePostboxViewModel.selectedThreadIDs  \(homePostboxViewModel.selectedThreadIDs )")
                                         
                                     }
                                 }) {
@@ -310,17 +308,12 @@ struct HomePostboxView: View {
                                                     } else {
                                                         selectedIndices.insert(threadId)
                                                         homePostboxViewModel.selectedThreadIDs.append(threadId)
-                                                        print("single check \(homePostboxViewModel.selectedThreadIDs)")
                                                         homePostboxViewModel.selectedID = threadId
                                                         markAs = data.readReceiptStatus ?? 0
-                                                        print("check POST markAs  \(markAs)")
                                                         EmailStarred = data.starred
-                                                        print("EmailStarred  \(EmailStarred)")
-                                                        print("homePostboxViewModel.selectedID  \(homePostboxViewModel.selectedID)")
                                                     }
                                                     isSelectAll = selectedIndices.count == homePostboxViewModel.postBoxEmailData.count
                                                     
-                                                    print("homePostboxViewModel.selectedThreadIDs  \(homePostboxViewModel.selectedThreadIDs)")
                                                 }
                                             }) {
                                                 Image(selectedIndices.contains(data.threadId ?? -1) ? "selected" : "contactW")
@@ -426,7 +419,6 @@ struct HomePostboxView: View {
                                         .listRowBackground(themesviewModel.currentTheme.windowBackground)
                                         .swipeActions(edge: .leading) {
                                             Button {
-                                                print("Deleting row")
                                                 showingDeleteAlert = true
                                             } label: {
                                                 Image(systemName: "trash")
@@ -487,11 +479,9 @@ struct HomePostboxView: View {
                         }
                         .onAppear {
                             isPostBoxMailViewActive = true
-                            print("isPostBoxMailViewActive  \(isPostBoxMailViewActive)")
                         }
                         HStack{
                             Button(action: {
-                                print("delete clicked")
                                 showingDeleteAlert = true
                             }){
                                 Image("delete")
@@ -504,7 +494,6 @@ struct HomePostboxView: View {
                             Spacer()
                             
                             Button(action: {
-                                print("snooze clicked")
                                 isSnoozeSheetvisible = true
                             }){
                                 Image("snooze")
@@ -516,7 +505,6 @@ struct HomePostboxView: View {
                             Spacer()
                             
                             Button(action: {
-                                print("threeDots clicked")
                                 isMoreSheetvisible = true
                             }){
                                 Image("threeDots")
@@ -536,8 +524,6 @@ struct HomePostboxView: View {
                 .background(themesviewModel.currentTheme.windowBackground)
                 .onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        print("postBox view appears")
-                        
                         homePostboxViewModel.getPostEmailData()
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                             homePostboxViewModel.getContactsList()
@@ -555,11 +541,9 @@ struct HomePostboxView: View {
                 .onChange(of: isSnoozeSheetvisible || isMoreSheetvisible) { newValue in
                     if newValue == false {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                            print("Zstack onchange postView Api calls")
                             homePostboxViewModel.getPostEmailData()
                             selectedIndices = []
                             homePostboxViewModel.selectedThreadIDs = []
-                            print("Zstack get postView Api calls")
                         }
                     }
                 }
@@ -645,7 +629,6 @@ struct HomePostboxView: View {
                         // Centered DeleteNoteAler
                         DeleteAlert(isPresented: $showingDeleteAlert) {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                print("delete alert")
                                 homeAwaitingViewModel.deleteEmailFromAwaiting(threadIDS: homePostboxViewModel.selectedThreadIDs)
                                 showingDeleteAlert = false
                                 homePostboxViewModel.beforeLongPress.toggle()
@@ -671,7 +654,6 @@ struct HomePostboxView: View {
                             .edgesIgnoringSafeArea(.all)
                             .onTapGesture {
                                 withAnimation {
-                                    print("Tapped isMoreSheetvisible")
                                     isMoreSheetvisible = false
                                 }
                             }
@@ -693,7 +675,6 @@ struct HomePostboxView: View {
                             .edgesIgnoringSafeArea(.all)
                             .onTapGesture {
                                 withAnimation {
-                                    print("Tapped isSnoozeSheetvisible")
                                     isSnoozeSheetvisible = false
                                 }
                             }
@@ -702,9 +683,6 @@ struct HomePostboxView: View {
                             BottomSnoozeView(isBottomSnoozeViewVisible: $isSnoozeSheetvisible, SnoozeTime: $notificationTime, selectedID: homePostboxViewModel.selectedID ?? 0)
                                 .transition(.move(edge: .bottom))
                                 .animation(.easeInOut, value: isSnoozeSheetvisible)
-                        }
-                        .onAppear{
-                            print("snooze sheet works \(homePostboxViewModel.selectID)")
                         }
                     }
                 }
@@ -717,45 +695,35 @@ struct HomePostboxView: View {
             .sheet(isPresented: $isSheetVisible, content: {
                 EmailOptionsView( replyAction: {
                     // Perform reply action
-                    print("Reply tapped")
                     dismissSheet()
                 },
                                   replyAllAction: {
                     // Perform reply all action
-                    print("Reply all tapped")
                     dismissSheet()
                 },
                                   forwardAction: {
                     // Perform forward action
-                    print("Forward tapped")
                     dismissSheet()
                 },
                                   markAsReadAction: {
-                    print("read")
                     dismissSheet()
                 },
                                   markAsUnReadAction: {
-                    print("unread")
                     dismissSheet()
                 },
                                   createLabelAction: {
-                    print("label")
                     dismissSheet()
                 },
                                   moveToFolderAction: {
-                    print("move folder")
                     dismissSheet()
                 },
                                   starAction: {
-                    print("star")
                     dismissSheet()
                 },
                                   snoozeAction: {
-                    print("snooze")
                     dismissSheet()
                 },
                                   trashAction: {
-                    print("trash acti")
                     dismissSheet()
                 }
                 )
@@ -934,21 +902,16 @@ struct HomePostboxView: View {
                                             .onEnded { _ in
                                                 withAnimation {
                                                     selectedIndices.insert(data.threadId ?? 0)
-                                                    print("unchecked button selected threadId \(data.threadId ?? 0)")
                                                     homePostboxViewModel.selectedID = data.threadId
                                                     homePostboxViewModel.selectedThreadIDs.append(data.threadId ?? 0)
-                                                    print("before clicked homePostboxViewModel.beforeLongPress \(homePostboxViewModel.beforeLongPress)")
                                                     homePostboxViewModel.beforeLongPress = false
-                                                    print("after clicked homePostboxViewModel.beforeLongPress \(homePostboxViewModel.beforeLongPress)")
                                                     markAs = data.readReceiptStatus
                                                     EmailStarred = data.starred
-                                                    print("EmailStarred  \(EmailStarred)")
                                                 }
                                             }
                                     )
                                     .swipeActions(edge: .leading) {
                                         Button {
-                                            print("Deleting row")
                                             // deletion logic here
                                         } label: {
                                             deleteIcon.foregroundStyle(.white)
@@ -1052,14 +1015,9 @@ struct HomePostboxView: View {
                             }
                             .listRowBackground(themesviewModel.currentTheme.windowBackground)
                             .onTapGesture {
-                                print("on tap of hstack before screen")
                                 homePostboxViewModel.isChatBoxScreen = true
-                                print("on tap of hstack after screen")
-                                print(homePostboxViewModel.isChatBoxScreen)
                                 homePostboxViewModel.selectID = contact.id
-                                print("homePostboxViewModel.selectID \(homePostboxViewModel.selectID)")
                                 homePostboxViewModel.roomid = contact.roomId
-                                print("homePostboxViewModel.roomid \(homePostboxViewModel.roomid)")
                                 
                             }
                             .gesture(

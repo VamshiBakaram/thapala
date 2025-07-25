@@ -137,7 +137,6 @@ struct ControlHeaderView: View {
                                                         .padding(8)
                                                         .cornerRadius(8)
                                                         .onChange(of: mail) { newValue in
-                                                            print("Toggle changed to: \(newValue)")
                                                             if newValue {
                                                                 ConsoleviewModel.updateDiaryData(Allnotifications: newValue, newemails: newValue, ScheduleSent: newValue, Newmessage: NewMessage, AddOrremove: AddOrRemove, chatDetails: ChatDetails, Connectionexpired: ConnectionExpired, DateBook: Datebook, Diary: Diary, DoIt: DoIt, Note: Note, Reminder: Reminder)
                                                                 mail = true
@@ -158,7 +157,6 @@ struct ControlHeaderView: View {
                                                         .padding(8)
                                                         .cornerRadius(8)
                                                         .onChange(of: chatBox) { newValue in
-                                                            print("Toggle changed to: \(newValue)")
                                                             if newValue {
                                                                 ConsoleviewModel.updateDiaryData(Allnotifications: AllNotifications, newemails: NewEmail, ScheduleSent: Scheduledsent, Newmessage: newValue, AddOrremove: newValue, chatDetails: newValue, Connectionexpired: newValue, DateBook: Datebook, Diary: Diary, DoIt: DoIt, Note: Note, Reminder: Reminder)
                                                                 chatBox = true
@@ -183,7 +181,6 @@ struct ControlHeaderView: View {
                                                         .padding(8)
                                                         .cornerRadius(8)
                                                         .onChange(of: planner) { newValue in
-                                                            print("Toggle changed to: \(newValue)")
                                                             if newValue {
                                                                 ConsoleviewModel.updateDiaryData(Allnotifications: AllNotifications, newemails: NewEmail, ScheduleSent: Scheduledsent, Newmessage: NewMessage, AddOrremove: AddOrRemove, chatDetails: ChatDetails, Connectionexpired: ConnectionExpired, DateBook: newValue, Diary: newValue, DoIt: newValue, Note: newValue, Reminder: newValue)
                                                                 planner = true
@@ -629,11 +626,8 @@ struct ControlHeaderView: View {
                             // First, fetch settings data
                             if ConsoleviewModel.GetUserSettings.isEmpty {
                                 ConsoleviewModel.getUserSettings()
-                                print("Fetching user settings...")
                                 ConsoleviewModel.getUserSecurityQuestions()
-                                print("security user settings...")
                                 ConsoleviewModel.getAllAlertNotifications()
-                                print("notifications user settings...")
                             }
                             
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -656,10 +650,6 @@ struct ControlHeaderView: View {
                                     isChatBubbleEnabled = settings.openChatBubbles
                                     isChatBackGround = settings.chatBackGround
                                     trash = settings.trashRecovery
-                                    //                            if let isselect = ConsoleviewModel.SecurityQuestions.first{
-                                    //                                issecurityQuestions = isselect.question
-                                    //                                print("issecurityQuestions \(issecurityQuestions)")
-                                    //                            }
                                 }
                             }
                         }
@@ -667,14 +657,12 @@ struct ControlHeaderView: View {
                 .onChange(of: selectedTab) { newValue in
                     if newValue == 1 {
                         ConsoleviewModel.getUserSecurityQuestions()
-                        print("security user settings...")
 
                     }
                 }
                 .onChange(of: selectedTab) { newValue in
                     if newValue == 2 {
                         ConsoleviewModel.getAllAlertNotifications()
-                        print("Fetching alert notifications from ConsoleviewModel")
                         ConsoleviewModel.GetAllNotificationAlerts.forEach { alert in
                             AllNotifications = alert.allNotifications
                             NewEmail = alert.newEmail
@@ -766,7 +754,6 @@ struct ControlHeaderView: View {
                             HStack {
                                 Spacer()
                                 Button(action: {
-                                    print("Button clicked!")
                                 }) {
                                     Text("Submit")
                                         .font(.headline)
@@ -823,9 +810,6 @@ struct ControlHeaderView: View {
                             HStack {
                                 Spacer()
                                 Button(action: {
-                                    print("Button clicked!")
-                                    print("currentPassword \($ConsoleviewModel.currentPassword)")
-                                    print("newPassword \($ConsoleviewModel.NewPassword)")
                                 }) {
                                     Text("Submit")
                                         .font(.headline)
@@ -850,7 +834,6 @@ struct ControlHeaderView: View {
                             ForEach(ConsoleviewModel.SecurityQuestions, id: \.question) { question in
                                 Button(question.question) {
                                     issecurityQuestions = question.question
-                                    print("issecurityQuestions \(issecurityQuestions)")
                                     ConsoleviewModel.getUserSecurityQuestions()
                                     isSelect = false
                                 }
@@ -952,9 +935,6 @@ struct ControlHeaderView: View {
                             HStack {
                                 Spacer()
                                 Button(action: {
-                                    print("Button clicked!")
-                                    print("currentPassword \(ConsoleviewModel.currentPassword)")
-                                    print("newPassword \(ConsoleviewModel.NewPassword)")
                                     ConsoleviewModel.setPin(Newpin: ConsoleviewModel.currentPassword, confirmationPin: ConsoleviewModel.NewPassword)
                                     isPinDialogVisible = false
                                 }) {
@@ -1901,7 +1881,6 @@ struct ControlHeaderView: View {
                             .padding(8)
                             .cornerRadius(8)
                             .onChange(of: NewEmail) { newValue in
-                                print("NewEmail changed to: \(newValue)")
                                 ConsoleviewModel.updateDiaryData(
                                     Allnotifications: AllNotifications,
                                     newemails: newValue,
@@ -1916,14 +1895,6 @@ struct ControlHeaderView: View {
                                     Note: Note,
                                     Reminder: Reminder
                                 )
-//                                
-//                                if NewEmail || Scheduledsent {
-//                                    mail = true
-//                                    print("Mail is TRUE")
-//                                } else {
-//                                    mail = false
-//                                    print("Mail is FALSE")
-//                                }
                             }
                     }
 
@@ -1939,7 +1910,6 @@ struct ControlHeaderView: View {
                             .padding(8)
                             .cornerRadius(8)
                             .onChange(of: Scheduledsent) { newValue in
-                                print("Scheduledsent changed to: \(newValue)")
                                 
                                 ConsoleviewModel.updateDiaryData(
                                     Allnotifications: AllNotifications,
@@ -1955,14 +1925,7 @@ struct ControlHeaderView: View {
                                     Note: Note,
                                     Reminder: Reminder
                                 )
-                                
-//                                if NewEmail || newValue {
-//                                    mail = true
-//                                    print("Mail is TRUE")
-//                                } else {
-//                                    mail = false
-//                                    print("Mail is FALSE")
-//                                }
+
                             }
                     }
                 }
@@ -1981,7 +1944,6 @@ struct ControlHeaderView: View {
                             .padding(8)
                             .cornerRadius(8)
                             .onChange(of: NewMessage) { newValue in
-                                print("Toggle changed to: \(newValue)")
                                 if newValue {
                                     ConsoleviewModel.updateDiaryData(Allnotifications: AllNotifications, newemails: NewEmail, ScheduleSent: Scheduledsent, Newmessage: newValue, AddOrremove: AddOrRemove, chatDetails: ChatDetails, Connectionexpired: ConnectionExpired, DateBook: Datebook, Diary: Diary, DoIt: DoIt, Note: Note, Reminder: Reminder)
                                 }
@@ -2001,7 +1963,6 @@ struct ControlHeaderView: View {
                             .padding(8)
                             .cornerRadius(8)
                             .onChange(of: AddOrRemove) { newValue in
-                                print("Toggle changed to: \(newValue)")
                                 if newValue {
                                     ConsoleviewModel.updateDiaryData(Allnotifications: AllNotifications, newemails: NewEmail, ScheduleSent: Scheduledsent, Newmessage: NewMessage, AddOrremove: newValue, chatDetails: ChatDetails, Connectionexpired: ConnectionExpired, DateBook: Datebook, Diary: Diary, DoIt: DoIt, Note: Note, Reminder: Reminder)
                                 }
@@ -2022,7 +1983,6 @@ struct ControlHeaderView: View {
                             .padding(8)
                             .cornerRadius(8)
                             .onChange(of: ChatDetails) { newValue in
-                                print("Toggle changed to: \(newValue)")
                                 if newValue {
                                     ConsoleviewModel.updateDiaryData(Allnotifications: AllNotifications, newemails: NewEmail, ScheduleSent: Scheduledsent, Newmessage: NewMessage, AddOrremove: AddOrRemove, chatDetails: newValue, Connectionexpired: ConnectionExpired, DateBook: Datebook, Diary: Diary, DoIt: DoIt, Note: Note, Reminder: Reminder)
                                 }
@@ -2043,7 +2003,6 @@ struct ControlHeaderView: View {
                             .padding(8)
                             .cornerRadius(8)
                             .onChange(of: ConnectionExpired) { newValue in
-                                print("Toggle changed to: \(newValue)")
                                 if newValue {
                                     ConsoleviewModel.updateDiaryData(Allnotifications: AllNotifications, newemails: NewEmail, ScheduleSent: Scheduledsent, Newmessage: NewMessage, AddOrremove: AddOrRemove, chatDetails: ChatDetails, Connectionexpired: newValue, DateBook: Datebook, Diary: Diary, DoIt: DoIt, Note: Note, Reminder: Reminder)
                                 }

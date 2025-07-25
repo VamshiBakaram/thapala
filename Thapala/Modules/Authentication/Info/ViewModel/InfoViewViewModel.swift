@@ -36,7 +36,6 @@ class InfoViewViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.content = response.data.content
-                    print("info Data: \(self.content.count)")
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -65,7 +64,6 @@ class InfoViewViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.faqcontent = response.data.faq
-                    print("FAQ Data Loaded: \(self.faqcontent.count)")
                 }
             case .failure(let error):
                 DispatchQueue.main.async {

@@ -30,9 +30,6 @@ class StarredEmailViewModel: ObservableObject {
                     self.isLoading = false
                     self.error = response.message ?? ""
                         self.starredEmailData = response.data ?? []
-                        // Print entire response in console
-//                        print("API Response: \(response)")
-//                        print("Parsed Data: \(self.starredEmailData)")
                     
                 }
             case .failure(let error):
@@ -42,11 +39,9 @@ class StarredEmailViewModel: ObservableObject {
                     case .error(error: let error):
                         DispatchQueue.main.async {
                             self.error = error
-//                            print("API Error: \(error)") // Print error message
                         }
                     case .sessionExpired(error: _):
                         self.error = "Please try again later"
-//                        print("Session Expired")
                     }
                 }
             }
@@ -65,7 +60,6 @@ class StarredEmailViewModel: ObservableObject {
                     self.error = response.message ?? ""
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
                         self.starredemail = response.message ?? ""
-                        print("starred email, response")
                     })
                 }
             case .failure(let error):

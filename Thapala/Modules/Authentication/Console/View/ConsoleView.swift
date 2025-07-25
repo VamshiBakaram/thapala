@@ -59,10 +59,8 @@ struct ConsoleView: View {
                         
                         // Go to Console Button
                         Button(action: {
-                            print("before cosole click")
                             self.homeNavigatorViewModel.selectedOption = .controlPanel
                             isNavigating = true
-                            print("after cosole click")
                         }, label: {
                             Text("Go to console")
                                 .font(.custom(.poppinsMedium, size: 18))
@@ -155,7 +153,6 @@ struct ConsoleView: View {
                     // First, fetch settings data
                     if consoleViewModel.UserSettings.isEmpty {
                         consoleViewModel.GetUserSettings()
-                        print("Fetching user settings...")
                     }
                 }
                 .onChange(of: consoleViewModel.UserSettings) { newSettings in
@@ -167,7 +164,6 @@ struct ConsoleView: View {
                         timePeriod = settings.hrsToMoveEmail
                         isChatEnabled = settings.chat
                         isChatBubbleEnabled = settings.openChatBubbles
-                        print("Settings updated - awaiting: \(awaitingPageSize), postBox: \(postBoxPageSize), conveyed: \(conveyedPageSize)")
                     }
                 }
 

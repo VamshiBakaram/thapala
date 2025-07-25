@@ -50,7 +50,6 @@ struct SnoozedMailsView:View{
                             selectedTab = "awaited";
                             SnoozedView = false
                             snoozedMailsViewModel.getSnoozedEmailData(selectedTabItem: selectedTab);
-                            print("selected Tab is : \(selectedTab)")
                             
                         }) {
                             Text("Queue")
@@ -70,7 +69,6 @@ struct SnoozedMailsView:View{
                             selectedTab = "postbox";
                             SnoozedView = false
                             snoozedMailsViewModel.getSnoozedEmailData(selectedTabItem: selectedTab);
-                            print("selected Tab is : \(selectedTab)")
                         }) {
                             Text("postbox")
                                 .fontWeight(.medium)
@@ -89,7 +87,6 @@ struct SnoozedMailsView:View{
                             selectedTab = "conveyed";
                             SnoozedView = false
                             snoozedMailsViewModel.getSnoozedEmailData(selectedTabItem: selectedTab);
-                            print("selected Tab is : \(selectedTab)")
                         }) {
                             Text("conveyed")
                                 .fontWeight(.medium)

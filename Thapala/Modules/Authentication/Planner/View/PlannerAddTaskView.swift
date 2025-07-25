@@ -49,7 +49,6 @@ struct PlannerAddTaskView: View {
                 // Action Buttons Section
                 HStack(spacing: 16) {
                     Button(action: {
-                        print("bell button pressed")
                     }) {
                         Image("bellnotification")
                             .resizable()

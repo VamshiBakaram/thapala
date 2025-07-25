@@ -207,10 +207,8 @@ struct MoveTo: View {
                                                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                                                     isMoveAlertvisible = true
                                                                 }
-                                                                print("submiyt success case")
                                                             }
                                                             else if bottomSheetViewModel.lockerVerifyResponse?.status == 401 {
-                                                                print("submit else case")
                                                                 isMoveAlertvisible = false
                                                                 lockerView = true
                                                                 LockerPin = ""
@@ -292,7 +290,6 @@ struct MoveTo: View {
                                                 consoleViewModel.setPin(Newpin: newPin, confirmationPin: confirmPin)
                                                 newPinView = false
                                                 lockerView = true
-                                                print(".toast(message: $consoleViewModel.error) \($consoleViewModel.error)")
                                                 if newPin == confirmPin {
                                                     sessionManager.pin = newPin
                                                 }
@@ -323,22 +320,12 @@ struct MoveTo: View {
                             
                      }
                     .onAppear {
-                        print("homeRecordsViewModel.setPin  \(homeRecordsViewModel.setPin)")
-                        print("sessionManager.pin \(sessionManager.pin)")
-                        print("move sheet visible")
                         homeRecordsViewModel.getMainRecordsData()
                     }
 
                     .onChange(of: homeRecordsViewModel.mainRecords) { records in
-                        print("Records count: \(records.count)")
                         if !records.isEmpty {
                             MainselectedTabID = records.map { $0.id }
-                            print("MainselectedTabID: \(MainselectedTabID)")
-                            print("MainselectedTabID \(MainselectedTabID[0])")
-                            print("MainselectedTabID \(MainselectedTabID[1])")
-                            print("MainselectedTabID \(MainselectedTabID[2])")
-                        } else {
-                            print("No records found in mainRecords!")
                         }
                     }
                     
@@ -373,8 +360,6 @@ struct MoveTo: View {
                             }
                             else if selectedMoveType == "locker" {
                                 moveToFolderViewModel.moveToLockerFolder(folderId: MainselectedTabID[2], recordName: "locker", selectedThreadIDs: selectedThreadID , password: Lockerpassword , pin: LockerPin )
-                                print("LockerPin \(LockerPin)")
-                                print("Lockerpassword \(Lockerpassword)")
                                 lockerView = false
                                 isMoveVisible = true
                                 selectedIndices = []

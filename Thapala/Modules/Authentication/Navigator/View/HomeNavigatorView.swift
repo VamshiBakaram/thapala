@@ -55,7 +55,6 @@ struct HomeNavigatorView: View {
                                 .font(.custom(.poppinsRegular, size: 16, relativeTo: .title))
                             Spacer()
                             Button(action: {
-                                print("Pencil button pressed")
                                 appBarElementsViewModel.isSearch = true
                             }) {
                                 Image("magnifyingglass")
@@ -64,17 +63,8 @@ struct HomeNavigatorView: View {
                                     .font(Font.title.weight(.medium))
                                     .padding(.trailing , 16)
                             }
-//                            Button(action: {
-//                                print("Pencil button pressed")
-//                                homePostboxViewModel.isComposeEmail = true
-//                            }) {
-//                                Image("pencil")
-//                                    .font(Font.title.weight(.medium))
-//                                    .foregroundColor(Color.white)
-//                            }
                             
                             Button(action: {
-                                print("bell button pressed")
                                 iNotificationAppBarView = true
                             }) {
                                 Image("notification")
@@ -84,7 +74,6 @@ struct HomeNavigatorView: View {
                             }
                             
                             Button(action: {
-                                print("line.3.horizontal button pressed")
                                 withAnimation {
                                     isMenuVisible.toggle()
                                 }
@@ -105,7 +94,6 @@ struct HomeNavigatorView: View {
                                 .frame(width: reader.size.width/3 - 10, height: 50)
                                 .onTapGesture {
                                     self.homeNavigatorViewModel.selectedOption = .adobe
-                                    print("Adobe clicked")
                                     self.homeNavigatorViewModel.isAdobeSelected = true
                                     self.homeNavigatorViewModel.isBioSelected = false
                                     self.homeNavigatorViewModel.isControlSelected = false
@@ -132,7 +120,6 @@ struct HomeNavigatorView: View {
                                 .frame(width: reader.size.width/3 - 10, height: 50)
                                 .onTapGesture {
                                     self.homeNavigatorViewModel.selectedOption = .bio
-                                    print("bio clicked")
                                     self.homeNavigatorViewModel.isAdobeSelected = false
                                     self.homeNavigatorViewModel.isBioSelected = true
                                     self.homeNavigatorViewModel.isControlSelected = false
@@ -160,7 +147,6 @@ struct HomeNavigatorView: View {
                                 .frame(width: reader.size.width/3 - 10, height: 50)
                                 .onTapGesture {
                                     self.homeNavigatorViewModel.selectedOption = .controlPanel
-                                    print("control clicked")
                                     self.homeNavigatorViewModel.isAdobeSelected = false
                                     self.homeNavigatorViewModel.isBioSelected = false
                                     self.homeNavigatorViewModel.isControlSelected = true
@@ -266,7 +252,6 @@ struct HomeNavigatorView: View {
                 .navigationBarBackButtonHidden(true)
                 .background(themesviewModel.currentTheme.windowBackground)
                 .onAppear{
-                    print("homeNavigatorViewModel.isControlSelected = true")
                     self.homeNavigatorViewModel.selectedOption = .controlPanel
                     self.homeNavigatorViewModel.isControlSelected = true
                 }

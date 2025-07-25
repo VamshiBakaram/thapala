@@ -51,9 +51,6 @@ struct InfoView: View {
                     HStack {
                         Button(action: { selectedTab = "info" ;
                             infoViewViewModel.getInfoData(selectedOption: selectedTab)
-                            print("titles \(titles)")
-                            print("descriptions\(descriptions)")
-                            //                    print("infoViewViewModel.guides[0].description \(infoViewViewModel.guides.)")
                         }) {
                             Text("Info")
                                 .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -65,9 +62,7 @@ struct InfoView: View {
                         
                         Button(action: { selectedTab = "FAQ";
                             infoViewViewModel.getFaqData()
-                            print("selected FAQ TAB \(selectedTab)")
                             faqItems = infoViewViewModel.faqcontent  // Update state immediately
-                            print("FAQ Items Count: \(faqItems.count)") // Check if data is updating
                         }) {
                             
                             Text("FAQ's")
@@ -79,7 +74,6 @@ struct InfoView: View {
                         }
                         
                         Button(action: { selectedTab = "Guide" ;
-                            print("selected guide TAB \(selectedTab)")
                             infoViewViewModel.getGuideData()
                         }) {
                             Text("Guides")
@@ -326,7 +320,6 @@ struct InfoView: View {
                     if selectedTab == "Guide" {
                         guideItems = newContent
                         print("on Appear Guide TAB")
-                        print("FAQ Items Count: \(guideItems.count)")
                     }
                 }
                 if isQuickAccessVisible {

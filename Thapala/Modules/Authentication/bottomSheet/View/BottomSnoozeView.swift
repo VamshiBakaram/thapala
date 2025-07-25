@@ -44,7 +44,6 @@ struct BottomSnoozeView: View {
                                         SnoozeTime = Int(selectedDateTime.timeIntervalSince1970)
 //                                        homeAwaitingViewModel.snoozedEmail(selectedEmail: selectedID)
                                         homeAwaitingViewModel.snoozedEmail(snoozedAt: SnoozeTime, selectedThreadID: [selectedID])
-                                        print("SnoozeTime  \(SnoozeTime ?? 0)")
                                         self.isBottomSnoozeViewVisible = false
                                     }
                                     
@@ -66,7 +65,6 @@ struct BottomSnoozeView: View {
                             
                             HStack {
                                 Button(action: {
-                                    print("")
                                 }, label: {
                                     Text("Tomorrow")
                                         .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -76,7 +74,6 @@ struct BottomSnoozeView: View {
                                 Spacer()
                                 
                                 Button(action: {
-                                    print("")
                                 }, label: {
                                     Text("8:00 AM")
                                         .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -87,7 +84,6 @@ struct BottomSnoozeView: View {
                             
                             HStack {
                                 Button(action: {
-                                    print("")
                                 }, label: {
                                     Text("Next Week")
                                         .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -97,7 +93,6 @@ struct BottomSnoozeView: View {
                                 Spacer()
                                 
                                 Button(action: {
-                                    print("")
                                 }, label: {
                                     Text("8:00 AM")
                                         .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -111,9 +106,6 @@ struct BottomSnoozeView: View {
                                     .foregroundColor(themesviewModel.currentTheme.textColor)
                                     .frame(width: 24, height: 24)
                                     .padding(.leading, 16)
-                                    .onTapGesture {
-                                        print("Timer clicked")
-                                    }
                                 
                                 Button(action: {
                                     isDatePickerVisible = true
@@ -179,8 +171,7 @@ struct BottomSnoozeView: View {
             }
             .onAppear {
                 options.withHands = true
-                print("snooze sheet appears")
-                print("selectedID   \(selectedID)")
+
             }
         }
         .background(

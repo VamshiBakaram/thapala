@@ -48,7 +48,6 @@ struct MailComposeView: View {
                     
                     Button(action: {
 //                        mailComposeViewModel.sendEmail()
-                        print("on click of send: ")
                         mailComposeViewModel.to = tCodeText
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                             mailComposeViewModel.sendEmail()
@@ -128,7 +127,6 @@ struct MailComposeView: View {
                                         }
                                     Button(action: {
                                         mailComposeViewModel.isArrow.toggle()
-                                        print("arrow clicked")
                                     }, label: {
                                         Image(mailComposeViewModel.isArrow ? "dropup" : "dropdown")
                                             .renderingMode(.template)

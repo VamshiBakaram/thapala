@@ -27,20 +27,14 @@ class HomeMenuViewModel:ObservableObject{
                 self.isLoading = false
                 switch result {
                 case .success(let response):
-                    print("Logout successful: \(response.message ?? "")")
                     self.message = response.message ?? ""
-                    print("self.message \(self.message)")
-                    print("response.message \(response.message ?? "")")
                     self.error = response.message
                 case .failure(let error):
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired(let message):
-                        print("session expired case executes")
                         self.error = message
-                        self.error = "Session expired. Please log in again."
                     }
                 }
             }

@@ -23,7 +23,6 @@ struct HomeResidenceView: View {
                             .font(.custom(.poppinsRegular, size: 16, relativeTo: .title))
                         Spacer()
                         Button(action: {
-                            print("Pencil button pressed")
                             homeResidenceViewModel.isComposeEmail = true
                         }) {
                             Image("pencil")
@@ -32,7 +31,6 @@ struct HomeResidenceView: View {
                         }
                         
                         Button(action: {
-                            print("bell button pressed")
                         }) {
                             Image("bell")
                                 .font(Font.title.weight(.medium))
@@ -40,7 +38,6 @@ struct HomeResidenceView: View {
                         }
                         
                         Button(action: {
-                            print("line.3.horizontal button pressed")
                             withAnimation {
                                 isMenuVisible.toggle()
                             }
@@ -62,7 +59,6 @@ struct HomeResidenceView: View {
                                 .frame(width: reader.size.width/3 - 10, height: 60)
                                 .onTapGesture {
                                     self.homeResidenceViewModel.selectedOption = .directory
-                                    print(reader.size.width/3 - 10)
                                     self.homeResidenceViewModel.isDirectorySelected = true
                                     self.homeResidenceViewModel.isFamilySelected = false
                                     self.homeResidenceViewModel.isAddNewGroupSelected = false
@@ -89,7 +85,6 @@ struct HomeResidenceView: View {
                                 .frame(width: reader.size.width/3 - 10, height: 60)
                                 .onTapGesture {
                                     self.homeResidenceViewModel.selectedOption = .family
-                                    print("print clicked")
                                     self.homeResidenceViewModel.isDirectorySelected = false
                                     self.homeResidenceViewModel.isFamilySelected = true
                                     self.homeResidenceViewModel.isAddNewGroupSelected = false
@@ -117,7 +112,6 @@ struct HomeResidenceView: View {
                                 .frame(width: reader.size.width/3 - 10, height: 60)
                                 .onTapGesture {
                                     self.homeResidenceViewModel.selectedOption = .addNewGroup
-                                    print("outline clicked")
                                     self.homeResidenceViewModel.isDirectorySelected = false
                                     self.homeResidenceViewModel.isFamilySelected = false
                                     self.homeResidenceViewModel.isAddNewGroupSelected = true
@@ -192,7 +186,6 @@ struct HomeResidenceView: View {
                                             Spacer()
                                             Button {
                                                 
-                                                print("Add contact presses Direct")
                                             } label: {
                                                 Text("Add Contact")
                                                     .font(.custom(.poppinsRegular, size: 8,relativeTo: .title))
@@ -204,7 +197,6 @@ struct HomeResidenceView: View {
                                             
                                             
                                             Button {
-                                                print("Directory clicked")
                                             } label: {
                                                 Image("move")
                                                     .font(.custom(.poppinsRegular, size: 8,relativeTo: .title))

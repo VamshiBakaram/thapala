@@ -63,7 +63,6 @@ class HomeDirectoryViewModel: ObservableObject {
                     self.isLoading = false
                     self.DirectoryData = response.data.results // Use `response.data` to access `DiaryData`
                     self.blockedUsers = [response.data]
-                    print("check self.blockedUsers \(response.data.currentUserBlockedUsers)")
                     self.error = response.message
                 }
             case .failure(let error):
@@ -128,7 +127,6 @@ class HomeDirectoryViewModel: ObservableObject {
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:
@@ -152,7 +150,6 @@ class HomeDirectoryViewModel: ObservableObject {
                     self.isLoading = false
                     self.groupList = response.data
                     self.error = response.message
-                    print("get group list \(self.groupList)")
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -179,7 +176,6 @@ class HomeDirectoryViewModel: ObservableObject {
                     self.isLoading = false
                     self.searchData = response.data.results // Use `response.data` to access `DiaryData`
                     self.error = response.message
-                    print("search APi works  \(response.message)")
                     
                 }
             case .failure(let error):
@@ -198,7 +194,6 @@ class HomeDirectoryViewModel: ObservableObject {
 
     func getStatesAndCities() {
         guard let fileURL = Bundle.main.url(forResource: "countriesToCities", withExtension: "json") else {
-            print("❌ countriesToCities.json not found")
             return
         }
 
@@ -207,15 +202,13 @@ class HomeDirectoryViewModel: ObservableObject {
             let decoded = try JSONDecoder().decode(CountryData.self, from: jsonData)
             DispatchQueue.main.async {
                 self.countryCodes = decoded.countries
-                print("getStatesAndCities function calls")
-                
                 // Select first country and its states by default
                 if let _ = self.countryCodes.first {
                     self.selectCountry(at: -1)
                 }
             }
         } catch {
-            print("❌ Failed to decode JSON: \(error.localizedDescription)")
+//            print("❌ Failed to decode JSON: \(error.localizedDescription)")
         }
     }
     

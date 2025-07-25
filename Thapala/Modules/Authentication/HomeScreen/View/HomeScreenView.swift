@@ -21,7 +21,6 @@ struct HomeScreenView: View {
                     HStack(spacing: 20) {
                         Spacer()
                         Button(action: {
-                            print("search button pressed")
                         }) {
                             Image("magnifyingglass")
                                 .renderingMode(.template)
@@ -37,7 +36,6 @@ struct HomeScreenView: View {
                         }
                         
                         Button(action: {
-                            print("bell button pressed")
                         }) {
                             Image("bell")
                                 .renderingMode(.template)
@@ -46,7 +44,6 @@ struct HomeScreenView: View {
                         }
                         
                         Button(action: {
-                            print("line.3.horizontal button pressed")
                             withAnimation {
                                 homeScreenViewModel.isMenuVisible.toggle()
                             }
@@ -94,16 +91,12 @@ struct HomeScreenView: View {
                     // First, fetch settings data
                     if ConsoleviewModel.GetUserSettings.isEmpty {
                         ConsoleviewModel.getUserSettings()
-                        print("Fetching user settings...")
                     }
-                    print("on Appears of mainView \(sessionManager.SelectedTheme)")
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                         if let settings = ConsoleviewModel.GetUserSettings.first {
                             sessionManager.SelectedTheme = settings.theme
-                            print("sessionManager.SelectedTheme \(sessionManager.SelectedTheme)")
                         }
-                        print("after selectedTheme \(themesviewModel.selectedTheme)")
                       }
                     }
             }

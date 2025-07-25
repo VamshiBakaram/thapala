@@ -61,9 +61,7 @@ struct HomeConveyedView: View {
                                     
                                     Spacer()
                                     Button(action: {
-                                        print("Before isSearchView \(appBarElementsViewModel.isSearch)")
                                         appBarElementsViewModel.isSearch = true
-                                        print("After isSearchView \(appBarElementsViewModel.isSearch)")
                                     }) {
                                         Image("magnifyingglass")
                                             .renderingMode(.template)
@@ -80,7 +78,6 @@ struct HomeConveyedView: View {
                                     .padding(.leading,15)
                                     
                                     Button(action: {
-                                        print("line.3.horizontal button pressed")
                                         withAnimation {
                                             isMenuVisible.toggle()
                                         }
@@ -202,7 +199,8 @@ struct HomeConveyedView: View {
                                 .padding(.bottom , 10)
                                 
                             }
-                            .frame(height: reader.size.height * 0.16)
+                            .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top ?? 30)
+//                            .frame(height: reader.size.height * 0.16)
                             .background(themesviewModel.currentTheme.tabBackground)
                             
                             //                            if let selectedOption = homeConveyedViewModel.selectedOption {
@@ -227,7 +225,6 @@ struct HomeConveyedView: View {
                                         Spacer()
                                         
                                         Button {
-                                            print("cancel works")
                                             homeConveyedViewModel.beforeLongPress = true
                                             homeConveyedViewModel.selectedThreadIDs = []
                                             selectedIndices = []
@@ -247,17 +244,14 @@ struct HomeConveyedView: View {
                                             .padding(.leading, 16)
 
                                         Button(action: {
-                                            print("select All clicked")
                                                 if selectedIndices.count == homeConveyedViewModel.conveyedEmailData.count {
                                                     selectedIndices.removeAll()
                                                     homeConveyedViewModel.selectedThreadIDs = []
-                                                    print("homeConveyedViewModel.selectedThreadIDs  \(homeConveyedViewModel.selectedThreadIDs )")
                                                     isSelectAll = false
                                                 } else {
                                                     selectedIndices = Set(homeConveyedViewModel.conveyedEmailData.compactMap { $0.threadID })
                                                     isSelectAll = true
                                                     homeConveyedViewModel.selectedThreadIDs = Array(selectedIndices)
-                                                    print("homeConveyedViewModel.selectedThreadIDs  \(homeConveyedViewModel.selectedThreadIDs )")
                                                 }
                                         }) {
                                             Image(systemName: isSelectAll ? "checkmark.square.fill" : "square")
@@ -379,8 +373,6 @@ struct HomeConveyedView: View {
                                                                             homeConveyedViewModel.getStarredEmail(selectedEmail: threadID)
                                                                             homeConveyedViewModel.selectedID = data.threadID
                                                                             homeConveyedViewModel.selectedThreadIDs.append(data.threadID ?? 0)
-                                                                            print("homeConveyedViewModel.selectedID   \(homeConveyedViewModel.selectedID)")
-                                                                            print("homeConveyedViewModel.selectedThreadIDs   \(homeConveyedViewModel.selectedThreadIDs)")
                                                                         }
                                                                     }
                                                             }
@@ -393,8 +385,6 @@ struct HomeConveyedView: View {
                                                             homeConveyedViewModel.passwordHint = data.passwordHint
                                                             homeConveyedViewModel.isEmailScreen = true
                                                             homeConveyedViewModel.selectedThreadIDs.append(data.threadID ?? 0)
-                                                            print("homeConveyedViewModel.selectedID \(homeConveyedViewModel.selectedID)")
-                                                            print("homeConveyedViewModel.selectedThreadIDs \(homeConveyedViewModel.selectedThreadIDs)")
                                                         }
                                                         .gesture(
                                                             LongPressGesture(minimumDuration: 1.0)
@@ -404,8 +394,6 @@ struct HomeConveyedView: View {
                                                                         selectedIndices.insert(data.threadID ?? 0)
                                                                         homeConveyedViewModel.selectedID = data.threadID
                                                                         homeConveyedViewModel.selectedThreadIDs.append(data.threadID ?? 0)
-                                                                        print("homeConveyedViewModel.selectedID \(homeConveyedViewModel.selectedID)")
-                                                                        print("homeConveyedViewModel.selectedThreadIDs \(homeConveyedViewModel.selectedThreadIDs)")
                                                                     }
                                                                 }
                                                         )
@@ -448,16 +436,13 @@ struct HomeConveyedView: View {
                                                     VStack {
                                                         HStack {
                                                             Button(action: {
-                                                                print("selected check image")
                                                                 if let threadId = data.threadID {
                                                                     if selectedIndices.contains(threadId) {
                                                                         selectedIndices.remove(threadId)
                                                                         homeConveyedViewModel.selectedThreadIDs.removeAll { $0 == threadId }
                                                                     } else {
                                                                         selectedIndices.insert(threadId)
-                                                                        print("selected threadId \(threadId)")
                                                                         homeConveyedViewModel.selectedThreadIDs.append(threadId)
-                                                                        print("single check homeConveyedViewModel.selectedThreadIDs  \(homeConveyedViewModel.selectedThreadIDs)")
                                                                     }
                                                                     isSelectAll = selectedIndices.count == homeConveyedViewModel.conveyedEmailData.count
                                                                 }
@@ -567,7 +552,6 @@ struct HomeConveyedView: View {
                                                 
                                                 HStack{
                                                     Button(action: {
-                                                        print("delete clicked")
                                                         showingDeleteAlert = true
                                                     }){
                                                         Image("delete")
@@ -665,7 +649,6 @@ struct HomeConveyedView: View {
                     .background(themesviewModel.currentTheme.windowBackground)
                     .onAppear{
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                            print("conveyed view appears")
                             homeConveyedViewModel.getConveyedEmailData()
                         }
                     }
@@ -755,7 +738,6 @@ struct HomeConveyedView: View {
                             // Centered DeleteNoteAlert
                             DeleteAlert(isPresented: $showingDeleteAlert) {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.001) {
-                                    print("delete alert")
                                     homeAwaitingViewModel.deleteEmailFromAwaiting(threadIDS: homeConveyedViewModel.selectedThreadIDs)
                                     showingDeleteAlert = false
                                     homeConveyedViewModel.beforeLongPress = true
@@ -801,9 +783,6 @@ struct HomeConveyedView: View {
                 }
                 .navigationDestination(isPresented: $homeConveyedViewModel.isComposeEmail) {
                     MailComposeView().toolbar(.hidden)
-                        .onAppear {
-                            print("MailFullView appeared with emailId: \(homeConveyedViewModel.selectedID)")
-                        }
                 }
 
 
@@ -814,45 +793,35 @@ struct HomeConveyedView: View {
                 .sheet(isPresented: $isSheetVisible, content: {
                     EmailOptionsView( replyAction: {
                         // Perform reply action
-                        print("Reply tapped")
                         dismissSheet()
                     },
                                       replyAllAction: {
                         // Perform reply all action
-                        print("Reply all tapped")
                         dismissSheet()
                     },
                                       forwardAction: {
                         // Perform forward action
-                        print("Forward tapped")
                         dismissSheet()
                     },
                                       markAsReadAction: {
-                        print("read")
                         dismissSheet()
                     },
                                       markAsUnReadAction: {
-                        print("unread")
                         dismissSheet()
                     },
                                       createLabelAction: {
-                        print("label")
                         dismissSheet()
                     },
                                       moveToFolderAction: {
-                        print("move folder")
                         dismissSheet()
                     },
                                       starAction: {
-                        print("star")
                         dismissSheet()
                     },
                                       snoozeAction: {
-                        print("snooze")
                         dismissSheet()
                     },
                                       trashAction: {
-                        print("trash acti")
                         dismissSheet()
                     }
                     )

@@ -49,23 +49,14 @@ struct DiaryView: View {
                     Button(action: {
                         onTapTheme = false
                         self.isDiaryVisible = false
-                        print("Valid DiarynotificationTime: \(DiarynotificationTime)")
                         if let reminderTime = DiarynotificationTime {
-                            print("Valid reminderTime: \(reminderTime)")
                             homePlannerViewModel.AddNewDiary(title: textInput, notes: text, reminder: reminderTime)
-                            print("if Case")
                         } else {
-                            print("DiarynotificationTime is nil. Using default value or handling it differently.")
-                            print("else case")
                             homePlannerViewModel.AddNewDiary(title: textInput, notes: text, reminder: DiarynotificationTime ?? nil) // Pass nil if reminder is optional
                         }
-//                        homePlannerViewModel.postDiary(selectedID: selectedID ?? 0,text: text, textInput: textInput)
-                        print("api calling")
-                        print("isDiaryTagActive\(isDiaryTagActive)")
                         if isDiaryTagActive {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                 homePlannerViewModel.ApplyTag(listId: id, tagIds: selectedNewDiaryTag)
-                                print("ApplyTag API called after 3 seconds")
                             }
                         }
                     }, label: {
@@ -156,9 +147,6 @@ struct DiaryView: View {
                     if let note = homePlannerViewModel.listData.first {
                         let incrementedId = note.id
                         id = incrementedId + 1
-                        print("Let's check the first id: \(incrementedId), Incremented id: \(id)")
-                    } else {
-                        print("No diary found with ID: \((id))")
                     }
                 }
             }
@@ -296,14 +284,10 @@ struct DiaryUpdateView: View {
             VStack {
                 HStack {
                     Button(action: {
-                        print("selected names on click wrong mark \(selectedNames)")
-                        print("homePlannerViewModel.selectedLabelNames   \(homePlannerViewModel.selectedLabelNames)")
                         onTapTheme = false
-                        print("onTapTheme    \(onTapTheme)")
                         self.isDiaryupdateVisible = false
                         if homePlannerViewModel.listData.firstIndex(where: { $0.id == selectedID }) == 0 {
                             homePlannerViewModel.updateDiaryData(selectedID: selectedID, notediary: notediary, titlediary: titlediary)
-                            print("API called with ID: \(selectedID), Title: \(titlediary), Content: \(notediary)")
                         }
                     }, label: {
                         Image("wrongmark")
@@ -404,7 +388,6 @@ struct DiaryUpdateView: View {
                                                 formattedDateTime = ""
                                                 isTextFieldVisible = false // Hide TextField when tapped
                                                 //                                                homePlannerViewModel.removescheduleDiary(selectedID: selectedID, reminder: nil)
-                                                print("isCommentAdded\(isCommentAdded)")
                                             }
                                     }
                                     
@@ -454,17 +437,12 @@ struct DiaryUpdateView: View {
                                                     .frame(width: 16, height: 16)
                                                     .padding(.trailing, 5)
                                                     .onTapGesture {
-                                                        print("selected names on click wrong mark \(selectedNames)")
                                                         label.labelName = ""
                                                         //                                                        label.isRemoved = true
-                                                        print("letcheck \(label.labelId)")
                                                         if let selectedDiary = homePlannerViewModel.listData.first(where: { $0.id == selectedID }) {
                                                             homePlannerViewModel.removeTag(selectedID: selectedID, Tagid: label.labelId)
                                                         }
-                                                        else {
-                                                            // Handle case where no matching diary was found
-                                                            print("No diary found with id: \(selectedID)")
-                                                        }
+                                                        
                                                         
                                                     }
                                             }
@@ -498,20 +476,16 @@ struct DiaryUpdateView: View {
                                                     .frame(width: 16, height: 16)
                                                     .padding(.trailing, 5)
                                                     .onTapGesture {
-                                                        print("selected names on click wrong mark \(name)")
 //                                                        ForEach($tagslabel, id: \.labelId) { $label in
 //                                                            if $label.labelName.wrappedValue == name {
 //                                                                let id = $label.labelId.wrappedValue
 //                                                                let ide = $label.plannerId.wrappedValue
-////                                                                print("Label ID: \(id)")
 //                                                                // Do something with `id`
-////                                                                print("letcheck \(id)")
 //                                                                if let selectedDiary = homePlannerViewModel.listData.first(where: { $0.id == ide }) {
 //                                                                    homePlannerViewModel.removeTag(selectedID: ide, Tagid: id)
 //                                                                }
 //                                                                else {
 //                                                                    // Handle case where no matching diary was found
-//                                                                    print("No diary found with id: \(selectedID)")
 //                                                                }
 //                                                            }
 //                                                        }
@@ -569,13 +543,11 @@ struct DiaryUpdateView: View {
 //                                                    .onTapGesture {
 //                                                        label.labelName = ""
 ////                                                        label.isRemoved = true
-//                                                        print("letcheck \(label.labelId)")
 //                                                        if let selectedDiary = homePlannerViewModel.listData.first(where: { $0.id == selectedID }) {
 //                                                            homePlannerViewModel.removeTag(selectedID: selectedID, Tagid: label.labelId)
 //                                                        }
 //                                                        else {
 //                                                            // Handle case where no matching diary was found
-//                                                            print("No diary found with id: \(selectedID)")
 //                                                        }
 //                                                        
 //                                                    }
@@ -621,7 +593,6 @@ struct DiaryUpdateView: View {
                                                     if !comment.isEditable {
                                                         homePlannerViewModel.updateCommentData(selectedId: selectedID, commentide: comment.commentId, comment: comment.comment)
                                                     }
-                                                    print("comment.isEditable.toggle()\(comment.isEditable)")
                                                 }, label: {
                                                     Image("edits")
                                                         .renderingMode(.template)
@@ -639,7 +610,6 @@ struct DiaryUpdateView: View {
                                                     if let selectedDiary = homePlannerViewModel.listData.first(where: { $0.id == selectedID }) {
                                                         homePlannerViewModel.deletecomments(selectedIDs: selectedID, commentIDs: comment.commentId)
                                                     }
-                                                    print("selectedID: \(selectedID)")
                                                 }, label: {
                                                     Image("del")
                                                         .renderingMode(.template)
@@ -668,7 +638,6 @@ struct DiaryUpdateView: View {
                                                     .foregroundColor(.black)
                                                     .disabled(!canEdit())
                                                 Button(action: {
-                                                    print("Edit button pressed")
                                                 }, label: {
                                                     Image("edits")
                                                         .padding(.trailing, 50)
@@ -677,7 +646,6 @@ struct DiaryUpdateView: View {
                                                 
                                                 Button(action: {
                                                     // Handle comment deletion or action here
-                                                    print("selectedID: \(selectedID)")
                                                 }, label: {
                                                     Image("del")
                                                         .renderingMode(.template)
@@ -750,8 +718,6 @@ struct DiaryUpdateView: View {
 
             }
             .onAppear {
-                print("homePlannerViewModel.selectedLabelNames: \(homePlannerViewModel.selectedLabelNames)")
-                print("onTapTheme   \(onTapTheme)")
                 if homePlannerViewModel.listData.isEmpty {
                     homePlannerViewModel.GetDiaryDataList()
                 }
@@ -764,14 +730,11 @@ struct DiaryUpdateView: View {
                         labelcomments = diary.comments ?? []
                         tagslabel = diary.labels ?? []
                         scheduletime = homePlannerViewModel.selectedDateTime
-//                        let selectedLabelIDs = tagslabel.map { $0.labelId }
-//                        print("selectedLabelIDs\(selectedLabelIDs)")
                         if let theme = diary.theme {
                             themeImage = theme
                             if let fileName = theme.components(separatedBy: "/").last?.replacingOccurrences(of: ".png", with: "") {
                                 themeImage = fileName
                             }
-                            print("themeImage   \(themeImage)")
                         } else {
                             themeImage = "" // Default value if theme is nil
                         }
@@ -910,24 +873,14 @@ struct BottomSheetView: View {
                 Button(action: {
                     // Only add the comment if it's not empty
                     if !comment.isEmpty {
-                        // Append the new comment to the subtasks array
                         subtasks.append(Subtask(text: comment))
-                        
-                        print("Added comment: \(comment)") // Debugging print statement
-                        print("Current subtasks: \(subtasks)") // Debugging print statement
-
-                        // Assuming you're calling the function to add the comment to the backend
                         homePlannerViewModel.addComment(comment: comment, selectedID: selectedID)
 
                         // Reset the comment field and close the sheet
                         isCommentAdded = true
                         comment = "" // Clear the comment field
                         self.isLabelSheetVisible = false
-                        
-                        print("isCommentAdded: \(isCommentAdded)")
-                        print("Subtasks after addition: \(subtasks)") // Final state of subtasks
                     }
-                    print("Subtasks array: \(subtasks)") // Final state of subtasks
                 }, label: {
                     Text("Add Comment")
                         .foregroundColor(themesviewModel.currentTheme.colorAccent)
@@ -1003,7 +956,6 @@ struct BottomSheetNotificationView: View {
                                 // Convert the Date to an Int (e.g., timestamp)
                                 DiarynotificationTime = Int(selectedDateTime.timeIntervalSince1970)
                                 homePlannerViewModel.onclickDone(selectedID: id, reminder: DiarynotificationTime!)
-                                print("DiarynotificationTime  \(DiarynotificationTime!)")
                                 self.isNotificationSheetVisible = false
                             }
                         }
@@ -1011,7 +963,6 @@ struct BottomSheetNotificationView: View {
                             if let selectedDateTime = homePlannerViewModel.selectedDateTime {
                                 let reminderInt = Int(selectedDateTime.timeIntervalSince1970)
                                 homePlannerViewModel.onclickDone(selectedID: id, reminder: reminderInt)
-                                print("reminderInt  \(reminderInt)")
                                 self.isNotificationSheetVisible = false
                             }
                         }
@@ -1033,7 +984,6 @@ struct BottomSheetNotificationView: View {
                 
                 HStack {
                     Button(action: {
-                        print("")
                     }, label: {
                         Text("Tomorrow")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -1043,7 +993,6 @@ struct BottomSheetNotificationView: View {
                     Spacer()
                     
                     Button(action: {
-                        print("")
                     }, label: {
                         Text("8:00 AM")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -1054,7 +1003,6 @@ struct BottomSheetNotificationView: View {
                 
                 HStack {
                     Button(action: {
-                        print("")
                     }, label: {
                         Text("Next Week")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -1064,7 +1012,6 @@ struct BottomSheetNotificationView: View {
                     Spacer()
                     
                     Button(action: {
-                        print("")
                     }, label: {
                         Text("8:00 AM")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -1078,9 +1025,6 @@ struct BottomSheetNotificationView: View {
                         .foregroundColor(themesviewModel.currentTheme.textColor)
                         .frame(width: 24, height: 24)
                         .padding(.leading, 16)
-                        .onTapGesture {
-                            print("Timer clicked")
-                        }
                     
                     Button(action: {
                          isDatePickerVisible = true
@@ -1109,9 +1053,7 @@ struct BottomSheetNotificationView: View {
                         if let Diary = homePlannerViewModel.listData.first {
                             let incrementedId = Diary.id // `id` is a non-optional Int
                             id = incrementedId + 1
-                            print("Let's check the first id: \(incrementedId), Incremented id: \(id)")
                         } else {
-                            print("No diary found with ID: \((id))")
                         }
                     }
         }
@@ -1207,25 +1149,14 @@ struct BottomTagSheetView: View {
                                 withAnimation {
                                     selectedNewDiaryTag = homePlannerViewModel.selectedLabelID
                                     if !homePlannerViewModel.selectedLabelID.isEmpty { // Check if the array is not empty
-                                        print("selectedLabelIDs: \(homePlannerViewModel.selectedLabelID)") // Print the array of selected IDs
-                                        print("isActive    \(isActive)")
-                                        print("selected Names :\(selectedNames)")
-//                                        homePlannerViewModel.selectedLabelNames = selectedNames
-                                        print("homePlannerViewModel.selectedLabelNames   \(homePlannerViewModel.selectedLabelNames)")
                                         if isActive {
-                                            print("appears isActive ")
                                             isDiaryTagActive = true
-                                            print("isDiaryTagActive \(isDiaryTagActive)")
                                             homePlannerViewModel.ApplyTag(listId: newid, tagIds: homePlannerViewModel.selectedLabelID) // Pass the array
                                             self.isTagSheetVisible = false // Dismiss the sheet
                                             isclicked = true
-                                            print("isclicked\(isclicked)")
-                                        //                                        print("homePlannerViewModel.selectedLabelID\(homePlannerViewModel.selectedLabelID)")
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 200 / 1000.0) {
                                             if homePlannerViewModel.listData.isEmpty {
-                                                print("get diary list api is calling")
                                                 homePlannerViewModel.GetDiaryDataList()
-                                                print("get diary list api is calling")
                                             }
                                         }
                                     }
@@ -1233,18 +1164,12 @@ struct BottomTagSheetView: View {
                                             homePlannerViewModel.ApplyTag(listId: selectedID, tagIds: homePlannerViewModel.selectedLabelID) // Pass the array
                                             self.isTagSheetVisible = false // Dismiss the sheet
                                             isclicked = true
-                                            print("isclicked\(isclicked)")
-                                            //                                        print("homePlannerViewModel.selectedLabelID\(homePlannerViewModel.selectedLabelID)")
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 200 / 1000.0) {
                                                 if homePlannerViewModel.listData.isEmpty {
-                                                    print("get diary list api is calling")
                                                     homePlannerViewModel.GetDiaryDataList()
-                                                    print("get diary list api is calling")
                                                 }
                                             }
                                         }
-                                    } else {
-                                        print("No labels selected") // Log if no labels are selected
                                     }
                                 }
                             }, label: {
@@ -1314,18 +1239,12 @@ struct BottomTagSheetView: View {
                                     HStack {
                                         Button(action: {
                                             toggleCheck(for: label.id) // Toggle state based on the label's ID
-                                            print("label.id: \(label.id)")
                                             if !label.isChecked{
-                                                // Add the label name to the selectedNames array if it's checked
-                                                print("label.labelName.lowercased(): \(label.labelName.lowercased())")
                                                 if !selectedNames.contains(label.labelName.lowercased()) {
                                                     selectedNames.append(label.labelName.lowercased())
-                                                    print("if case selected names \(selectedNames)")
                                                 }
                                             } else {
-                                                // Remove the label name from the selectedNames array if it's unchecked
                                                 selectedNames.removeAll { $0 == label.labelName.lowercased() }
-                                                print("else case selected names \(selectedNames)")
                                             }
                                         }) {
                                             Image(label.isChecked ? "checkbox" : "Check")
@@ -1366,9 +1285,6 @@ struct BottomTagSheetView: View {
                         if let Diary = homePlannerViewModel.listData.first {
                             let incrementedId = Diary.id
                             newid = incrementedId + 1
-                            print("Let's check the first newid: \(incrementedId), Incremented newid: \(newid)")
-                        } else {
-                            print("No diary found with newid: \((newid))")
                         }
                     }
                 }
@@ -1402,12 +1318,6 @@ struct BottomTagSheetView: View {
             }
         }
     }
-
-    
-//    func handleCheckedLabel(id: Int) {
-//        print("Checked label ID: \(id)")
-//    }
-
         
     func calculateTotalHeight() -> CGFloat {
         let baseHeight: CGFloat = 200 // Base height for fixed elements
@@ -1673,8 +1583,6 @@ struct BottomBackgroundSheetView: View {
                                     )
                                     .onTapGesture {
                                         let correctedHex = hex.lowercased()
-                                        print("selectedColor \(correctedHex)")
-                                        print("selected ID : \(selectedID)")
                                         homePlannerViewModel.AddTheme(theme: correctedHex, selectedID: selectedID)
                                     }
                                 
@@ -1704,9 +1612,7 @@ struct BottomBackgroundSheetView: View {
                                 .onTapGesture {
                                     selectedToolTip = background.tooltip
                                     
-                                    print("selectedToolTip \(selectedToolTip)")
                                     let subImages = background.subImages
-                                    print("SubImages Bakcground images:      \(subImages)")
                                     let processedFileNames = subImages.map { image in
                                         image.value
                                             .components(separatedBy: "/")
@@ -1715,11 +1621,7 @@ struct BottomBackgroundSheetView: View {
                                     }
                                     themeimage = background.value
                                     subImage = processedFileNames
-                                    print("Processed File Names: \(subImage)")
-                                    
-                                    print("background image : \(themeimage)")
                                     onTapTheme = true
-                                    print("onTapTheme \(onTapTheme)")
                                     homePlannerViewModel.AddTheme(theme: "assets/plannerBackground/\(background.tooltip.lowercased())/\(themeimage!).png", selectedID: selectedID)
                                     
                                 }
@@ -1773,14 +1675,12 @@ struct BottomBackgroundSheetView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 if let diary = homePlannerViewModel.listData.first(where: { $0.id == selectedID }) {
                     selectedID = diary.id
-                    print("Diary found with ID: \(selectedID)")
 //                    selectedIconIndex = diary.theme
                     if let theme = diary.theme {
                         selectedIconIndex = theme
                         if let fileName = theme.components(separatedBy: "/").last?.replacingOccurrences(of: ".png", with: "") {
                             selectedIconIndex = fileName
                         }
-                        print("themeImage   \(selectedIconIndex)")
                     } else {
                         selectedIconIndex = "" // Default value if theme is nil
                     }
@@ -1866,7 +1766,6 @@ extension Color {
 //                            .padding(.trailing, 16)
 //                            .onTapGesture {
 //                                homePlannerViewModel.CreateLabelDiary(title: Textfill)
-//                                print("CreateLabelDiary")
 //                                iscreatelabelvisible = false
 //                                Textfill = ""
 //                            }

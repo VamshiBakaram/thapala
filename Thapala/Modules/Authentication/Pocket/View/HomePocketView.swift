@@ -46,7 +46,6 @@ struct HomePocketView: View {
                             
                             Spacer()
                             Button(action: {
-                                print("search button pressed")
                                 appBarElementsViewModel.isSearch = true
                             }) {
                                 Image("magnifyingglass")
@@ -57,7 +56,6 @@ struct HomePocketView: View {
                             .padding(.leading,15)
                             
                             Button(action: {
-                                print("bell button pressed")
                                 iNotificationAppBarView = true
                             }) {
                                 Image("notification")
@@ -66,7 +64,6 @@ struct HomePocketView: View {
                             
                             
                             Button(action: {
-                                print("line.3.horizontal button pressed")
                                 withAnimation {
                                     isMenuVisible.toggle()
                                 }
@@ -165,7 +162,8 @@ struct HomePocketView: View {
                      
                         
                     }
-                    .frame(height: reader.size.height * 0.16)
+                    .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top ?? 30)
+//                    .frame(height: reader.size.height * 0.16)
                     .background(themesviewModel.currentTheme.tabBackground)
                     ZStack {
                         Color.clear // Background to help center the image

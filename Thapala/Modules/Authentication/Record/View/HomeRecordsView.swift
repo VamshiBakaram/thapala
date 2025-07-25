@@ -118,7 +118,6 @@ struct HomeRecordsView: View {
                                 .font(.custom(.poppinsRegular, size: 16, relativeTo: .title))
                             Spacer()
                             Button(action: {
-                                print("search button pressed")
                                 appBarElementsViewModel.isSearch = true
                             }) {
                                 Image("magnifyingglass")
@@ -129,7 +128,6 @@ struct HomeRecordsView: View {
                             .padding(.leading,15)
                             
                             Button(action: {
-                                print("bell button pressed")
                                 iNotificationAppBarView = true
                             }) {
                                 Image("bell")
@@ -139,7 +137,6 @@ struct HomeRecordsView: View {
                             }
                             
                             Button(action: {
-                                print("line.3.horizontal button pressed")
                                 withAnimation {
                                     isMenuVisible.toggle()
                                 }
@@ -167,11 +164,6 @@ struct HomeRecordsView: View {
                                             workspace = true
                                             Foldertype = "work"; subFoldertype = "files"
                                             homeRecordsViewModel.getRecordsData(selectedTabID: MainselectedTabID[0], Type: Foldertype, SubFoldersType: subFoldertype)
-//                                            print("archive TypeselectedTabID \(TypeselectedTabID)")
-//                                            print("archive TypeselectedTabID index 0 \(TypeselectedTabID[0])")
-//                                            print("archive TypeselectedTabID index 1 \(TypeselectedTabID[1])")
-//                                            print("archive TypeselectedTabID index 2 \(TypeselectedTabID[2])")
-//                                            print("archive TypeselectedTabID index 2 \(TypeselectedTabID[3])")
                                             
                                             self.homeRecordsViewModel.selectedOption = .work
                                             self.homeRecordsViewModel.isWorkSelected = true
@@ -208,12 +200,6 @@ struct HomeRecordsView: View {
                                             workspace = true
                                             Foldertype = "archive"; subFoldertype = "files"
                                             homeRecordsViewModel.getRecordsData(selectedTabID: MainselectedTabID[1], Type: Foldertype, SubFoldersType: subFoldertype)
-//                                            TypeselectedTabID = homeRecordsViewModel.defaultRecordsData.map { $0.id }
-//                                                print("archive TypeselectedTabID \(TypeselectedTabID)")
-//                                                print("archive TypeselectedTabID index 0 \(TypeselectedTabID[0])")
-//                                            print("archive TypeselectedTabID index 1 \(TypeselectedTabID[1])")
-//                                            print("archive TypeselectedTabID index 2 \(TypeselectedTabID[2])")
-//                                            print("archive TypeselectedTabID index 2 \(TypeselectedTabID[3])")
                                             self.homeRecordsViewModel.selectedOption = .archive
                                             self.homeRecordsViewModel.isWorkSelected = false
                                             self.homeRecordsViewModel.isArchiveSelected = true
@@ -302,9 +288,7 @@ struct HomeRecordsView: View {
                             .padding(.trailing, 20)
                             .contentShape(Rectangle())
                             .onTapGesture {
-                                print("before typeview.toggle() \(typeview)")
                                 typeview.toggle()
-                                print("After typeview.toggle() \(typeview)")
                             }
                     }
                     if workspace {
@@ -338,7 +322,6 @@ struct HomeRecordsView: View {
                                                     isMoreSheetvisible.toggle()
                                                     fileType = "folder"
                                                     fileclicks = false
-                                                    print("selectedTabID \(selectedTabID )Foldertype \(Foldertype) SubFoldersType \(subFoldertype) ")
                                                 }) {
                                                     Image("dots")
                                                         .resizable()
@@ -356,16 +339,11 @@ struct HomeRecordsView: View {
                                         .onTapGesture{
                                             subfoldersViewIds = folder.id
                                             subfoldersViewType = folder.type
-                                            
-                                            print("on click of folder")
-//                                            homeRecordsViewModel.getRecordsData(selectedTabID: folder.id, Type: folder.type, SubFoldersType: "")
-                                            print("before subFolderView \(subFolderView)")
                                             workspace = false
                                             typeview = false
                                             isfilesView = false
                                             subFolderView = true
                                             subFolderViewFiles = true
-                                            print("After subFolderView \(subFolderView)")
                                         }
                                         .padding()
                                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -414,12 +392,6 @@ struct HomeRecordsView: View {
                                             Text(folder.folderName)
                                                 .foregroundColor(.black)
                                         }
-                                        .onAppear{
-                                            print("sub folder view appears")
-                                            print("folder \(folder)")
-                                            print("folder.folderName \(folder.folderName)")
-                                            
-                                        }
                                         .padding()
                                         .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -438,9 +410,6 @@ struct HomeRecordsView: View {
                             }
                             .onAppear{
                                 homeRecordsViewModel.getSubRecordsData(selectedTabID: subfoldersViewIds, Type: subfoldersViewType)
-                                print("check appears")
-                                print("folder id is \(subfoldersViewIds)")
-                                print("subfoldersViewType is \(subfoldersViewType)")
                             }
 
                         
@@ -469,7 +438,6 @@ struct HomeRecordsView: View {
 
                     HStack{
                         Button(action: {
-                            print("file button clicked")
                             if selectedTAB == "work" {
                                 selectedTabID = MainselectedTabID[0]+1 ; Foldertype = "work"; subFoldertype = "files"
                                 
@@ -513,7 +481,6 @@ struct HomeRecordsView: View {
                         Spacer()
 
                         Button(action: {
-                            print("mails button clicked")
                             if selectedTAB == "work" {
                                 selectedTabID = MainselectedTabID[0]+2 ; Foldertype = "work"; subFoldertype = "mails"
                                 homeRecordsViewModel.folderID = MainselectedTabID[0]+2 ; homeRecordsViewModel.fileType = "work" ; homeRecordsViewModel.subfoldertype = "mails"
@@ -556,7 +523,6 @@ struct HomeRecordsView: View {
                         Spacer()
 
                         Button(action: {
-                            print("pictures button clicked")
                             if selectedTAB == "work" {
                                 selectedTabID = MainselectedTabID[0]+3 ;Foldertype = "work"; subFoldertype = "pictures"
                                 homeRecordsViewModel.folderID = MainselectedTabID[0]+3 ; homeRecordsViewModel.fileType = "work" ; homeRecordsViewModel.subfoldertype = "pictures"
@@ -600,7 +566,6 @@ struct HomeRecordsView: View {
                         Spacer()
                         
                         Button(action: {
-                            print("videos button clicked")
                             if selectedTAB == "work" {
                                 selectedTabID = MainselectedTabID[0]+4 ;Foldertype = "work"; subFoldertype = "videos"
 
@@ -663,9 +628,6 @@ struct HomeRecordsView: View {
                     homeRecordsViewModel.setPin = sessionManager.pin
                     homeRecordsViewModel.password = sessionManager.password
                     password = sessionManager.password
-                    print("check pin \(homeRecordsViewModel.setPin)")
-                    print("password \(password)")
-                    
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                         let records = homeRecordsViewModel.mainRecords
@@ -684,13 +646,11 @@ struct HomeRecordsView: View {
                                     Type: Foldertype,
                                     SubFoldersType: subFoldertype
                                 )
-
-                                print("MainselectedTabID: \(MainselectedTabID)")
-                                print("Initial selectedTabID: \(selectedTabID)")
                             }
-                        } else {
-                            print("mainRecords is still empty.")
                         }
+//                        else {
+//                            print("mainRecords is still empty.")
+//                        }
                     }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                         homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
@@ -704,7 +664,6 @@ struct HomeRecordsView: View {
 //                        mailComposeViewModel.selectedFiles.append(contentsOf: urls)
 //                        mailComposeViewModel.uploadFiles(fileURLs: urls)
 //                    case .failure(let error):
-//                        print("Failed to select files: \(error.localizedDescription)")
 //                    }
 //                }
 //                if homeRecordsViewModel.isLoading {
@@ -829,7 +788,6 @@ struct HomeRecordsView: View {
                                                     Spacer()
                                                     Button(action: {
                                                         isMoreSheetvisible.toggle()
-                                                        print("selectedTabID \(selectedTabID )Foldertype \(Foldertype) SubFoldersType \(subFoldertype) ")
                                                         emailID = 0
                                                         fieldID = 0
                                                         recordID = folder.id
@@ -840,7 +798,6 @@ struct HomeRecordsView: View {
                                                         filesize = ""
                                                         fileType = "folder"
                                                         fileclicks = false
-                                                        print("foldername \(foldername)  createdAt  \(createdAt) UpdatedAt \(UpdatedAt) filesize \(filesize)")
                                                     }) {
                                                         Image("dots")
                                                             .resizable()
@@ -911,7 +868,6 @@ struct HomeRecordsView: View {
                                                                             .foregroundColor(.white)
                                                                     }
                                                                     .onTapGesture {
-                                                                        print("on click of video")
                                                                         if let safeURL = fileURL {
                                                                             confirmedURL = safeURL
                                                                             isVideo = true
@@ -920,7 +876,6 @@ struct HomeRecordsView: View {
                                                                                 showViewer = true
                                                                             }
 
-                                                                            print("confirmedURL = \(confirmedURL!)")
                                                                         }
                                                                     }
 
@@ -939,7 +894,6 @@ struct HomeRecordsView: View {
                                                                             .foregroundColor(.blue)
                                                                     }
                                                                     .onTapGesture {
-                                                                        print("click on file format")
                                                                         toastMessage = "Format not supported for preview"
                                                                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                                                             toastMessage = nil // hide the toast after 2 seconds
@@ -958,11 +912,9 @@ struct HomeRecordsView: View {
                                                                             .clipped()
                                                                             .cornerRadius(8)
                                                                             .onTapGesture {
-                                                                                print("on click of image")
                                                                                 if let safeURL = fileURL {
                                                                                     confirmedURL = safeURL
                                                                                     isVideo = false
-                                                                                    print("confirmedURL = \(safeURL)")
                                                                                 }
                                                                             }
 
@@ -984,7 +936,6 @@ struct HomeRecordsView: View {
                                                             .frame(width: 5)
                                                         Button(action: {
                                                             isMoreSheetvisible.toggle()
-                                                            print("selectedTabID \(selectedTabID )Foldertype \(Foldertype) SubFoldersType \(subFoldertype) ")
                                                             emailID = 0
                                                             fieldID = file.id
                                                             recordID = 0
@@ -997,7 +948,6 @@ struct HomeRecordsView: View {
                                                             fileType = "file"
                                                             fileFormat = URL(fileURLWithPath: file.fileName).pathExtension.lowercased()
                                                             fileclicks = true
-                                                            print("foldername \(foldername)  createdAt  \(createdAt) UpdatedAt \(UpdatedAt) filesize \(filesize)  AzureLink  \(AzureLink)")
                                                         }) {
                                                             Image("dots")
                                                                 .resizable()
@@ -1115,7 +1065,6 @@ struct HomeRecordsView: View {
                                                         Spacer()
                                                         Button(action: {
                                                             isMoreSheetvisible.toggle()
-                                                            print("selectedTabID \(selectedTabID )Foldertype \(Foldertype) SubFoldersType \(subFoldertype) ")
                                                             emailID = 0
                                                             fieldID = 0
                                                             recordID = folder.id
@@ -1127,7 +1076,7 @@ struct HomeRecordsView: View {
                                                             filesize = ""
                                                             fileType = "folder"
                                                             fileclicks = false
-                                                            print("foldername \(foldername)  createdAt  \(createdAt) UpdatedAt \(UpdatedAt) filesize \(filesize)")
+
                                                         }) {
                                                             Image("dots")
                                                                 .resizable()
@@ -1177,7 +1126,6 @@ struct HomeRecordsView: View {
                                                                                 .foregroundColor(.white)
                                                                         }
                                                                         .onTapGesture {
-                                                                            print("on click of video")
                                                                             confirmedURL = url
                                                                             isVideo = true
                                                                         }
@@ -1192,7 +1140,6 @@ struct HomeRecordsView: View {
                                                                                 .clipped()
                                                                                 .cornerRadius(8)
                                                                                 .onTapGesture {
-                                                                                    print("on click of image")
                                                                                     if let safeURL = fileURL {
                                                                                         confirmedURL = safeURL
                                                                                         isVideo = false
@@ -1219,7 +1166,6 @@ struct HomeRecordsView: View {
 
                                                             Button(action: {
                                                                 isMoreSheetvisible.toggle()
-                                                                print("selectedTabID \(selectedTabID) Foldertype \(Foldertype) SubFoldersType \(subFoldertype)")
                                                                 emailID = 0
                                                                 fieldID = file.id
                                                                 recordID = 0
@@ -1232,7 +1178,6 @@ struct HomeRecordsView: View {
                                                                 fileType = "file"
                                                                 fileFormat = URL(fileURLWithPath: file.fileName).pathExtension.lowercased()
                                                                 fileclicks = true
-                                                                print("foldername \(foldername) createdAt \(createdAt) UpdatedAt \(UpdatedAt) filesize \(filesize) AzureLink \(AzureLink)")
                                                             }) {
                                                                 Image("dots")
                                                                     .resizable()
@@ -1371,7 +1316,6 @@ struct HomeRecordsView: View {
                                                                     .foregroundColor(.white)
                                                             }
                                                             .onTapGesture {
-                                                                print("on click of video")
                                                                 if let safeURL = fileURL {
                                                                     confirmedURL = safeURL
                                                                     isVideo = true
@@ -1380,7 +1324,6 @@ struct HomeRecordsView: View {
                                                                         showViewer = true
                                                                     }
                                                                     
-                                                                    print("confirmedURL = \(confirmedURL!)")
                                                                 }
                                                             }
                                                             
@@ -1399,7 +1342,6 @@ struct HomeRecordsView: View {
                                                                 .foregroundColor(.blue)
                                                         }
                                                         .onTapGesture {
-                                                            print("click on file format")
                                                             toastMessage = "Format not supported for preview"
                                                             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                                                 toastMessage = nil // hide the toast after 2 seconds
@@ -1418,11 +1360,9 @@ struct HomeRecordsView: View {
                                                                     .clipped()
                                                                     .cornerRadius(8)
                                                                     .onTapGesture {
-                                                                        print("on click of image")
                                                                         if let safeURL = fileURL {
                                                                             confirmedURL = safeURL
                                                                             isVideo = false
-                                                                            print("confirmedURL = \(safeURL)")
                                                                         }
                                                                     }
                                                                 
@@ -1566,7 +1506,6 @@ struct HomeRecordsView: View {
                             .edgesIgnoringSafeArea(.all)
                             .onTapGesture {
                                 withAnimation {
-                                    print("dismiss isMoreSheetvisible")
                                     isMoreSheetvisible = false
                                 }
                             }
@@ -1690,10 +1629,6 @@ struct HomeRecordsView: View {
                                 Spacer()
                                 Button{
                                     homeRecordsViewModel.createNewFolder(folderName: newFolderName, parentID: selectedTabID, Type: selectedTAB, subFolderType: subFoldertype)
-                                    print("newFolderName  \(newFolderName)")
-                                    print("selectedTabID  \(selectedTabID)")
-                                    print("selectedTAB  \(selectedTAB)")
-                                    print("subFoldertype  \(subFoldertype)")
                                     createFolder = false
                                 }label: {
                                     Text("Create")
@@ -1868,7 +1803,6 @@ struct HomeRecordsView: View {
                                         consoleViewModel.setPin(Newpin: newPin, confirmationPin: confirmPin)
                                         newPinView = false
                                         lockerView = true
-                                        print(".toast(message: $consoleViewModel.error) \($consoleViewModel.error)")
                                         if newPin == confirmPin {
                                             sessionManager.pin = newPin
                                         }

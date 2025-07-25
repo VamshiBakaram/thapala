@@ -205,11 +205,7 @@ struct BioView: View {
             }
         }
         .onAppear{
-
-            
-                print("on appears \(sessionManager.userId)")
                 homeNavigatorViewModel.getNavigatorBio(userId: sessionManager.userId)
-                print("Api prints")
                 homeNavigatorViewModel.getLastestLogin()
                 
 
@@ -229,19 +225,6 @@ struct BioView: View {
                 state = homeNavigatorViewModel.navigatorBioData?.bio?.state ?? "N/A"
                 city = homeNavigatorViewModel.navigatorBioData?.bio?.city ?? "N/A"
                 lastLogin = formatDate(from: homeNavigatorViewModel.lastestData?.data?.first?.lastLogin ?? 0)
-                print("firstName \(firstName)")
-                print("phoneNumber \(phoneNumber)")
-                print("country \(country)")
-                print("AccountcreatedOn \(AccountcreatedOn)")
-                print("tcode \(tcode)")
-                print("birthDate \(birthDate)")
-                print("gender \(gender)")
-                print("motherTongue \(motherTongue)")
-                print("Language \(Language)")
-                print("state \(state)")
-                print("city \(city)")
-                print("lastLogin \(lastLogin)")
-                print("lastLogin \(lastLogin)")
             }
         }
     }

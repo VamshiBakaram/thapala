@@ -46,25 +46,17 @@ struct NoteView: View {
                 HStack {
                     Button(action: {
                         self.isNoteVisible = false
-                        print("api calling")
                         if let reminderTime = notificationTime {
-                            print("Valid notificationTime: \(reminderTime)")
                             homePlannerViewModel.AddNewNote(title: title,notes: note,reminder: reminderTime)
                         }
-                        print("isTagActive\(isTagActive)")
                         if isTagActive {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                 homePlannerViewModel.ApplyTag(listId: id, tagIds: selectedTag)
-                                print("ApplyTag API called after 3 seconds")
                             }
                         }
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                             homePlannerViewModel.ScheduledonclickDone(selectedID: id, reminder: notificationTime)
-                                print("ApplyTag API called after 3 seconds")
                             }
-                        
-                        print("api calling")
-                        
                     }, label: {
                         Image("wrongmark")
                             .renderingMode(.template)
@@ -190,9 +182,6 @@ struct NoteView: View {
                     if let note = homePlannerViewModel.NotelistData.first {
                         let incrementedId = note.id // `id` is a non-optional Int
                         id = incrementedId + 1
-                        print("Let's check the first id: \(incrementedId), Incremented id: \(id)")
-                    } else {
-                        print("No diary found with ID: \((id))")
                     }
                 }
             }
@@ -205,7 +194,6 @@ struct NoteView: View {
                         .edgesIgnoringSafeArea(.all)
                         .onTapGesture {
                             withAnimation {
-                                print("Tapped isNotificationVisible")
                                 isNotificationVisible = false
                             }
                         }
@@ -227,7 +215,6 @@ struct NoteView: View {
                         .edgesIgnoringSafeArea(.all)
                         .onTapGesture {
                             withAnimation {
-                                print("Tapped isTagSheetVisible")
                                 isTagSheetVisible = false
                             }
                         }
@@ -249,7 +236,6 @@ struct NoteView: View {
                         .edgesIgnoringSafeArea(.all)
                         .onTapGesture {
                             withAnimation {
-                                print("Tapped isTagSheetVisible")
                                 isBackgroundSheetVisible = false
                             }
                         }
@@ -471,15 +457,10 @@ struct NoteUpdateView: View {
                                                 .padding(.trailing, 5)
                                                 .onTapGesture {
                                                     label.labelName = ""
-                                                    //                                                        label.isRemoved = true
-                                                    print("letcheck \(label.labelId)")
                                                     if let selectedDiary = homePlannerViewModel.NotelistData.first(where: { $0.id == selectedID }) {
                                                         homePlannerViewModel.removeTag(selectedID: selectedID, Tagid: label.labelId)
                                                     }
-                                                    else {
-                                                        // Handle case where no matching diary was found
-                                                        print("No diary found with id: \(selectedID)")
-                                                    }
+
                                                     
                                                 }
                                         }
@@ -545,8 +526,6 @@ struct NoteUpdateView: View {
                         
                         Button(action: {
                             self.isHistorySheetVisible = true
-                            print("isHistorySheetVisible is visible")
-                            
                         }, label: {
                             Image("timer")
                         })
@@ -559,12 +538,6 @@ struct NoteUpdateView: View {
                         }, label: {
                             Image("del")
                         })
-                        //                    .sheet(isPresented: $showingDeleteAlert) {
-                        //                        DeleteNoteAlert(isPresented: $showingDeleteAlert) {
-                        //                            // Handle delete action here
-                        //                            print("Note deleted")
-                        //                        }
-                        //                    }
                         .padding(.bottom, 10)
                         .padding(.leading, 40)
                         Spacer()
@@ -585,19 +558,14 @@ struct NoteUpdateView: View {
                         tNotenote = Note.note
                         tagslabels = Note.labels ?? []
                         tNoteType = Note.type
-                        print("tNoteType \(tNoteType)")
-                        print("Loaded Diary - Title: \(tNotetitle), Note: \(tNotenote)")
                         if let theme = Note.theme {
                             themeImage = theme
                             if let fileName = theme.components(separatedBy: "/").last?.replacingOccurrences(of: ".png", with: "") {
                                 themeImage = fileName
                             }
-                            print("themeImage   \(themeImage)")
                         } else {
                             themeImage = "" // Default value if theme is nil
                         }
-                    } else {
-                        print("No diary found with ID: \(selectedID)")
                     }
                 }
             }
@@ -610,7 +578,6 @@ struct NoteUpdateView: View {
                         .edgesIgnoringSafeArea(.all)
                         .onTapGesture {
                             withAnimation {
-                                print("Tapped isNotificationVisible")
                                 isNotificationVisible = false
                             }
                         }
@@ -632,7 +599,6 @@ struct NoteUpdateView: View {
                     .edgesIgnoringSafeArea(.all)
                     .onTapGesture {
                         withAnimation {
-                            print("Tapped isTagVisible ")
                             isTagVisible = false
                         }
                     }
@@ -658,7 +624,6 @@ struct NoteUpdateView: View {
                     .edgesIgnoringSafeArea(.all)
                     .onTapGesture {
                         withAnimation {
-                            print("Tapped background")
                             isHistorySheetVisible = false
                         }
                     }
@@ -682,7 +647,6 @@ struct NoteUpdateView: View {
                     DeleteNoteAlert(isPresented: $showingDeleteAlert) {
                         homePlannerViewModel.deleteNote(selectedID: selectedID)
                         self.isNoteupdateVisible = false
-                        print("Note deleted")
                     }
                     .transition(.scale)
                 }
@@ -697,7 +661,6 @@ struct NoteUpdateView: View {
                     .edgesIgnoringSafeArea(.all)
                     .onTapGesture {
                         withAnimation {
-                            print("Tapped background")
                             isBackgroundSheetVisible = false
                         }
                     }
@@ -766,32 +729,23 @@ struct BottomNotificationView: View {
                     Button(action: {
                         if isViewActive {
                             if let selectedDateTime = homePlannerViewModel.selectedDateTime {
-                                print("is view active appears)")
-                                print("id : \(id)")
-                                // Convert the Date to an Int (e.g., timestamp)
                                 notificationTime = Int(selectedDateTime.timeIntervalSince1970)
                                 homePlannerViewModel.ScheduledonclickDone(selectedID: id, reminder: notificationTime)
-                                print("reminderInt\(notificationTime)")
                                 isNotificationVisible = false
-                                print("if isNotificationVisible \(isNotificationVisible)")
                             }
                         }
                         else {
                             if let selectedDateTime = homePlannerViewModel.selectedDateTime {
-                                print("upodated view appears")
                                 // Convert the Date to an Int (e.g., timestamp)
                                 let reminderInt = Int(selectedDateTime.timeIntervalSince1970)
                                 homePlannerViewModel.ScheduledonclickDone(selectedID: selectedID, reminder: reminderInt)
-                                print("reminderInt\(reminderInt)")
                                 isNotificationVisible = false
-                                print("else isNotificationVisible \(isNotificationVisible)")
                             }
                         }
 //                        if let selectedDateTime = homePlannerViewModel.selectedDateTime {
 //                            // Convert the Date to an Int (e.g., timestamp)
 //                            let reminderInt = Int(selectedDateTime.timeIntervalSince1970)
 //                            homePlannerViewModel.onclickDone(selectedID: selectedID, reminder: reminderInt)
-//                            print("reminderInt\(reminderInt)")
 //                            self.isNotificationSheetVisible = false
 //                        }
                     }, label: {
@@ -813,7 +767,6 @@ struct BottomNotificationView: View {
                 
                 HStack {
                     Button(action: {
-                        print("")
                     }, label: {
                         Text("Tomorrow")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -823,7 +776,6 @@ struct BottomNotificationView: View {
                     Spacer()
                     
                     Button(action: {
-                        print("")
                     }, label: {
                         Text("8:00 AM")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -834,7 +786,6 @@ struct BottomNotificationView: View {
                 
                 HStack {
                     Button(action: {
-                        print("")
                     }, label: {
                         Text("Next Week")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -844,7 +795,6 @@ struct BottomNotificationView: View {
                     Spacer()
                     
                     Button(action: {
-                        print("")
                     }, label: {
                         Text("8:00 AM")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -859,9 +809,6 @@ struct BottomNotificationView: View {
                         .foregroundColor(themesviewModel.currentTheme.textColor)
                         .frame(width: 24, height: 24)
                         .padding(.leading, 16)
-                        .onTapGesture {
-                            print("Timer clicked")
-                        }
                     
                     Button(action: {
                          isDatePickerVisibled = true
@@ -890,9 +837,7 @@ struct BottomNotificationView: View {
                 if let note = homePlannerViewModel.NotelistData.first {
                     let incrementedId = note.id // `id` is a non-optional Int
                     id = incrementedId + 1
-                    print("Let's check the first id: \(incrementedId), Incremented id: \(id)")
-                } else {
-                    print("No diary found with ID: \((id))")
+                    
                 }
             }
         }
@@ -988,20 +933,13 @@ struct BottomTagView: View {
                                 withAnimation {
                                     selectedTag = homePlannerViewModel.selectedLabelNoteID
                                     if homePlannerViewModel.selectedLabelNoteID != [0] { // Check if the array is not empty
-                                        print("homePlannerViewModel.selectedLabelNoteID : \(homePlannerViewModel.selectedLabelNoteID)") // Print the array of selected IDs
-                                        print("isScreenActive\(isScreenActive)")
                                         if isScreenActive {
                                             isTagActive = true
-                                            print("isTagActive \(isTagActive)")
-                                            print("appears isScreenActive ")
                                             homePlannerViewModel.ApplyTag(listId: id, tagIds: homePlannerViewModel.selectedLabelNoteID) // Pass the array
                                             isTagVisible = false // Dismiss the sheet
                                             isclicked = true
-                                            print("isclicked\(isclicked)")
-    //                                        print("homePlannerViewModel.selectedLabelNoteID\(homePlannerViewModel.selectedLabelNoteID)")
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 200 / 1000.0) {
                                                 if homePlannerViewModel.NotelistData.isEmpty {
-                                                    print("get diary list api is calling")
                                                     homePlannerViewModel.GetNoteDataList()
 
                                                 }
@@ -1009,24 +947,17 @@ struct BottomTagView: View {
                                             
                                         }
                                         else {
-                                            print("appears wrong ")
                                             homePlannerViewModel.ApplyTag(listId: selectedID, tagIds: homePlannerViewModel.selectedLabelNoteID) // Pass the array
                                             isTagVisible = false // Dismiss the sheet
                                             isclicked = true
-                                            print("isclicked\(isclicked)")
-    //                                        print("homePlannerViewModel.selectedLabelNoteID\(homePlannerViewModel.selectedLabelNoteID)")
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 200 / 1000.0) {
                                                 if homePlannerViewModel.NotelistData.isEmpty {
-                                                    print("get diary list api is calling")
                                                     homePlannerViewModel.GetNoteDataList()
                                                 }
                                             }
                                         }
 
 
-                                    }
-                                    else {
-                                        print("No labels selected") // Log if no labels are selected
                                     }
                                 }
                             }, label: {
@@ -1107,7 +1038,6 @@ struct BottomTagView: View {
                                     HStack {
                                         Button(action: {
                                             toggleCheck(for: label.id) // Toggle state based on the label's ID
-                                            print("label.id: \(label.id)")
                                         }) {
                                             Image(label.isChecked ? "checkbox" : "Check")
                                                 .resizable()
@@ -1148,9 +1078,6 @@ struct BottomTagView: View {
                         if let note = homePlannerViewModel.NotelistData.first {
                             let incrementedId = note.id // `id` is a non-optional Int
                             id = incrementedId + 1
-                            print("Let's check the first id: \(incrementedId), Incremented id: \(id)")
-                        } else {
-                            print("No diary found with ID: \((id))")
                         }
                     }
                     
@@ -1187,12 +1114,6 @@ struct BottomTagView: View {
             }
         }
     }
-
-    
-//    func handleCheckedLabel(id: Int) {
-//        print("Checked label ID: \(id)")
-//    }
-
         
     func calculateHeight() -> CGFloat {
         let baseHeight: CGFloat = 200 // Base height for fixed elements
@@ -1302,7 +1223,6 @@ struct createTagView: View {
                             .padding(.trailing, 16)
                             .fontWeight(.bold)
                             .onTapGesture {
-                                print("CreateLabelDiary")
                                 iscreatelabelvisible = false
                                 Textfill = ""
                             }
@@ -1769,8 +1689,6 @@ struct BottomThemeView: View {
                                     )
                                     .onTapGesture {
                                         let correctedHex = hex.lowercased()
-                                        print("selectedColor \(correctedHex)")
-                                        print("selected ID : \(selectedID)")
                                         homePlannerViewModel.AddTheme(theme: correctedHex, selectedID: selectedID)
                                     }
                                 
@@ -1800,9 +1718,7 @@ struct BottomThemeView: View {
                                 .onTapGesture {
                                     selectedToolTip = background.tooltip
                                     
-                                    print("selectedToolTip \(selectedToolTip)")
                                     let subImages = background.subImages
-                                    print("SubImages Bakcground images:      \(subImages)")
                                     let processedFileNames = subImages.map { image in
                                         image.value
                                             .components(separatedBy: "/")
@@ -1811,11 +1727,7 @@ struct BottomThemeView: View {
                                     }
                                     themeimage = background.value
                                     subImage = processedFileNames
-                                    print("Processed File Names: \(subImage)")
-                                    
-                                    print("background image : \(themeimage)")
                                     onTapTheme = true
-                                    print("onTapTheme \(onTapTheme)")
                                     homePlannerViewModel.AddTheme(theme: "assets/plannerBackground/\(background.tooltip.lowercased())/\(themeimage!).png", selectedID: selectedID)
                                     
                                 }
@@ -1841,7 +1753,6 @@ struct BottomThemeView: View {
                                 )
                                 .onTapGesture {
                                     themeimage = imageName
-                                    print("on Tap Sub themeimage \(themeimage!) ")
                                     homePlannerViewModel.AddTheme(theme:"assets/plannerBackground/\(selectedToolTip!.lowercased())/\(themeimage!).png", selectedID: selectedID)
                                     
                                 }
@@ -1870,14 +1781,12 @@ struct BottomThemeView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 if let diary = homePlannerViewModel.NotelistData.first(where: { $0.id == selectedID }) {
                     selectedID = diary.id
-                    print("Diary found with ID: \(selectedID)")
 //                    selectedIconIndex = diary.theme
                     if let theme = diary.theme {
                         selectedIconIndex = theme
                         if let fileName = theme.components(separatedBy: "/").last?.replacingOccurrences(of: ".png", with: "") {
                             selectedIconIndex = fileName
                         }
-                        print("themeImage   \(selectedIconIndex)")
                     } else {
                         selectedIconIndex = "" // Default value if theme is nil
                     }

@@ -143,9 +143,6 @@ struct tDoView: View {
             Spacer()
             
             Button(action: {
-                print("title   \(text)")
-                print("note  \(tasktext)")
-                print("subtasks   \(subtasks)")
                 homePlannerViewModel.AddTask(title: text, tasks: subtasks, notes: tasktext)
                 self.isCreateVisible = false
                 // Handle button action here
@@ -261,7 +258,6 @@ struct ListitemView: View {
                         if !newSubTaskText.isEmpty {
                             subtasks.append(SubTask(text: newSubTaskText, imageStatus: "todo"))
                             homePlannerViewModel.taskAdding(comment: newSubTaskText, selectedID: selectedID)
-                            print("newSubTaskText\(newSubTaskText)")
                             newSubTaskText = ""
                             isSubTaskCommitted = false
                         }
@@ -320,8 +316,6 @@ struct ListitemView: View {
                             if !newSubTaskText.isEmpty {
                                 subtasks.append(SubTask(text: newSubTaskText, imageStatus: "todo"))
                                 homePlannerViewModel.taskAdding(comment: newSubTaskText, selectedID: selectedID)
-                                print("newSubTaskText\(newSubTaskText)")
-                                
                                 // Reset newSubTaskText after commit
                                 DispatchQueue.main.async {
                                     newSubTaskText = ""
@@ -423,14 +417,8 @@ struct ListitemView: View {
                                                 .padding(.trailing, 5)
                                                 .onTapGesture {
                                                     label.labelName = ""
-//                                                        label.isRemoved = true
-                                                    print("letcheck \(label.labelId)")
                                                     if let selectedDiary = homePlannerViewModel.doitlistData.first(where: { $0.id == selectedID }) {
                                                         homePlannerViewModel.removeTag(selectedID: selectedID, Tagid: label.labelId)
-                                                    }
-                                                    else {
-                                                        // Handle case where no matching diary was found
-                                                        print("No diary found with id: \(selectedID)")
                                                     }
                                                     
                                                 }
@@ -594,15 +582,11 @@ struct ListitemView: View {
                     if let diary = homePlannerViewModel.doitlistData.first(where: { $0.id == selectedID }) {
                         title = diary.title
                         note = diary.note
-                        print("title \(title)")
-                        print("note \(note)")
                         tagsLabelList = diary.labels ?? []
-//                        print("tagsLabelList   \(tagsLabelList)")
                         if let comments = diary.comments, !comments.isEmpty {
                             for comment in comments {
                                 taskID = comment.commentId
                                 subtasks.append(SubTask(text: comment.comment, imageStatus: comment.status))
-                                print("taskID \(taskID)")
                             }
                         }
                         if let theme = diary.theme {
@@ -610,7 +594,6 @@ struct ListitemView: View {
                             if let fileName = theme.components(separatedBy: "/").last?.replacingOccurrences(of: ".png", with: "") {
                                 themeImage = fileName
                             }
-                            print("themeImage   \(themeImage)")
                         } else {
                             themeImage = "" // Default value if theme is nil
                         }
@@ -619,22 +602,9 @@ struct ListitemView: View {
                     
                     // Assuming `doitlistData` is an array of `Doit` objects
                     themeArray = homePlannerViewModel.doitlistData.compactMap { $0.theme }
-                    print("Themes: \(themeArray)")
-                    
 
-
-                
-                    
                     if let lastHistory = homePlannerViewModel.doitHistoryData.last {
-                        print("Last index modifiedAt: \(lastHistory.modifiedAt)")
                         lastEditTime = convertToTime(timestamp: TimeInterval(lastHistory.modifiedAt))
-                        print("time : \(lastEditTime)")
-                        
-
-//                        let lastDate = lastHistory.modifiedAt
-//                        // Format the date and time
-//                        var formattedDateTime = formatDateTime(lastDate)
-//                        print("formattedDateTime   \(formattedDateTime)")
                         
                     }
                 }
@@ -703,7 +673,6 @@ struct ListitemView: View {
                      homePlannerViewModel.deleteNote(selectedID: selectedID)
                      self.BottomDeleteAlert = false
                     self.isListItemVisible = false
-                     print("Note deleted")
                  }
                  .transition(.scale) // Add smooth scaling effect
              }
@@ -804,7 +773,6 @@ struct NotificationView: View {
                             // Convert the Date to an Int (e.g., timestamp)
                             let reminderInt = Int(selectedDateTime.timeIntervalSince1970)
                             homePlannerViewModel.TapOnDone(selectedID: selectedID, reminder: reminderInt)
-                            print("reminderInt\(reminderInt)")
                             self.isNotificationVisible = false
                         }
                     }, label: {
@@ -826,7 +794,6 @@ struct NotificationView: View {
                 
                 HStack {
                     Button(action: {
-                        print("")
                     }, label: {
                         Text("Tomorrow")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -836,7 +803,6 @@ struct NotificationView: View {
                     Spacer()
                     
                     Button(action: {
-                        print("")
                     }, label: {
                         Text("8:00 AM")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -847,7 +813,6 @@ struct NotificationView: View {
                 
                 HStack {
                     Button(action: {
-                        print("")
                     }, label: {
                         Text("Next Week")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -857,7 +822,6 @@ struct NotificationView: View {
                     Spacer()
                     
                     Button(action: {
-                        print("")
                     }, label: {
                         Text("8:00 AM")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -871,10 +835,7 @@ struct NotificationView: View {
                         .foregroundColor(themesviewModel.currentTheme.iconColor)
                         .frame(width: 24, height: 24)
                         .padding(.leading, 16)
-                        .onTapGesture {
-                            print("Timer clicked")
-                        }
-                    
+
                     Button(action: {
                          isDatePickerVisible = true
                      }) {
@@ -1034,22 +995,15 @@ struct TagView: View {
                             Button(action: {
                                 withAnimation {
                                     if !homePlannerViewModel.selectedLabelDoitID.isEmpty { // Check if the array is not empty
-                                        print("selectedLabelIDs: \(homePlannerViewModel.selectedLabelDoitID)") // Print the array of selected IDs
                                         homePlannerViewModel.ApplyTag(listId: selectedID, tagIds: homePlannerViewModel.selectedLabelDoitID) // Pass the array
                                         self.isTagViewVisible = false // Dismiss the sheet
                                         isclicked = true
-                                        print("isclicked\(isclicked)")
-//                                        print("homePlannerViewModel.selectedLabelID\(homePlannerViewModel.selectedLabelID)")
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 200 / 1000.0) {
                                             if homePlannerViewModel.doitlistData.isEmpty {
-                                                print("get diary list api is calling")
                                                 homePlannerViewModel.GetDoitList()
-                                                print("get diary list api is calling")
                                             }
                                         }
 
-                                    } else {
-                                        print("No labels selected") // Log if no labels are selected
                                     }
                                 }
                             }, label: {
@@ -1127,8 +1081,6 @@ struct TagView: View {
                                     HStack {
                                         Button(action: {
                                             toggleCheck(for: label.id) // Toggle state based on the label's ID
-                                            print("label.id: \(label.id)")
-                                            print("label.isChecked: \(label.isChecked)")
                                         }) {
                                             Image(label.isChecked ?  "checkbox" : "Check")
                                                 .resizable()
@@ -1192,10 +1144,6 @@ struct TagView: View {
         }
     }
 
-    
-//    func handleCheckedLabel(id: Int) {
-//        print("Checked label ID: \(id)")
-//    }
 
         
     func calculateHeight() -> CGFloat {
@@ -1649,8 +1597,6 @@ struct BottomBackgroundView: View {
                                     )
                                     .onTapGesture {
                                         let correctedHex = hex.lowercased()
-                                        print("selectedColor \(correctedHex)")
-                                        print("selected ID : \(selectedID)")
                                         homePlannerViewModel.AddTheme(theme: correctedHex, selectedID: selectedID)
                                     }
                                 
@@ -1679,10 +1625,7 @@ struct BottomBackgroundView: View {
                                 )
                                 .onTapGesture {
                                     selectedToolTip = background.tooltip
-                                    
-                                    print("selectedToolTip \(selectedToolTip)")
                                     let subImages = background.subImages
-                                    print("SubImages Bakcground images:      \(subImages)")
                                     let processedFileNames = subImages.map { image in
                                         image.value
                                             .components(separatedBy: "/")
@@ -1691,11 +1634,7 @@ struct BottomBackgroundView: View {
                                     }
                                     themeimage = background.value
                                     subImage = processedFileNames
-                                    print("Processed File Names: \(subImage)")
-                                    
-                                    print("background image : \(themeimage)")
                                     onTapTheme = true
-                                    print("onTapTheme \(onTapTheme)")
                                     homePlannerViewModel.AddTheme(theme: "assets/plannerBackground/\(background.tooltip.lowercased())/\(themeimage!).png", selectedID: selectedID)
                                     
                                 }
@@ -1721,7 +1660,6 @@ struct BottomBackgroundView: View {
                                 )
                                 .onTapGesture {
                                     themeimage = imageName
-                                    print("on Tap Sub themeimage \(themeimage!) ")
                                     homePlannerViewModel.AddTheme(theme:"assets/plannerBackground/\(selectedToolTip!.lowercased())/\(themeimage!).png", selectedID: selectedID)
                                     
                                 }
@@ -1749,14 +1687,12 @@ struct BottomBackgroundView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 if let diary = homePlannerViewModel.doitlistData.first(where: { $0.id == selectedID }) {
                     selectedID = diary.id
-                    print("Diary found with ID: \(selectedID)")
 //                    selectedIconIndex = diary.theme
                     if let theme = diary.theme {
                         selectedIconIndex = theme
                         if let fileName = theme.components(separatedBy: "/").last?.replacingOccurrences(of: ".png", with: "") {
                             selectedIconIndex = fileName
                         }
-                        print("themeImage   \(selectedIconIndex)")
                     } else {
                         selectedIconIndex = "" // Default value if theme is nil
                     }

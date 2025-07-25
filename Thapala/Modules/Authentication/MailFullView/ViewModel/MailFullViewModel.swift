@@ -221,7 +221,6 @@ func convertHTMLToAttributedString(html: String) -> NSAttributedString? {
     do {
         return try NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding: String.Encoding.utf8.rawValue], documentAttributes: nil)
     } catch {
-        print("Error converting HTML to NSAttributedString: \(error)")
         return nil
     }
 }

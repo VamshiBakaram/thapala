@@ -404,7 +404,6 @@ struct ScheduleView: View {
                 .toast(message: $mailComposeViewModel.error)
                 .onAppear {
                     if mailComposeViewModel.detailedEmailData.isEmpty {
-                        print("getFullEmail(emailId: id)")
                         mailComposeViewModel.getFullEmail(emailId: id)
                     }
                     
@@ -418,44 +417,34 @@ struct ScheduleView: View {
                             attachmentsData = diary.attachments ?? []
                             scheduledtime = String(diary.scheduledTime ?? 0)
                             image = homeNavigatorViewModel.BioData.first?.profile ?? "person"
-                            print("composeText \(composeText)")
-                            print("subject \(subject)")
-                            print("attachmentsData \(attachmentsData)")
-                            //                    selectedIconIndex = diary.theme
                             if let recipients = diary.recipients {
                                 if let toRecipient = recipients.first(where: { $0.type == "from" }) {
                                     firstname = toRecipient.user?.firstname ?? ""
-                                    print("firstname \(firstname)")
                                 }
                             }
                             if let recipients = diary.recipients {
                                 if let toRecipient = recipients.first(where: { $0.type == "from" }) {
                                     lastname = toRecipient.user?.lastname ?? ""
-                                    print("lastname \(lastname)")
                                 }
                             }
                             if let recipients = diary.recipients {
                                 if let toRecipient = recipients.first(where: { $0.type == "from" }) {
                                     usertcode = toRecipient.user?.tCode ?? ""
-                                    print("usertcode \(usertcode)")
                                 }
                             }
                             if let recipients = diary.recipients {
                                 if let toRecipient = recipients.first(where: { $0.type == "to" }) {
                                     receipienttcode = toRecipient.user?.tCode ?? ""
-                                    print("receipienttcode \(receipienttcode)")
                                 }
                             }
                             if let recipients = diary.recipients {
                                 if let toRecipient = recipients.first(where: { $0.type == "to" }) {
                                     receipientfirstname = toRecipient.user?.firstname ?? ""
-                                    print("receipientfirstname \(receipientfirstname)")
                                 }
                             }
                             if let recipients = diary.recipients {
                                 if let toRecipient = recipients.first(where: { $0.type == "to" }) {
                                     receipientlastname = toRecipient.user?.lastname ?? ""
-                                    print("receipientlastname \(receipientlastname)")
                                 }
                             }
                         }

@@ -55,12 +55,10 @@ class BlueprintViewModel:ObservableObject{
                 case .success(let response):
                     self.userdatum = response.userData
                     self.error = response.message
-                    print("success message: \(response.message)")
                 case .failure(let error):
                     switch error {
                     case .error(let message):
                         self.error = "Add atleast One Tcode"
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     }
@@ -84,7 +82,6 @@ class BlueprintViewModel:ObservableObject{
     
     func scheduleSend() {
         self.isSchedule = true
-        print("Schedule clicked")
     }
     
 

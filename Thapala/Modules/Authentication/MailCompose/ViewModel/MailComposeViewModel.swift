@@ -84,7 +84,6 @@ class MailComposeViewModel:ObservableObject{
         }
         
         let endPoint = "\(EndPoint.sendEmail)\(ComposeEmailData.shared.isScheduleCreated)&passwordProtected=\(ComposeEmailData.shared.isPasswordProtected)&reply=\(false)"
-        print("endPoint",endPoint)
         NetworkManager.shared.request(type: SendEmailsModel.self, endPoint: endPoint, httpMethod: .post, parameters: emailParams, isTokenRequired: true,passwordHash: ComposeEmailData.shared.passwordHash, isSessionIdRequited: false) { [weak self]result in
             guard let self = self else { return }
             switch result {
@@ -128,7 +127,6 @@ class MailComposeViewModel:ObservableObject{
             emailParams.passwordHint = ComposeEmailData.shared.passwordHint
         }
         let endPoint = "\(EndPoint.saveEmailtoDrafts)passwordProtected=\(ComposeEmailData.shared.isPasswordProtected)"
-        print("endPoint",endPoint)
         NetworkManager.shared.request(type: SaveEmailToDraftsModel.self, endPoint: endPoint, httpMethod: .post, parameters: emailParams, isTokenRequired: true,passwordHash: ComposeEmailData.shared.passwordHash, isSessionIdRequited: false) { [weak self]result in
             guard let self = self else { return }
             switch result {
@@ -168,11 +166,9 @@ class MailComposeViewModel:ObservableObject{
     
     func scheduleSend() {
         self.isSchedule = true
-        print("Schedule clicked")
     }
     
     func saveDraft() {
-        print("Save Draft clicked")
         saveDraftData()
     }
     
@@ -463,7 +459,6 @@ class MailComposeViewModel:ObservableObject{
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.tcodesuggest = response
-                    print("suggested t code response \(response)")
                 }
             case .failure(let error):
                 DispatchQueue.main.async {

@@ -266,9 +266,7 @@ struct HomeMenuView: View {
                 message: Text("Are you sure you want to sign out?"),
                 primaryButton: .destructive(Text("Sign Out")) {
                     // Navigate to LoginView
-                    print("clicked on conform to signout")
                     homeMenuViewModel.logout(userID: sessionManager.userId)
-                    print("sessionManager.userId  \(sessionManager.userId)")
                     sessionManager.isShowLogin = true
                 },
                 secondaryButton: .cancel {

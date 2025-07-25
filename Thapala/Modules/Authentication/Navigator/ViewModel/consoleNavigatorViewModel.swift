@@ -105,7 +105,6 @@ class consoleviewModel:ObservableObject{
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:
@@ -155,7 +154,6 @@ class consoleviewModel:ObservableObject{
         // Encode the payload to JSON and log it for debugging
         if let jsonData = try? JSONEncoder().encode(params),
            let jsonString = String(data: jsonData, encoding: .utf8) {
-            print("Request JSON: \(jsonString)")
         }
     
         
@@ -166,7 +164,6 @@ class consoleviewModel:ObservableObject{
                 self.isLoading = false
                 switch result {
                 case .success(let response):
-                    print("Comment added successfully: \(response.message)")
                     self.successMessage = response.message
                     self.error = response.message
                 case .failure(let error):
@@ -174,7 +171,6 @@ class consoleviewModel:ObservableObject{
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                         self.error = message
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
@@ -286,7 +282,6 @@ class consoleviewModel:ObservableObject{
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = "Session expired. Please log in again."
                     default:

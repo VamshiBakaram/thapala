@@ -84,7 +84,6 @@ struct RecordsThreeDotsView: View {
                                     Button {
                                         homeRecordsViewModel.downloadFile(selectedfieldID: fieldIDs,fileLink: azureLink)
                                         homeRecordsViewModel.fileDownloads(selectedfieldID: fieldIDs)
-                                        print("fieldIDs \(fieldIDs)  fileLink: \(azureLink)")
                                     } label: {
                                         Image("download")
                                             .renderingMode(.template)
@@ -143,9 +142,6 @@ struct RecordsThreeDotsView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.leading, 10)
                         .onAppear {
-                            print("three dpots view appears")
-//                            homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: folderName, SubFoldersType: subFolderName)
-                            print("file link \(azureLink)")
                             Files = [FieldID(id: fieldIDs, azureFileName: azureName)]
                             if fieldIDs == 0 && azureName == "" {
                                 Files = []
@@ -335,9 +331,6 @@ struct RecordsThreeDotsView: View {
                             Spacer()
                             Button{
                                 homeRecordsViewModel.rename(fileRecordName: ("\(FileName).\(formatFile)"), subfoldertype: subFolderName, selectedfieldID: fieldIDs , fileType: filetype)
-                                print("FileName  \(FileName)")
-                                print("subFolderName  \(subFolderName)")
-                                print("formatFile  \(formatFile)")
                                 homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: folderName, SubFoldersType: subFolderName)
                                 renameview = false
                             }label: {
