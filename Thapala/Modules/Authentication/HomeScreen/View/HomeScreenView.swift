@@ -13,7 +13,7 @@ struct HomeScreenView: View {
     @ObservedObject var ConsoleviewModel = ConsoleNavigatiorViewModel()
     @ObservedObject var themesviewModel = ThemesViewModel()
     @State var Gettheme: String = ""
-    
+
     var body: some View {
         ZStack {
             NavigationStack {
