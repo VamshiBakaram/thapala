@@ -41,8 +41,6 @@ struct HomeDirectoryView: View {
     @State private var isRenameDialogVisible: Bool = false
     @State private var showingDeleteAlert: Bool  = false
     @State private var DetailsView: Bool = false
-    @State private var trail: Bool = false
-    
     
     var body: some View {
         GeometryReader{ reader in
