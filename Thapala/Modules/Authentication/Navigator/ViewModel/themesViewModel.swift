@@ -12,7 +12,7 @@ class ThemesViewModel:ObservableObject{
     @Published var sessionManager = SessionManager()
     
     var currentTheme: Theme {
-        if let theme = AppTheme(rawValue: sessionManager.SelectedTheme) {
+        if let theme = AppTheme(rawValue: sessionManager.selectedTheme) {
             return ThemeManager.getTheme(theme)
         } else {
             return ThemeManager.getTheme(.light) // fallback

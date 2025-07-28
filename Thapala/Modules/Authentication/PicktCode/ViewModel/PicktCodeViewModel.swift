@@ -21,6 +21,8 @@ class PicktCodeViewModel: ObservableObject {
     
     @Published var generateTCodeData:String = ""
     @Published var createTCodeData:String = ""
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
+
     
     init() {
             generateTCode()
@@ -101,7 +103,7 @@ class PicktCodeViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -139,7 +141,7 @@ class PicktCodeViewModel: ObservableObject {
                     case .error(error: let message):
                         self.error = message
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -164,7 +166,7 @@ class PicktCodeViewModel: ObservableObject {
                     case .error(error: let message):
                         self.error = message
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

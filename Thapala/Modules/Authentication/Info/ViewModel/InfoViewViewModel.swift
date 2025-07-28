@@ -17,6 +17,7 @@ class InfoViewViewModel: ObservableObject {
     @Published var guideitems: [Guide] = []
     @Published var guidecontentItems: [GuideContent] = []
     @Published var isComposeEmail: Bool = false
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     
     func getInfoData(selectedOption: String) {
         self.isLoading = true
@@ -38,7 +39,7 @@ class InfoViewViewModel: ObservableObject {
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -66,7 +67,7 @@ class InfoViewViewModel: ObservableObject {
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -93,7 +94,7 @@ class InfoViewViewModel: ObservableObject {
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

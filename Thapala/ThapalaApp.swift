@@ -23,7 +23,6 @@ struct ThapalaApp: App {
                         })
                     })
             }else{
-//                PostBoxView()
                 if sessionManager.isShowLogin {
                     LoginView()
                         .environmentObject(sessionManager)

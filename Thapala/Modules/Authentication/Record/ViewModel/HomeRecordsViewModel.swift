@@ -26,7 +26,7 @@ class HomeRecordsViewModel:ObservableObject{
     @Published var workRecordsResponse: [WorkRecordsResponse] = []
     @Published var defaultRecordsData: [DefaultRecord] = []
     @Published var recordsData: [FolderRecord] = []
-    @Published var FilesData: [FileRecord] = []
+    @Published var filesData: [FileRecord] = []
     @Published var emailsData: [EmailRecord] = []
     @Published var ismoresheet: Bool = false
     @Published var downloadedFileURL: URL?
@@ -40,6 +40,7 @@ class HomeRecordsViewModel:ObservableObject{
     @Published var selectedId: Int? = nil
     @Published var setPin: String = ""
     @Published var password: String = ""
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     
     func getMainRecordsData() {
         self.isLoading = true
@@ -62,7 +63,7 @@ class HomeRecordsViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -82,7 +83,7 @@ class HomeRecordsViewModel:ObservableObject{
                     self.isLoading = false
                     self.defaultRecordsData = response.defaultRecords
                     self.recordsData = response.records
-                    self.FilesData = response.files
+                    self.filesData = response.files
                     self.emailsData = response.emails
                 }
             case .failure(let error):
@@ -92,7 +93,7 @@ class HomeRecordsViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -112,7 +113,7 @@ class HomeRecordsViewModel:ObservableObject{
                     self.isLoading = false
                     self.defaultRecordsData = response.defaultRecords
                     self.recordsData = response.records.filter { $0.parentId == selectedTabID }
-                    self.FilesData = response.files
+                    self.filesData = response.files
                     self.emailsData = response.emails
 
                 }
@@ -123,7 +124,7 @@ class HomeRecordsViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -143,7 +144,7 @@ class HomeRecordsViewModel:ObservableObject{
                     self.isLoading = false
                     self.defaultRecordsData = response.defaultRecords
                     self.recordsData = response.records
-                    self.FilesData = response.files
+                    self.filesData = response.files
                     self.emailsData = response.emails
                 }
             case .failure(let error):
@@ -153,7 +154,7 @@ class HomeRecordsViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -185,9 +186,7 @@ class HomeRecordsViewModel:ObservableObject{
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -216,9 +215,7 @@ class HomeRecordsViewModel:ObservableObject{
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -408,7 +405,7 @@ class HomeRecordsViewModel:ObservableObject{
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -442,9 +439,7 @@ class HomeRecordsViewModel:ObservableObject{
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -482,7 +477,7 @@ class HomeRecordsViewModel:ObservableObject{
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

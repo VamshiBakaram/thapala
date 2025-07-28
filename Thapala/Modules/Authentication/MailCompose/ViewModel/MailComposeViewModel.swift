@@ -36,8 +36,8 @@ class MailComposeViewModel:ObservableObject{
     @Published var attachments: String = ""
     @Published var isArrow: Bool = false
     @Published var suggest: Bool = false
-    @Published var CCsuggest: Bool = false
-    @Published var BCCsuggest: Bool = false
+    @Published var ccSuggest: Bool = false
+    @Published var bccSuggest: Bool = false
     @Published var isEmailSend: Bool = false
     @Published var isPasswordProtected:Bool = false
     @Published var isSubMenu:Bool = false
@@ -49,12 +49,13 @@ class MailComposeViewModel:ObservableObject{
     @Published var attachmentDataIn: [AttachmentDataModel] = []
     @Published var detailedEmailData: [DetailedEmailData] = []
     @Published var trashMessage: String = ""
-    @Published var EmailUserdata : EmailUser?
     @Published var mailFullView: Bool = false
     @Published var mailStars: Int = 0
     @Published private var markAs : Int = 0
     @Published var tcodeinfo: [TcodeData] = []
-        @Published var tcodesuggest: TcodeSuggest?
+    @Published var tcodesuggest: TcodeSuggest?
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
+    
     
     func sendEmail() {
         isLoading = true
@@ -100,7 +101,7 @@ class MailComposeViewModel:ObservableObject{
                     case .error(error: let message):
                         self.error = message
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -142,7 +143,7 @@ class MailComposeViewModel:ObservableObject{
                     case .error(error: let message):
                         self.error = message
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -244,7 +245,7 @@ class MailComposeViewModel:ObservableObject{
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -272,7 +273,7 @@ class MailComposeViewModel:ObservableObject{
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -304,7 +305,7 @@ class MailComposeViewModel:ObservableObject{
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

@@ -62,7 +62,7 @@ class LoginViewModel: ObservableObject {
                         let sessionManager = SessionManager()
                         sessionManager.token = response.token ?? "hlo"
                         sessionManager.userName = response.model?.user?.firstname ?? ""
-                        sessionManager.LastName = response.model?.user?.lastname ?? ""
+                        sessionManager.lastName = response.model?.user?.lastname ?? ""
                         sessionManager.userTcode = response.model?.user?.tCode ?? ""
                         sessionManager.userId = response.model?.user?.id ?? 0
                         sessionManager.pin = response.model?.user?.pin ?? ""

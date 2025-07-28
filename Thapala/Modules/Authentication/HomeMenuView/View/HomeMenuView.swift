@@ -289,7 +289,7 @@ struct HomeMenuView: View {
         case "Pocket":
             return AnyView(HomePocketView( imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person"))
         case "Directory":
-            return AnyView(HomeDirectoryView(isHomeDirectoryVisible: $homeDirectoryViewModel.DirectoryUpdate, imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person"))
+            return AnyView(HomeDirectoryView(isHomeDirectoryVisible: $homeDirectoryViewModel.directoryUpdate, imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person"))
         case "Records":
             return AnyView(HomeRecordsView(imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person"))
         case "Navigator":

@@ -12,6 +12,8 @@ class LabelledMailsViewModel: ObservableObject {
     @Published var selectedLabelID: [Int] = []
     @Published var selectedLabelNames: [String] = []
     @Published var labelledMailsDataModel:[LabelledMailsDataModel] = []
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
+    
     func getLabelledEmailData() {
         self.isLoading = true
         let endUrl = "\(EndPoint.labelledEmails)"
@@ -33,7 +35,7 @@ class LabelledMailsViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

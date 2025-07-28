@@ -499,11 +499,11 @@ struct BlueprintView: View {
                                                             }
                                                         }
                                                         if isThreeNumbers(newValue) {
-                                                            mailComposeViewModel.CCsuggest = true
+                                                            mailComposeViewModel.ccSuggest = true
                                                             mailComposeViewModel.getSerachTcode(searchKey: newValue)
                                                         }
                                                         else {
-                                                            mailComposeViewModel.CCsuggest = false
+                                                            mailComposeViewModel.ccSuggest = false
                                                         }
                                                     }
                                                 
@@ -554,7 +554,7 @@ struct BlueprintView: View {
                                             }
                                         )
 
-                                        if mailComposeViewModel.CCsuggest,
+                                        if mailComposeViewModel.ccSuggest,
                                            let data = mailComposeViewModel.tcodesuggest?.data {
                                             HStack(alignment: .top) {
                                                 VStack(alignment: .leading, spacing: 0) {
@@ -564,7 +564,7 @@ struct BlueprintView: View {
                                                                 selectedCCcode = selectedTCode
                                                                 blueprintViewModel.cc = selectedTCode
                                                             }
-                                                            mailComposeViewModel.CCsuggest = false
+                                                            mailComposeViewModel.ccSuggest = false
                                                         }) {
                                                             Text(tCode.tCode ?? "Unknown")
                                                                 .foregroundColor(.black)
@@ -621,11 +621,11 @@ struct BlueprintView: View {
                                                             }
                                                         }
                                                         if isThreeNumbers(newValue) {
-                                                            mailComposeViewModel.BCCsuggest = true
+                                                            mailComposeViewModel.bccSuggest = true
                                                             mailComposeViewModel.getSerachTcode(searchKey: newValue)
                                                         }
                                                         else {
-                                                            mailComposeViewModel.BCCsuggest = false
+                                                            mailComposeViewModel.bccSuggest = false
                                                         }
                                                     }
                                                 
@@ -676,7 +676,7 @@ struct BlueprintView: View {
                                             }
                                         )
 
-                                        if mailComposeViewModel.BCCsuggest,
+                                        if mailComposeViewModel.bccSuggest,
                                            let data = mailComposeViewModel.tcodesuggest?.data {
                                             HStack(alignment: .top) {
                                                 VStack(alignment: .leading, spacing: 0) {
@@ -686,7 +686,7 @@ struct BlueprintView: View {
                                                                 selectedBCCcode = selectedTCode
                                                                 blueprintViewModel.bcc = selectedTCode
                                                             }
-                                                            mailComposeViewModel.BCCsuggest = false
+                                                            mailComposeViewModel.bccSuggest = false
                                                         }) {
                                                             Text(tCode.tCode ?? "Unknown")
                                                                 .foregroundColor(.black)

@@ -11,7 +11,7 @@ class HomeDirectoryViewModel: ObservableObject {
     
     @Published var isLoading: Bool = false
     @Published var error: String?
-    @Published var DirectoryData: [Users] = []
+    @Published var directoryData: [Users] = []
     @Published var blockedUsers: [DirectoryUserData] = []
     @Published var profileIdData: [BioData] = []
     @Published var userdata: [user] = []
@@ -28,10 +28,10 @@ class HomeDirectoryViewModel: ObservableObject {
     @Published var state:String = ""
     @Published var city:String = ""
     @Published var groupName: String = ""
-    @Published var RenameGroupName: String = ""
+    @Published var renameGroupName: String = ""
     @Published var groupID: Int = 0
     @Published var searchText = ""
-    @Published var DirectoryUpdate : Bool = false
+    @Published var directoryUpdate : Bool = false
     @Published var beforeLongPress: Bool = true
     @Published var isComposeEmail: Bool = false
     @Published var selectedCountryIndex: Int? = nil
@@ -39,6 +39,7 @@ class HomeDirectoryViewModel: ObservableObject {
     @Published var selectedCityIndex: Int? = nil
     @Published var groupitems: Bool = false
     @Published var reportissue: String = ""
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     var filteredCountries: [SingleCountry] {
         if country.isEmpty {
             return []
@@ -61,7 +62,7 @@ class HomeDirectoryViewModel: ObservableObject {
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.DirectoryData = response.data.results // Use `response.data` to access `DiaryData`
+                    self.directoryData = response.data.results // Use `response.data` to access `DiaryData`
                     self.blockedUsers = [response.data]
                     self.error = response.message
                 }
@@ -72,7 +73,7 @@ class HomeDirectoryViewModel: ObservableObject {
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -100,7 +101,7 @@ class HomeDirectoryViewModel: ObservableObject {
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -128,9 +129,7 @@ class HomeDirectoryViewModel: ObservableObject {
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -158,7 +157,7 @@ class HomeDirectoryViewModel: ObservableObject {
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -185,7 +184,7 @@ class HomeDirectoryViewModel: ObservableObject {
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -273,7 +272,7 @@ class HomeDirectoryViewModel: ObservableObject {
                         self.error = message
                         print("Error: \(message)")
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -304,7 +303,7 @@ class HomeDirectoryViewModel: ObservableObject {
                         self.error = message
                         print("Error: \(message)")
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -340,7 +339,7 @@ class HomeDirectoryViewModel: ObservableObject {
                         self.error = message
                         print("Error: \(message)")
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -376,7 +375,7 @@ class HomeDirectoryViewModel: ObservableObject {
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -407,7 +406,7 @@ class HomeDirectoryViewModel: ObservableObject {
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -442,7 +441,7 @@ class HomeDirectoryViewModel: ObservableObject {
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -471,7 +470,7 @@ class HomeDirectoryViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

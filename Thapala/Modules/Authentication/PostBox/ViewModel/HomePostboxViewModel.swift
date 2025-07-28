@@ -16,9 +16,9 @@ class HomePostboxViewModel:ObservableObject{
     @Published var isChatboxSelected:Bool = false
     @Published var postBoxEmailData:[PostboxDataModel] = []
     @Published var starredemail: [StarredModel] = []
-    @Published var ContactsList: [contact] = []
-    @Published var ChatContacts: [chatContacts] = []
-    @Published var GetChatMessage: [ChatMessage] = []
+    @Published var contactsList: [contact] = []
+    @Published var chatContacts: [chatContacts] = []
+    @Published var getChatMessage: [ChatMessage] = []
     @Published var selectedThreadIDs: [Int] = []
     @Published var beforeLongPress: Bool = true
     @Published var selectedID: Int? = nil
@@ -28,7 +28,8 @@ class HomePostboxViewModel:ObservableObject{
     @Published var selectID: Int = 0
     @Published var roomid: String = ""
     @Published var starEmail: Int = 0
-    
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
+
     func getPostEmailData() {
         self.isLoading = true
         let endUrl = "\(EndPoint.allEmails)page=1&pageSize=30&status=postbox"
@@ -50,7 +51,7 @@ class HomePostboxViewModel:ObservableObject{
                             self.error = error
                         }
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -80,7 +81,7 @@ class HomePostboxViewModel:ObservableObject{
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -96,7 +97,7 @@ class HomePostboxViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.ContactsList = response.data.contacts
+                    self.contactsList = response.data.contacts
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -105,7 +106,7 @@ class HomePostboxViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -122,7 +123,7 @@ class HomePostboxViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.ChatContacts = response.data
+                    self.chatContacts = response.data
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -131,7 +132,7 @@ class HomePostboxViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -148,7 +149,7 @@ class HomePostboxViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.GetChatMessage = response.data.messages
+                    self.getChatMessage = response.data.messages
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -157,7 +158,7 @@ class HomePostboxViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

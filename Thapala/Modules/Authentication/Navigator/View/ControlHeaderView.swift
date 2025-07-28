@@ -28,9 +28,9 @@ struct ControlHeaderView: View {
     @State private var selectedFontFamily: String = "IRANSans"
     @State private var selectedFontSize: Int = 8
     @State private var taskType: String = "Upcoming"
-    @State private var doit: Int = 10
+    @State private var doTask: Int = 10
     @State private var dairy: Int = 10
-    @State private var note: Int = 10
+    @State private var noteTask: Int = 10
     @State private var isChatEnabled = 0
     @State private var isChatBubbleEnabled = 0
     @State private var isChatBackGround = 0
@@ -267,7 +267,7 @@ struct ControlHeaderView: View {
                                         }
                                         .onTapGesture {
                                             selectedTheme = "default"
-                                            sessionManager.SelectedTheme = "default"
+                                            sessionManager.selectedTheme = "default"
                                             ConsoleviewModel.Themchange(themes: "default", accentcolour: "white")
                                         }
                                         
@@ -307,7 +307,7 @@ struct ControlHeaderView: View {
                                         .onTapGesture {
                                             selectedTheme = "light"
                                             themesviewModel.selectedTheme = "light"
-                                            sessionManager.SelectedTheme = "light"
+                                            sessionManager.selectedTheme = "light"
                                             ConsoleviewModel.Themchange(themes: "light", accentcolour: "white")
                                         }
                                         
@@ -347,7 +347,7 @@ struct ControlHeaderView: View {
                                         .onTapGesture {
                                             selectedTheme = "dark"
                                             themesviewModel.selectedTheme = "dark"
-                                            sessionManager.SelectedTheme = "dark"
+                                            sessionManager.selectedTheme = "dark"
                                             ConsoleviewModel.Themchange(themes: "dark", accentcolour: "white")
                                         }
                                         
@@ -390,7 +390,7 @@ struct ControlHeaderView: View {
                                         .onTapGesture {
                                             selectedTheme = "elegance"
                                             themesviewModel.selectedTheme = "elegance"
-                                            sessionManager.SelectedTheme = "elegance"
+                                            sessionManager.selectedTheme = "elegance"
                                             ConsoleviewModel.Themchange(themes: "elegance", accentcolour: "white")
                                         }
                                         
@@ -431,7 +431,7 @@ struct ControlHeaderView: View {
                                         .onTapGesture {
                                             selectedTheme = "minimalism"
                                             themesviewModel.selectedTheme = "minimalism"
-                                            sessionManager.SelectedTheme = "minimalism"
+                                            sessionManager.selectedTheme = "minimalism"
                                             ConsoleviewModel.Themchange(themes: "minimalism", accentcolour: "white")
                                         }
                                         
@@ -471,7 +471,7 @@ struct ControlHeaderView: View {
                                         .onTapGesture {
                                             selectedTheme = "inviting"
                                             themesviewModel.selectedTheme = "inviting"
-                                            sessionManager.SelectedTheme = "inviting"
+                                            sessionManager.selectedTheme = "inviting"
                                             ConsoleviewModel.Themchange(themes: "inviting", accentcolour: "white")
                                         }
                                         
@@ -515,7 +515,7 @@ struct ControlHeaderView: View {
                                         .onTapGesture {
                                             selectedTheme = "tech"
                                             themesviewModel.selectedTheme = "tech"
-                                            sessionManager.SelectedTheme = "tech"
+                                            sessionManager.selectedTheme = "tech"
                                             ConsoleviewModel.Themchange(themes: "tech", accentcolour: "white")
                                         }
                                         
@@ -556,7 +556,7 @@ struct ControlHeaderView: View {
                                         .onTapGesture {
                                             selectedTheme = "elegent"
                                             themesviewModel.selectedTheme = "elegent"
-                                            sessionManager.SelectedTheme = "elegent"
+                                            sessionManager.selectedTheme = "elegent"
                                             ConsoleviewModel.Themchange(themes: "elegent", accentcolour: "white")
                                         }
                                         
@@ -622,14 +622,14 @@ struct ControlHeaderView: View {
                         .navigationBarBackButtonHidden(true)
                         .onAppear {
                             // First, fetch settings data
-                            if ConsoleviewModel.GetUserSettings.isEmpty {
+                            if ConsoleviewModel.userSettings.isEmpty {
                                 ConsoleviewModel.getUserSettings()
                                 ConsoleviewModel.getUserSecurityQuestions()
                                 ConsoleviewModel.getAllAlertNotifications()
                             }
                             
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                if let settings = ConsoleviewModel.GetUserSettings.first {
+                                if let settings = ConsoleviewModel.userSettings.first {
                                     selectedLanguage = settings.defaultLanguage
                                     DateFormat = settings.dateFormat
                                     TimeFormat = settings.timeFormat
@@ -637,9 +637,9 @@ struct ControlHeaderView: View {
                                     selectedFontFamily = settings.mailFontFamily
                                     selectedFontSize = Int(settings.mailFontSize) ?? 0
                                     taskType = settings.taskList
-                                    doit = settings.doitPageSize
+                                    doTask = settings.doitPageSize
                                     dairy = settings.dairyPageSize
-                                    note = settings.notePageSize
+                                    noteTask = settings.notePageSize
                                     awaitingPageSize = settings.awaitingPageSize
                                     postBoxPageSize = settings.postboxPageSize
                                     conveyedPageSize = settings.conveyedPageSize
@@ -661,7 +661,7 @@ struct ControlHeaderView: View {
                 .onChange(of: selectedTab) { newValue in
                     if newValue == 2 {
                         ConsoleviewModel.getAllAlertNotifications()
-                        ConsoleviewModel.GetAllNotificationAlerts.forEach { alert in
+                        ConsoleviewModel.getAllNotificationAlerts.forEach { alert in
                             AllNotifications = alert.allNotifications
                             NewEmail = alert.newEmail
                             Scheduledsent = alert.scheduledSent
@@ -797,7 +797,7 @@ struct ControlHeaderView: View {
                             
                             FloatingTextField(text: $ConsoleviewModel.currentPassword, placeHolder: "Enter Current Password", allowedCharacter: .defaultType)
                                 .padding(.horizontal, 10)
-                            FloatingTextField(text: $ConsoleviewModel.NewPassword, placeHolder: "Enter New Password", allowedCharacter: .defaultType)
+                            FloatingTextField(text: $ConsoleviewModel.newPassword, placeHolder: "Enter New Password", allowedCharacter: .defaultType)
                                 .padding(.horizontal, 10)
                             
                             // Create Button
@@ -825,7 +825,7 @@ struct ControlHeaderView: View {
                 if isSelect {
                     VStack(alignment: .leading, spacing: 16) {
                         Menu {
-                            ForEach(ConsoleviewModel.SecurityQuestions, id: \.question) { question in
+                            ForEach(ConsoleviewModel.securityQuestions, id: \.question) { question in
                                 Button(question.question) {
                                     issecurityQuestions = question.question
                                     ConsoleviewModel.getUserSecurityQuestions()
@@ -901,7 +901,7 @@ struct ControlHeaderView: View {
                             HStack {
                                 ZStack(alignment: .trailing) {
                                     Floatingtextfield(
-                                        text: $ConsoleviewModel.NewPassword,
+                                        text: $ConsoleviewModel.newPassword,
                                         placeHolder: "Enter new confirm PIN",
                                         allowedCharacter: .defaultType,
                                         isSecure: !isconfirmPasswordVisible // <- Add support in your custom FloatingTextField
@@ -926,7 +926,7 @@ struct ControlHeaderView: View {
                             HStack {
                                 Spacer()
                                 Button(action: {
-                                    ConsoleviewModel.setPin(Newpin: ConsoleviewModel.currentPassword, confirmationPin: ConsoleviewModel.NewPassword)
+                                    ConsoleviewModel.setPin(Newpin: ConsoleviewModel.currentPassword, confirmationPin: ConsoleviewModel.newPassword)
                                     isPinDialogVisible = false
                                 }) {
                                     Text("Submit")
@@ -1480,28 +1480,28 @@ struct ControlHeaderView: View {
                     
                     Menu {
                         Button("10") {
-                            doit = 10
-                            let payload = tDo(doitPageSize: doit)
+                            doTask = 10
+                            let payload = tDo(doitPageSize: doTask)
                             ConsoleviewModel.saveSettings(payload: payload)
                         }
                         Button("20") {
-                            doit = 20
-                            let payload = tDo(doitPageSize: doit)
+                            doTask = 20
+                            let payload = tDo(doitPageSize: doTask)
                             ConsoleviewModel.saveSettings(payload: payload)
                         }
                         Button("30") {
-                            doit = 30
-                            let payload = tDo(doitPageSize: doit)
+                            doTask = 30
+                            let payload = tDo(doitPageSize: doTask)
                             ConsoleviewModel.saveSettings(payload: payload)
                         }
                         Button("50") {
-                            doit = 50
-                            let payload = tDo(doitPageSize: doit)
+                            doTask = 50
+                            let payload = tDo(doitPageSize: doTask)
                             ConsoleviewModel.saveSettings(payload: payload)
                         }
                     } label: {
                         HStack {
-                            Text("\(doit)")
+                            Text("\(doTask)")
                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                             Spacer()
                             Image(systemName: "chevron.down")
@@ -1563,23 +1563,23 @@ struct ControlHeaderView: View {
                     
                     Menu {
                         Button("10") {
-                            note = 10
-                            let payload = tNote(notePageSize: note)
+                            noteTask = 10
+                            let payload = tNote(notePageSize: noteTask)
                             ConsoleviewModel.saveSettings(payload: payload)
                         }
                         Button("20") {
-                            note = 20
-                            let payload = tNote(notePageSize: note)
+                            noteTask = 20
+                            let payload = tNote(notePageSize: noteTask)
                             ConsoleviewModel.saveSettings(payload: payload)
                         }
                         Button("30") {
-                            note = 30
-                            let payload = tNote(notePageSize: note)
+                            noteTask = 30
+                            let payload = tNote(notePageSize: noteTask)
                             ConsoleviewModel.saveSettings(payload: payload)
                         }
                         Button("50") {
-                            note = 50
-                            let payload = tNote(notePageSize: note)
+                            noteTask = 50
+                            let payload = tNote(notePageSize: noteTask)
                             ConsoleviewModel.saveSettings(payload: payload)
                         }
                     } label: {

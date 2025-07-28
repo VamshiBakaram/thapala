@@ -23,11 +23,10 @@ class HomePlannerViewModel:ObservableObject{
     @Published var isLoading = false
     @Published var note: String = ""
     @Published var title: String = ""
-    @Published var Diarytask = false
-    @Published var Notetask = false
-    @Published var Diaryviewupdate = false
-    @Published var Diaryupdate: Bool = false
-    @Published var Noteupdate: Bool = false
+    @Published var diaryTask = false
+    @Published var noteTask = false
+    @Published var diaryUpdate: Bool = false
+    @Published var noteUpdate: Bool = false
     @Published var tDate: Bool = false
     @Published var selectedtodo:Bool = false // do it
     @Published var createLabel: Bool = false
@@ -38,17 +37,17 @@ class HomePlannerViewModel:ObservableObject{
     @Published var selectedID: Int = 0
     @Published var labelcomments: [Comment] = []
     @Published var diaryData: PlannerItem?
-    @Published var NoteData: PlannerItems?
+    @Published var noteData: PlannerItems?
     @Published var sessionManager = SessionManager()
     @Published var listData: [Diary] = []
-    @Published var NotelistData: [Note] = []
+    @Published var noteListData: [Note] = []
     @Published var successMessage: String?
     @Published var type: [String] = []
     @Published var commentdelete:[DeleteCommentRequest] = []
-    @Published var Datalabel : [LabelData] = []
-    @Published var TagLabelData: [Labels] = []
-    @Published var TagLabelNoteData: [Labell] = []
-    @Published var TagLabelDoitData: [LabelTags] = []
+    @Published var dataLabel : [LabelData] = []
+    @Published var tagLabelData: [Labels] = []
+    @Published var tagLabelNoteData: [Labell] = []
+    @Published var tagLabelDoItData: [LabelTags] = []
     @Published var selectedLabelID: [Int] = []
     @Published var selectedLabelNoteID: [Int] = []
     @Published var selectedLabelDoitID: [Int] = []
@@ -57,25 +56,25 @@ class HomePlannerViewModel:ObservableObject{
     @Published var reminder: String?
     @Published var  task: [String] = []
     @Published var comment: String = ""
-    @Published var DiaryUpdateRespons: [DiaryUpdateResponse]?
-    @Published var LabelID: [Int] = []
-    @Published var HistoryscheduleData: [PlannerHistory] = []
+//    @Published var labelID: [Int] = []
+    @Published var historyScheduleData: [PlannerHistory] = []
     @Published var isPlusBtn:Bool = false
     @Published var doitlistData: [Doit] = []
     @Published var selectedItem: Int?
     @Published var selectedDoItId: Int?
     @Published var doitHistoryData: [PlannerDoitHistory] = []
-    @Published var Addtasks : [DoitAddItems] = [] // Add task
-    @Published var NewNotetask : [Notelist] = [] // create new Note
+    @Published var addtasks : [DoitAddItems] = [] // Add task
+    @Published var newNoteTask : [Notelist] = [] // create new Note
     @Published var updateDoitData: updateItem? // notification doit
-    @Published var NotificationNotetime: Int?
-    @Published var DiaryNotificationNotetime: Int?
+    @Published var notificationNotetime: Int?
+    @Published var diaryNotificationNotetime: Int?
     @Published var isTagActive: Bool = false
-    @Published var NewDiarytask : [NewDiary] = [] // crete new Diary
+    @Published var newDiaryTask : [NewDiary] = [] // crete new Diary
     @Published var isDiaryTagActive: Bool = false
     @Published var selectedLabelNames: [String] = []
-    @Published var DateBookListData: [DatebookItem] = [] // DateBook GetList
-    @Published var AddEventData : [DatebookItems] = [] // Add Event DateBook post
+    @Published var dateBookListData: [DatebookItem] = [] // DateBook GetList
+    @Published var addEventData : [DatebookItems] = [] // Add Event DateBook post
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     
     
     // Diary get method
@@ -98,7 +97,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -137,7 +136,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -179,7 +178,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -218,7 +217,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -256,7 +255,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -292,7 +291,7 @@ class HomePlannerViewModel:ObservableObject{
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -335,9 +334,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -358,15 +355,13 @@ class HomePlannerViewModel:ObservableObject{
                 self.isLoading = false
                 switch result {
                 case .success(let response):
-                    self.Datalabel = response.data
+                    self.dataLabel = response.data
                 case .failure(let error):
                     switch error {
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -386,7 +381,7 @@ class HomePlannerViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.TagLabelData = response.data
+                    self.tagLabelData = response.data
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -395,7 +390,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -432,9 +427,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -473,7 +466,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -504,15 +497,13 @@ class HomePlannerViewModel:ObservableObject{
                 self.isLoading = false
                 switch result {
                 case .success(let response):
-                    self.NewDiarytask = response.data.data
+                    self.newDiaryTask = response.data.data
                 case .failure(let error):
                     switch error {
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -540,7 +531,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -561,7 +552,7 @@ class HomePlannerViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.NotelistData = response.data.data // Use `response.data` to access `DiaryData`
+                    self.noteListData = response.data.data // Use `response.data` to access `DiaryData`
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -570,7 +561,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -611,7 +602,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -646,15 +637,13 @@ class HomePlannerViewModel:ObservableObject{
                 self.isLoading = false
                 switch result {
                 case .success(let response):
-                    self.NewNotetask = response.data.data
+                    self.newNoteTask = response.data.data
                 case .failure(let error):
                     switch error {
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -673,7 +662,7 @@ class HomePlannerViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.TagLabelNoteData = response.data
+                    self.tagLabelNoteData = response.data
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -682,7 +671,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -704,7 +693,7 @@ class HomePlannerViewModel:ObservableObject{
                 DispatchQueue.main.async {
                     self.isLoading = false
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        self.NoteData = response.updatedPlannerItem // Update local data with response
+                        self.noteData = response.updatedPlannerItem // Update local data with response
                     }
                 }
             case .failure(let error):
@@ -714,7 +703,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -733,7 +722,7 @@ class HomePlannerViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.HistoryscheduleData = response.data.history
+                    self.historyScheduleData = response.data.history
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -742,7 +731,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -779,7 +768,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -816,7 +805,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -848,7 +837,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -876,7 +865,7 @@ class HomePlannerViewModel:ObservableObject{
         ) { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case .success(let response):
+            case .success(_):
                 DispatchQueue.main.async {
                     self.isLoading = false
                 }
@@ -887,7 +876,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -915,7 +904,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -931,9 +920,9 @@ class HomePlannerViewModel:ObservableObject{
             task: tasks,
             note: notes
         )
-        let endPoint = "\(EndPoint.addTask)"
+        let endPoint = "\(EndPoint.addDoItTask)"
         if let jsonData = try? JSONEncoder().encode(params),
-           let jsonString = String(data: jsonData, encoding: .utf8) {
+           let _ = String(data: jsonData, encoding: .utf8) {
         }
         NetworkManager.shared.request(
             type: PlannerResponse.self,
@@ -948,15 +937,13 @@ class HomePlannerViewModel:ObservableObject{
                 self.isLoading = false
                 switch result {
                 case .success(let response):
-                    self.Addtasks = response.data.data
+                    self.addtasks = response.data.data
                 case .failure(let error):
                     switch error {
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -988,7 +975,7 @@ class HomePlannerViewModel:ObservableObject{
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -1011,7 +998,7 @@ class HomePlannerViewModel:ObservableObject{
 
         // Encode the payload to JSON and log it for debugging
         if let jsonData = try? JSONEncoder().encode(params),
-           let jsonString = String(data: jsonData, encoding: .utf8) {
+           let _ = String(data: jsonData, encoding: .utf8) {
         }
         // Perform API request
         NetworkManager.shared.request(type: AddResponse.self,endPoint: endUrl,httpMethod: .post,parameters: params,isTokenRequired: true) { [weak self] result in
@@ -1028,9 +1015,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -1057,7 +1042,7 @@ class HomePlannerViewModel:ObservableObject{
         ) { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case .success(let response):
+            case .success(_):
                 DispatchQueue.main.async {
                     self.isLoading = false
                 }
@@ -1068,7 +1053,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -1109,7 +1094,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -1128,7 +1113,7 @@ class HomePlannerViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.TagLabelDoitData = response.data
+                    self.tagLabelDoItData = response.data
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -1137,7 +1122,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -1158,7 +1143,7 @@ class HomePlannerViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.DateBookListData = response.data.data // Use `response.data` to access `DiaryData`
+                    self.dateBookListData = response.data.data // Use `response.data` to access `DiaryData`
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -1167,7 +1152,7 @@ class HomePlannerViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -1187,7 +1172,7 @@ class HomePlannerViewModel:ObservableObject{
         )
         let endPoint = "\(EndPoint.addEventDateBook)"
         if let jsonData = try? JSONEncoder().encode(params),
-           let jsonString = String(data: jsonData, encoding: .utf8) {
+           let _ = String(data: jsonData, encoding: .utf8) {
         }
         NetworkManager.shared.request(
             type: DatebookResponses.self,
@@ -1202,15 +1187,13 @@ class HomePlannerViewModel:ObservableObject{
                 self.isLoading = false
                 switch result {
                 case .success(let response):
-                    self.AddEventData = response.data.data
+                    self.addEventData = response.data.data
                 case .failure(let error):
                     switch error {
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

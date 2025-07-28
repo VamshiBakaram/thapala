@@ -201,8 +201,8 @@ struct CreateTagLabel: View {
                     }
 //
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        if let Diary = homePostboxViewModel.postBoxEmailData.first {
-                            let incrementedId = Diary.id
+                        if let diary = homePostboxViewModel.postBoxEmailData.first {
+                            let incrementedId = diary.id
                             newid = incrementedId! + 1
                         }
                     }

@@ -183,7 +183,7 @@ struct HomeDirectoryView: View {
                                                             
                                                             Button(action: {
                                                                 threeDotsView = true
-                                                                homeDirectoryViewModel.RenameGroupName = item.groupName
+                                                                homeDirectoryViewModel.renameGroupName = item.groupName
                                                                 homeDirectoryViewModel.groupID = item.id
                                                             }) {
                                                                 Image("dots")
@@ -253,7 +253,7 @@ struct HomeDirectoryView: View {
                             HStack(alignment: .top) {
                                 ScrollView {
                                     VStack(alignment: .leading, spacing: 10) {
-                                        ForEach(homeDirectoryViewModel.DirectoryData, id: \.userId) { item in
+                                        ForEach(homeDirectoryViewModel.directoryData, id: \.userId) { item in
                                             HStack {
                                                 let image = item.profile ?? ""
                                                 AsyncImage(url: URL(string: image)) { phase in
@@ -299,11 +299,11 @@ struct HomeDirectoryView: View {
                                                 
                                                 Text(item.firstname)
                                                     .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                    .font(.custom("Poppins-SemiBold", size: 14)) // Update font name and size
+                                                    .font(.custom(.poppinsSemiBold, size: 14)) // Update font name and size
                                                     .padding(.leading, 8)
                                                 Text(item.lastname)
                                                     .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                    .font(.custom("Poppins-SemiBold", size: 14)) // Update font name and size
+                                                    .font(.custom(.poppinsSemiBold, size: 14)) // Update font name and size
                                                 Spacer()
                                             }
                                             .onTapGesture{
@@ -393,12 +393,12 @@ struct HomeDirectoryView: View {
                                         
                                         Text(item.user?.firstName ?? "")
                                             .foregroundColor(themesviewModel.currentTheme.textColor)
-                                            .font(.custom("Poppins-SemiBold", size: 14))
+                                            .font(.custom(.poppinsSemiBold, size: 14))
                                             .padding(.leading, 8)
                                         
                                         Text(item.user?.lastName ?? "")
                                             .foregroundColor(themesviewModel.currentTheme.textColor)
-                                            .font(.custom("Poppins-SemiBold", size: 14))
+                                            .font(.custom(.poppinsSemiBold, size: 14))
                                         
                                         Spacer()
                                     }
@@ -481,11 +481,11 @@ struct HomeDirectoryView: View {
                                         
                                         Text(item.firstname)
                                             .foregroundColor(themesviewModel.currentTheme.textColor)
-                                            .font(.custom("Poppins-SemiBold", size: 14)) // Update font name and size
+                                            .font(.custom(.poppinsSemiBold, size: 14)) // Update font name and size
                                             .padding(.leading, 8)
                                         Text(item.lastname)
                                             .foregroundColor(themesviewModel.currentTheme.textColor)
-                                            .font(.custom("Poppins-SemiBold", size: 14)) // Update font name and size
+                                            .font(.custom(.poppinsSemiBold, size: 14)) // Update font name and size
                                         Spacer()
                                     }
                                     
@@ -527,7 +527,7 @@ struct HomeDirectoryView: View {
             .edgesIgnoringSafeArea(.top)
             .onAppear {
                     homeDirectoryViewModel.getStatesAndCities()
-                if homeDirectoryViewModel.DirectoryData.isEmpty {
+                if homeDirectoryViewModel.directoryData.isEmpty {
                     homeDirectoryViewModel.GetDirectoryList()
                     if homeDirectoryViewModel.groupList.isEmpty {
                         homeDirectoryViewModel.GetGroupList()
@@ -536,12 +536,12 @@ struct HomeDirectoryView: View {
 
                 // Delay execution to ensure data is loaded before processing
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { // 500ms delay
-                    if !homeDirectoryViewModel.DirectoryData.isEmpty {
+                    if !homeDirectoryViewModel.directoryData.isEmpty {
                         // Map all titles into an array
-                        let allTitles = homeDirectoryViewModel.DirectoryData.map { $0.firstname }
+                        let allTitles = homeDirectoryViewModel.directoryData.map { $0.firstname }
                         firstname = allTitles.joined(separator: ", ")
                         
-                        let profiles = homeDirectoryViewModel.DirectoryData.map { $0.profile }
+                        let profiles = homeDirectoryViewModel.directoryData.map { $0.profile }
                     }
                     
                     if !homeDirectoryViewModel.groupList.isEmpty {
@@ -621,7 +621,7 @@ struct HomeDirectoryView: View {
                                   }
                               }
                         VStack {
-                            if let diary = homeDirectoryViewModel.DirectoryData.first(where: { $0.id == id }) {
+                            if let diary = homeDirectoryViewModel.directoryData.first(where: { $0.id == id }) {
                                 HStack{
                                     let image = diary.profile ?? ""
                                     AsyncImage(url: URL(string: image)) { phase in
@@ -683,7 +683,7 @@ struct HomeDirectoryView: View {
                                 VStack {
                                 
                                 Text("\(diary.firstname) \(diary.lastname)")
-                                    .font(.custom("Poppins-SemiBold", size: 14))
+                                        .font(.custom(.poppinsSemiBold, size: 14))
                                     .foregroundColor(themesviewModel.currentTheme.textColor)
                                     .padding(.leading, 8)
                                 
@@ -1072,7 +1072,7 @@ struct HomeDirectoryView: View {
                             }
                         
                         VStack(alignment: .leading, spacing: 10) {
-                            if let diary = homeDirectoryViewModel.DirectoryData.first(where: { $0.id == id }) {
+                            if let diary = homeDirectoryViewModel.directoryData.first(where: { $0.id == id }) {
                                 HStack {
                                     Text("Report Your Guidance")
                                         .font(.custom(.poppinsSemiBold, size: 18))
@@ -1117,7 +1117,7 @@ struct HomeDirectoryView: View {
                                     .padding(.leading , 16)
                                 
                                 HStack {
-                                    Text("\(sessionManager.userName) \(sessionManager.LastName)")
+                                    Text("\(sessionManager.userName) \(sessionManager.lastName)")
                                         .foregroundColor(themesviewModel.currentTheme.textColor)
                                         .padding(.leading, 16)   // text’s left inside padding
                                         .padding(.vertical, 10)  // top & bottom inside padding
@@ -1282,14 +1282,14 @@ struct HomeDirectoryView: View {
                                     
                                 }
 
-                            floatingTextField(placeHolder : "Group name*", text:  $homeDirectoryViewModel.RenameGroupName)
+                            floatingTextField(placeHolder : "Group name*", text:  $homeDirectoryViewModel.renameGroupName)
                                 .padding(.top , 15)
                             
                             HStack {
                                 Spacer()
                                 Button(action: {
                                     isRenameDialogVisible = false
-                                    homeDirectoryViewModel.RenameGroup(id: homeDirectoryViewModel.groupID, groupname: homeDirectoryViewModel.RenameGroupName)
+                                    homeDirectoryViewModel.RenameGroup(id: homeDirectoryViewModel.groupID, groupname: homeDirectoryViewModel.renameGroupName)
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                         homeDirectoryViewModel.GetGroupList()
                                     }

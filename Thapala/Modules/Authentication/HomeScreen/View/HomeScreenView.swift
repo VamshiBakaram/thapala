@@ -87,15 +87,14 @@ struct HomeScreenView: View {
                 }
                 .background(themesviewModel.currentTheme.windowBackground)
                 .onAppear {
-                    
                     // First, fetch settings data
-                    if ConsoleviewModel.GetUserSettings.isEmpty {
+                    if ConsoleviewModel.userSettings.isEmpty {
                         ConsoleviewModel.getUserSettings()
                     }
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        if let settings = ConsoleviewModel.GetUserSettings.first {
-                            sessionManager.SelectedTheme = settings.theme
+                        if let settings = ConsoleviewModel.userSettings.first {
+                            sessionManager.selectedTheme = settings.theme
                         }
                       }
                     }

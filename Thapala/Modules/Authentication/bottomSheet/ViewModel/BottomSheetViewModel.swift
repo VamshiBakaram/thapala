@@ -18,6 +18,7 @@ class BottomSheetViewModel: ObservableObject {
     @Published var setPin: String = ""
     @Published var password: String = ""
     @Published var lockerVerifyResponse: verifyLockerResponse? = nil
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     
     func getLockerVerify(completion: @escaping (Bool) -> Void) {
         self.isLoading = true
@@ -46,7 +47,7 @@ class BottomSheetViewModel: ObservableObject {
                         self.toastmessage = errorDescription
                         completion(false)
                     case .sessionExpired:
-                        self.toastmessage = "Please try again later"
+                        self.toastmessage = self.sessionExpiredErrorMessage
                     }
                 }
             }

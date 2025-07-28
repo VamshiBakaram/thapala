@@ -78,8 +78,8 @@ struct tDoView: View {
                     if !subtasks[index].isEmpty {
                         Image("plusmark")
                             .renderingMode(.template)
-                            .padding(.leading,16)
                             .foregroundColor(themesviewModel.currentTheme.iconColor)
+                            .padding(.leading,16)
                     }
                     TextField("+ SubTask", text: Binding(
                         get: { subtasks[index] },
@@ -87,8 +87,7 @@ struct tDoView: View {
                     ))
                     .font(.headline)
                     .foregroundColor(themesviewModel.currentTheme.textColor)
-                    .padding(.leading, 16)
-                    .padding(.trailing, 16)
+                    .padding(.horizontal, 16)
                     if !subtasks[index].isEmpty {
                         Image("del")
                             .renderingMode(.template)
@@ -218,7 +217,7 @@ struct ListitemView: View {
                         Image("backButton")
                             .renderingMode(.template)
                             .foregroundColor(themesviewModel.currentTheme.iconColor)
-                            .padding(.leading, 10)
+                            .padding(.leading, 12)
                     }
                     Spacer()
                     
@@ -384,7 +383,7 @@ struct ListitemView: View {
                                         if !label.labelName.isEmpty {
                                             TextField("", text: $label.labelName)
                                                 .frame(height: 35)
-                                                .padding(.leading, 10)
+                                                .padding(.leading, 16)
                                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                                                 .disabled(!canEdit())
                                             
@@ -989,7 +988,7 @@ struct TagView: View {
                         // Scrollable list with filtered data
                         ScrollView {
                             VStack(alignment: .leading, spacing: 10) {
-                                ForEach(homePlannerViewModel.TagLabelDoitData.filter { label in
+                                ForEach(homePlannerViewModel.tagLabelDoItData.filter { label in
                                     searchText.isEmpty || label.labelName.lowercased().contains(searchText.lowercased())
                                 }) { label in
                                     HStack {
@@ -1048,9 +1047,9 @@ struct TagView: View {
     }
     
     func toggleCheck(for id: Int) {
-        if let index = homePlannerViewModel.TagLabelDoitData.firstIndex(where: { $0.id == id }) {
-            homePlannerViewModel.TagLabelDoitData[index].isChecked.toggle()
-            if homePlannerViewModel.TagLabelDoitData[index].isChecked {
+        if let index = homePlannerViewModel.tagLabelDoItData.firstIndex(where: { $0.id == id }) {
+            homePlannerViewModel.tagLabelDoItData[index].isChecked.toggle()
+            if homePlannerViewModel.tagLabelDoItData[index].isChecked {
                 homePlannerViewModel.selectedLabelDoitID.append(id)
             } else {
                 homePlannerViewModel.selectedLabelDoitID.removeAll { $0 == id }
@@ -1064,7 +1063,7 @@ struct TagView: View {
         let baseHeight: CGFloat = 200 // Base height for fixed elements
         let rowHeight: CGFloat = 44 // Estimated height for each row in the list
         let maxHeight: CGFloat = 800 // Maximum height for the entire view
-        let totalHeight = baseHeight + (CGFloat(homePlannerViewModel.TagLabelDoitData.count) * rowHeight)
+        let totalHeight = baseHeight + (CGFloat(homePlannerViewModel.tagLabelDoItData.count) * rowHeight)
         return min(totalHeight, maxHeight) // Ensure it doesn't exceed the maxHeight
     }
 }
@@ -1102,7 +1101,7 @@ struct HistoryBottomView: View {
             // List View
             ScrollView {
                 VStack(spacing: 0) {
-                    ForEach(homePlannerViewModel.HistoryscheduleData, id: \.self) { data in
+                    ForEach(homePlannerViewModel.historyScheduleData, id: \.self) { data in
                         VStack(spacing: 0) {
                             HStack(alignment: .center, spacing: 12) {
                                 // Calendar Icon
@@ -1155,7 +1154,7 @@ struct HistoryBottomView: View {
         let baseHeight: CGFloat = 150 // Base height for fixed elements
         let rowHeight: CGFloat = 50 // Estimated height for each row in the list
         let maxHeight: CGFloat = 800 // Maximum height for the entire view
-        let totalHeight = baseHeight + (CGFloat(homePlannerViewModel.HistoryscheduleData.count) * rowHeight)
+        let totalHeight = baseHeight + (CGFloat(homePlannerViewModel.historyScheduleData.count) * rowHeight)
         return min(totalHeight, maxHeight) // Ensure it doesn't exceed the maxHeight
     }
     func convertToTime(timestamp: TimeInterval) -> String {
@@ -1579,7 +1578,7 @@ struct BottomBackgroundView: View {
         }
         .edgesIgnoringSafeArea(.bottom)
         .onAppear {
-            if homePlannerViewModel.NotelistData.isEmpty {
+            if homePlannerViewModel.noteListData.isEmpty {
                 homePlannerViewModel.GetDoitList()
             }
 

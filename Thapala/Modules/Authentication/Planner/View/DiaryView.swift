@@ -134,7 +134,7 @@ struct DiaryView: View {
                 isDiaryViewActive = true
                 isActive = true
                 
-                if homePlannerViewModel.NotelistData.isEmpty {
+                if homePlannerViewModel.noteListData.isEmpty {
                     homePlannerViewModel.GetDiaryDataList()
                 }
                 
@@ -1111,7 +1111,7 @@ struct BottomTagSheetView: View {
                         // Scrollable list with filtered data
                         ScrollView {
                             VStack(alignment: .leading, spacing: 10) {
-                                ForEach(homePlannerViewModel.TagLabelData.filter { label in
+                                ForEach(homePlannerViewModel.tagLabelData.filter { label in
                                     searchText.isEmpty || label.labelName.lowercased().contains(searchText.lowercased())
                                 }) { label in
                                     HStack {
@@ -1155,7 +1155,7 @@ struct BottomTagSheetView: View {
                 .onAppear{
                     homePlannerViewModel.GetTagLabelList()
                     
-                    if homePlannerViewModel.NotelistData.isEmpty {
+                    if homePlannerViewModel.noteListData.isEmpty {
                         homePlannerViewModel.GetDiaryDataList()
                     }
                     
@@ -1187,9 +1187,9 @@ struct BottomTagSheetView: View {
     }
     
     func toggleCheck(for id: Int) {
-        if let index = homePlannerViewModel.TagLabelData.firstIndex(where: { $0.id == id }) {
-            homePlannerViewModel.TagLabelData[index].isChecked.toggle()
-            if homePlannerViewModel.TagLabelData[index].isChecked {
+        if let index = homePlannerViewModel.tagLabelData.firstIndex(where: { $0.id == id }) {
+            homePlannerViewModel.tagLabelData[index].isChecked.toggle()
+            if homePlannerViewModel.tagLabelData[index].isChecked {
                 homePlannerViewModel.selectedLabelID.append(id)
             } else {
                 homePlannerViewModel.selectedLabelID.removeAll { $0 == id }
@@ -1201,7 +1201,7 @@ struct BottomTagSheetView: View {
         let baseHeight: CGFloat = 200 // Base height for fixed elements
         let rowHeight: CGFloat = 44 // Estimated height for each row in the list
         let maxHeight: CGFloat = 800 // Maximum height for the entire view
-        let totalHeight = baseHeight + (CGFloat(homePlannerViewModel.TagLabelData.count) * rowHeight)
+        let totalHeight = baseHeight + (CGFloat(homePlannerViewModel.tagLabelData.count) * rowHeight)
         return min(totalHeight, maxHeight) // Ensure it doesn't exceed the maxHeight
     }
         

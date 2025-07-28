@@ -799,7 +799,7 @@ struct HomeRecordsView: View {
                             }
 
                             // FILES GRID
-                            if homeRecordsViewModel.FilesData.count != 0 {
+                            if homeRecordsViewModel.filesData.count != 0 {
                                 VStack(alignment: .leading, spacing: 10) {
                                     Text("Files")
                                         .font(.custom(.poppinsBold, size: 16))
@@ -812,8 +812,8 @@ struct HomeRecordsView: View {
                                         GridItem(.flexible(minimum: 100), spacing: 0)
                                     ]
                                         LazyVGrid(columns: columns, alignment: .leading, spacing: 12) {
-                                            ForEach(homeRecordsViewModel.FilesData.indices, id: \.self) { index in
-                                                let file = homeRecordsViewModel.FilesData[index]
+                                            ForEach(homeRecordsViewModel.filesData.indices, id: \.self) { index in
+                                                let file = homeRecordsViewModel.filesData[index]
                                                 VStack(alignment: .leading, spacing: 8) {
                                                     HStack(alignment: .top, spacing: 10) {
                                                         let fileURL = URL(string: file.fileLink)
@@ -1066,15 +1066,15 @@ struct HomeRecordsView: View {
                                             }
                                         }
                                         
-                                            if homeRecordsViewModel.FilesData.count != 0 {
+                                            if homeRecordsViewModel.filesData.count != 0 {
                                                 Section(header: Text("Files")
                                                     .font(.custom(.poppinsBold, size: 16))
                                                     .foregroundColor(themesviewModel.currentTheme.textColor)
                                                     .fontWeight(.bold)
                                                     .padding(.leading)
                                                 ) {
-                                                    ForEach(homeRecordsViewModel.FilesData.indices, id: \.self) { index in
-                                                        let file = homeRecordsViewModel.FilesData[index]
+                                                    ForEach(homeRecordsViewModel.filesData.indices, id: \.self) { index in
+                                                        let file = homeRecordsViewModel.filesData[index]
                                                         let fileURL = URL(string: file.fileLink)
 
                                                         HStack(spacing: 12) {
@@ -1247,7 +1247,7 @@ struct HomeRecordsView: View {
                 }
                     
                 if subFolderViewFiles {
-                        if homeRecordsViewModel.FilesData.count != 0 {
+                        if homeRecordsViewModel.filesData.count != 0 {
                             VStack(alignment: .leading, spacing: 10) {
                                 Text("Files")
                                     .font(.custom(.poppinsBold, size: 16))
@@ -1260,8 +1260,8 @@ struct HomeRecordsView: View {
                                     GridItem(.flexible(minimum: 100), spacing: 0)
                                 ]
                                 LazyVGrid(columns: columns, alignment: .leading, spacing: 12) {
-                                    ForEach(homeRecordsViewModel.FilesData.indices, id: \.self) { index in
-                                        let file = homeRecordsViewModel.FilesData[index]
+                                    ForEach(homeRecordsViewModel.filesData.indices, id: \.self) { index in
+                                        let file = homeRecordsViewModel.filesData[index]
                                         VStack(alignment: .leading, spacing: 8) {
                                             HStack(alignment: .top, spacing: 10) {
                                                 let fileURL = URL(string: file.fileLink)

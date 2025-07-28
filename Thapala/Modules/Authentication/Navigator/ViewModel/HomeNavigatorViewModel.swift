@@ -46,9 +46,8 @@ class HomeNavigatorViewModel:ObservableObject{
     @Published var error: String?
     @Published var lastestData: LastestLoginModel?
     @Published var navigatorBioData: NavigatorBioModel?
-    @Published var BioData: [Bio] = []
-    @Published var UserData: UserDataModel?
-    
+    @Published var bioData: [Bio] = []
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     
      func getLastestLogin() {
          self.isLoading = true
@@ -70,7 +69,7 @@ class HomeNavigatorViewModel:ObservableObject{
                              self.error = error
                          }
                      case .sessionExpired(error: _ ):
-                         self.error = "Please try again later"
+                         self.error = self.sessionExpiredErrorMessage
                      }
                  }
              }
@@ -99,7 +98,7 @@ class HomeNavigatorViewModel:ObservableObject{
                             self.error = error
                         }
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

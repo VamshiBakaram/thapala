@@ -36,15 +36,10 @@ struct MoreSheet: View {
     @State private var isactive: Bool = false
     @State private var selectednewDiaryTag: [Int] = [0]
     @State private var selectednames: [String] = [""]
-    @State private var selectedid: Int = 0
     @State private var isClicked:Bool = false
     @State private var StarEmail: Int = 0
     @Binding var StarreEmail: Int
     @Binding var markedAs : Int
-    @State private var isclicked: Bool = false
-    @State private var isActive: Bool = false
-    @State private var selectedNewDiaryTag: [Int] = []
-    @State private var selectedID : Int?
     @Binding var HomeawaitingViewVisible: Bool
     @State private var dragOffset: CGFloat = 0
     @State private var selectedIndices: Set<Int> = []

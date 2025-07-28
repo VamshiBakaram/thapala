@@ -13,16 +13,16 @@ class ConsoleViewModel: ObservableObject {
     @Published var isComposeEmail: Bool = false
     @Published var timePeriodMessage: String?
     @Published var settingdata: [SettingsData] = []
-    @Published var UserSettings: [Setting] = []
+    @Published var userSettings: [Setting] = []
     @Published var selectedID: Int = 0
     @Published var theme: String?
-    
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     func MailTimePeriod(timePeriod: Int) {
         isLoading = true
         let params = TimeChangeRequest(timeInHours: timePeriod)
         let endPoint = "\(EndPoint.mailTimePeriod)"
         if let jsonData = try? JSONEncoder().encode(params),
-           let jsonString = String(data: jsonData, encoding: .utf8) {
+           let _ = String(data: jsonData, encoding: .utf8) {
         }
         NetworkManager.shared.request(type: TimeChangeResponse.self,endPoint: endPoint,httpMethod: .post, parameters: params, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -36,9 +36,7 @@ class ConsoleViewModel: ObservableObject {
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -52,7 +50,7 @@ class ConsoleViewModel: ObservableObject {
         let params = SettingsPayload(awaitingPageSize: pageSize)
         let endPoint = "\(EndPoint.maximumListPageSize)"
         if let jsonData = try? JSONEncoder().encode(params),
-           let jsonString = String(data: jsonData, encoding: .utf8) {
+           let _ = String(data: jsonData, encoding: .utf8) {
         }
         NetworkManager.shared.request(type: SettingsResponse.self,endPoint: endPoint,httpMethod: .post, parameters: params, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -66,9 +64,7 @@ class ConsoleViewModel: ObservableObject {
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -82,7 +78,7 @@ class ConsoleViewModel: ObservableObject {
         let params = PostboxRequestModel(postboxPageSize: pageSize)
         let endPoint = "\(EndPoint.maximumListPageSize)"
         if let jsonData = try? JSONEncoder().encode(params),
-           let jsonString = String(data: jsonData, encoding: .utf8) {
+           let _ = String(data: jsonData, encoding: .utf8) {
         }
         NetworkManager.shared.request(type: SettingsResponse.self,endPoint: endPoint,httpMethod: .post, parameters: params, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -96,9 +92,7 @@ class ConsoleViewModel: ObservableObject {
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -110,7 +104,7 @@ class ConsoleViewModel: ObservableObject {
         let params = ConveyedPageSizeModel(conveyedPageSize: pageSize)
         let endPoint = "\(EndPoint.maximumListPageSize)"
         if let jsonData = try? JSONEncoder().encode(params),
-           let jsonString = String(data: jsonData, encoding: .utf8) {
+           let _ = String(data: jsonData, encoding: .utf8) {
         }
         NetworkManager.shared.request(type: SettingsResponse.self,endPoint: endPoint,httpMethod: .post, parameters: params, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -124,9 +118,7 @@ class ConsoleViewModel: ObservableObject {
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -140,7 +132,7 @@ class ConsoleViewModel: ObservableObject {
         let params = chatRequestModel(chat: chats)
         let endPoint = "\(EndPoint.maximumListPageSize)"
         if let jsonData = try? JSONEncoder().encode(params),
-           let jsonString = String(data: jsonData, encoding: .utf8) {
+           let _ = String(data: jsonData, encoding: .utf8) {
         }
         NetworkManager.shared.request(type: SettingsResponse.self,endPoint: endPoint,httpMethod: .post, parameters: params, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -154,9 +146,7 @@ class ConsoleViewModel: ObservableObject {
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -170,7 +160,7 @@ class ConsoleViewModel: ObservableObject {
         let params = chatBubbleRequestModel(openChatBubbles: chatBubble)
         let endPoint = "\(EndPoint.maximumListPageSize)"
         if let jsonData = try? JSONEncoder().encode(params),
-           let jsonString = String(data: jsonData, encoding: .utf8) {
+           let _ = String(data: jsonData, encoding: .utf8) {
         }
         NetworkManager.shared.request(type: SettingsResponse.self,endPoint: endPoint,httpMethod: .post, parameters: params, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -184,9 +174,7 @@ class ConsoleViewModel: ObservableObject {
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -197,7 +185,7 @@ class ConsoleViewModel: ObservableObject {
     
     func GetUserSettings() {
         self.isLoading = true
-        let endUrl = "\(EndPoint.getUserSettings)"
+        let endUrl = "\(EndPoint.UserSettings)"
         
         NetworkManager.shared.request(type: UserSettingsResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -206,7 +194,7 @@ class ConsoleViewModel: ObservableObject {
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.UserSettings = response.settings
+                    self.userSettings = response.settings
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -215,7 +203,7 @@ class ConsoleViewModel: ObservableObject {
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -229,7 +217,7 @@ class ConsoleViewModel: ObservableObject {
         let params = Themepayload(theme: themes, accentColor: accentcolour)
         let endPoint = "\(EndPoint.themeChange)"
         if let jsonData = try? JSONEncoder().encode(params),
-           let jsonString = String(data: jsonData, encoding: .utf8) {
+           let _ = String(data: jsonData, encoding: .utf8) {
         }
         NetworkManager.shared.request(type: ThemeResponse.self,endPoint: endPoint,httpMethod: .post, parameters: params, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -243,9 +231,7 @@ class ConsoleViewModel: ObservableObject {
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

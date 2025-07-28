@@ -355,7 +355,7 @@ struct ScheduleView: View {
                             subject = diary.subject ?? ""
                             attachmentsData = diary.attachments ?? []
                             scheduledtime = String(diary.scheduledTime ?? 0)
-                            image = homeNavigatorViewModel.BioData.first?.profile ?? "person"
+                            image = homeNavigatorViewModel.bioData.first?.profile ?? "person"
                             if let recipients = diary.recipients {
                                 if let toRecipient = recipients.first(where: { $0.type == "from" }) {
                                     firstname = toRecipient.user?.firstname ?? ""

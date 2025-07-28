@@ -125,7 +125,7 @@ struct TrashView: View {
                         isfoldersView = false
                         TrashedViewModel.GetPlannerTrashData()
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            doitItems = TrashedViewModel.PlanData.filter { $0.type == "doit" }
+                            doitItems = TrashedViewModel.planData.filter { $0.type == "doit" }
                         }
                     }) {
                         Text("Planner")
@@ -311,7 +311,7 @@ struct TrashView: View {
                                 isfoldersView = false
                                 TrashedViewModel.GetPlannerTrashData()
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                    doitItems = TrashedViewModel.PlanData.filter { $0.type == "doit" }
+                                    doitItems = TrashedViewModel.planData.filter { $0.type == "doit" }
                                 }
                             }) {
                                 Text("tDo")
@@ -334,7 +334,7 @@ struct TrashView: View {
                                 TrashedViewModel.GetPlannerTrashData()
                                 
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                    NoteItems = TrashedViewModel.PlanData.filter { $0.type == "note" }
+                                    NoteItems = TrashedViewModel.planData.filter { $0.type == "note" }
                                 }
                             }) {
                                 Text("tNote")
@@ -956,7 +956,7 @@ struct TrashView: View {
             TrashedViewModel.GetPlannerTrashData()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 if selectedPlannerTab == "tDo" {
-                    doitItems = TrashedViewModel.PlanData.filter { $0.type == "doit" }
+                    doitItems = TrashedViewModel.planData.filter { $0.type == "doit" }
                 }
             }
         }

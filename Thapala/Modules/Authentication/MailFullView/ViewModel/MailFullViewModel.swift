@@ -22,6 +22,7 @@ class MailFullViewModel: ObservableObject {
     @Published var replyViewModel: ReplyEmailViewModel? = nil
     @Published var detailedEmailData: [DetailedEmailData] = []
     @Published var  selectedDateTime: Date? = nil
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     
     func getFullEmail(emailId: Int, passwordHash: String, completion: @escaping (Result<EmailsByIdModel, NetworkError>) -> Void) {
         self.isLoading = true
@@ -52,7 +53,7 @@ class MailFullViewModel: ObservableObject {
                     case .error(error: let message):
                         self.error = message
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -82,7 +83,7 @@ class MailFullViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -111,7 +112,7 @@ class MailFullViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -140,7 +141,7 @@ class MailFullViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

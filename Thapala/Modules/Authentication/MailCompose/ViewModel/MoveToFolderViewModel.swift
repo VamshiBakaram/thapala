@@ -10,6 +10,8 @@ class MoveToFolderViewModel:ObservableObject{
     @Published var isLoading: Bool = false
     @Published var error: String?
     @Published var folderData: [FolderModel] = []
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
+    
     
     func getFoldersData() {
         self.isLoading = true
@@ -33,7 +35,7 @@ class MoveToFolderViewModel:ObservableObject{
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -58,7 +60,7 @@ class MoveToFolderViewModel:ObservableObject{
                     case .error(error: let message):
                         self.error = message
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -83,7 +85,7 @@ class MoveToFolderViewModel:ObservableObject{
                     case .error(error: let message):
                         self.error = message
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

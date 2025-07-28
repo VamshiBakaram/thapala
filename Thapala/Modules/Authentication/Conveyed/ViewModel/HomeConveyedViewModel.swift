@@ -22,6 +22,7 @@ class HomeConveyedViewModel:ObservableObject{
     @Published var conveyedEmailData:[ConveyedData] = []
     @Published var conveyedEmailCounaData:Count?
     @Published var selectedThreadIDs: [Int] = []
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     
     func getConveyedEmailData() {
         self.isLoading = true
@@ -44,7 +45,7 @@ class HomeConveyedViewModel:ObservableObject{
                             self.error = error
                         }
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -75,7 +76,7 @@ class HomeConveyedViewModel:ObservableObject{
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -105,7 +106,7 @@ class HomeConveyedViewModel:ObservableObject{
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

@@ -150,11 +150,11 @@ struct ConsoleView: View {
                 .background(themesviewModel.currentTheme.windowBackground)
                 .onAppear {
                     // First, fetch settings data
-                    if consoleViewModel.UserSettings.isEmpty {
+                    if consoleViewModel.userSettings.isEmpty {
                         consoleViewModel.GetUserSettings()
                     }
                 }
-                .onChange(of: consoleViewModel.UserSettings) { newSettings in
+                .onChange(of: consoleViewModel.userSettings) { newSettings in
                     // When user settings are updated, refresh the page size values
                     if let settings = newSettings.first {
                         awaitingPageSize = settings.awaitingPageSize
@@ -453,11 +453,11 @@ struct ConsoleView: View {
                                 .cornerRadius(8)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(selectedTheme == "Classic Elegance" ? Color.blue : Color.clear, lineWidth: 2)
+                                        .stroke(selectedTheme == "ClassicElegance" ? Color.blue : Color.clear, lineWidth: 2)
                                 )
                             
                             // Only show checkmark if this theme is selected
-                            if selectedTheme == "Classic Elegance" {
+                            if selectedTheme == "ClassicElegance" {
                                 Circle()
                                     .fill(Color.blue)
                                     .frame(width: 24, height: 24)
@@ -470,11 +470,11 @@ struct ConsoleView: View {
                             }
                         }
                         .onTapGesture {
-                            selectedTheme = "Classic Elegance"
+                            selectedTheme = "ClassicElegance"
                             consoleViewModel.Themchange(themes: "elegance", accentcolour: "white")
                         }
                         
-                        Text("Classic Elegance")
+                        Text("Classic-Elegance")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
                             .font(.system(size: 12))
                             .frame(maxWidth: .infinity, alignment: .center)
@@ -491,11 +491,11 @@ struct ConsoleView: View {
                                 .cornerRadius(8)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(selectedTheme == "Modern Minimalism" ? Color.blue : Color.clear, lineWidth: 2)
+                                        .stroke(selectedTheme == "ModernMinimalism" ? Color.blue : Color.clear, lineWidth: 2)
                                 )
                             
                             // Only show checkmark if this theme is selected
-                            if selectedTheme == "Modern Minimalism" {
+                            if selectedTheme == "ModernMinimalism" {
                                 Circle()
                                     .fill(Color.blue)
                                     .frame(width: 24, height: 24)
@@ -508,11 +508,11 @@ struct ConsoleView: View {
                             }
                         }
                         .onTapGesture {
-                            selectedTheme = "Modern Minimalism"
+                            selectedTheme = "ModernMinimalism"
                             consoleViewModel.Themchange(themes: "minimalism", accentcolour: "white")
                         }
                         
-                        Text("Modern Minimalism")
+                        Text("Modern-Minimalism")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
                             .font(.system(size: 12))
                             .frame(maxWidth: .infinity, alignment: .center)
@@ -532,11 +532,11 @@ struct ConsoleView: View {
                                 .cornerRadius(8)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(selectedTheme == "Warm Inviting" ? Color.blue : Color.clear, lineWidth: 2)
+                                        .stroke(selectedTheme == "WarmInviting" ? Color.blue : Color.clear, lineWidth: 2)
                                 )
                             
                             // Only show checkmark if this theme is selected
-                            if selectedTheme == "Warm Inviting" {
+                            if selectedTheme == "WarmInviting" {
                                 Circle()
                                     .fill(Color.blue)
                                     .frame(width: 24, height: 24)
@@ -549,11 +549,11 @@ struct ConsoleView: View {
                             }
                         }
                         .onTapGesture {
-                            selectedTheme = "Warm Inviting"
+                            selectedTheme = "WarmInviting"
                             consoleViewModel.Themchange(themes: "inviting", accentcolour: "white")
                         }
                         
-                        Text("Warm Inviting")
+                        Text("Warm-Inviting")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
                             .font(.system(size: 12))
                             .frame(maxWidth: .infinity, alignment: .center)
@@ -570,11 +570,11 @@ struct ConsoleView: View {
                                 .cornerRadius(8)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(selectedTheme == "Tech Savvy" ? Color.blue : Color.clear, lineWidth: 2)
+                                        .stroke(selectedTheme == "TechSavvy" ? Color.blue : Color.clear, lineWidth: 2)
                                 )
                             
                             // Only show checkmark if this theme is selected
-                            if selectedTheme == "Tech Savvy" {
+                            if selectedTheme == "TechSavvy" {
                                 Circle()
                                     .fill(Color.blue)
                                     .frame(width: 24, height: 24)
@@ -587,11 +587,11 @@ struct ConsoleView: View {
                             }
                         }
                         .onTapGesture {
-                            selectedTheme = "Tech Savvy"
+                            selectedTheme = "TechSavvy"
                             consoleViewModel.Themchange(themes: "tech", accentcolour: "white")
                         }
                         
-                        Text("Tech Savvy")
+                        Text("Tech-Savvy")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
                             .font(.system(size: 12))
                             .frame(maxWidth: .infinity, alignment: .center)
@@ -608,11 +608,11 @@ struct ConsoleView: View {
                                 .cornerRadius(8)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(selectedTheme == "Elegant Dark Mode" ? Color.blue : Color.clear, lineWidth: 2)
+                                        .stroke(selectedTheme == "ElegantDarkMode" ? Color.blue : Color.clear, lineWidth: 2)
                                 )
                             
                             // Only show checkmark if this theme is selected
-                            if selectedTheme == "Elegant Dark Mode" {
+                            if selectedTheme == "ElegantDarkMode" {
                                 Circle()
                                     .fill(Color.blue)
                                     .frame(width: 24, height: 24)
@@ -625,11 +625,11 @@ struct ConsoleView: View {
                             }
                         }
                         .onTapGesture {
-                            selectedTheme = "Elegant Dark Mode"
+                            selectedTheme = "ElegantDarkMode"
                             consoleViewModel.Themchange(themes: "dark", accentcolour: "white")
                         }
                         
-                        Text("Elegant Dark Mode")
+                        Text("Elegant-DarkMode")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
                             .font(.system(size: 12))
                             .frame(maxWidth: .infinity, alignment: .center)

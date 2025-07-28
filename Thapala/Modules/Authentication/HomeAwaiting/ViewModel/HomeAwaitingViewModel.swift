@@ -48,7 +48,7 @@ class HomeAwaitingViewModel: ObservableObject {
     @Published var subject = ""
     @Published var body = ""
     @Published var draftView: Bool = false
-    
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
 
     func getEmailsData() {
         self.isLoading = true
@@ -73,7 +73,7 @@ class HomeAwaitingViewModel: ObservableObject {
                         }
                         
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -107,7 +107,7 @@ class HomeAwaitingViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -142,7 +142,7 @@ class HomeAwaitingViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -176,7 +176,7 @@ class HomeAwaitingViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -233,7 +233,6 @@ class HomeAwaitingViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.error = response.message ?? ""
                         self.starredemail = [response]
-                        print("starred email, response")
                     
                 }
             case .failure(let error):
@@ -245,7 +244,7 @@ class HomeAwaitingViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -267,7 +266,6 @@ class HomeAwaitingViewModel: ObservableObject {
             case .success(let response):
                 DispatchQueue.main.async {
                     self.error = response.message
-                        print("starred email, response")
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -278,7 +276,7 @@ class HomeAwaitingViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -300,7 +298,6 @@ class HomeAwaitingViewModel: ObservableObject {
                 self.isLoading = false
                 switch result {
                 case .success(let response):
-                    response.message.self
                     self.createLabelData = [response.data]
                 case .failure(let error):
                     switch error {
@@ -308,9 +305,7 @@ class HomeAwaitingViewModel: ObservableObject {
                         self.error = message
                         print("Error: \(message)")
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -333,16 +328,14 @@ class HomeAwaitingViewModel: ObservableObject {
                 self.isLoading = false
                 switch result {
                 case .success(let response):
-                    response.message.self
+                    self.error = response.message
                 case .failure(let error):
                     switch error {
                     case .error(let message):
                         self.error = message
                         print("Error: \(message)")
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

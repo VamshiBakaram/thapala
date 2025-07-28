@@ -12,6 +12,7 @@ class SnoozedMailsViewModel: ObservableObject {
     @Published var passwordHint: String? = ""
     @Published var selectedID: Int? = nil
     @Published var snoozedMailsDataModel:[SnoozedMailsDataModel] = []
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     
     func getSnoozedEmailData(selectedTabItem : String) {
         self.isLoading = true
@@ -34,7 +35,7 @@ class SnoozedMailsViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

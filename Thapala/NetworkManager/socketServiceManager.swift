@@ -90,7 +90,6 @@ class SocketManagerService {
     func listenForMessages(callback: @escaping ([String: Any]) -> Void) {
         socket?.on("receive_message") { data, ack in
             if let message = data.first as? [String: Any] {
-                print("📩 Received message: \(message)")
                 callback(message)
             }
         }

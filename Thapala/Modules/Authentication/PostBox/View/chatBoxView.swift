@@ -156,20 +156,20 @@ struct ChatBoxView: View {
             }
         }
         .onAppear {
-            if homePostboxViewModel.ContactsList.isEmpty {
+            if homePostboxViewModel.contactsList.isEmpty {
                 homePostboxViewModel.getContactsList()
                 
             }
-            if homePostboxViewModel.GetChatMessage.isEmpty {
+            if homePostboxViewModel.getChatMessage.isEmpty {
                 homePostboxViewModel.getAllChats(senderID: sessionManager.userId, recieverId: selectID)
             }
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                if let settings = homePostboxViewModel.ContactsList.first(where: { $0.id == selectID }) {
+                if let settings = homePostboxViewModel.contactsList.first(where: { $0.id == selectID }) {
                     firstname = settings.firstname
                     profile = settings.profile ?? ""
                 }
-                chatMessage = homePostboxViewModel.GetChatMessage.map { $0.message }
+                chatMessage = homePostboxViewModel.getChatMessage.map { $0.message }
             }
             socketManager.connect()
         }

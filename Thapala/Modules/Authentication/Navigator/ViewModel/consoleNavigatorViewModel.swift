@@ -10,22 +10,22 @@ import Foundation
 class ConsoleNavigatiorViewModel:ObservableObject{
     @Published var isLoading = false
     @Published var error: String?
-    @Published var GetUserSettings: [UserSetting] = []
-    @Published var GetTotalStorage: [StorageData] = []
+    @Published var userSettings: [UserSetting] = []
+    @Published var getStorageData: [StorageData] = []
     @Published var savesetting: [UserSettings] = []
-    @Published var SecurityQuestions: [securityQuestion] = []
+    @Published var securityQuestions: [securityQuestion] = []
     @Published var contactNumber: String = ""
     @Published var currentPassword: String = ""
-    @Published var NewPassword: String = ""
+    @Published var newPassword: String = ""
     @Published var isContactsDialogVisible = false
     @Published var countryCodes: [countryCode] = []
     @Published var selectedCountryCode: countriesCode? = nil
     @Published var isShowCountryDropdown = false
     @Published var successMessage: String = ""
-    @Published var GetAllNotificationAlerts: [AlertData] = []
+    @Published var getAllNotificationAlerts: [AlertData] = []
     @Published var updateNotificationAlerts: [alertSettingsData] = []
     @Published var theme: String?
-    
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     //Get User Settings
     
     func handleDropdown() {
@@ -41,7 +41,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.GetUserSettings = response.settings
+                    self.userSettings = response.settings
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -50,7 +50,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -59,14 +59,14 @@ class ConsoleNavigatiorViewModel:ObservableObject{
 
     func getTotalStorage() {
         self.isLoading = true
-        let endUrl = "\(EndPoint.getTotalStorage)"
+        let endUrl = "\(EndPoint.TotalStorage)"
         NetworkManager.shared.request(type: StorageResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.GetTotalStorage = response.data
+                    self.getStorageData = response.data
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -75,7 +75,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -101,9 +101,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -121,7 +119,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.SecurityQuestions = response.data
+                    self.securityQuestions = response.data
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -130,7 +128,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -168,9 +166,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
                         self.error = message
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -190,7 +186,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.GetAllNotificationAlerts = response.data
+                    self.getAllNotificationAlerts = response.data
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -199,7 +195,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -250,7 +246,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -278,9 +274,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

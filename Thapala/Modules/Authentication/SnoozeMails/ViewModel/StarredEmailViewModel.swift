@@ -14,6 +14,7 @@ class StarredEmailViewModel: ObservableObject {
     @Published var isEmailScreen: Bool = false
     @Published var passwordHint: String? = ""
     @Published var selectedID: Int? = nil
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     
     init() {
         self.getStarredEmailData(selectedTabItem: "awaited")
@@ -41,7 +42,7 @@ class StarredEmailViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -70,7 +71,7 @@ class StarredEmailViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

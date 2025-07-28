@@ -529,7 +529,7 @@ struct HomePostboxView: View {
                     }
 
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        if let settings = homePostboxViewModel.ContactsList.first {
+                        if let settings = homePostboxViewModel.contactsList.first {
                             firstName = settings.firstname
                             lastName = settings.lastname
                         }
@@ -960,13 +960,13 @@ struct HomePostboxView: View {
     var chatView:some View{
 
             VStack{
-                if homePostboxViewModel.ContactsList.count == 0{
+                if homePostboxViewModel.contactsList.count == 0{
                     Text("No Mails Found.")
                         .font(.custom(.poppinsMedium, size: 25, relativeTo: .title))
                         .foregroundColor(themesviewModel.currentTheme.textColor)
                 }else{
                     VStack{
-                        List($homePostboxViewModel.ContactsList, id: \.id) { $contact in
+                        List($homePostboxViewModel.contactsList, id: \.id) { $contact in
                             HStack{
                                 AsyncImage(url: URL(string: contact.profile ?? "")) { image in
                                     image

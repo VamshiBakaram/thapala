@@ -18,6 +18,7 @@ class VerifyOTPViewModel: ObservableObject {
     let isfromForgot:Bool
     var resetToken:String = ""
     let tCode:String
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     init(dialCode: String, phoneNumber: String,isfromForgot:Bool,tCode:String) {
         self.phoneNumber = "\(dialCode) \(phoneNumber.prefix(2))*** ***\(phoneNumber.suffix(2))"
         self.isfromForgot = isfromForgot
@@ -81,7 +82,7 @@ class VerifyOTPViewModel: ObservableObject {
                     case .error(error: let message):
                         self.error = message
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -111,7 +112,7 @@ class VerifyOTPViewModel: ObservableObject {
                     case .error(error: let message):
                         self.error = message
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

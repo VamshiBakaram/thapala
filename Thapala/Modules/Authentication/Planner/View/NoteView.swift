@@ -154,12 +154,12 @@ struct NoteView: View {
                 isScreenActive = true
                 isViewActive = true
                 
-                if homePlannerViewModel.NotelistData.isEmpty {
+                if homePlannerViewModel.noteListData.isEmpty {
                     homePlannerViewModel.GetNoteDataList()
                 }
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    if let note = homePlannerViewModel.NotelistData.first {
+                    if let note = homePlannerViewModel.noteListData.first {
                         let incrementedId = note.id // `id` is a non-optional Int
                         id = incrementedId + 1
                     }
@@ -267,7 +267,7 @@ struct NoteUpdateView: View {
     var body: some View {
         ZStack {
             if !themeImage.isEmpty {
-                if let diary = homePlannerViewModel.NotelistData.first(where: { $0.id == selectedID }) {
+                if let diary = homePlannerViewModel.noteListData.first(where: { $0.id == selectedID }) {
                     if let theme = diary.theme {
                         if let hexColor = Color(hex: theme) {
                         // Use the color from the hex code
@@ -346,8 +346,8 @@ struct NoteUpdateView: View {
                 }
                 
                     VStack(alignment: .leading, spacing: 15) { // Updated spacing
-                        if let selectedDiaryIndex = homePlannerViewModel.NotelistData.firstIndex(where: { $0.id == selectedID }),
-                           let reminderTimestamp = homePlannerViewModel.NotelistData[selectedDiaryIndex].reminder {
+                        if let selectedDiaryIndex = homePlannerViewModel.noteListData.firstIndex(where: { $0.id == selectedID }),
+                           let reminderTimestamp = homePlannerViewModel.noteListData[selectedDiaryIndex].reminder {
                             // Convert Int (timestamp) to Date
                             let reminderDate = Date(timeIntervalSince1970: TimeInterval(reminderTimestamp))
                             
@@ -368,8 +368,8 @@ struct NoteUpdateView: View {
                                         set: { newValue in
                                             if let newDate = parseDateTime(newValue) {
                                                 // Update the reminder timestamp
-                                                if let index = homePlannerViewModel.NotelistData.firstIndex(where: { $0.id == selectedID }) {
-                                                    homePlannerViewModel.NotelistData[index].reminder = Int(newDate.timeIntervalSince1970)
+                                                if let index = homePlannerViewModel.noteListData.firstIndex(where: { $0.id == selectedID }) {
+                                                    homePlannerViewModel.noteListData[index].reminder = Int(newDate.timeIntervalSince1970)
                                                 }
                                             }
                                         }
@@ -386,7 +386,7 @@ struct NoteUpdateView: View {
                                         .frame(width: 16, height: 16)
                                         .padding(.trailing, 5)
                                             .onTapGesture {
-                                                if let selectedDiary = homePlannerViewModel.NotelistData.first(where: { $0.id == selectedID }) {
+                                                if let selectedDiary = homePlannerViewModel.noteListData.first(where: { $0.id == selectedID }) {
                                                     homePlannerViewModel.removescheduleNote(selectedID: selectedID) // Pass nil for null
                                                     isTextFieldVisible = false // Hide TextField when tapped
                                                 }
@@ -419,7 +419,7 @@ struct NoteUpdateView: View {
                                                 .padding(.trailing, 5)
                                                 .onTapGesture {
                                                     label.labelName = ""
-                                                    if let selectedDiary = homePlannerViewModel.NotelistData.first(where: { $0.id == selectedID }) {
+                                                    if let selectedDiary = homePlannerViewModel.noteListData.first(where: { $0.id == selectedID }) {
                                                         homePlannerViewModel.removeTag(selectedID: selectedID, Tagid: label.labelId)
                                                     }
 
@@ -506,12 +506,12 @@ struct NoteUpdateView: View {
             }
             .onAppear {
 
-                if homePlannerViewModel.NotelistData.isEmpty {
+                if homePlannerViewModel.noteListData.isEmpty {
                     homePlannerViewModel.GetNoteDataList()
                 }
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    if let note = homePlannerViewModel.NotelistData.first(where: { $0.id == selectedID }) {
+                    if let note = homePlannerViewModel.noteListData.first(where: { $0.id == selectedID }) {
                         tNotetitle = note.title
                         tNotenote = note.note
                         tagslabels = note.labels ?? []
@@ -637,7 +637,7 @@ struct NoteUpdateView: View {
     
     // Helper function to determine editability
     private func canEdit() -> Bool {
-        homePlannerViewModel.NotelistData.firstIndex(where: { $0.id == selectedID }) == nil
+        homePlannerViewModel.noteListData.firstIndex(where: { $0.id == selectedID }) == nil
     }
     private func formatDateTime(_ date: Date) -> String {
         let formatter = DateFormatter()
@@ -781,12 +781,12 @@ struct BottomNotificationView: View {
         .onAppear {
             options.withHands = true
             
-            if homePlannerViewModel.NotelistData.isEmpty {
+            if homePlannerViewModel.noteListData.isEmpty {
                 homePlannerViewModel.GetNoteDataList()
             }
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                if let note = homePlannerViewModel.NotelistData.first {
+                if let note = homePlannerViewModel.noteListData.first {
                     let incrementedId = note.id // `id` is a non-optional Int
                     id = incrementedId + 1
                     
@@ -890,7 +890,7 @@ struct BottomTagView: View {
                                             isTagVisible = false // Dismiss the sheet
                                             isclicked = true
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 200 / 1000.0) {
-                                                if homePlannerViewModel.NotelistData.isEmpty {
+                                                if homePlannerViewModel.noteListData.isEmpty {
                                                     homePlannerViewModel.GetNoteDataList()
 
                                                 }
@@ -902,7 +902,7 @@ struct BottomTagView: View {
                                             isTagVisible = false // Dismiss the sheet
                                             isclicked = true
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 200 / 1000.0) {
-                                                if homePlannerViewModel.NotelistData.isEmpty {
+                                                if homePlannerViewModel.noteListData.isEmpty {
                                                     homePlannerViewModel.GetNoteDataList()
                                                 }
                                             }
@@ -977,7 +977,7 @@ struct BottomTagView: View {
                         // Scrollable list with filtered data
                         ScrollView {
                             VStack(alignment: .leading, spacing: 10) {
-                                ForEach(homePlannerViewModel.TagLabelNoteData.filter { label in
+                                ForEach(homePlannerViewModel.tagLabelNoteData.filter { label in
                                     searchText.isEmpty || label.labelName.lowercased().contains(searchText.lowercased())
                                 }) { label in
                                     HStack {
@@ -1015,12 +1015,12 @@ struct BottomTagView: View {
                 .shadow(radius: 10)
                 .onAppear{
                     homePlannerViewModel.GetTagNoteLabelList()
-                    if homePlannerViewModel.NotelistData.isEmpty {
+                    if homePlannerViewModel.noteListData.isEmpty {
                         homePlannerViewModel.GetNoteDataList()
                     }
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        if let note = homePlannerViewModel.NotelistData.first {
+                        if let note = homePlannerViewModel.noteListData.first {
                             let incrementedId = note.id // `id` is a non-optional Int
                             id = incrementedId + 1
                         }
@@ -1050,9 +1050,9 @@ struct BottomTagView: View {
     }
     
     func toggleCheck(for id: Int) {
-        if let index = homePlannerViewModel.TagLabelNoteData.firstIndex(where: { $0.id == id }) {
-            homePlannerViewModel.TagLabelNoteData[index].isChecked.toggle()
-            if homePlannerViewModel.TagLabelNoteData[index].isChecked {
+        if let index = homePlannerViewModel.tagLabelNoteData.firstIndex(where: { $0.id == id }) {
+            homePlannerViewModel.tagLabelNoteData[index].isChecked.toggle()
+            if homePlannerViewModel.tagLabelNoteData[index].isChecked {
                 homePlannerViewModel.selectedLabelNoteID.append(id)
             } else {
                 homePlannerViewModel.selectedLabelNoteID.removeAll { $0 == id }
@@ -1064,7 +1064,7 @@ struct BottomTagView: View {
         let baseHeight: CGFloat = 200 // Base height for fixed elements
         let rowHeight: CGFloat = 44 // Estimated height for each row in the list
         let maxHeight: CGFloat = 800 // Maximum height for the entire view
-        let totalHeight = baseHeight + (CGFloat(homePlannerViewModel.TagLabelNoteData.count) * rowHeight)
+        let totalHeight = baseHeight + (CGFloat(homePlannerViewModel.tagLabelNoteData.count) * rowHeight)
         return min(totalHeight, maxHeight) // Ensure it doesn't exceed the maxHeight
     }
         
@@ -1227,7 +1227,7 @@ struct HistoryView: View {
             // List View
             ScrollView {
                 VStack(spacing: 0) {
-                    ForEach(homePlannerViewModel.HistoryscheduleData, id: \.self) { data in
+                    ForEach(homePlannerViewModel.historyScheduleData, id: \.self) { data in
                         VStack(spacing: 0) {
                             HStack(alignment: .center, spacing: 12) {
                                 // Calendar Icon
@@ -1278,7 +1278,7 @@ struct HistoryView: View {
         let baseHeight: CGFloat = 150 // Base height for fixed elements
         let rowHeight: CGFloat = 50 // Estimated height for each row in the list
         let maxHeight: CGFloat = 800 // Maximum height for the entire view
-        let totalHeight = baseHeight + (CGFloat(homePlannerViewModel.HistoryscheduleData.count) * rowHeight)
+        let totalHeight = baseHeight + (CGFloat(homePlannerViewModel.historyScheduleData.count) * rowHeight)
         return min(totalHeight, maxHeight) // Ensure it doesn't exceed the maxHeight
     }
     func convertToTime(timestamp: TimeInterval) -> String {
@@ -1702,13 +1702,13 @@ struct BottomThemeView: View {
         }
         .edgesIgnoringSafeArea(.bottom)
         .onAppear {
-            if homePlannerViewModel.NotelistData.isEmpty {
+            if homePlannerViewModel.noteListData.isEmpty {
                 homePlannerViewModel.GetNoteDataList()
             }
 
             // Safely handle any logic without mutating `selectedID`
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                if let diary = homePlannerViewModel.NotelistData.first(where: { $0.id == selectedID }) {
+                if let diary = homePlannerViewModel.noteListData.first(where: { $0.id == selectedID }) {
                     selectedID = diary.id
                     if let theme = diary.theme {
                         selectedIconIndex = theme

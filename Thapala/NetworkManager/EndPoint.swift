@@ -71,7 +71,7 @@ struct EndPoint {
     static let getDoIt = "planner?type=doit&page=1&pageSize=10"
     static let updateDoitcomment = "planner/update-comment"
     static let doItHistory = "planner/get-planner-history/"
-    static let addTask = "planner?type=doit"
+    static let addDoItTask = "planner?type=doit"
     static let removeTask = "planner/add-comment" // delete Task
     static let addingTask = "planner/add-comment" // task add to existing doit
     static let changeStatus = "planner/change-status"
@@ -118,7 +118,7 @@ struct EndPoint {
     
     static let mailTimePeriod = "user/move-emails-time"
     static let maximumListPageSize = "user/save-user-settings"
-    static let getUserSettings = "user/user-settings"
+    static let UserSettings = "user/user-settings"
     static let themeChange = "user/change-theme"
     
     // Records Module
@@ -135,7 +135,7 @@ struct EndPoint {
     // Navigator
     
     static let userSettings = "user/user-settings"
-    static let getTotalStorage = "get-total-storage"
+    static let TotalStorage = "get-total-storage" // Get Api
     static let saveSettings = "user/save-user-settings"
     static let consoleSecurityQuestions = "questions/user-security-questions"
     static let navigatorBio = "navigator/get-bio-by-id/"

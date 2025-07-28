@@ -27,6 +27,7 @@ class ReplyEmailViewModel:ObservableObject{
     @Published var replyToId: String = ""
     @Published var threadId: String = ""
     @Published var composeEmail: String = ""
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     
     init(to: String, cc: String, bcc: String, subject: String, body: String,replyToId:String,threadId:String,subSubject:String) {
            self.toAddress = to
@@ -62,7 +63,7 @@ class ReplyEmailViewModel:ObservableObject{
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -89,7 +90,7 @@ class ReplyEmailViewModel:ObservableObject{
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -146,7 +147,7 @@ class ReplyEmailViewModel:ObservableObject{
                     case .error(error: let message):
                         self.error = message
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

@@ -10,6 +10,7 @@ class HomeMenuViewModel:ObservableObject{
     @Published var isLoading: Bool = false
     @Published var error: String?
     @Published var message: String = ""
+    
     // logout or signout
     
     func logout(userID: Int?) {

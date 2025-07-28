@@ -14,7 +14,7 @@ class TrashViewModel:ObservableObject{
     @Published var trashData: [Emaildata] = []
     @Published var fileData: [TrashItem] = []
     @Published var folderData: [TrashFolder] = []
-    @Published var PlanData: [PlannerTrashItem] = []
+    @Published var planData: [PlannerTrashItem] = []
     @Published var plannerRestoreMessage: String = ""
     @Published var plannerDeleteMessage: String = ""
     @Published var trashupdateView: Bool = false
@@ -22,6 +22,8 @@ class TrashViewModel:ObservableObject{
     @Published var passwordHint: String? = ""
     @Published var isEmailScreen: Bool = false
     @Published var beforeLongPress: Bool = true
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
+    
     // GetAllTrash
     func GetTrashData() {
         self.isLoading = true
@@ -43,7 +45,7 @@ class TrashViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -73,7 +75,7 @@ class TrashViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -102,7 +104,7 @@ class TrashViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -120,7 +122,7 @@ class TrashViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.PlanData = response.data.plannerTrash // Use `response.data` to access `DiaryData`
+                    self.planData = response.data.plannerTrash // Use `response.data` to access `DiaryData`
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -129,7 +131,7 @@ class TrashViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -166,7 +168,7 @@ class TrashViewModel:ObservableObject{
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -201,7 +203,7 @@ class TrashViewModel:ObservableObject{
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -216,7 +218,8 @@ class TrashViewModel:ObservableObject{
         )
         let endPoint = "\(EndPoint.restoreFiles)"
         if let jsonData = try? JSONEncoder().encode(params),
-           let jsonString = String(data: jsonData, encoding: .utf8) {
+           let _ = String(data: jsonData, encoding: .utf8) {
+            // Maybe add a comment if needed
         }
         NetworkManager.shared.request(type: RestoreResponse.self,endPoint: endPoint,httpMethod: .post, parameters: params, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -224,14 +227,13 @@ class TrashViewModel:ObservableObject{
                 self.isLoading = false
                 switch result {
                 case .success(let response):
-                    response.message.self
                     self.error = response.message.self
                 case .failure(let error):
                     switch error {
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -255,7 +257,8 @@ class TrashViewModel:ObservableObject{
         
         let endPoint = "\(EndPoint.deleteFiles)"
         if let jsonData = try? JSONEncoder().encode(params),
-           let jsonString = String(data: jsonData, encoding: .utf8) {
+           let _ = String(data: jsonData, encoding: .utf8) {
+            // Maybe add a comment if needed
         }
         NetworkManager.shared.request(type: DeletefolderResponse.self,endPoint: endPoint,httpMethod: .post, parameters: params, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -263,14 +266,13 @@ class TrashViewModel:ObservableObject{
                 self.isLoading = false
                 switch result {
                 case .success(let response):
-                    response.message.self
                     self.error = response.message.self
                 case .failure(let error):
                     switch error {
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -288,22 +290,23 @@ class TrashViewModel:ObservableObject{
         
         let endPoint = "\(EndPoint.deleteFiles)"
         if let jsonData = try? JSONEncoder().encode(params),
-           let jsonString = String(data: jsonData, encoding: .utf8) {
+           let _ = String(data: jsonData, encoding: .utf8) {
+            // Maybe add a comment if needed
         }
+
         NetworkManager.shared.request(type: DeletefolderResponse.self,endPoint: endPoint,httpMethod: .post, parameters: params, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.isLoading = false
                 switch result {
                 case .success(let response):
-                    response.message.self
                     self.error = response.message.self
                 case .failure(let error):
                     switch error {
                     case .error(let message):
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -338,7 +341,7 @@ class TrashViewModel:ObservableObject{
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -369,7 +372,7 @@ class TrashViewModel:ObservableObject{
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

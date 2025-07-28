@@ -245,7 +245,7 @@ struct HomePlannerView: View {
                                     }
                                     .padding(.top , 10)
                                     .onTapGesture {
-                                        homePlannerViewModel.Diarytask = true  // Set addtask to true when TextField is tapped
+                                        homePlannerViewModel.diaryTask = true  // Set addtask to true when TextField is tapped
                                     }
                                 }
                             }
@@ -270,7 +270,7 @@ struct HomePlannerView: View {
                             }
                             .padding(.top , 10)
                             .onTapGesture {
-                                homePlannerViewModel.Notetask = true  // Set addtask to true when TextField is tapped
+                                homePlannerViewModel.noteTask = true  // Set addtask to true when TextField is tapped
                             }
                         case .Date:
                             HStack{
@@ -334,41 +334,41 @@ struct HomePlannerView: View {
                      PlannerAddTaskView(isAddTaskVisible: $homePlannerViewModel.addtask)
                      .padding(.bottom,330 )
                 }
-                if homePlannerViewModel.Diarytask {
+                if homePlannerViewModel.diaryTask {
                     Color.black
                      .opacity(0.4)
                      .edgesIgnoringSafeArea(.all)
-                    DiaryView(isDiaryVisible: $homePlannerViewModel.Diarytask, DiarynotificationTime: $homePlannerViewModel.DiaryNotificationNotetime, isDiaryTagActive: $homePlannerViewModel.isDiaryTagActive, selectedNames: selectedNames)
+                    DiaryView(isDiaryVisible: $homePlannerViewModel.diaryTask, DiarynotificationTime: $homePlannerViewModel.diaryNotificationNotetime, isDiaryTagActive: $homePlannerViewModel.isDiaryTagActive, selectedNames: selectedNames)
                      .transition(.opacity)
                 }
-                if homePlannerViewModel.Notetask {
+                if homePlannerViewModel.noteTask {
                     Color.black
                      .opacity(0.4)
                      .edgesIgnoringSafeArea(.all)
-                    NoteView(isNoteVisible: $homePlannerViewModel.Notetask, notificationTime: $homePlannerViewModel.NotificationNotetime, isTagActive: $homePlannerViewModel.isTagActive)
+                    NoteView(isNoteVisible: $homePlannerViewModel.noteTask, notificationTime: $homePlannerViewModel.notificationNotetime, isTagActive: $homePlannerViewModel.isTagActive)
                      .transition(.opacity)
                 }
-                if homePlannerViewModel.Diaryupdate {
+                if homePlannerViewModel.diaryUpdate {
                     Color.black
                         .opacity(0.4)
                         .edgesIgnoringSafeArea(.all)
                         .transition(.opacity)
 
                     if let selectedData = homePlannerViewModel.listData.first(where: { $0.id == homePlannerViewModel.selectedID }) {
-                        DiaryUpdateView(isDiaryupdateVisible: $homePlannerViewModel.Diaryupdate, DiarynotificationTime: $homePlannerViewModel.DiaryNotificationNotetime, selectedID: selectedData.id ?? 0, selectedNames: $selectedNames)
+                        DiaryUpdateView(isDiaryupdateVisible: $homePlannerViewModel.diaryUpdate, DiarynotificationTime: $homePlannerViewModel.diaryNotificationNotetime, selectedID: selectedData.id ?? 0, selectedNames: $selectedNames)
                     } else {
                         Text("Error: Could not find data for the selected ID")
                             .foregroundColor(.red)
                     }
                 }
                 
-                if homePlannerViewModel.Noteupdate {
+                if homePlannerViewModel.noteUpdate {
                     Color.black
                         .opacity(0.4)
                         .edgesIgnoringSafeArea(.all)
                         .transition(.opacity)
-                    if let selectedData = homePlannerViewModel.NotelistData.first(where: { $0.id == homePlannerViewModel.selectedID }) {
-                        NoteUpdateView(isNoteupdateVisible: $homePlannerViewModel.Noteupdate, notificationTime: $homePlannerViewModel.NotificationNotetime, selectedID: selectedData.id ?? 0)
+                    if let selectedData = homePlannerViewModel.noteListData.first(where: { $0.id == homePlannerViewModel.selectedID }) {
+                        NoteUpdateView(isNoteupdateVisible: $homePlannerViewModel.noteUpdate, notificationTime: $homePlannerViewModel.notificationNotetime, selectedID: selectedData.id ?? 0)
                     } else {
                         Text("Error: Could not find data for the selected ID")
                             .foregroundColor(.red)
@@ -753,7 +753,7 @@ struct HomePlannerView: View {
                     .contentShape(Rectangle())
                     .onTapGesture {
                         homePlannerViewModel.selectedID = data.id ?? 0
-                        homePlannerViewModel.Diaryupdate = true
+                        homePlannerViewModel.diaryUpdate = true
                     }
                     
                     .tint(Color(red: 1.0, green: 0.5, blue: 0.5))
@@ -767,7 +767,7 @@ struct HomePlannerView: View {
     var dateBookView:some View{
         
         VStack{
-            if homePlannerViewModel.NotelistData.count == 0 {
+            if homePlannerViewModel.noteListData.count == 0 {
                 VStack {
                     Text("No Data found")
                         .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -777,7 +777,7 @@ struct HomePlannerView: View {
                 .background(themesviewModel.currentTheme.windowBackground)
             }
             else {
-                List ($homePlannerViewModel.NotelistData, id: \.id) {  $data in
+                List ($homePlannerViewModel.noteListData, id: \.id) {  $data in
                     HStack{
                         let senderDate: TimeInterval = TimeInterval(data.createdTimeStamp) ?? 0
                         let finalDate = convertTime(timestamp: senderDate)
@@ -810,7 +810,7 @@ struct HomePlannerView: View {
                     .contentShape(Rectangle())
                     .onTapGesture {
                         homePlannerViewModel.selectedID = data.id ?? 0
-                        homePlannerViewModel.Noteupdate = true
+                        homePlannerViewModel.noteUpdate = true
                     }
                     
                     .tint(Color(red: 1.0, green: 0.5, blue: 0.5))
