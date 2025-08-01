@@ -11,7 +11,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
     @Published var isLoading = false
     @Published var error: String?
     @Published var userSettings: [UserSetting] = []
-    @Published var GetStorageData: [StorageData] = []
+    @Published var getStorageData: [StorageData] = []
     @Published var savesetting: [UserSettings] = []
     @Published var securityQuestions: [securityQuestion] = []
     @Published var contactNumber: String = ""
@@ -23,7 +23,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
     @Published var isShowCountryDropdown = false
     @Published var successMessage: String = ""
     @Published var getAllNotificationAlerts: [AlertData] = []
-    @Published var UpdateNotificationAlerts: [alertSettingsData] = []
+    @Published var updateNotificationAlerts: [alertSettingsData] = []
     @Published var theme: String?
     private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     //Get User Settings
@@ -66,7 +66,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.GetStorageData = response.data
+                    self.getStorageData = response.data
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -236,7 +236,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
                 DispatchQueue.main.async {
                     self.isLoading = false
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        self.UpdateNotificationAlerts = [response.data]
+                        self.updateNotificationAlerts = [response.data]
                     }
                 }
             case .failure(let error):

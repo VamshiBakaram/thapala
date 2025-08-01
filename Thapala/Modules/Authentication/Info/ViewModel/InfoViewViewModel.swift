@@ -18,6 +18,7 @@ class InfoViewViewModel: ObservableObject {
     @Published var guidecontentItems: [GuideContent] = []
     @Published var isComposeEmail: Bool = false
     private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
+    @Published var isInfoView: Bool = true
     
     func getInfoData(selectedOption: String) {
         self.isLoading = true

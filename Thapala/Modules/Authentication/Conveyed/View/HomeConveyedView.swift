@@ -199,7 +199,8 @@ struct HomeConveyedView: View {
                                 .padding(.bottom , 10)
                                 
                             }
-                            .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top ?? 30)
+//                            .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top ?? 30)
+                            .frame(height: reader.size.height * 0.16)
                             .background(themesviewModel.currentTheme.tabBackground)
                             
                         }else{
@@ -628,9 +629,7 @@ struct HomeConveyedView: View {
                                     .padding(.trailing, 20)
                                     .padding(.bottom, 20)
                             }
-                            .padding(.bottom, 50)
-                        
-                        
+                            .padding(.bottom, 50)                        
                     }
                     
                     if isMenuVisible{

@@ -59,7 +59,11 @@ struct FAQContent: Decodable, Identifiable {
 }
 
 struct Paginations: Decodable {
-    let page, limit, total, totalPages: Int
+    let page: Int
+    let limit: Int
+    let total: Int
+    let totalPages: Int
+    
 }
 
 //Guide TAB

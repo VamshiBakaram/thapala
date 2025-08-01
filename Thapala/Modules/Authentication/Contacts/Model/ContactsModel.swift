@@ -14,8 +14,11 @@ struct ContactsModel: Decodable {
 
 struct ContactsDataModel: Decodable,Identifiable {
     let roomID: String?
-    let id, tCodeHidden: Int?
-    let firstname, lastname, tCode: String?
+    let id: Int?
+    let tCodeHidden: Int?
+    let firstname: String?
+    let lastname: String?
+    let tCode: String?
     let profile: String?
 
     enum CodingKeys: String, CodingKey {

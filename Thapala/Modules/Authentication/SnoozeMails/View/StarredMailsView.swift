@@ -10,17 +10,18 @@ import SwiftUI
 struct StarredMailsView: View {
     @StateObject var themesviewModel = ThemesViewModel()
     @StateObject var mailComposeViewModel = MailComposeViewModel()
+    @StateObject var starredEmailViewModel = StarredEmailViewModel()
+    @Environment(\.presentationMode) var presentationMode
     @State private var selectedTab = "awaited"
     @State private var beforeLongPress = true
     @State private var isMultiSelectionSheetVisible: Bool = false
-    @Environment(\.presentationMode) var presentationMode
     @State private var isMenuVisible = false
     @State private var conveyedView: Bool = false
     @State private var PostBoxView: Bool = false
     @State private var SnoozedView: Bool = false
     @State private var AwaitingView: Bool = false
     @State private var markAs : Int = 0
-    @StateObject var starredEmailViewModel = StarredEmailViewModel()
+    
     var body: some View {
         GeometryReader{ reader in
             ZStack {
@@ -151,55 +152,136 @@ struct StarredMailsView: View {
                 }
                 else {
                     List($starredEmailViewModel.starredEmailData, id: \.id) { $email in
-                        HStack {
-                            Image("person")
-                            VStack(alignment: .leading) {
-                                HStack {
-                                    Text(email.firstname ?? "")
-                                        .foregroundColor(themesviewModel.currentTheme.textColor)
-                                        .font(.custom(.poppinsRegular, size: 16))
-                                    Text(email.lastname ?? "")
-                                        .foregroundColor(themesviewModel.currentTheme.textColor)
-                                        .font(.custom(.poppinsRegular, size: 16))
-                                    Spacer()
-                                    let unixTimestamp = email.sentAt ?? 0
-                                    if let istDateStringFromTimestamp = convertToIST(dateInput: unixTimestamp) {
-                                        Text(istDateStringFromTimestamp)
-                                            .foregroundColor(themesviewModel.currentTheme.textColor)
-                                            .padding(.trailing, 20)
-                                            .font(.custom(.poppinsLight, size: 12, relativeTo: .title))
+                        VStack {
+                            HStack {
+                                VStack {
+                                    let image = email.senderProfile ?? "person"
+                                    AsyncImage(url: URL(string: image)) { phase in
+                                        switch phase {
+                                        case .empty:
+                                            Image("contactW")
+                                                .resizable()
+                                                .renderingMode(.template)
+                                                .scaledToFill()
+                                                .frame(width: 40, height: 40)
+                                                .background(themesviewModel.currentTheme.colorAccent)
+                                                .clipShape(Circle())
+                                                .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                .padding(.leading, 10)
+                                                .contentShape(Rectangle())
+                                        case .success(let image):
+                                            image
+                                                .resizable()
+                                                .frame(width: 40, height: 40)
+                                                .padding([.trailing,.leading],5)
+                                                .aspectRatio(contentMode: .fit)
+                                                .clipShape(Circle())
+                                        case .failure:
+                                            Image("contactW")
+                                                .resizable()
+                                                .renderingMode(.template)
+                                                .scaledToFill()
+                                                .frame(width: 40, height: 40)
+                                                .background(themesviewModel.currentTheme.colorAccent)
+                                                .clipShape(Circle())
+                                                .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                .padding(.leading, 10)
+                                                .contentShape(Rectangle())
+                                        @unknown default:
+                                            EmptyView()
+                                        }
                                     }
-                                }
-                                HStack {
-                                    Text(email.subject ?? "")
-                                        .foregroundColor(themesviewModel.currentTheme.textColor)
-                                        .font(.custom(.poppinsLight, size: 14))
-                                        .lineLimit(1)
                                     Spacer()
-                                    Image("star.fill")
-                                        .onTapGesture {
-                                            starredEmailViewModel.getStarredEmail(selectedID: email.threadId ?? 0)
+                                }
+                                VStack(alignment: .leading) {
+                                    HStack {
+                                        Text(email.firstname ?? "")
+                                            .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                        Text(email.lastname ?? "")
+                                            .font(.custom(.poppinsRegular, size: 14,relativeTo: .title))
+                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                            .lineLimit(1)
+                                        Spacer()
+                                        let unixTimestamp = email.sentAt ?? 0
+                                        if let istDateStringFromTimestamp = convertToIST(dateInput: unixTimestamp) {
+                                            Text(istDateStringFromTimestamp)
+                                                .padding(.trailing, 20)
+                                                .foregroundColor(Color.blueAccent?.opacity(0.3))
+                                                .font(.custom(.poppinsLight, size: 12, relativeTo: .title))
+                                        }
+                                    }
+                                    HStack {
+                                        Text(email.subject ?? "")
+                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                            .font(.custom(.poppinsLight, size: 14))
+                                            .lineLimit(1)
+                                        Spacer()
+                                        Image("star.fill")
+                                            .padding(.trailing , 16)
+                                            .onTapGesture {
+                                                starredEmailViewModel.getStarredEmail(selectedID: email.threadId ?? 0)
+                                                
+                                            }
+                                    }
+                                    
+                                    if let labels = email.labels, !labels.isEmpty {
+                                        HStack {
+                                            Image("Tags")
+                                                .resizable()
+                                                .renderingMode(.template)
+                                                .frame(width: 20, height: 20)
+                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                            
+                                            Text(labels.first?.labelName ?? "")
+                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                .font(.custom(.poppinsRegular, size: 14))
+                                                .background(Color.blueAccent)
+                                                .cornerRadius(8)
+                                            
+                                            if labels.count > 1 {
+                                                Text("+ \(labels.count - 1)")
+                                                    .font(.custom(.poppinsRegular, size: 12))
+                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                    .frame(width: 24, height: 24) // Make it a circle
+                                                    .padding(.all ,1)
+                                                    .background(Circle().fill(Color.clear)) // Transparent fill
+                                                    .overlay(
+                                                        Circle()
+                                                            .stroke(themesviewModel.currentTheme.textColor, lineWidth: 1.5) // White border
+                                                    )
+                                            }
                                             
                                         }
-                                }
-                            }
-                        }
-                        .listRowBackground(themesviewModel.currentTheme.windowBackground)
-                        .onTapGesture {
-                            PostBoxView = true
-                            conveyedView = false
-                            starredEmailViewModel.selectedID = email.threadId
-                            starredEmailViewModel.passwordHint = email.passwordHint
-                            starredEmailViewModel.isEmailScreen = true
-                        }
-                        .gesture(
-                            LongPressGesture(minimumDuration: 1.0)
-                                .onEnded { _ in
-                                    withAnimation {
-                                        beforeLongPress = false
                                     }
+                                    
                                 }
-                        )
+                                .padding(.leading, 16)
+                            }
+                            .padding(.top , 10)
+                            .onTapGesture {
+                                PostBoxView = true
+                                conveyedView = false
+                                starredEmailViewModel.selectedID = email.threadId
+                                starredEmailViewModel.passwordHint = email.passwordHint
+                                starredEmailViewModel.isEmailScreen = true
+                            }
+                            .gesture(
+                                LongPressGesture(minimumDuration: 1.0)
+                                    .onEnded { _ in
+                                        withAnimation {
+                                            beforeLongPress = false
+                                        }
+                                    }
+                            )
+                            
+                            Divider()
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 1)
+                                .background(themesviewModel.currentTheme.strokeColor.opacity(0.2))
+                        }
+                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                        .listRowBackground(themesviewModel.currentTheme.windowBackground)
                     }
                     .listStyle(PlainListStyle())
                     .scrollContentBackground(.hidden)
@@ -307,55 +389,129 @@ struct StarredMailsView: View {
                 }
                 else {
                     List($starredEmailViewModel.starredEmailData, id: \.id) { $email in
-                        HStack {
-                            Image("person")
-                            VStack(alignment: .leading) {
-                                HStack {
-                                    Text(email.firstname ?? "")
-                                        .foregroundColor(themesviewModel.currentTheme.textColor)
-                                        .font(.custom(.poppinsRegular, size: 16))
-                                    Text(email.lastname ?? "")
-                                        .foregroundColor(themesviewModel.currentTheme.textColor)
-                                        .font(.custom(.poppinsRegular, size: 16))
-                                    Spacer()
-                                    let unixTimestamp = email.sentAt ?? 0
-                                    if let istDateStringFromTimestamp = convertToIST(dateInput: unixTimestamp) {
-                                        Text(istDateStringFromTimestamp)
-                                            .foregroundColor(themesviewModel.currentTheme.textColor)
-                                            .padding(.trailing, 20)
-                                            .font(.custom(.poppinsLight, size: 12, relativeTo: .title))
+                        VStack {
+                            HStack {
+                                VStack {
+                                    let image = email.senderProfile ?? "person"
+                                    AsyncImage(url: URL(string: image)) { phase in
+                                        switch phase {
+                                        case .empty:
+                                            Image("contactW")
+                                                .resizable()
+                                                .renderingMode(.template)
+                                                .scaledToFill()
+                                                .frame(width: 40, height: 40)
+                                                .background(themesviewModel.currentTheme.colorAccent)
+                                                .clipShape(Circle())
+                                                .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                .padding(.leading, 10)
+                                                .contentShape(Rectangle())
+                                        case .success(let image):
+                                            image
+                                                .resizable()
+                                                .frame(width: 40, height: 40)
+                                                .padding([.trailing,.leading],5)
+                                                .aspectRatio(contentMode: .fit)
+                                                .clipShape(Circle())
+                                        case .failure:
+                                            Image("contactW")
+                                                .resizable()
+                                                .renderingMode(.template)
+                                                .scaledToFill()
+                                                .frame(width: 40, height: 40)
+                                                .background(themesviewModel.currentTheme.colorAccent)
+                                                .clipShape(Circle())
+                                                .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                .padding(.leading, 10)
+                                                .contentShape(Rectangle())
+                                        @unknown default:
+                                            EmptyView()
+                                        }
                                     }
                                 }
-                                HStack {
-                                    Text(email.subject ?? "")
-                                        .foregroundColor(themesviewModel.currentTheme.textColor)
-                                        .font(.custom(.poppinsLight, size: 14))
-                                        .lineLimit(1)
-                                    Spacer()
-                                    Image("star.fill")
-                                        .onTapGesture {
-                                            starredEmailViewModel.getStarredEmail(selectedID: email.threadId ?? 0)
-                                           
+                                VStack(alignment: .leading) {
+                                    HStack {
+                                        Text(email.firstname ?? "")
+                                            .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                        Text(email.lastname ?? "")
+                                            .font(.custom(.poppinsRegular, size: 14,relativeTo: .title))
+                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                            .lineLimit(1)
+                                        Spacer()
+                                        let unixTimestamp = email.sentAt ?? 0
+                                        if let istDateStringFromTimestamp = convertToIST(dateInput: unixTimestamp) {
+                                            Text(istDateStringFromTimestamp)
+                                                .padding(.trailing, 20)
+                                                .foregroundColor(Color.blueAccent?.opacity(0.3))
+                                                .font(.custom(.poppinsLight, size: 12, relativeTo: .title))
                                         }
+                                    }
+                                    HStack {
+                                        Text(email.subject ?? "")
+                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                            .font(.custom(.poppinsLight, size: 14))
+                                            .lineLimit(1)
+                                        Spacer()
+                                        Image("star.fill")
+                                            .padding(.trailing , 16)
+                                            .onTapGesture {
+                                                starredEmailViewModel.getStarredEmail(selectedID: email.threadId ?? 0)
+                                                
+                                            }
+                                    }
+                                    
+                                    if let labels = email.labels, !labels.isEmpty {
+                                        HStack {
+                                            Image("Tags")
+                                                .resizable()
+                                                .renderingMode(.template)
+                                                .frame(width: 20, height: 20)
+                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                            
+                                            Text(labels.first?.labelName ?? "")
+                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                .font(.custom(.poppinsRegular, size: 14))
+                                                .background(Color.blueAccent)
+                                                .cornerRadius(8)
+                                            
+                                            if labels.count > 1 {
+                                                Text("+ \(labels.count - 1)")
+                                                    .font(.custom(.poppinsRegular, size: 12))
+                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                    .frame(width: 24, height: 24) // Make it a circle
+                                                    .padding(.all ,1)
+                                                    .background(Circle().fill(Color.clear)) // Transparent fill
+                                                    .overlay(
+                                                        Circle()
+                                                            .stroke(themesviewModel.currentTheme.textColor, lineWidth: 1.5) // White border
+                                                    )
+                                            }
+                                            
+                                        }
+                                    }
                                 }
                             }
-                        }
-                        .listRowBackground(themesviewModel.currentTheme.windowBackground)
-                        .onTapGesture {
-                            PostBoxView = true
-                            conveyedView = false
-                            starredEmailViewModel.selectedID = email.threadId
-                            starredEmailViewModel.passwordHint = email.passwordHint
-                            starredEmailViewModel.isEmailScreen = true
-                        }
-                        .gesture(
-                            LongPressGesture(minimumDuration: 1.0)
-                                .onEnded { _ in
-                                    withAnimation {
-                                        beforeLongPress = false
+                            padding(.top , 10)
+                            
+                            .onTapGesture {
+                                PostBoxView = true
+                                conveyedView = false
+                                starredEmailViewModel.selectedID = email.threadId
+                                starredEmailViewModel.passwordHint = email.passwordHint
+                                starredEmailViewModel.isEmailScreen = true
+                            }
+                            .gesture(
+                                LongPressGesture(minimumDuration: 1.0)
+                                    .onEnded { _ in
+                                        withAnimation {
+                                            beforeLongPress = false
+                                        }
                                     }
-                                }
-                        )
+                            )
+                        }
+                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                        .listRowBackground(themesviewModel.currentTheme.windowBackground)
                     }
                     .listStyle(PlainListStyle())
                     .scrollContentBackground(.hidden)

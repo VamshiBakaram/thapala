@@ -213,7 +213,7 @@ struct HomePostboxView: View {
                                 .padding(.bottom , 10)
                             
                     }
-                        .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top ?? 30)
+                        .frame(height: reader.size.height * 0.16)
 //                        .frame(height: reader.size.height * 0.16)
                         .background(themesviewModel.currentTheme.tabBackground)
                         

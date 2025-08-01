@@ -16,14 +16,19 @@ struct SaveEmailToDraftsModel: Decodable {
 
 struct EmailDraftsData: Decodable {
     let id: Int?
-    let subject, body: String?
-    let passwordProtected, draft: Bool?
+    let subject: String?
+    let body: String?
+    let passwordProtected: Bool?
+    let draft: Bool?
     let type: String?
     let attachments: [String]?
-    let passwordHash, passwordHint: String?
-    let scheduledStatus, scheduledTime: String?
+    let passwordHash: String?
+    let passwordHint: String?
+    let scheduledStatus: String?
+    let scheduledTime: String?
     let senderID: Int?
-    let updatedAt, createdAt: String?
+    let updatedAt: String?
+    let createdAt: String?
 
     enum CodingKeys: String, CodingKey {
         case id, subject, body, passwordProtected, draft, type, attachments, passwordHash, passwordHint, scheduledStatus, scheduledTime
@@ -33,14 +38,18 @@ struct EmailDraftsData: Decodable {
 }
 
 struct SenderUserData: Decodable {
-    let isDeleted, starred: Bool?
-    var id, emailID, threadID: Int?
+    let isDeleted: Bool?
+    let starred: Bool?
+    var id: Int?
+    var emailID: Int?
+    var threadID: Int?
     let type: String?
     let userID: Int?
     let status: String?
     let readReceiptStatus: Bool?
     let timeOfRead: Int?
-    let updatedAt, createdAt: String?
+    let updatedAt: String?
+    let createdAt: String?
 
     enum CodingKeys: String, CodingKey {
         case isDeleted, starred, id

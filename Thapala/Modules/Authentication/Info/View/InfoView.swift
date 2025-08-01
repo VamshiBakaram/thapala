@@ -10,8 +10,8 @@ import SwiftUI
 struct InfoView: View {
     @State private var selectedTab: String = "info"
     @State private var expandedSections: Set<String> = []
-    @ObservedObject var infoViewViewModel = InfoViewViewModel()
-    @ObservedObject var themesviewModel = ThemesViewModel()
+    @StateObject var infoViewViewModel = InfoViewViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Environment(\.presentationMode) var presentationMode
     @State var titles: String = ""
     @State var descriptions: String = ""
@@ -24,11 +24,13 @@ struct InfoView: View {
     @State private var expandedIndices: [String: Int?] = [:]  // Dictionary to track expanded index per category
     @State private var isQuickAccessVisible = false
     @State private var isMenuVisible = false
-
+    
     var body: some View {
         GeometryReader{ reader in
             ZStack {
+               
                 VStack {
+                    if infoViewViewModel.isInfoView {
                     // Top tab buttons
                     HStack {
                         Button {
@@ -51,7 +53,7 @@ struct InfoView: View {
                             infoViewViewModel.getInfoData(selectedOption: selectedTab)
                         }) {
                             Text("Info")
-                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                .foregroundColor(themesviewModel.currentTheme.allBlack)
                                 .padding()
                                 .frame(maxWidth: .infinity)
                                 .background(selectedTab == "info" ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
@@ -64,7 +66,7 @@ struct InfoView: View {
                         }) {
                             
                             Text("FAQ's")
-                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                .foregroundColor(themesviewModel.currentTheme.allBlack)
                                 .padding()
                                 .frame(maxWidth: .infinity)
                                 .background(selectedTab == "FAQ" ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
@@ -75,7 +77,7 @@ struct InfoView: View {
                             infoViewViewModel.getGuideData()
                         }) {
                             Text("Guides")
-                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                .foregroundColor(themesviewModel.currentTheme.allBlack)
                                 .padding()
                                 .frame(maxWidth: .infinity)
                                 .background(selectedTab == "Guide" ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
@@ -109,7 +111,7 @@ struct InfoView: View {
                                         // Description (Only show when expanded)
                                         if expandedIndex == index {
                                             HTMLTextView(htmlContent: infoItems[index].description)
-                                                .foregroundColor(Color.purple)
+                                                .foregroundColor(themesviewModel.currentTheme.textColor)
                                                 .frame(maxWidth: .infinity , minHeight: 500)
                                                 .padding(.horizontal)
                                                 .padding(.bottom, 10)
@@ -124,7 +126,7 @@ struct InfoView: View {
                                         Rectangle()
                                             .fill(themesviewModel.currentTheme.allGray) // Background color of divider
                                             .frame(height: 1) // Set divider thickness
-                                            .overlay(Divider().background(Color.white)) // Add gray line inside
+                                            .overlay(Divider().background(themesviewModel.currentTheme.strokeColor)) // Add gray line inside
                                             .padding(.horizontal,16)
                                     }
                                 }
@@ -168,6 +170,7 @@ struct InfoView: View {
                                                 
                                                 if expandedIndices[category.heading] == index {
                                                     HTMLTextView(htmlContent: category.content[index].description)
+                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
                                                         .frame(maxWidth: .infinity, minHeight: 200)
                                                         .padding(.horizontal)
                                                         .padding(.bottom, 10)
@@ -176,7 +179,7 @@ struct InfoView: View {
                                                     Rectangle()
                                                         .fill(Color.white) // Background color of divider
                                                         .frame(height: 1) // Set divider thickness
-                                                        .overlay(Divider().background(Color.white)) // Add gray line inside
+                                                        .overlay(Divider().background(themesviewModel.currentTheme.strokeColor))
                                                 }
                                             }
                                         }
@@ -221,6 +224,7 @@ struct InfoView: View {
                                                 // Description (Only show when expanded)
                                                 if expandedIndex == index {
                                                     HTMLTextView(htmlContent: category.content[index].description)
+                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
                                                         .frame(maxWidth: .infinity, minHeight: 200)
                                                         .padding(.horizontal)
                                                         .padding(.bottom, 10)
@@ -229,7 +233,8 @@ struct InfoView: View {
                                                     Rectangle()
                                                         .fill(Color.white) // Background color of divider
                                                         .frame(height: 1) // Set divider thickness
-                                                        .overlay(Divider().background(Color.white)) // Add gray line inside
+                                                        .overlay(Divider().background(themesviewModel.currentTheme.strokeColor))
+                                                        .padding(.horizontal,16)
                                                 }
                                             }
                                         }
@@ -239,41 +244,13 @@ struct InfoView: View {
                             }
                         }
                     }
-                    
-                    VStack {
-                        HStack {
-                            Spacer()
-                            RoundedRectangle(cornerRadius: 30)
-                                .fill(themesviewModel.currentTheme.colorPrimary)
-                                .frame(width: 150, height: 48)
-                                .overlay(
-                                    HStack {
-                                        Text("New Email")
-                                            .font(.custom(.poppinsBold, size: 14))
-                                            .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                                            .padding(.trailing, 8)
-                                            .onTapGesture {
-                                                infoViewViewModel.isComposeEmail = true
-                                            }
-                                        Spacer()
-                                            .frame(width: 1, height: 24)
-                                            .background(themesviewModel.currentTheme.inverseIconColor)
-                                        Image("dropdown 1")
-                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                            .onTapGesture {
-                                                isQuickAccessVisible = true
-                                            }
-                                    }
-                                )
-                                .padding(.trailing, 20)
-                                .padding(.bottom, 20)
-                        }
-                    }
+
                     
                     
                     TabViewNavigator()
                         .frame(height: 40)
                         .padding(.bottom , 10)
+                  }
                 }
                 .background(themesviewModel.currentTheme.windowBackground)
                 
@@ -292,6 +269,8 @@ struct InfoView: View {
                     }
                     
                 }
+                
+
                 .onChange(of: selectedTab) { newTab in
                     if newTab == "FAQ" {
                         print("FAQ Appears")
@@ -329,6 +308,45 @@ struct InfoView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing) // Align at the bottom right
                         .padding([.bottom, .trailing], 20)
                 }
+                
+                    if infoViewViewModel.isInfoView {
+                        VStack {
+                            Spacer() // Pushes content to the bottom
+                            HStack {
+                                Spacer() // Pushes button to the trailing edge
+
+                                RoundedRectangle(cornerRadius: 30)
+                                    .fill(themesviewModel.currentTheme.colorPrimary)
+                                    .frame(width: 150, height: 48)
+                                    .overlay(
+                                        HStack {
+                                            Text("New Email")
+                                                .font(.custom(.poppinsBold, size: 14))
+                                                .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                                .padding(.trailing, 8)
+                                                .onTapGesture {
+                                                    infoViewViewModel.isComposeEmail = true
+                                                }
+
+                                            Rectangle()
+                                                .fill(themesviewModel.currentTheme.inverseIconColor)
+                                                .frame(width: 1, height: 24)
+
+                                            Image("dropdown 1")
+                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                .onTapGesture {
+                                                    isQuickAccessVisible = true
+                                                }
+                                        }
+                                    )
+                                    .padding(.trailing, 20)
+                                    .padding(.bottom, 80)
+                            }
+                        }
+                    }
+
+
+
                 if isMenuVisible{
                     HomeMenuView(isSidebarVisible: $isMenuVisible)
                 }
@@ -343,12 +361,9 @@ struct InfoView: View {
 }
 
 
-
-
 struct HTMLTextView: UIViewRepresentable {
     let htmlContent: String
     var textColor: UIColor = .gray  // default color
-
     func makeUIView(context: Context) -> UITextView {
         let textView = UITextView()
         textView.isEditable = false
@@ -372,7 +387,6 @@ struct HTMLTextView: UIViewRepresentable {
         }
     }
 }
-
 
 
 #Preview {

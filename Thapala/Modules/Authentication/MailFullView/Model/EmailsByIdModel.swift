@@ -15,9 +15,13 @@ struct DetailedEmailData: Decodable,Identifiable {
     let id = UUID().uuidString
     let threadID: Int?
     let replyToID: Int?
-    let subject, body: String?
-    let passwordProtected, scheduledTime: Int?
-    let passwordHash, passwordHint, scheduledStatus: String?
+    let subject: String?
+    let body: String?
+    let passwordProtected: Int?
+    let scheduledTime: Int?
+    let passwordHash: String?
+    let passwordHint: String?
+    let scheduledStatus: String?
     let draft, sentAt, emailID: Int?
     let recipients: [Recipient]?
     let attachments: [Attachment]?
@@ -44,14 +48,18 @@ struct Labelmailitems: Codable, Identifiable {
 
 struct Attachment: Decodable,Hashable {
     let fileLink: String?
-    let fileName, azureFileName, fileSize: String?
+    let fileName: String?
+    let azureFileName: String?
+    let fileSize: String?
     let id:Int
 }
 
 struct Recipient: Decodable {
     let type: String?
     let user: EmailUserData?
-    let userID, starred, timeOfRead: Int?
+    let userID: Int?
+    let starred: Int?
+    let timeOfRead: Int?
 
     enum CodingKeys: String, CodingKey {
         case type, user

@@ -269,7 +269,7 @@ struct HomeAwaitingView: View {
                             .padding([.leading,.trailing,],5)
                             .padding(.bottom , 10)
                         }
-                        .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top ?? 30)
+                        .frame(height: reader.size.height * 0.16)
                         .background(themesviewModel.currentTheme.colorPrimary)
                         
                         HStack{
@@ -801,7 +801,6 @@ struct HomeAwaitingView: View {
                                             
                                             .onAppear{
                                                 HomeawaitingViewVisible = true
-                                                isCheckedLabelID
                                                 if let thread = homeAwaitingViewModel.emailData.first(where: { $0.threadID == emailId }) {
                                                     let labelIDs = thread.labels?.compactMap { $0.labelId } ?? []
                                                     isCheckedLabelID = labelIDs

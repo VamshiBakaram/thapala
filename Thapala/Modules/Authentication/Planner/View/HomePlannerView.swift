@@ -141,11 +141,9 @@ struct HomePlannerView: View {
                                     }
                                     .padding(.horizontal)
                     }
-                   
-                    .frame(height: reader.size.height * 0.20)
+                    .frame(height: reader.size.height * 0.16)
                     .background(themesviewModel.currentTheme.tabBackground)
                     
-
                     ScrollView(.horizontal, showsIndicators: false) {
                         ZStack {
                             // Background

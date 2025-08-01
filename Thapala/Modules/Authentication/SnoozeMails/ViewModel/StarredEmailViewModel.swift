@@ -15,10 +15,10 @@ class StarredEmailViewModel: ObservableObject {
     @Published var passwordHint: String? = ""
     @Published var selectedID: Int? = nil
     private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
-    
-    init() {
-        self.getStarredEmailData(selectedTabItem: "awaited")
-    }
+//    
+//    init() {
+//        self.getStarredEmailData(selectedTabItem: "awaited")
+//    }
 
     func  getStarredEmailData(selectedTabItem: String) {
         self.isLoading = true
