@@ -14,8 +14,12 @@ class StarredEmailViewModel: ObservableObject {
     @Published var isEmailScreen: Bool = false
     @Published var passwordHint: String? = ""
     @Published var selectedID: Int? = nil
+    @Published var isawaitedMailsSelected: Bool = true
+    @Published var ispostBoxMailsSelected: Bool = false
+    @Published var isConveyMailsSelected: Bool = false
     private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
-//    
+    @Published var selectedThreadIDs: [Int] = []
+//
 //    init() {
 //        self.getStarredEmailData(selectedTabItem: "awaited")
 //    }

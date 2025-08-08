@@ -50,26 +50,25 @@ struct TrashView: View {
     var body: some View {
         ZStack {
             VStack {
-                HStack{
+                HStack {
                     Button {
                         withAnimation {
                             isMenuVisible.toggle()
                         }
                     } label: {
                         Image(systemName: "arrow.backward")
+                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                        
                     }
-                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                    
                     Text("Trash")
-                        .font(.custom(.poppinsRegular, size: 16))
                         .foregroundColor(themesviewModel.currentTheme.textColor)
-                        .fontWeight(.bold)
+                        .font(.custom(.poppinsSemiBold, size: 16))
+                        .padding(.leading , 10)
                     Spacer()
                 }
-                .padding(.top , 10)
-                .padding(.leading,20)
-                .onTapGesture {
-                    presentationMode.wrappedValue.dismiss()
-                }
+                .padding(.leading, 20)
+                .padding(.top, 12)
                 
                 HStack {
                     Button(action: {
@@ -124,7 +123,7 @@ struct TrashView: View {
                         isfilesView = false
                         isfoldersView = false
                         TrashedViewModel.GetPlannerTrashData()
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                             doitItems = TrashedViewModel.planData.filter { $0.type == "doit" }
                         }
                     }) {
@@ -156,12 +155,6 @@ struct TrashView: View {
                     else {
                         VStack{
                             HStack {
-                                Text("Select All")
-                                    .font(.custom(.poppinsBold, size: 16))
-                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                    .fontWeight(.bold)
-                                    .padding(.leading, 16)
-
                                 Button(action: {
                                     if selectedIndices.count == TrashedViewModel.trashData.count {
                                         selectedIndices.removeAll()
@@ -176,79 +169,94 @@ struct TrashView: View {
                                     Image(systemName: isSelectAll ? "checkmark.square.fill" : "square")
                                         .resizable()
                                         .frame(width: 20, height: 20)
-                                        .padding(.top, 1)
-                                        .padding(.trailing, 5)
+                                        .padding(.leading, 16)
                                         .foregroundColor(themesviewModel.currentTheme.iconColor)
                                 }
+                                
+                                Text("Select All")
+                                    .font(.custom(.poppinsBold, size: 16))
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .fontWeight(.bold)
+                                    .padding(.leading, 16)
+
+
 
                                 Spacer()
                             }
                             .padding(.top , 10)
                             List(TrashedViewModel.trashData, id: \.id) { item in
-                                HStack {
-                                    Button(action: {
-                                        if selectedIndices.contains(item.id) {
-                                            selectedIndices.remove(item.id)
-                                        } else {
-                                            selectedIndices.insert(item.id)
-                                        }
-
-                                        feildIDs = Array(selectedIndices)
-                                        isSelectAll = selectedIndices.count == TrashedViewModel.trashData.count
-                                        
-
-                                        bottomIcons = !selectedIndices.isEmpty
-                                    }) {
-                                        Image(systemName: selectedIndices.contains(item.id) ? "checkmark.square.fill" : "square")
-                                            .resizable()
-                                            .frame(width: 20, height: 20)
-                                            .padding(.top, 1)
-                                            .padding(.trailing, 5)
-                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                        
-                                    }
-
+                                VStack(alignment: .leading) {
                                     HStack {
-                                        VStack(alignment: .leading) {
-                                            Text(item.firstname ?? "")
-                                                .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
-                                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                .padding(.leading, 10)
-
-                                            Text(item.subject ?? "")
-                                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                .padding(.leading, 10)
-                                                .lineLimit(1)
-                                        }
-
-                                        Spacer()
-
-                                        if let timestamp = item.timeOfRead,
-                                           let istDateString = convertToIST(dateInput: timestamp) {
-                                            Text(istDateString)
-                                                .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
-                                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                .padding(.top, 0)
-                                                .frame(maxWidth: .infinity, alignment: .topTrailing)
-                                        }
-                                    }
-                                    .onTapGesture {
-                                        if TrashedViewModel.beforeLongPress {
-                                            TrashedViewModel.selectedID = item.threadId
-                                            TrashedViewModel.passwordHint = item.passwordHint
-                                            TrashedViewModel.isEmailScreen = true
-                                        }
-                                    }
-                                    .gesture(
-                                        LongPressGesture(minimumDuration: 1.0)
-                                            .onEnded { _ in
-                                                withAnimation {
-                                                    TrashedViewModel.beforeLongPress = false
-                                                }
+                                        Button(action: {
+                                            if selectedIndices.contains(item.id) {
+                                                selectedIndices.remove(item.id)
+                                            } else {
+                                                selectedIndices.insert(item.id)
                                             }
-                                    )
+                                            
+                                            feildIDs = Array(selectedIndices)
+                                            isSelectAll = selectedIndices.count == TrashedViewModel.trashData.count
+                                            
+                                            
+                                            bottomIcons = !selectedIndices.isEmpty
+                                        }) {
+                                            Image(systemName: selectedIndices.contains(item.id) ? "checkmark.square.fill" : "square")
+                                                .resizable()
+                                                .frame(width: 20, height: 20)
+                                                .padding(.leading, 16)
+                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                            
+                                        }
+                                        
+                                        HStack {
+                                            VStack(alignment: .leading) {
+                                                Text(item.firstname ?? "")
+                                                    .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                    .padding(.leading, 10)
+                                                
+                                                Text(item.subject ?? "")
+                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                    .padding(.leading, 10)
+                                                    .lineLimit(1)
+                                            }
+                                            
+                                            Spacer()
+                                            
+                                            if let timestamp = item.timeOfRead,
+                                               let istDateString = convertToIST(dateInput: timestamp) {
+                                                Text(istDateString)
+                                                    .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
+                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                    .padding(.top, 0)
+                                                    .frame(maxWidth: .infinity, alignment: .topTrailing)
+                                                    .padding(.trailing , 16)
+                                            }
+                                        }
+                                        .onTapGesture {
+                                            if TrashedViewModel.beforeLongPress {
+                                                TrashedViewModel.selectedID = item.threadId
+                                                TrashedViewModel.passwordHint = item.passwordHint
+                                                TrashedViewModel.isEmailScreen = true
+                                            }
+                                        }
+                                        .gesture(
+                                            LongPressGesture(minimumDuration: 1.0)
+                                                .onEnded { _ in
+                                                    withAnimation {
+                                                        TrashedViewModel.beforeLongPress = false
+                                                    }
+                                                }
+                                        )
+                                    }
+                                    .padding([.top , .bottom ] , 10)
+                                    Divider()
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 1)
+                                        .background(themesviewModel.currentTheme.strokeColor.opacity(0.2))
                                 }
+                                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                                 .listRowBackground(themesviewModel.currentTheme.windowBackground)
                             }
                             .listStyle(PlainListStyle())
@@ -310,7 +318,7 @@ struct TrashView: View {
                                 isfilesView = false
                                 isfoldersView = false
                                 TrashedViewModel.GetPlannerTrashData()
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                     doitItems = TrashedViewModel.planData.filter { $0.type == "doit" }
                                 }
                             }) {
@@ -333,7 +341,7 @@ struct TrashView: View {
                                 isfoldersView = false
                                 TrashedViewModel.GetPlannerTrashData()
                                 
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                     NoteItems = TrashedViewModel.planData.filter { $0.type == "note" }
                                 }
                             }) {
@@ -356,7 +364,10 @@ struct TrashView: View {
                         HStack {
                             Toggle(isOn: $selectAll) {
                                 Text("Select All")
+                                    .font(.custom(.poppinsBold, size: 16))
                                     .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .fontWeight(.bold)
+                                    .padding(.leading, 16)
                             }
                             .foregroundColor(themesviewModel.currentTheme.iconColor)
                             .onChange(of: selectAll) { newValue in
@@ -512,11 +523,6 @@ struct TrashView: View {
                     if TrashedViewModel.fileData.count != 0 {
                             VStack(alignment: .leading, spacing: 10) {
                                 HStack {
-                                    Text("Select All")
-                                        .font(.custom(.poppinsBold, size: 16))
-                                        .foregroundColor(themesviewModel.currentTheme.textColor)
-                                        .fontWeight(.bold)
-                                        .padding(.leading, 16)
                                     
                                     Button(action: {
                                         isSelectAll.toggle()
@@ -533,11 +539,15 @@ struct TrashView: View {
                                         Image(systemName: isSelectAll ? "checkmark.square.fill" : "square")
                                             .resizable()
                                             .frame(width: 20, height: 20)
-                                            .padding(.top, 1)
-                                            .padding(.trailing, 5)
+                                            .padding(.leading, 16)
                                             .foregroundColor(themesviewModel.currentTheme.iconColor)
                                     }
-                                    
+                                    Text("Select All")
+                                        .font(.custom(.poppinsBold, size: 16))
+                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                        .fontWeight(.bold)
+                                        .padding(.leading, 10)
+                                                                        
                                     Spacer()
                                 }
                                 .padding(.top , 10)
@@ -669,6 +679,7 @@ struct TrashView: View {
                 }
                 
                 if isfoldersView {
+                    
                     if TrashedViewModel.folderData.count != 0 {
                         
                         VStack(alignment: .leading, spacing: 15) {
@@ -777,6 +788,16 @@ struct TrashView: View {
                                 .padding(.trailing, 16)
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                             }
+                        }
+                        
+                    }
+                    else {
+                        VStack {
+                            Spacer()
+                            Text("No data Found")
+                                .font(.custom(.poppinsBold, size: 20))
+                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                            Spacer()
                         }
                         
                     }
@@ -954,7 +975,7 @@ struct TrashView: View {
         .onAppear {
             TrashedViewModel.GetTrashData()
             TrashedViewModel.GetPlannerTrashData()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 if selectedPlannerTab == "tDo" {
                     doitItems = TrashedViewModel.planData.filter { $0.type == "doit" }
                 }
@@ -1159,6 +1180,7 @@ struct RestoreAlert: View {
 //         TrashView(, isTrashViewVisible: <#Binding<Bool>#>)
 //     }
 // }
+
 
 
 

@@ -35,137 +35,138 @@ struct RecordsThreeDotsView: View {
     @State private var DetailsViewVisible: Bool = false
     @State private var renameview: Bool = false
     @State private var selectedIndices: Set<Int> = []
-    
+    @Binding var isPresented: Bool
     var body: some View {
-        ZStack {
-                if isMoreVisible {
-                    VStack(spacing: 16) {
-                        VStack(alignment: .leading) {
-                            HStack {
-                                Button {
-                                    renameview = true
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                        isMoreVisible = false
-                                    }
-                                } label: {
-                                    Image("edits")
-                                        .renderingMode(.template)
-                                        .frame(width: 35, height: 35)
-                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                    
-                                    Text("Rename")
-                                        .fontWeight(.bold)
-                                        .foregroundColor(themesviewModel.currentTheme.textColor)
-                                        .padding(.leading, 10)
+        if isMoreVisible {
+
+                VStack(spacing: 16) {
+                    VStack(alignment: .leading) {
+                        HStack {
+                            Button {
+                                renameview = true
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                    isMoreVisible = false
                                 }
-                            }
-                            
-                            HStack {
-                                Button {
-                                    isMoveSheetvisible = true
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                        isMoreVisible = false
-                                    }
-                                } label: {
-                                    Image("Recordsmoveto")
-                                        .renderingMode(.template)
-                                        .frame(width: 35, height: 35)
-                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                    
-                                    Text("Move")
-                                        .fontWeight(.bold)
-                                        .foregroundColor(themesviewModel.currentTheme.textColor)
-                                        .padding(.leading, 10)
-                                }
-                            }
-                            if fileClicked{
-                                HStack {
-                                    Button {
-                                        homeRecordsViewModel.downloadFile(selectedfieldID: fieldIDs,fileLink: azureLink)
-                                        homeRecordsViewModel.fileDownloads(selectedfieldID: fieldIDs)
-                                    } label: {
-                                        Image("download")
-                                            .renderingMode(.template)
-                                            .frame(width: 35, height: 35)
-                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                        
-                                        Text("Download")
-                                            .fontWeight(.bold)
-                                            .foregroundColor(themesviewModel.currentTheme.textColor)
-                                            .padding(.leading, 10)
-                                    }
-                                    
-                                }
-                            }
-                            
-                            HStack {
-                                Button {
-                                    showingDeleteAlert = true
-                                    
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                        isMoreVisible = false
-                                    }
-                                } label: {
-                                    Image("delete")
-                                        .renderingMode(.template)
-                                        .frame(width: 35, height: 35)
-                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                    
-                                    Text("Delete")
-                                        .fontWeight(.bold)
-                                        .foregroundColor(themesviewModel.currentTheme.textColor)
-                                        .padding(.leading, 10)
-                                }
-                            }
-                            
-                            HStack {
-                                Button {
-                                    DetailsViewVisible = true
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                        isMoreVisible = false
-                                    }
-                                } label: {
-                                    Image("details")
-                                        .renderingMode(.template)
-                                        .frame(width: 35, height: 35)
-                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                    
-                                    Text("Details")
-                                        .fontWeight(.bold)
-                                        .foregroundColor(themesviewModel.currentTheme.textColor)
-                                        .padding(.leading, 10)
-                                }
+                            } label: {
+                                Image("edits")
+                                    .renderingMode(.template)
+                                    .frame(width: 35, height: 35)
+                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                
+                                Text("Rename")
+                                    .fontWeight(.bold)
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .padding(.leading, 10)
                             }
                         }
                         
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.leading, 10)
-                        .onAppear {
-                            Files = [FieldID(id: fieldIDs, azureFileName: azureName)]
-                            if fieldIDs == 0 && azureName == "" {
-                                Files = []
+                        HStack {
+                            Button {
+                                isMoveSheetvisible = true
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                    isMoreVisible = false
+                                }
+                            } label: {
+                                Image("Recordsmoveto")
+                                    .renderingMode(.template)
+                                    .frame(width: 35, height: 35)
+                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                
+                                Text("Move")
+                                    .fontWeight(.bold)
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .padding(.leading, 10)
                             }
-                            mailIDArray = [emailIds]
-                            recordIDArray = [recordIDs]
+                        }
+                        if fileClicked{
+                            HStack {
+                                Button {
+                                    homeRecordsViewModel.downloadFile(selectedfieldID: fieldIDs,fileLink: azureLink)
+                                    homeRecordsViewModel.fileDownloads(selectedfieldID: fieldIDs)
+                                } label: {
+                                    Image("download")
+                                        .renderingMode(.template)
+                                        .frame(width: 35, height: 35)
+                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                    
+                                    Text("Download")
+                                        .fontWeight(.bold)
+                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                        .padding(.leading, 10)
+                                }
+                                
+                            }
+                        }
+                        
+                        HStack {
+                            Button {
+                                showingDeleteAlert = true
+                                
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                    isMoreVisible = false
+                                }
+                            } label: {
+                                Image("delete")
+                                    .renderingMode(.template)
+                                    .frame(width: 35, height: 35)
+                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                
+                                Text("Delete")
+                                    .fontWeight(.bold)
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .padding(.leading, 10)
+                            }
+                        }
+                        
+                        HStack {
+                            Button {
+                                DetailsViewVisible = true
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                    isMoreVisible = false
+                                }
+                            } label: {
+                                Image("details")
+                                    .renderingMode(.template)
+                                    .frame(width: 35, height: 35)
+                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                
+                                Text("Details")
+                                    .fontWeight(.bold)
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .padding(.leading, 10)
+                            }
                         }
                     }
-                    .toast(message: $homeRecordsViewModel.error)
-                    .frame(maxWidth: .infinity)
-                    .frame(maxHeight: calculateTotalHeight())
-                    .background(themesviewModel.currentTheme.windowBackground)
-                    .cornerRadius(16)
-                    .shadow(radius: 10)
-            }
-
+                    
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.leading, 10)
+                    
+                }
+                .onAppear {
+                    Files = [FieldID(id: fieldIDs, azureFileName: azureName)]
+                    if fieldIDs == 0 && azureName == "" {
+                        Files = []
+                    }
+                    mailIDArray = [emailIds]
+                    recordIDArray = [recordIDs]
+                }
+                .toast(message: $homeRecordsViewModel.error)
+                .frame(maxWidth: .infinity)
+                .frame(maxHeight: calculateTotalHeight())
+                .background(themesviewModel.currentTheme.windowBackground)
+                .cornerRadius(16)
+                //                    .shadow(radius: 10)
+            
+        }
             if isMoveSheetvisible {
                 ZStack {
                     Rectangle()
                         .fill(Color.black.opacity(0.3))
-                        .ignoresSafeArea()
+                        .edgesIgnoringSafeArea(.all)
                         .onTapGesture {
                             withAnimation {
                                 isMoveSheetvisible = false
-                                isMoreVisible = false
+                                isPresented = false
                             }
                         }
 
@@ -175,7 +176,6 @@ struct RecordsThreeDotsView: View {
                         MoveTo(isMoveToSheetVisible: $isMoveSheetvisible, selectedThreadID: $mailIDArray, selectedIndices: $selectedIndices)
                             .transition(.move(edge: .bottom))
                             .animation(.easeInOut, value: isMoveSheetvisible)
-                        
                     }
                 }
             }
@@ -184,40 +184,46 @@ struct RecordsThreeDotsView: View {
             if showingDeleteAlert {
                 ZStack {
                     Color.gray.opacity(0.5)
-                        .ignoresSafeArea()
+                        .edgesIgnoringSafeArea(.all)
                         .transition(.opacity)
                         .onTapGesture {
                             withAnimation {
                                 showingDeleteAlert = false
-                                isMoreVisible = false
+                                isPresented = false
                             }
                         }
 
                     
                     DeleteTrashAlert(isPresented: $showingDeleteAlert) {
-                        homeRecordsViewModel.deleteBottom(
-                            selectedTabType: folderName,
-                            RecordIds: recordIDArray,
-                            FieldIDs: Files,
-                            EmailIDs: mailIDArray
-                        )
-                        isMoreVisible = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.001) {
+                            homeRecordsViewModel.deleteBottom(
+                                selectedTabType: folderName,
+                                RecordIds: recordIDArray,
+                                FieldIDs: Files,
+                                EmailIDs: mailIDArray
+                            )
+                            isPresented = false
+                        }
                     }
                     .transition(.scale)
                     .animation(.easeInOut, value: showingDeleteAlert)
                 }
             }
+            
             if DetailsViewVisible {
                 ZStack {
                     Rectangle()
                         .fill(Color.black.opacity(0.3))
-                        .ignoresSafeArea()
+                        .edgesIgnoringSafeArea(.all)
+                        .contentShape(Rectangle())
                         .onTapGesture {
                             withAnimation {
                                 DetailsViewVisible = false
-                                isMoreVisible = false
+                                isPresented = false
                             }
                         }
+                        .allowsHitTesting(true)
+
 
                     
                     VStack(alignment: .leading, spacing: 10){
@@ -288,25 +294,23 @@ struct RecordsThreeDotsView: View {
                                     .padding(.trailing , 16)
                                 
                             }
+                            .transition(.move(edge: .bottom))
+                            .animation(.easeInOut, value: DetailsViewVisible)
                         }
                         .background(themesviewModel.currentTheme.windowBackground)
                     }
-                    .transition(.move(edge: .bottom))
-                    .animation(.easeInOut, value: DetailsViewVisible)
-
                 }
-                .zIndex(4)
             }
             
             if renameview {
                 ZStack {
                     Rectangle()
                         .fill(Color.black.opacity(0.3))
-                        .ignoresSafeArea()
+                        .edgesIgnoringSafeArea(.all)
                         .onTapGesture {
                             withAnimation {
                                 renameview = false
-                                isMoreVisible = false
+                                isPresented = false
                             }
                         }
                     
@@ -325,7 +329,10 @@ struct RecordsThreeDotsView: View {
                             Spacer()
                             Button{
                                 homeRecordsViewModel.rename(fileRecordName: ("\(FileName).\(formatFile)"), subfoldertype: subFolderName, selectedfieldID: fieldIDs , fileType: filetype)
-                                homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: folderName, SubFoldersType: subFolderName)
+                                isPresented = false
+//                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+//                                    homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: folderName, SubFoldersType: subFolderName)
+//                                }
                                 renameview = false
                             }label: {
                                 Text("Rename")
@@ -350,22 +357,17 @@ struct RecordsThreeDotsView: View {
             }
                 
             
-        }
-        .background(
-            Color.black.opacity(isMoreVisible ? 0.4 : 0)
-                .ignoresSafeArea()
-                .onTapGesture {
-                    withAnimation {
-                        isMoreVisible = false // Dismiss the sheet
-                    }
-                }
-
-        )
+        
         
     }
     
     func calculateTotalHeight() -> CGFloat {
-        let totalHeight: CGFloat = 300
+        let totalHeight: CGFloat = 250
+        let maxHeight: CGFloat = 800
+        return min(totalHeight, maxHeight)
+    }
+    func calculatefoldersTotalHeight() -> CGFloat {
+        let totalHeight: CGFloat = 200
         let maxHeight: CGFloat = 800
         return min(totalHeight, maxHeight)
     }

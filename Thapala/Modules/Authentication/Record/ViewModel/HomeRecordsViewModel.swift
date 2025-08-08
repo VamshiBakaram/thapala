@@ -31,7 +31,7 @@ class HomeRecordsViewModel:ObservableObject{
     @Published var ismoresheet: Bool = false
     @Published var downloadedFileURL: URL?
     @Published var attachmentDataIn: [AttachmentDataModel] = []
-    @Published var mainRecords: [MainRecord] = []
+    @Published var mainRecordsData: [MainRecord] = []
     @Published var folderID: Int = 0
     @Published var fileType: String = ""
     @Published var subfoldertype: String = ""
@@ -53,7 +53,7 @@ class HomeRecordsViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.mainRecords = response.mainRecords
+                    self.mainRecordsData = response.mainRecords
                     self.error = response.message
                 }
             case .failure(let error):

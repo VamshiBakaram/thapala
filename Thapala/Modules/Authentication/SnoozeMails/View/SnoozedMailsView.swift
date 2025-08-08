@@ -151,45 +151,35 @@ struct SnoozedMailsView:View{
                         .sheet(isPresented: $isMultiSelectionSheetVisible, content: {
                             EmailOptionsView( replyAction: {
                                 // Perform reply action
-                                print("Reply tapped")
                                 dismissSheet()
                             },
                                               replyAllAction: {
                                 // Perform reply all action
-                                print("Reply all tapped")
                                 dismissSheet()
                             },
                                               forwardAction: {
                                 // Perform forward action
-                                print("Forward tapped")
                                 dismissSheet()
                             },
                                               markAsReadAction: {
-                                print("read")
                                 dismissSheet()
                             },
                                               markAsUnReadAction: {
-                                print("unread")
                                 dismissSheet()
                             },
                                               createLabelAction: {
-                                print("label")
                                 dismissSheet()
                             },
                                               moveToFolderAction: {
-                                print("move folder")
                                 dismissSheet()
                             },
                                               starAction: {
-                                print("star")
                                 dismissSheet()
                             },
                                               snoozeAction: {
-                                print("snooze")
                                 dismissSheet()
                             },
                                               trashAction: {
-                                print("trash acti")
                                 dismissSheet()
                             }
                             )
@@ -218,7 +208,6 @@ struct SnoozedMailsView:View{
                                     beforeLongPress = true
                                     selectView = false
                                     emailId = 0
-                                    print("cancel button select indices \(selectedIndices)")
                                 } label: {
                                     Text("Cancel")
                                         .foregroundColor(themesviewModel.currentTheme.iconColor)
@@ -239,14 +228,11 @@ struct SnoozedMailsView:View{
                                         isSelectAll = false
                                         selectedIndices = []
                                         snoozedMailsViewModel.selectedThreadIDs = []
-                                        print("if case select indices \(selectedIndices)")
-                                        print("if case snoozedMailsViewModel.selectedThreadIDs \(snoozedMailsViewModel.selectedThreadIDs)")
+
                                     } else {
                                         selectedIndices = Set(snoozedMailsViewModel.snoozedMailsDataModel.compactMap { $0.threadId})
                                         isSelectAll = true
                                         snoozedMailsViewModel.selectedThreadIDs = Array(selectedIndices)
-                                        print("else case select indices \(selectedIndices)")
-                                        print("else case snoozedMailsViewModel.selectedThreadIDs \(selectedIndices)")
                                     }
                                     
                                     
@@ -271,22 +257,17 @@ struct SnoozedMailsView:View{
                                                 if selectedIndices.contains(threadId) {
                                                     selectedIndices.remove(threadId)
                                                     snoozedMailsViewModel.selectedThreadIDs.removeAll { $0 == threadId }
-                                                    print("selectedIndices  \(selectedIndices)")
-                                                    print("snoozedMailsViewModel.selectedThreadIDs  \(snoozedMailsViewModel.selectedThreadIDs)")
                                                 } else {
                                                     selectedIndices.insert(threadId)
                                                     snoozedMailsViewModel.selectedThreadIDs.append(threadId)
                                                     markAs = email.readReceiptStatus ?? 0
-                                                    emailId = threadId
                                                     snoozedMailsViewModel.selectedID = threadId
-                                                    print("insert snoozedMailsViewModel.selectedID \(snoozedMailsViewModel.selectedID)")
-                                                    print("emailId  \(emailId)")
-                                                    print("markAs  \(markAs)")
-                                                    print("insert selectedIndices  \(selectedIndices)")
-                                                    if let thread = snoozedMailsViewModel.snoozedMailsDataModel.first(where: { $0.threadId == threadId }) {
-                                                        let labelIDs = thread.labels?.compactMap { $0.labelId } ?? []
-                                                        isCheckedLabelID = labelIDs
-                                                    }
+
+                                                }
+                                                emailId = snoozedMailsViewModel.selectedThreadIDs.last ?? 0
+                                                if let thread = snoozedMailsViewModel.snoozedMailsDataModel.first(where: { $0.threadId == emailId }) {
+                                                    let labelIDs = thread.labels?.compactMap { $0.labelId } ?? []
+                                                    isCheckedLabelID = labelIDs
                                                 }
                                                 isSelectAll = selectedIndices.count == snoozedMailsViewModel.snoozedMailsDataModel.count
                                             }
@@ -377,9 +358,6 @@ struct SnoozedMailsView:View{
                                         .frame(height: 1)
                                         .background(themesviewModel.currentTheme.strokeColor.opacity(0.2))
                                 }
-                                .onAppear {
-                                    print("else if case Active Branch - beforeLongPress: \(beforeLongPress), selectView: \(selectView)")
-                                }
                                 .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                                 .listRowBackground(themesviewModel.currentTheme.windowBackground)
                             }
@@ -433,7 +411,6 @@ struct SnoozedMailsView:View{
                         .background(themesviewModel.currentTheme.windowBackground)
                         .onAppear{
                             HomeawaitingViewVisible = true
-                            print("select all View appears")
                             if let thread = snoozedMailsViewModel.snoozedMailsDataModel.first(where: { $0.threadId == emailId }) {
                                 let labelIDs = thread.labels?.compactMap { $0.labelId } ?? []
                                 isCheckedLabelID = labelIDs
@@ -444,7 +421,7 @@ struct SnoozedMailsView:View{
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                                     snoozedMailsViewModel.getSnoozedEmailData(selectedTabItem: selectedTab)
                                     selectedIndices = []
-                                    homeAwaitingViewModel.selectedThreadIDs = []
+                                    snoozedMailsViewModel.selectedThreadIDs = []
                                 }
                             }
                         }
@@ -752,8 +729,6 @@ struct SnoozedMailsView:View{
                                     snoozedMailsViewModel.passwordHint = email.passwordHint
                                     selectView = false
                                     snoozedMailsViewModel.isEmailScreen = true
-                                    print("onTap gesture")
-                                    
                                 }
                             }
                             .gesture(
@@ -768,9 +743,6 @@ struct SnoozedMailsView:View{
                                             markAs = email.readReceiptStatus ?? 0
                                             EmailStarred = email.starred ?? 0
                                             emailId = email.threadId ?? 0
-                                            print("Long press triggered")
-                                            print("selectView \(selectView)")
-                                            print("beforeLongPress \(beforeLongPress)")
                                         }
                                     }
                             )
@@ -781,10 +753,6 @@ struct SnoozedMailsView:View{
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 1)
                                 .background(themesviewModel.currentTheme.strokeColor.opacity(0.2))
-                        }
-                        .onAppear {
-                            print("before long press appears")
-                            print("if case Active Branch - beforeLongPress: \(beforeLongPress), selectView: \(selectView)")
                         }
                         .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                         .listRowBackground(themesviewModel.currentTheme.windowBackground)
@@ -953,9 +921,6 @@ struct SnoozedMailsView:View{
                                     markAs = email.readReceiptStatus ?? 0
                                     EmailStarred = email.starred ?? 0
                                     emailId = email.threadId ?? 0
-                                    print("Long press triggered")
-                                    print("selectView \(selectView)")
-                                    print("beforeLongPress \(beforeLongPress)")
                                 }
                             }
                     )
@@ -1099,9 +1064,6 @@ struct SnoozedMailsView:View{
                                         markAs = email.readReceiptStatus ?? 0
                                         EmailStarred = email.starred ?? 0
                                         emailId = email.threadId ?? 0
-                                        print("Long press triggered")
-                                        print("selectView \(selectView)")
-                                        print("beforeLongPress \(beforeLongPress)")
                                     }
                                 }
                         )

@@ -7,9 +7,13 @@
 import SwiftUI
 
 struct ConsoleView: View {
-    @ObservedObject var consoleViewModel = ConsoleViewModel()
-    @ObservedObject var homeNavigatorViewModel = HomeNavigatorViewModel()
-    @ObservedObject var themesviewModel = ThemesViewModel()
+    @StateObject var consoleViewModel = ConsoleViewModel()
+    @StateObject var homeNavigatorViewModel = HomeNavigatorViewModel()
+    @StateObject var consoleNavigatorViewModel = ConsoleNavigatiorViewModel()
+    @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
+    @EnvironmentObject private var sessionManager: SessionManager
+    @State private var iNotificationAppBarView = false
+    @StateObject var themesviewModel = ThemesViewModel()
     @Environment(\.presentationMode) var presentationMode
     @State private var isQuickAccessVisible = false
     @State private var expandedIndex: Int? = nil
@@ -38,22 +42,70 @@ struct ConsoleView: View {
                 VStack {
                     VStack {
                         // Back Button & Title
-                        HStack {
-                            Button {
+                        HStack{
+                                Image("contactW")
+                                    .resizable()
+                                    .renderingMode(.template)
+                                    .frame(width: 35, height: 35)
+                                    .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                    .background(
+                                        Circle()
+                                            .fill(themesviewModel.currentTheme.colorPrimary) // Inner background
+                                    )
+                                    .overlay(
+                                        Circle()
+                                            .stroke(Color.white, lineWidth: 2) // Border
+                                    )
+                                    .clipShape(Circle())
+                                    .padding(.leading, 16)
+                                
+                                
+                                    Text("Navigator")
+                                        .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                        .font(.custom(.poppinsSemiBold, size: 16, relativeTo: .title))
+                                        .padding(.leading,0)
+                            
+                            Spacer()
+                            Button(action: {
+                                appBarElementsViewModel.isSearch = true
+                            }) {
+                                Image("magnifyingglass")
+                                    .renderingMode(.template)
+                                    .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                    .font(Font.title.weight(.medium))
+                            }
+                            .padding(.leading,15)
+
+                            Button(action: {
+                                iNotificationAppBarView = true
+                            }) {
+                                Image("notification")
+                                
+                            }
+                            .padding(.leading,15)
+                            Button(action: {
                                 withAnimation {
                                     isMenuVisible.toggle()
                                 }
-                            } label: {
-                                Image(systemName: "arrow.backward")
-                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                            }) {
+                                Image("MenuIcon")
+                                    .renderingMode(.template)
+                                    .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                    .font(Font.title.weight(.medium))
                             }
-                            .foregroundColor(.black)
-                            .padding(.leading, 20)
+                            .padding(.leading,15)
+                            .padding(.trailing , 30)
+                            
+                        }
+                        .padding(.top, -reader.size.height * 0.02)
+                        .frame(height: reader.size.height * 0.09)
+                        .background(themesviewModel.currentTheme.colorPrimary)
+                        HStack {
                             
                             Text("Console")
-                                .font(.custom(.poppinsMedium, size: 16))
+                                .font(.custom(.poppinsMedium, size: 20))
                                 .foregroundColor(themesviewModel.currentTheme.textColor)
-                                .padding(.leading, 16)
+                                .padding(.leading, 18)
                             Spacer()
                         }
                         
@@ -103,50 +155,22 @@ struct ConsoleView: View {
                                     RoundedRectangle(cornerRadius: 1)
                                         .stroke(themesviewModel.currentTheme.attachmentBGColor, lineWidth: 1)
                                 )
-                                .padding(.horizontal, 16)
                                 .background(themesviewModel.currentTheme.windowBackground)
                                 .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                             }
                         }
+                        .padding(.horizontal, 16)
                         .listStyle(PlainListStyle())
                         .background(themesviewModel.currentTheme.windowBackground)
                         
-                        // New Email Button
-                        VStack {
-                            HStack {
-                                Spacer()
-                                RoundedRectangle(cornerRadius: 30)
-                                    .fill(themesviewModel.currentTheme.colorPrimary)
-                                    .frame(width: 150, height: 48)
-                                    .overlay(
-                                        HStack {
-                                            Text("New Email")
-                                                .font(.custom(.poppinsBold, size: 14))
-                                                .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                                                .padding(.trailing, 8)
-                                                .onTapGesture {
-                                                    consoleViewModel.isComposeEmail = true
-                                                }
-                                            Spacer()
-                                                .frame(width: 1, height: 24)
-                                                .background(themesviewModel.currentTheme.inverseIconColor)
-                                            Image("dropdown 1")
-                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                .onTapGesture {
-                                                    isQuickAccessVisible = true
-                                                }
-                                        }
-                                    )
-                                    .padding(.trailing, 20)
-                                    .padding(.bottom, 20)
-                            }
-                        }
                         
                         TabViewNavigator()
                             .frame(height: 40)
                             .padding(.bottom , 10)
                     }
                 }
+                .toast(message: $consoleViewModel.error)
+                .toast(message: $consoleNavigatorViewModel.error)
                 .background(themesviewModel.currentTheme.windowBackground)
                 .onAppear {
                     // First, fetch settings data
@@ -184,18 +208,46 @@ struct ConsoleView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                         .padding([.bottom, .trailing], 20)
                 }
+                
+                if iNotificationAppBarView {
+                    ZStack {
+                        Rectangle()
+                            .fill(Color.black.opacity(0.3))
+                            .ignoresSafeArea()
+                            .onTapGesture {
+                                withAnimation {
+                                    iNotificationAppBarView = false
+                                }
+                            }
+                        NotificationAppBarView()
+                        .frame(height: .infinity)
+                        .background(themesviewModel.currentTheme.windowBackground)
+                        .cornerRadius(20)
+                        .padding(.horizontal,20)
+                        .padding(.bottom,50)
+                        .padding(.top,80)
+                        .transition(.scale)
+                        .animation(.easeInOut, value: iNotificationAppBarView)
+                    }
+                }
             }
             .zIndex(0)
             .navigationBarBackButtonHidden(true)
-            .navigationDestination(isPresented: $consoleViewModel.isComposeEmail) {
-                MailComposeView().toolbar(.hidden)
-            }
-            NavigationLink(destination: HomeNavigatorView(imageUrl: ""), isActive: $isNavigating) {
-                EmptyView()
+            
+            .fullScreenCover(isPresented: $isNavigating) {
+                HomeNavigatorView(imageUrl: "")
+                .toolbar(.hidden)
             }
             
-            .hidden()
+            .fullScreenCover(isPresented: $consoleViewModel.isComposeEmail) {
+                MailComposeView().toolbar(.hidden)
+            }
+            .fullScreenCover(isPresented: $appBarElementsViewModel.isSearch) {
+                SearchView(appBarElementsViewModel: appBarElementsViewModel)
+                    .toolbar(.hidden)
+            }
         }
+
     }
     
     @ViewBuilder
@@ -410,16 +462,17 @@ struct ConsoleView: View {
                         ZStack(alignment: .bottomLeading) {
                             Image("light")
                                 .resizable()
+                                .foregroundStyle(themesviewModel.currentTheme.iconColor)
                                 .aspectRatio(contentMode: .fit)
                                 .frame(height: 110)
                                 .cornerRadius(8)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(selectedTheme == "Light" ? Color.blue : Color.clear, lineWidth: 2)
+                                        .stroke(selectedTheme == "default" ? Color.blue : Color.clear, lineWidth: 2)
                                 )
                             
                             // Only show checkmark if this theme is selected
-                            if selectedTheme == "Light" {
+                            if sessionManager.selectedTheme == "default" {
                                 Circle()
                                     .fill(Color.blue)
                                     .frame(width: 24, height: 24)
@@ -432,32 +485,116 @@ struct ConsoleView: View {
                             }
                         }
                         .onTapGesture {
-                            selectedTheme = "Light"
-                            consoleViewModel.Themchange(themes: "light", accentcolour: "white")
+                            selectedTheme = "default"
+                            sessionManager.selectedTheme = "default"
+                            consoleNavigatorViewModel.Themchange(themes: "default", accentcolour: "white")
                         }
                         
-                        Text("Light")
-                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                        Text("Default")
+                            .foregroundStyle(themesviewModel.currentTheme.textColor)
                             .font(.system(size: 12))
                             .frame(maxWidth: .infinity, alignment: .center)
                     }
                     .frame(maxWidth: .infinity)
+                    
+                    VStack(spacing: 8) {
+                        ZStack(alignment: .bottomLeading) {
+                            Image("warm Inviting")
+                                .resizable()
+                                .foregroundStyle(themesviewModel.currentTheme.iconColor)
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: 110)
+                                .cornerRadius(8)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(selectedTheme == "light" ? Color.blue : Color.clear, lineWidth: 2)
+                                )
+                            
+                            // Only show checkmark if this theme is selected
+                            if sessionManager.selectedTheme == "light" {
+                                Circle()
+                                    .fill(Color.blue)
+                                    .frame(width: 24, height: 24)
+                                    .overlay(
+                                        Image(systemName: "checkmark")
+                                            .foregroundColor(.white)
+                                            .font(.system(size: 12, weight: .bold))
+                                    )
+                                    .offset(x: 8, y: -8)
+                            }
+                        }
+                        .onTapGesture {
+                            selectedTheme = "light"
+                            sessionManager.selectedTheme = "light"
+                            consoleNavigatorViewModel.Themchange(themes: "light", accentcolour: "white")
+                        }
+                        
+                        Text("Light")
+                            .foregroundStyle(themesviewModel.currentTheme.textColor)
+                            .font(.system(size: 12))
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                    .frame(maxWidth: .infinity)
+
+                    
+                    VStack(spacing: 8) {
+                        ZStack(alignment: .bottomLeading) {
+                            Image("Tech Savvy")
+                                .resizable()
+                                .foregroundStyle(themesviewModel.currentTheme.iconColor)
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: 110)
+                                .cornerRadius(8)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(selectedTheme == "dark" ? Color.blue : Color.clear, lineWidth: 2)
+                                )
+                            
+                            // Only show checkmark if this theme is selected
+                            if sessionManager.selectedTheme == "dark" {
+                                Circle()
+                                    .fill(Color.blue)
+                                    .frame(width: 24, height: 24)
+                                    .overlay(
+                                        Image(systemName: "checkmark")
+                                            .foregroundColor(.white)
+                                            .font(.system(size: 12, weight: .bold))
+                                    )
+                                    .offset(x: 8, y: -8)
+                            }
+                        }
+                        .onTapGesture {
+                            selectedTheme = "dark"
+                            themesviewModel.selectedTheme = "dark"
+                            sessionManager.selectedTheme = "dark"
+                            consoleNavigatorViewModel.Themchange(themes: "dark", accentcolour: "white")
+                        }
+                        
+                        Text("Dark")
+                            .foregroundStyle(themesviewModel.currentTheme.textColor)
+                            .font(.system(size: 12))
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                HStack(spacing: 16) {
                     
                     // Classic Elegance theme
                     VStack(spacing: 8) {
                         ZStack(alignment: .bottomLeading) {
                             Image("classic Elegance")
                                 .resizable()
+                                .foregroundStyle(themesviewModel.currentTheme.iconColor)
                                 .aspectRatio(contentMode: .fit)
                                 .frame(height: 110)
                                 .cornerRadius(8)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(selectedTheme == "ClassicElegance" ? Color.blue : Color.clear, lineWidth: 2)
+                                        .stroke(selectedTheme == "elegance" ? Color.blue : Color.clear, lineWidth: 2)
                                 )
                             
                             // Only show checkmark if this theme is selected
-                            if selectedTheme == "ClassicElegance" {
+                            if sessionManager.selectedTheme == "elegance" {
                                 Circle()
                                     .fill(Color.blue)
                                     .frame(width: 24, height: 24)
@@ -470,12 +607,14 @@ struct ConsoleView: View {
                             }
                         }
                         .onTapGesture {
-                            selectedTheme = "ClassicElegance"
-                            consoleViewModel.Themchange(themes: "elegance", accentcolour: "white")
+                            selectedTheme = "elegance"
+                            themesviewModel.selectedTheme = "elegance"
+                            sessionManager.selectedTheme = "elegance"
+                            consoleNavigatorViewModel.Themchange(themes: "elegance", accentcolour: "white")
                         }
                         
-                        Text("Classic-Elegance")
-                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                        Text("Elegance")
+                            .foregroundStyle(themesviewModel.currentTheme.textColor)
                             .font(.system(size: 12))
                             .frame(maxWidth: .infinity, alignment: .center)
                     }
@@ -486,16 +625,17 @@ struct ConsoleView: View {
                         ZStack(alignment: .bottomLeading) {
                             Image("modern Minimalism")
                                 .resizable()
+                                .foregroundStyle(themesviewModel.currentTheme.iconColor)
                                 .aspectRatio(contentMode: .fit)
                                 .frame(height: 110)
                                 .cornerRadius(8)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(selectedTheme == "ModernMinimalism" ? Color.blue : Color.clear, lineWidth: 2)
+                                        .stroke(selectedTheme == "minimalism" ? Color.blue : Color.clear, lineWidth: 2)
                                 )
                             
                             // Only show checkmark if this theme is selected
-                            if selectedTheme == "ModernMinimalism" {
+                            if sessionManager.selectedTheme == "minimalism" {
                                 Circle()
                                     .fill(Color.blue)
                                     .frame(width: 24, height: 24)
@@ -508,12 +648,54 @@ struct ConsoleView: View {
                             }
                         }
                         .onTapGesture {
-                            selectedTheme = "ModernMinimalism"
-                            consoleViewModel.Themchange(themes: "minimalism", accentcolour: "white")
+                            selectedTheme = "minimalism"
+                            themesviewModel.selectedTheme = "minimalism"
+                            sessionManager.selectedTheme = "minimalism"
+                            consoleNavigatorViewModel.Themchange(themes: "minimalism", accentcolour: "white")
                         }
                         
-                        Text("Modern-Minimalism")
-                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                        Text("Modern Minimalism")
+                            .foregroundStyle(themesviewModel.currentTheme.textColor)
+                            .font(.system(size: 12))
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                    .frame(maxWidth: .infinity)
+                    
+                    VStack(spacing: 8) {
+                        ZStack(alignment: .bottomLeading) {
+                            Image("warm Inviting")
+                                .resizable()
+                                .foregroundStyle(themesviewModel.currentTheme.iconColor)
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: 110)
+                                .cornerRadius(8)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(selectedTheme == "inviting" ? Color.blue : Color.clear, lineWidth: 2)
+                                )
+                            
+                            // Only show checkmark if this theme is selected
+                            if sessionManager.selectedTheme == "inviting" {
+                                Circle()
+                                    .fill(Color.blue)
+                                    .frame(width: 24, height: 24)
+                                    .overlay(
+                                        Image(systemName: "checkmark")
+                                            .foregroundColor(.white)
+                                            .font(.system(size: 12, weight: .bold))
+                                    )
+                                    .offset(x: 8, y: -8)
+                            }
+                        }
+                        .onTapGesture {
+                            selectedTheme = "inviting"
+                            themesviewModel.selectedTheme = "inviting"
+                            sessionManager.selectedTheme = "inviting"
+                            consoleNavigatorViewModel.Themchange(themes: "inviting", accentcolour: "white")
+                        }
+                        
+                        Text("Warm Inviting")
+                            .foregroundStyle(themesviewModel.currentTheme.textColor)
                             .font(.system(size: 12))
                             .frame(maxWidth: .infinity, alignment: .center)
                     }
@@ -522,59 +704,22 @@ struct ConsoleView: View {
                 
                 // Second row of theme options
                 HStack(spacing: 16) {
-                    // Warm Inviting theme
-                    VStack(spacing: 8) {
-                        ZStack(alignment: .bottomLeading) {
-                            Image("warm Inviting")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(height: 110)
-                                .cornerRadius(8)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .stroke(selectedTheme == "WarmInviting" ? Color.blue : Color.clear, lineWidth: 2)
-                                )
-                            
-                            // Only show checkmark if this theme is selected
-                            if selectedTheme == "WarmInviting" {
-                                Circle()
-                                    .fill(Color.blue)
-                                    .frame(width: 24, height: 24)
-                                    .overlay(
-                                        Image(systemName: "checkmark")
-                                            .foregroundColor(.white)
-                                            .font(.system(size: 12, weight: .bold))
-                                    )
-                                    .offset(x: 8, y: -8)
-                            }
-                        }
-                        .onTapGesture {
-                            selectedTheme = "WarmInviting"
-                            consoleViewModel.Themchange(themes: "inviting", accentcolour: "white")
-                        }
-                        
-                        Text("Warm-Inviting")
-                            .foregroundColor(themesviewModel.currentTheme.textColor)
-                            .font(.system(size: 12))
-                            .frame(maxWidth: .infinity, alignment: .center)
-                    }
-                    .frame(maxWidth: .infinity)
-                    
                     // Tech Savvy theme
                     VStack(spacing: 8) {
                         ZStack(alignment: .bottomLeading) {
                             Image("Tech Savvy")
                                 .resizable()
+                                .foregroundStyle(themesviewModel.currentTheme.iconColor)
                                 .aspectRatio(contentMode: .fit)
                                 .frame(height: 110)
                                 .cornerRadius(8)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(selectedTheme == "TechSavvy" ? Color.blue : Color.clear, lineWidth: 2)
+                                        .stroke(selectedTheme == "tech" ? Color.blue : Color.clear, lineWidth: 2)
                                 )
                             
                             // Only show checkmark if this theme is selected
-                            if selectedTheme == "TechSavvy" {
+                            if sessionManager.selectedTheme == "tech" {
                                 Circle()
                                     .fill(Color.blue)
                                     .frame(width: 24, height: 24)
@@ -587,12 +732,14 @@ struct ConsoleView: View {
                             }
                         }
                         .onTapGesture {
-                            selectedTheme = "TechSavvy"
-                            consoleViewModel.Themchange(themes: "tech", accentcolour: "white")
+                            selectedTheme = "tech"
+                            themesviewModel.selectedTheme = "tech"
+                            sessionManager.selectedTheme = "tech"
+                            consoleNavigatorViewModel.Themchange(themes: "tech", accentcolour: "white")
                         }
                         
-                        Text("Tech-Savvy")
-                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                        Text("Tech Savvy")
+                            .foregroundStyle(themesviewModel.currentTheme.textColor)
                             .font(.system(size: 12))
                             .frame(maxWidth: .infinity, alignment: .center)
                     }
@@ -603,16 +750,17 @@ struct ConsoleView: View {
                         ZStack(alignment: .bottomLeading) {
                             Image("Elegant Dark Mode")
                                 .resizable()
+                                .foregroundStyle(themesviewModel.currentTheme.iconColor)
                                 .aspectRatio(contentMode: .fit)
                                 .frame(height: 110)
                                 .cornerRadius(8)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(selectedTheme == "ElegantDarkMode" ? Color.blue : Color.clear, lineWidth: 2)
+                                        .stroke(selectedTheme == "elegent" ? Color.blue : Color.clear, lineWidth: 2)
                                 )
                             
                             // Only show checkmark if this theme is selected
-                            if selectedTheme == "ElegantDarkMode" {
+                            if sessionManager.selectedTheme == "elegent" {
                                 Circle()
                                     .fill(Color.blue)
                                     .frame(width: 24, height: 24)
@@ -625,19 +773,66 @@ struct ConsoleView: View {
                             }
                         }
                         .onTapGesture {
-                            selectedTheme = "ElegantDarkMode"
-                            consoleViewModel.Themchange(themes: "dark", accentcolour: "white")
+                            selectedTheme = "elegent"
+                            themesviewModel.selectedTheme = "elegent"
+                            sessionManager.selectedTheme = "elegent"
+                            consoleNavigatorViewModel.Themchange(themes: "elegent", accentcolour: "white")
                         }
                         
-                        Text("Elegant-DarkMode")
-                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                        Text("Elegant Dark Mode")
+                            .foregroundStyle(themesviewModel.currentTheme.textColor)
+                            .font(.system(size: 12))
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                    .frame(maxWidth: .infinity)
+                    
+                    VStack(spacing: 8) {
+                        ZStack(alignment: .bottomLeading) {
+                            Image("")
+                                .resizable()
+                            
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: 110)
+                                .cornerRadius(8)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(selectedTheme == "Mode" ? Color.blue : Color.clear, lineWidth: 2)
+                                )
+                            
+                            // Only show checkmark if this theme is selected
+                            if sessionManager.selectedTheme == "Mode" {
+                                Circle()
+                                    .fill(Color.blue)
+                                    .frame(width: 24, height: 24)
+                                    .overlay(
+                                        Image(systemName: "checkmark")
+                                            .foregroundColor(.white)
+                                            .font(.system(size: 12, weight: .bold))
+                                    )
+                                    .offset(x: 8, y: -8)
+                            }
+                        }
+                        .onTapGesture {
+                            selectedTheme = " Mode"
+                        }
+                        
+                        Text("")
                             .font(.system(size: 12))
                             .frame(maxWidth: .infinity, alignment: .center)
                     }
                     .frame(maxWidth: .infinity)
                 }
             }
-            .padding(.vertical, 16)
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(themesviewModel.currentTheme.windowBackground)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(themesviewModel.currentTheme.colorControlNormal.opacity(0.3), lineWidth: 0.5)
+                    )
+            )
+            .padding(.horizontal, 10)
             
         default:
             Text("No content available")

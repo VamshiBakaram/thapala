@@ -207,7 +207,7 @@ class HomeDirectoryViewModel: ObservableObject {
                 }
             }
         } catch {
-//            print("❌ Failed to decode JSON: \(error.localizedDescription)")
+//            print(" Failed to decode JSON: \(error.localizedDescription)")
         }
     }
     
@@ -270,7 +270,6 @@ class HomeDirectoryViewModel: ObservableObject {
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = self.sessionExpiredErrorMessage
                     }
@@ -301,7 +300,6 @@ class HomeDirectoryViewModel: ObservableObject {
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = self.sessionExpiredErrorMessage
                     }
@@ -337,7 +335,6 @@ class HomeDirectoryViewModel: ObservableObject {
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = self.sessionExpiredErrorMessage
                     }

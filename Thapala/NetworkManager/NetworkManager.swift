@@ -270,3 +270,8 @@ class NetworkManager: NSObject {
            task.resume()
        }
 }
+
+
+
+
+

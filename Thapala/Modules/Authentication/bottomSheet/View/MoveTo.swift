@@ -323,7 +323,7 @@ struct MoveTo: View {
                         homeRecordsViewModel.getMainRecordsData()
                     }
 
-                    .onChange(of: homeRecordsViewModel.mainRecords) { records in
+                    .onChange(of: homeRecordsViewModel.mainRecordsData) { records in
                         if !records.isEmpty {
                             MainselectedTabID = records.map { $0.id }
                         }

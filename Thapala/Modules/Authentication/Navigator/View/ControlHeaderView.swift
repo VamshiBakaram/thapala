@@ -7,10 +7,22 @@
 
 import SwiftUI
 
+
+
+
 struct ControlHeaderView: View {
-    @ObservedObject var ConsoleviewModel = ConsoleNavigatiorViewModel()
-    @ObservedObject var themesviewModel = ThemesViewModel()
-    @EnvironmentObject private var sessionManager: SessionManager
+    @StateObject var ConsoleviewModel = ConsoleNavigatiorViewModel()
+//    @EnvironmentObject private var sessionManager: SessionManager
+    @StateObject private var createAccountViewModel: CreateAccountViewModel
+    let sessionManager: SessionManager
+
+    init(sessionManager: SessionManager) {
+        self.sessionManager = sessionManager
+        _createAccountViewModel = StateObject(wrappedValue: CreateAccountViewModel(sessionManager: sessionManager))
+    }
+    @FocusState private var numberPadFocus: Bool
+    @StateObject var themesviewModel = ThemesViewModel()
+    
     @State private var selectedTab = 0
     @State private var expandedIndex: Int? = nil
     let tabs = ["General", "Security", "Notifications", "Appearance"]
@@ -40,6 +52,9 @@ struct ControlHeaderView: View {
     @State private var isContactsDialogVisible = false
     @State private var isPasswordDialogVisible = false
     @State private var isPinDialogVisible = false
+    @State private var isUpdatePinDialogVisible = false
+    @State private var isResetPinDialogVisible = false
+    @State private var isConfirmResetPinDialogVisible = false
     @State private var isSelect = false
     @State private var issecurityQuestions: String = ""
     @State private var isnewPasswordVisible = false
@@ -63,7 +78,7 @@ struct ControlHeaderView: View {
         GeometryReader{ reader in
             ZStack {
                 themesviewModel.currentTheme.windowBackground
-                ScrollView(.vertical) {
+                ScrollView(.vertical, showsIndicators: false) {
                     VStack(spacing: 16) {
                         // Top Tab Bar
                         ScrollView(.horizontal, showsIndicators: false) {
@@ -102,7 +117,6 @@ struct ControlHeaderView: View {
                                     let itemIcon = getTabIcons()[index]
                                     VStack(spacing: 0) {
                                         HStack {
-                                            
                                             if selectedTab == 1{
                                                 Image(itemIcon)
                                                     .renderingMode(.template)
@@ -119,7 +133,8 @@ struct ControlHeaderView: View {
                                             }
                                             
                                             else {
-                                                Image(systemName: itemIcon)
+                                                Image(itemIcon)
+                                                    .renderingMode(.template)
                                                     .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                     .frame(width: 24, height: 24)
                                             }
@@ -210,6 +225,9 @@ struct ControlHeaderView: View {
                                                     }
                                             }
                                         }
+                                        .onTapGesture {
+                                            expandedIndex = (expandedIndex == index) ? nil : index
+                                        }
                                         .padding()
                                         .background(themesviewModel.currentTheme.windowBackground)
                                         
@@ -235,8 +253,21 @@ struct ControlHeaderView: View {
                             .padding(.horizontal, 30)
                         }
                         else {
-                            VStack(spacing: 24) {
-                                // First row of theme options
+        
+                            
+                            VStack(alignment: .leading ,spacing: 24 ) {
+                                Text("Appearance")
+                                    .foregroundStyle(themesviewModel.currentTheme.textColor)
+                                    .font(.custom(.poppinsSemiBold, size: 16))
+                                    .padding(.leading , 16)
+
+                                Text("Choose Your appearance")
+                                    .foregroundStyle(themesviewModel.currentTheme.textColor)
+                                    .font(.custom(.poppinsRegular, size: 14))
+                                    .padding(.leading , 16)
+                                
+                                //First row of theme options
+
                                 HStack(spacing: 16) {
                                     // Light theme
                                     VStack(spacing: 8) {
@@ -253,7 +284,7 @@ struct ControlHeaderView: View {
                                                 )
                                             
                                             // Only show checkmark if this theme is selected
-                                            if selectedTheme == "default" {
+                                            if sessionManager.selectedTheme == "default" {
                                                 Circle()
                                                     .fill(Color.blue)
                                                     .frame(width: 24, height: 24)
@@ -292,7 +323,7 @@ struct ControlHeaderView: View {
                                                 )
                                             
                                             // Only show checkmark if this theme is selected
-                                            if selectedTheme == "light" {
+                                            if sessionManager.selectedTheme == "light" {
                                                 Circle()
                                                     .fill(Color.blue)
                                                     .frame(width: 24, height: 24)
@@ -306,7 +337,6 @@ struct ControlHeaderView: View {
                                         }
                                         .onTapGesture {
                                             selectedTheme = "light"
-                                            themesviewModel.selectedTheme = "light"
                                             sessionManager.selectedTheme = "light"
                                             ConsoleviewModel.Themchange(themes: "light", accentcolour: "white")
                                         }
@@ -332,7 +362,7 @@ struct ControlHeaderView: View {
                                                 )
                                             
                                             // Only show checkmark if this theme is selected
-                                            if selectedTheme == "dark" {
+                                            if sessionManager.selectedTheme == "dark" {
                                                 Circle()
                                                     .fill(Color.blue)
                                                     .frame(width: 24, height: 24)
@@ -610,13 +640,14 @@ struct ControlHeaderView: View {
                                     .fill(themesviewModel.currentTheme.windowBackground)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 10)
-                                            .stroke(themesviewModel.currentTheme.colorControlNormal, lineWidth: 1)
+                                            .stroke(themesviewModel.currentTheme.colorControlNormal.opacity(0.3), lineWidth: 1)
                                     )
                             )
                             .padding(.horizontal, 30)
                         }
                         
                     }
+                    
                     Spacer()
                         .edgesIgnoringSafeArea(.top)
                         .navigationBarBackButtonHidden(true)
@@ -711,6 +742,7 @@ struct ControlHeaderView: View {
                                 withAnimation {
                                     isContactsDialogVisible = false
                                     ConsoleviewModel.isContactsDialogVisible = false
+                                    createAccountViewModel.isShowCountryDropdown = false
                                 }
                             }
                         
@@ -718,7 +750,8 @@ struct ControlHeaderView: View {
                             // Title and Close Button
                             HStack {
                                 Text("Reset Your Phone Number")
-                                    .font(.headline)
+                                    .foregroundColor(themesviewModel.currentTheme.allBlack)
+                                    .font(.custom(.poppinsMedium, size: 18))
                                     .padding(.leading, 16)
                                 Spacer()
                                 Image("cross")
@@ -733,27 +766,59 @@ struct ControlHeaderView: View {
                                     }
                             }
                             
-                            HStack {
-                                Image("bell")
-                                    .resizable()
-                                    .frame(width: 25, height: 25)
-                                    .background(Color.gray.opacity(0.2))
-                                    .clipShape(Circle())
-                                    .padding(.leading, 10)
-                                FloatingTextField(text: $ConsoleviewModel.contactNumber, placeHolder: "Phone Number*", allowedCharacter: .defaultType)
-                                    .padding(.horizontal, 10)
+                            ZStack(alignment: .leading) {
+                                HStack {
+                                    Button(action: {
+                                        withAnimation {
+                                            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                                            createAccountViewModel.isShowCountryDropdown.toggle()
+                                        }
+                                    }, label: {
+                                        HStack(spacing: 5) {
+                                            Image(createAccountViewModel.selectedCountryCode?.code ?? "")
+                                                .resizable()
+                                                .frame(width: 20, height: 15)
+                                                .scaledToFill()
+                                                .background(Color.lineColor)
+                                                .padding(.leading, 6)
+                                            Text(createAccountViewModel.selectedCountryCode?.dial_code ?? "")
+                                                .font(.custom(.poppinsMedium, size: 15))
+                                                .foregroundColor(themesviewModel.currentTheme.allBlack)
+                                            Image("dropdown1")
+                                                .renderingMode(.template)
+                                                .foregroundColor(themesviewModel.currentTheme.allBlack)
+                                        }
+                                        .padding(.leading, 4)
+                                    })
+                                    Spacer()
+                                        .frame(width: 1, height: 25)
+                                        .background(Color.lineColor)
+                                        .padding(.horizontal, 0.5)
+                                    TextField("Phone Number*", text: $ConsoleviewModel.contactNumber)
+                                        .frame(maxWidth: .infinity)
+                                        .font(.custom(.poppinsRegular, size: 16))
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.all, 14)
+                                        .foregroundColor(themesviewModel.currentTheme.allBlack)
+                                        .keyboardType(.numberPad)
+                                        .focused($numberPadFocus)
+                                }
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.grayColor)
+                                )
                             }
-                            
-                            // Create Button
+                            .padding(.horizontal, 10)
+
                             HStack {
                                 Spacer()
                                 Button(action: {
                                 }) {
                                     Text("Submit")
-                                        .font(.headline)
-                                        .foregroundColor(.white)
-                                        .padding()
-                                        .background(Color.blue)
+                                        .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                        .font(.custom(.poppinsMedium, size: 16))
+                                        .frame(width: 100 , height: 35)
+                                        .background(themesviewModel.currentTheme.tabBackground)
                                         .cornerRadius(10)
                                 }
                                 .padding(.trailing, 16)
@@ -764,6 +829,65 @@ struct ControlHeaderView: View {
                         .cornerRadius(12)
                         .shadow(radius: 10)
                         .padding(.horizontal, 16)
+                        .shadow(radius: 5)
+                        .overlay {
+                            VStack {
+                                VStack {
+                                    if createAccountViewModel.isShowCountryDropdown {
+                                        ScrollView {
+                                            LazyVStack(spacing: 0) {
+                                                ForEach(createAccountViewModel.countryCodes, id: \.self) { countryCode in
+                                                    Button(action: {
+                                                        withAnimation {
+                                                            createAccountViewModel.selectedCountryCode = countryCode
+                                                            createAccountViewModel.handleDropdown()
+                                                        }
+                                                        
+                                                    }, label: {
+                                                        HStack(alignment: .center, spacing: 8) {
+                                                            Image(countryCode.code)
+                                                                .resizable()
+                                                                .frame(width: 25, height: 25)
+                                                                .scaledToFill()
+                                                                .background(Color.lineColor)
+                                                                .padding(.leading, 10)
+                                                            Text(countryCode.dial_code)
+                                                                .font(.custom(.poppinsRegular, size: 15))
+                                                                .foregroundStyle(Color.black)
+                                                            Text(countryCode.name)
+                                                                .font(.custom(.poppinsRegular, size: 15))
+                                                                .foregroundStyle(Color.black)
+                                                                .padding(.leading, 0)
+                                                                .multilineTextAlignment(.leading)
+                                                            Spacer()
+                                                        }
+                                                        .padding(.vertical, 5)
+                                                        .overlay(content: {
+                                                            if let name = createAccountViewModel.selectedCountryCode?.name {
+                                                                if countryCode.name == name {
+                                                                    RoundedRectangle(cornerRadius: 5)
+                                                                        .fill(Color.themeColor.opacity(0.2))
+                                                                }
+                                                            }
+                                                        })
+                                                        .padding(.horizontal, 10)
+                                                        .padding(.vertical, 4)
+                                                    })
+                                                }
+                                            }
+                                        }
+                                        .frame(height: 200)
+                                        .background(Color.white)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                        .padding(.horizontal, 40)
+                                        .shadow(radius: 3)
+                                    }
+                                }
+                            }
+                            .frame(maxWidth: .infinity, alignment: .top)
+                            .offset(y: 190)
+                            .zIndex(100)
+                        }
                     }
                 }
                 if isPasswordDialogVisible {
@@ -781,8 +905,8 @@ struct ControlHeaderView: View {
                             // Title and Close Button
                             HStack {
                                 Text("Change Your Password")
-                                    .font(.headline)
-                                    .padding(.leading, 16)
+                                    .font(.custom(.poppinsMedium, size: 18))
+                                    .foregroundColor(themesviewModel.currentTheme.allBlack)
                                 Spacer()
                                 Image("cross")
                                     .resizable()
@@ -794,10 +918,9 @@ struct ControlHeaderView: View {
                                         }
                                     }
                             }
-                            
-                            FloatingTextField(text: $ConsoleviewModel.currentPassword, placeHolder: "Enter Current Password", allowedCharacter: .defaultType)
+                            securedTextField(placeHolder: "Current Password", text: $ConsoleviewModel.currentPassword, isSecureField: true)
                                 .padding(.horizontal, 10)
-                            FloatingTextField(text: $ConsoleviewModel.newPassword, placeHolder: "Enter New Password", allowedCharacter: .defaultType)
+                            securedTextField(placeHolder : "New Password", text: $ConsoleviewModel.newPassword , isSecureField: true)
                                 .padding(.horizontal, 10)
                             
                             // Create Button
@@ -806,10 +929,10 @@ struct ControlHeaderView: View {
                                 Button(action: {
                                 }) {
                                     Text("Submit")
-                                        .font(.headline)
-                                        .foregroundColor(.white)
-                                        .padding()
-                                        .background(Color.blue)
+                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                        .font(.custom(.poppinsMedium, size: 16))
+                                        .frame(width: 100 , height: 35)
+                                        .background(themesviewModel.currentTheme.tabBackground)
                                         .cornerRadius(10)
                                 }
                                 .padding(.trailing, 16)
@@ -836,6 +959,9 @@ struct ControlHeaderView: View {
                             HStack {
                                 Text(issecurityQuestions.isEmpty ? "Select Security Question" : issecurityQuestions)
                                     .foregroundColor(Color.black)
+                                    .onTapGesture {
+                                        isSelect = false
+                                    }
                                 Spacer()
                                 Image(systemName: "chevron.down")
                                     .foregroundColor(Color.black)
@@ -868,8 +994,9 @@ struct ControlHeaderView: View {
                             // Title and Close Button
                             HStack {
                                 Text("Set PIN")
-                                    .font(.headline)
-                                    .padding(.leading, 16)
+                                    .font(.custom(.poppinsMedium, size: 16))
+                                    .foregroundColor(themesviewModel.currentTheme.allBlack)
+                                    .padding(.leading , 16)
                                 Spacer()
                                 Image("cross")
                                     .resizable()
@@ -881,59 +1008,34 @@ struct ControlHeaderView: View {
                                         }
                                     }
                             }
-                            HStack {
-                                ZStack(alignment: .trailing) {
-                                    Floatingtextfield(
-                                        text: $ConsoleviewModel.currentPassword,
-                                        placeHolder: "Enter new PIN",
-                                        allowedCharacter: .defaultType,
-                                        isSecure: !isnewPasswordVisible // <- Add support in your custom FloatingTextField
-                                    )
-                                    Button(action: {
-                                        isnewPasswordVisible.toggle()
-                                    }) {
-                                        Image(systemName: isnewPasswordVisible ? "eye" : "eye.slash")
-                                            .foregroundColor(.black)
-                                            .padding(.trailing, 20)
-                                    }
-                                }
-                            }
-                            HStack {
-                                ZStack(alignment: .trailing) {
-                                    Floatingtextfield(
-                                        text: $ConsoleviewModel.newPassword,
-                                        placeHolder: "Enter new confirm PIN",
-                                        allowedCharacter: .defaultType,
-                                        isSecure: !isconfirmPasswordVisible // <- Add support in your custom FloatingTextField
-                                    )
-                                    
-                                    Button(action: {
-                                        isconfirmPasswordVisible.toggle()
-                                    }) {
-                                        Image(systemName: isconfirmPasswordVisible ? "eye" : "eye.slash")
-                                            .foregroundColor(.black)
-                                            .padding(.trailing, 20)
-                                    }
-                                }
-                            }
+                            
+                            securedPinTextField(placeHolder: "Enter new PIN", text: $ConsoleviewModel.newPin, isSecureField: true)
+                                .padding(.horizontal, 10)
+                            
+                            securedPinTextField(placeHolder: "Enter new confirm PIN", text: $ConsoleviewModel.newConfirmPin, isSecureField: true)
+                                .padding(.horizontal, 10)
+
                             HStack {
                                 Text("Note:")
                                     .foregroundColor(.red)
                                 Text("PIN must be exactly 4 digits long")
+                                    .font(.custom(.poppinsMedium, size: 14))
+                                    .foregroundColor(themesviewModel.currentTheme.allBlack)
                             }
                             
                             // Create Button
                             HStack {
                                 Spacer()
                                 Button(action: {
-                                    ConsoleviewModel.setPin(Newpin: ConsoleviewModel.currentPassword, confirmationPin: ConsoleviewModel.newPassword)
+                                    ConsoleviewModel.setPin(Newpin: ConsoleviewModel.newPin, confirmationPin: ConsoleviewModel.newConfirmPin)
                                     isPinDialogVisible = false
+
                                 }) {
                                     Text("Submit")
-                                        .font(.headline)
-                                        .foregroundColor(.white)
-                                        .padding()
-                                        .background(Color.blue)
+                                        .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                        .font(.custom(.poppinsMedium, size: 16))
+                                        .frame(width: 100 , height: 35)
+                                        .background(themesviewModel.currentTheme.tabBackground)
                                         .cornerRadius(10)
                                 }
                                 .padding(.trailing, 16)
@@ -946,8 +1048,224 @@ struct ControlHeaderView: View {
                         .padding(.horizontal, 16)
                     }
                 }
+                
+                
+                if isUpdatePinDialogVisible {
+                    ZStack {
+                        // Blur background
+                        Color.black.opacity(0.5)
+                            .edgesIgnoringSafeArea(.all)
+                            .onTapGesture {
+                                withAnimation {
+                                    isUpdatePinDialogVisible = false
+                                }
+                            }
+                        
+                        VStack(spacing: 16) {
+                            // Title and Close Button
+                            HStack {
+                                Text("Update Pin")
+                                    .font(.custom(.poppinsMedium, size: 16))
+                                    .foregroundColor(themesviewModel.currentTheme.allBlack)
+                                    .padding(.leading , 16)
+                                Spacer()
+                                Image("cross")
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
+                                    .padding(8)
+                                    .onTapGesture {
+                                        withAnimation {
+                                            isUpdatePinDialogVisible = false
+                                        }
+                                    }
+                            }
+                            HStack {
+                                Text("Update a pin to open locker")
+                                    .font(.custom(.poppinsMedium, size: 14))
+                                    .foregroundColor(themesviewModel.currentTheme.allBlack.opacity(0.1))
+                                    .padding(.leading , 16)
+                                Spacer()
+                            }
+                            
+                            securedPinTextField(placeHolder: "Old Pin", text: $ConsoleviewModel.oldPin, isSecureField: true)
+                                .padding(.horizontal, 10)
+                            
+                            securedPinTextField(placeHolder: "New Pin", text: $ConsoleviewModel.newPin, isSecureField: true)
+                                .padding(.horizontal, 10)
+                            
+                            securedPinTextField(placeHolder: "New Confirm Pin", text: $ConsoleviewModel.newConfirmPin, isSecureField: true)
+                                .padding(.horizontal, 10)
+
+                            HStack {
+                                Text("Note:")
+                                    .foregroundColor(.red)
+                                Text("PIN must be exactly 4 digits long")
+                                    .font(.custom(.poppinsMedium, size: 14))
+                                    .foregroundColor(themesviewModel.currentTheme.allBlack)
+                            }
+                            
+                            // Create Button
+                            HStack {
+                                Spacer()
+                                Button(action: {
+                                }) {
+                                    Text("Submit")
+                                        .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                        .font(.custom(.poppinsMedium, size: 16))
+                                        .frame(width: 100 , height: 35)
+                                        .background(themesviewModel.currentTheme.tabBackground)
+                                        .cornerRadius(10)
+                                }
+                                .padding(.trailing, 16)
+                            }
+                        }
+                        .padding(20)
+                        .background(Color.white)
+                        .cornerRadius(12)
+                        .shadow(radius: 10)
+                        .padding(.horizontal, 16)
+                    }
+                }
+                
+                if isResetPinDialogVisible {
+                    ZStack {
+                        // Blur background
+                        Color.black.opacity(0.5)
+                            .edgesIgnoringSafeArea(.all)
+                            .onTapGesture {
+                                withAnimation {
+                                    isResetPinDialogVisible = false
+                                }
+                            }
+                        
+                        VStack(spacing: 16) {
+                            // Title and Close Button
+                                securedTextField(placeHolder: "Enter Password", text: $ConsoleviewModel.currentPassword, isSecureField: true)
+                                    .padding(.horizontal, 10)
+                            HStack {
+                                Spacer()
+                                Button(action: {
+                                    if sessionManager.password == ConsoleviewModel.currentPassword {
+                                        isResetPinDialogVisible = false
+                                        isConfirmResetPinDialogVisible = true
+                                    }
+                                    else {
+                                        ConsoleviewModel.error = "Password is not correct check Once"
+                                    }
+                                }) {
+                                    Text("Submit")
+                                        .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                        .font(.custom(.poppinsMedium, size: 16))
+                                        .frame(width: 100 , height: 35)
+                                        .background(themesviewModel.currentTheme.tabBackground)
+                                        .cornerRadius(10)
+                                }
+                                .padding(.trailing, 16)
+                            }
+                            
+                        }
+                        .padding(20)
+                        .background(Color.white)
+                        .cornerRadius(12)
+                        .shadow(radius: 10)
+                        .padding(.horizontal, 16)
+                        .onTapGesture {
+                            withAnimation {
+                                isResetPinDialogVisible = false
+                            }
+                        }
+                        
+                    }
+                    .onTapGesture {
+                        withAnimation {
+                            isResetPinDialogVisible = false
+                        }
+                    }
+                }
+                
+                if isConfirmResetPinDialogVisible {
+                    ZStack {
+                        // Blur background
+                        Color.black.opacity(0.5)
+                            .edgesIgnoringSafeArea(.all)
+                            .onTapGesture {
+                                withAnimation {
+                                    isConfirmResetPinDialogVisible = false
+                                }
+                            }
+                        
+                        VStack(spacing: 16) {
+                            // Title and Close Button
+                            HStack {
+                                Text("Reset Pin")
+                                    .font(.custom(.poppinsMedium, size: 16))
+                                    .foregroundColor(themesviewModel.currentTheme.allBlack)
+                                    .padding(.leading , 16)
+                                Spacer()
+                                Image("cross")
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
+                                    .padding(8)
+                                    .onTapGesture {
+                                        withAnimation {
+                                            isConfirmResetPinDialogVisible = false
+                                        }
+                                    }
+                            }
+                            
+                            Text("Update a pin to open locker")
+                                .font(.custom(.poppinsMedium, size: 14))
+                                .foregroundColor(themesviewModel.currentTheme.allBlack.opacity(0.1))
+                                .padding(.leading , 16)
+                            
+                            securedPinTextField(placeHolder: "New Pin", text: $ConsoleviewModel.newPin, isSecureField: true)
+                                .padding(.horizontal, 10)
+                            
+                            securedPinTextField(placeHolder: "New Confirm Pin", text: $ConsoleviewModel.newConfirmPin, isSecureField: true)
+                                .padding(.horizontal, 10)
+
+                            HStack {
+                                Text("Note:")
+                                    .foregroundColor(.red)
+                                Text("PIN must be exactly 4 digits long")
+                                    .font(.custom(.poppinsMedium, size: 14))
+                                    .foregroundColor(themesviewModel.currentTheme.allBlack)
+                            }
+                            
+                            // Create Button
+                            HStack {
+                                Spacer()
+                                Button(action: {
+                                        if ConsoleviewModel.newPin == ConsoleviewModel.newConfirmPin {
+                                            isConfirmResetPinDialogVisible = false
+                                        }
+                                    
+                                    else {
+                                            ConsoleviewModel.error = "New password and Confirm Password is not matched"
+                                    }
+                                }) {
+                                    Text("Submit")
+                                        .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                        .font(.custom(.poppinsMedium, size: 16))
+                                        .frame(width: 100 , height: 35)
+                                        .background(themesviewModel.currentTheme.tabBackground)
+                                        .cornerRadius(10)
+                                }
+                                .padding(.trailing, 16)
+                            }
+                        }
+                        .padding(20)
+                        .background(Color.white)
+                        .cornerRadius(12)
+                        .shadow(radius: 10)
+                        .padding(.horizontal, 16)
+                    }
+                }
+                
+                
             }
             .zIndex(0)
+            .toast(message: $ConsoleviewModel.error)
         }
     }
     
@@ -969,7 +1287,7 @@ struct ControlHeaderView: View {
     private func getTabIcons() -> [String] {
         switch selectedTab {
         case 0: // General
-            return ["globe", "calendar", "envelope", "checklist", "bubble.left", "archivebox", "trash", "signature"]
+            return ["navigatorLanguage", "navigatorCalendar_clock", "navigatorMail", "navigatorPlanner", "navigatorChat", "navigatorStorage", "navigatorTrash", "navigatorSignature"]
         case 1: // Security
             return ["AccountSecurity","lockerSecurity"]
         case 2: // Notifications
@@ -1722,7 +2040,7 @@ struct ControlHeaderView: View {
                     
                         HStack {
                             Text("Recovery Phone Number")
-                                .font(.headline)
+                                .font(.custom(.poppinsMedium, size: 16))
                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                             Spacer()
                             Button(action: {
@@ -1730,8 +2048,9 @@ struct ControlHeaderView: View {
                                 ConsoleviewModel.isContactsDialogVisible = true
                             }) {
                                 Text("Change")
-                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                    .frame(height: 40)
+                                    .font(.custom(.poppinsSemiBold, size: 12))
+                                    .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                    .frame(height: 35)
                                     .frame(width: 100)
                             }
                             .background(themesviewModel.currentTheme.colorPrimary)
@@ -1740,80 +2059,115 @@ struct ControlHeaderView: View {
 
                         }
                         Text("Reset Your Phone number")
-                        .font(.system(size: 12))
-                        .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                        .font(.custom(.poppinsSemiBold, size: 14))
+                        .foregroundColor(themesviewModel.currentTheme.textColor.opacity(0.1))
                     
                     Divider()
                         .padding(.horizontal)
                     
                     HStack {
                         Text("Change Password")
+                            .font(.custom(.poppinsMedium, size: 16))
                             .foregroundColor(themesviewModel.currentTheme.textColor)
                         Spacer()
                         Button(action: {
                             isPasswordDialogVisible = true
                         }) {
                             Text("Change")
-                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                .frame(height: 40)
+                                .font(.custom(.poppinsSemiBold, size: 12))
+                                .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                .frame(height: 35)
                                 .frame(width: 100)
                         }
                         .background(themesviewModel.currentTheme.colorPrimary)
                         .cornerRadius(10) // This will now affect the background too
                         .padding(.trailing, 16)
                     }
-                    Text("Reset Your Password")
-                    .font(.system(size: 12))
-                    .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                    Text("Reset Your password")
+                        .font(.custom(.poppinsSemiBold, size: 14))
+                    .foregroundColor(themesviewModel.currentTheme.textColor.opacity(0.1))
 
                 Divider()
                     .padding(.horizontal)
                     
                     HStack {
                         Text(issecurityQuestions.isEmpty
-                            ? "What is the name of your favorite childhood"
-                            : issecurityQuestions)
-
-                            .font(.headline)
-                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                            ? "What is the name of your favorite childhood" : issecurityQuestions)
+                        .font(.custom(.poppinsMedium, size: 16))
+                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                        
                         Spacer()
                         Button(action: {
                             isSelect = true
                         }) {
-                            Text("Add")
-                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                .frame(height: 40)
+                            Text("Change")
+                                .font(.custom(.poppinsSemiBold, size: 12))
+                                .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                .frame(height: 35)
                                 .frame(width: 100)
                         }
                         .background(themesviewModel.currentTheme.colorPrimary)
                         .cornerRadius(10)
                         .padding(.trailing, 16)
                     }
-                    Text("**********")
-                    .font(.system(size: 12))
-                    .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
                 }
                 
             case 1: // Authentication
                 VStack(alignment: .leading, spacing: 16) {
-                    HStack {
-                        Text("Set Pin")
-                            .font(.headline)
-                            .foregroundColor(themesviewModel.currentTheme.textColor)
-                            .padding(.leading,16)
-                        Spacer()
-                        Button(action: {
-                            isPinDialogVisible = true
-                        }) {
-                            Text("Add")
+                    if sessionManager.pin.isEmpty {
+                        HStack {
+                            Text("Set Pin")
+                                .font(.headline)
                                 .foregroundColor(themesviewModel.currentTheme.textColor)
-                                .frame(height: 40)
-                                .frame(width: 100)
+                                .padding(.leading,16)
+                            Spacer()
+                            Button(action: {
+                                isPinDialogVisible = true
+                            }) {
+                                Text("Add")
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .frame(height: 40)
+                                    .frame(width: 100)
+                            }
+                            .background(themesviewModel.currentTheme.colorPrimary)
+                            .cornerRadius(10) // This will now affect the background too
+                            .padding(.trailing, 16)
+                            
                         }
-                        .background(themesviewModel.currentTheme.colorPrimary)
-                        .cornerRadius(10) // This will now affect the background too
-                        .padding(.trailing, 16)
-
+                    }
+                    
+                    else {
+                        HStack {
+                            Text("Update Pin")
+                                .font(.custom(.poppinsMedium, size: 16))
+                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                .padding(.leading,10)
+                            Spacer()
+                            Button(action: {
+                                isUpdatePinDialogVisible = true
+                            }) {
+                                Text("Update")
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .font(.custom(.poppinsMedium, size: 12))
+                                    .frame(width: 80 ,height: 35)
+                            }
+                            .background(themesviewModel.currentTheme.colorPrimary)
+                            .cornerRadius(10)
+                            
+                            
+                            Button(action: {
+                                isResetPinDialogVisible = true
+                            }) {
+                                Text("Reset PIN")
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .font(.custom(.poppinsMedium, size: 12))
+                                    .frame(width: 80 ,height: 35)
+                            }
+                            .background(themesviewModel.currentTheme.colorPrimary)
+                            .cornerRadius(10) // This will now affect the background too
+                            .padding(.trailing, 5)
+                            
+                        }
                     }
                 }
                 
@@ -2106,8 +2460,8 @@ struct ControlHeaderView: View {
     }
 }
 
-struct ControlHeaderView_Previews: PreviewProvider {
-    static var previews: some View {
-        ControlHeaderView()
-    }
-}
+//struct ControlHeaderView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ControlHeaderView()
+//    }
+//}

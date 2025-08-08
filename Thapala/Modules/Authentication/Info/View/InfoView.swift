@@ -32,19 +32,25 @@ struct InfoView: View {
                 VStack {
                     if infoViewViewModel.isInfoView {
                     // Top tab buttons
-                    HStack {
-                        Button {
-                            withAnimation {
-                                isMenuVisible.toggle()
-                            }
-                        } label: {
-                            Image(systemName: "arrow.backward")
-                        }
-                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-                        .padding(.leading, 20)
                         
-                        Spacer()
-                    }
+                        HStack {
+                            Button {
+                                withAnimation {
+                                    isMenuVisible.toggle()
+                                }
+                            } label: {
+                                Image(systemName: "arrow.backward")
+                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                
+                            }
+                            Text("Info")
+                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                .font(.custom(.poppinsSemiBold, size: 16))
+                                .padding(.leading , 10)
+                            Spacer()
+                        }
+                        .padding(.leading, 20)
+                        .padding(.top, 12)
                     
                     
                     Spacer()
@@ -112,9 +118,9 @@ struct InfoView: View {
                                         if expandedIndex == index {
                                             HTMLTextView(htmlContent: infoItems[index].description)
                                                 .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                .frame(maxWidth: .infinity , minHeight: 500)
+                                                .frame(maxWidth: .infinity , minHeight: 300)
                                                 .padding(.horizontal)
-                                                .padding(.bottom, 10)
+                                                .padding([.top , .bottom] , 10)
                                                 .transition(.asymmetric(
                                                     insertion: .scale(scale: 0.95).combined(with: .opacity),
                                                     removal: .scale(scale: 0.95).combined(with: .opacity)
@@ -171,9 +177,9 @@ struct InfoView: View {
                                                 if expandedIndices[category.heading] == index {
                                                     HTMLTextView(htmlContent: category.content[index].description)
                                                         .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                        .frame(maxWidth: .infinity, minHeight: 200)
+                                                        .frame(maxWidth: .infinity, minHeight: 100)
                                                         .padding(.horizontal)
-                                                        .padding(.bottom, 10)
+                                                        .padding([.top , .bottom] , 10)
                                                 }
                                                 if index < category.content.count - 1 {
                                                     Rectangle()
@@ -227,14 +233,13 @@ struct InfoView: View {
                                                         .foregroundColor(themesviewModel.currentTheme.textColor)
                                                         .frame(maxWidth: .infinity, minHeight: 200)
                                                         .padding(.horizontal)
-                                                        .padding(.bottom, 10)
+                                                        .padding([.top , .bottom] , 10)
                                                 }
                                                 if index < category.content.count - 1 {
                                                     Rectangle()
                                                         .fill(Color.white) // Background color of divider
                                                         .frame(height: 1) // Set divider thickness
                                                         .overlay(Divider().background(themesviewModel.currentTheme.strokeColor))
-                                                        .padding(.horizontal,16)
                                                 }
                                             }
                                         }
@@ -256,13 +261,11 @@ struct InfoView: View {
                 
                 .onAppear {
                     if infoViewViewModel.content.isEmpty {
-                        print("Api prints")
                         infoViewViewModel.getInfoData(selectedOption: selectedTab )
                     }
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                         if selectedTab == "info" {
-                            print("on Appear info TAB")
                             infoItems = infoViewViewModel.content
                         }
                         
@@ -273,27 +276,22 @@ struct InfoView: View {
 
                 .onChange(of: selectedTab) { newTab in
                     if newTab == "FAQ" {
-                        print("FAQ Appears")
                         infoViewViewModel.getFaqData() // Fetch FAQ data when tab is selected
                     }
                 }
                 .onReceive(infoViewViewModel.$faqcontent) { newContent in
                     if selectedTab == "FAQ" {
                         faqItems = newContent
-                        print("on Appear FAQ TAB")
-                        print("FAQ Items Count: \(faqItems.count)")
                     }
                 }
                 .onChange(of: selectedTab) { newTab in
                     if newTab == "Guide" {
-                        print("Guide Appears")
                         infoViewViewModel.getGuideData() // Fetch FAQ data when tab is selected
                     }
                 }
                 .onReceive(infoViewViewModel.$guideitems) { newContent in
                     if selectedTab == "Guide" {
                         guideItems = newContent
-                        print("on Appear Guide TAB")
                     }
                 }
                 if isQuickAccessVisible {

@@ -15,8 +15,13 @@ class ConsoleNavigatiorViewModel:ObservableObject{
     @Published var savesetting: [UserSettings] = []
     @Published var securityQuestions: [securityQuestion] = []
     @Published var contactNumber: String = ""
+    @Published var oldPin: String = ""
+    @Published var newPin: String = ""
+    @Published var newConfirmPin: String = ""
+    @Published var matchPin: String = ""
     @Published var currentPassword: String = ""
     @Published var newPassword: String = ""
+    @Published var ConfirmPassword: String = ""
     @Published var isContactsDialogVisible = false
     @Published var countryCodes: [countryCode] = []
     @Published var selectedCountryCode: countriesCode? = nil
@@ -42,6 +47,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.userSettings = response.settings
+                    self.error = response.message
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -67,6 +73,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.getStorageData = response.data
+                    self.error = response.message
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -96,6 +103,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
                 switch result {
                 case .success(let response):
                     self.savesetting = response.data
+                    self.error = response.message
                 case .failure(let error):
                     switch error {
                     case .error(let message):
@@ -120,6 +128,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.securityQuestions = response.data
+                    self.error = response.message
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -187,6 +196,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.getAllNotificationAlerts = response.data
+                    self.error = response.message
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -237,6 +247,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
                     self.isLoading = false
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                         self.updateNotificationAlerts = [response.data]
+                        self.error = response.message
                     }
                 }
             case .failure(let error):
@@ -269,6 +280,7 @@ class ConsoleNavigatiorViewModel:ObservableObject{
                 switch result {
                 case .success(let response):
                     self.theme = response.theme
+                    self.error = response.message
                 case .failure(let error):
                     switch error {
                     case .error(let message):

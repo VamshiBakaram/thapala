@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct HomeNavigatorView: View {
-    @State private var isMenuVisible = false
     @StateObject var homeNavigatorViewModel = HomeNavigatorViewModel()
     @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
     @StateObject var themesviewModel = ThemesViewModel()
+    @State private var isMenuVisible = false
     @State private var isQuickAccessVisible = false
     @StateObject var ConsoleviewModel = ConsoleNavigatiorViewModel()
     let imageUrl: String
@@ -22,34 +22,29 @@ struct HomeNavigatorView: View {
             ZStack{
                 VStack{
                     VStack {
-                        HStack(spacing:20){
-                            AsyncImage(url: URL(string: imageUrl)) { phase in
-                                switch phase {
-                                case .empty:
-                                    ProgressView()
-                                case .success(let image):
-                                    image
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                        .aspectRatio(contentMode: .fit)
-                                        .clipShape(Circle())
-                                        .padding(.leading,20)
-                                case .failure:
-                                    Image("person")
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                        .aspectRatio(contentMode: .fit)
-                                        .clipShape(Circle())
-                                        .padding(.leading,20)
-                                @unknown default:
-                                    EmptyView()
-                                }
-                            }
+                        HStack{
+                                Image("contactW")
+                                    .resizable()
+                                    .renderingMode(.template)
+                                    .frame(width: 35, height: 35)
+                                    .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                    .background(
+                                        Circle()
+                                            .fill(themesviewModel.currentTheme.colorPrimary) // Inner background
+                                    )
+                                    .overlay(
+                                        Circle()
+                                            .stroke(Color.white, lineWidth: 2) // Border
+                                    )
+                                    .clipShape(Circle())
+                                    .padding(.leading, 16)
+                                
+                                
+                                    Text("Navigator")
+                                        .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                        .font(.custom(.poppinsSemiBold, size: 16, relativeTo: .title))
+                                        .padding(.leading,0)
                             
-                            Text("Navigator")
-                                .padding(.leading,20)
-                                .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                                .font(.custom(.poppinsRegular, size: 16, relativeTo: .title))
                             Spacer()
                             Button(action: {
                                 appBarElementsViewModel.isSearch = true
@@ -58,36 +53,36 @@ struct HomeNavigatorView: View {
                                     .renderingMode(.template)
                                     .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
                                     .font(Font.title.weight(.medium))
-                                    .padding(.trailing , 16)
                             }
-                            
+                            .padding(.leading,15)
+
                             Button(action: {
                                 iNotificationAppBarView = true
                             }) {
                                 Image("notification")
-                                    .renderingMode(.template)
-                                    .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
-                                    .font(Font.title.weight(.medium))
+                                
                             }
-                            
+                            .padding(.leading,15)
                             Button(action: {
                                 withAnimation {
                                     isMenuVisible.toggle()
                                 }
                             }) {
-                                Image(systemName: "line.3.horizontal")
+                                Image("MenuIcon")
                                     .renderingMode(.template)
                                     .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
                                     .font(Font.title.weight(.medium))
                             }
-                            .padding(.trailing,15)
+                            .padding(.leading,15)
+                            .padding(.trailing , 30)
                             
                         }
+                        .padding(.top, -reader.size.height * 0.01)
                         
                         HStack{
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(self.homeNavigatorViewModel.isAdobeSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
-                                .frame(width: reader.size.width/3 - 10, height: 50)
+                                .frame(width: max(reader.size.width/3 - 10, 50), height: 50)
                                 .onTapGesture {
                                     self.homeNavigatorViewModel.selectedOption = .adobe
                                     self.homeNavigatorViewModel.isAdobeSelected = true
@@ -97,15 +92,20 @@ struct HomeNavigatorView: View {
                                 .overlay(
                                     Group{
                                         HStack{
-                                            Image("AdobeIcon")
+                                            Image("emailG")
+                                                .resizable()
                                                 .renderingMode(.template)
                                                 .frame(width: 20, height: 20)
-                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                .background(themesviewModel.currentTheme.tabBackground)
+                                                .padding(5)
+                                                .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                .background(
+                                                    RoundedRectangle(cornerRadius: 8)
+                                                        .fill(themesviewModel.currentTheme.tabBackground)
+                                                )
                                             VStack{
                                                 Text("Adobe")
+                                                    .font(.custom(.poppinsMedium, size: 14, relativeTo: .title))
                                                     .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
                                             }
                                         }
                                     }
@@ -113,7 +113,7 @@ struct HomeNavigatorView: View {
                             
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(self.homeNavigatorViewModel.isBioSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
-                                .frame(width: reader.size.width/3 - 10, height: 50)
+                                .frame(width: max(reader.size.width/3 - 10, 50), height: 50)
                                 .onTapGesture {
                                     self.homeNavigatorViewModel.selectedOption = .bio
                                     self.homeNavigatorViewModel.isAdobeSelected = false
@@ -123,15 +123,20 @@ struct HomeNavigatorView: View {
                                 .overlay(
                                     Group{
                                         HStack{
-                                            Image("BioIcon")
+                                            Image("plannerIcon")
+                                                .resizable()
                                                 .renderingMode(.template)
                                                 .frame(width: 20, height: 20)
-                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                .background(themesviewModel.currentTheme.tabBackground)
+                                                .padding(5)
+                                                .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                .background(
+                                                    RoundedRectangle(cornerRadius: 8)
+                                                        .fill(themesviewModel.currentTheme.tabBackground)
+                                                )
                                             VStack{
                                                 Text("Bio")
+                                                    .font(.custom(.poppinsMedium, size: 14, relativeTo: .title))
                                                     .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
                                             }
                                         }
                                     }
@@ -140,7 +145,7 @@ struct HomeNavigatorView: View {
                             
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(self.homeNavigatorViewModel.isControlSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
-                                .frame(width: reader.size.width/3 - 10, height: 50)
+                                .frame(width: max(reader.size.width/3 - 10, 50), height: 50)
                                 .onTapGesture {
                                     self.homeNavigatorViewModel.selectedOption = .controlPanel
                                     self.homeNavigatorViewModel.isAdobeSelected = false
@@ -150,15 +155,20 @@ struct HomeNavigatorView: View {
                                 .overlay(
                                     Group{
                                         HStack{
-                                            Image("consoleNavigator")
+                                            Image("navigatorStorage")
+                                                .resizable()
                                                 .renderingMode(.template)
                                                 .frame(width: 20, height: 20)
-                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                .background(themesviewModel.currentTheme.tabBackground)
+                                                .padding(5)
+                                                .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                .background(
+                                                    RoundedRectangle(cornerRadius: 8)
+                                                        .fill(themesviewModel.currentTheme.tabBackground)
+                                                )
                                             VStack{
                                                 Text("Console")
+                                                    .font(.custom(.poppinsMedium, size: 14, relativeTo: .title))
                                                     .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                    .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
                                                     
                                             }
                                         }
@@ -166,7 +176,8 @@ struct HomeNavigatorView: View {
                                     
                                 )
                         }
-                        .padding([.leading,.trailing])
+                        .padding([.leading,.trailing,],5)
+                        .padding(.bottom , 10)
                 }
                     .frame(height: reader.size.height * 0.16)
                     .background(themesviewModel.currentTheme.tabBackground)
@@ -188,42 +199,12 @@ struct HomeNavigatorView: View {
                         case .bio:
                             BioView(imageUrl: "")
                         case .controlPanel:
-                            ControlHeaderView()
+                            ControlHeaderView(sessionManager: sessionManager)
                         }
                     }
                     
                     Spacer()
-                    
-                    VStack {
-                         HStack {
-                             Spacer()
-                             RoundedRectangle(cornerRadius: 30)
-                                 .fill(themesviewModel.currentTheme.colorPrimary)
-                                 .frame(width: 150, height: 48)
-                                 .overlay(
-                                     HStack {
-                                         Text("New Email")
-                                             .font(.custom(.poppinsBold, size: 14))
-                                             .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                                             .padding(.trailing, 8)
-                                             .onTapGesture {
-                                                 homeNavigatorViewModel.isComposeEmail = true
-                                             }
-                                         Spacer()
-                                             .frame(width: 1, height: 24)
-                                             .background(themesviewModel.currentTheme.inverseIconColor)
-                                         Image("dropdown 1")
-                                             .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                             .onTapGesture {
-                                                 isQuickAccessVisible = true
-                                                 
-                                             }
-                                     }
-                                 )
-                                 .padding(.trailing, 20)
-                                 .padding(.bottom, 20)
-                         }
-                     }
+
                     if ConsoleviewModel.isContactsDialogVisible == false{
                         TabViewNavigator()
                             .frame(height: 40)
@@ -292,11 +273,11 @@ struct HomeNavigatorView: View {
        
     }
 
-    struct ControlHeaderView_Previews: PreviewProvider {
-        static var previews: some View {
-            ControlHeaderView()
-        }
-    }
+//    struct ControlHeaderView_Previews: PreviewProvider {
+//        static var previews: some View {
+//            ControlHeaderView()
+//        }
+//    }
 
 }
 

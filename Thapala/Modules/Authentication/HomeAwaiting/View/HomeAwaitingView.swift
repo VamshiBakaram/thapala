@@ -411,7 +411,7 @@ struct HomeAwaitingView: View {
                             
                             HStack {
                                 Text("Select All")
-                                    .font(.custom("Poppins-Bold", size: 16))
+                                    .font(.custom(.poppinsBold, size: 16))
                                     .foregroundColor(themesviewModel.currentTheme.textColor)
                                     .fontWeight(.bold)
                                     .padding(.leading, 16)
@@ -688,12 +688,15 @@ struct HomeAwaitingView: View {
                                                                     selectedIndices.insert(threadId)
                                                                     homeAwaitingViewModel.selectedThreadIDs.append(threadId)
                                                                     markAs = data.readReceiptStatus ?? 0
-                                                                    emailId = threadId
+                                                                    
                                                                     homeAwaitingViewModel.selectedID = threadId
-                                                                    if let thread = homeAwaitingViewModel.emailData.first(where: { $0.threadID == threadId }) {
-                                                                        let labelIDs = thread.labels?.compactMap { $0.labelId } ?? []
-                                                                        isCheckedLabelID = labelIDs
-                                                                    }
+
+                                                                }
+                                                                emailId = homeAwaitingViewModel.selectedThreadIDs.last ?? 0
+                                                                
+                                                                if let thread = homeAwaitingViewModel.emailData.first(where: { $0.threadID == emailId }) {
+                                                                    let labelIDs = thread.labels?.compactMap { $0.labelId } ?? []
+                                                                    isCheckedLabelID = labelIDs
                                                                 }
                                                                 isSelectAll = selectedIndices.count == homeAwaitingViewModel.emailData.count
                                                             }

@@ -112,6 +112,132 @@ struct floatingTextField: View {
 
 // ------------------------------------------------------------------------------------------------------------
 
+// secure textfeild for hide the passwords
+struct securedTextField: View {
+    var placeHolder: String = ""
+    @ObservedObject var themesviewModel = ThemesViewModel()
+    @Binding var text: String
+    var isSecureField: Bool = false  // just to indicate this is a secure field
+    @State private var isTextHidden: Bool = true
+    @FocusState private var isFocused: Bool
+
+    var body: some View {
+        ZStack(alignment: .leading) {
+            // Border
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(
+                    themesviewModel.currentTheme.strokeColor,
+                    lineWidth: (isFocused || !text.isEmpty) ? 2 : 1
+                )
+                .frame(height: 55)
+
+            // Floating label
+            Text(placeHolder)
+                .font(.custom(.poppinsRegular, size: 14))
+                .background(Color.white)
+                .foregroundColor(themesviewModel.currentTheme.allBlack)
+                .scaleEffect((isFocused || !text.isEmpty) ? 0.8 : 1.0, anchor: .leading)
+                .offset(x: 12, y: (isFocused || !text.isEmpty) ? -28 : 0)
+                .padding(.horizontal, 4)
+                .animation(.easeInOut(duration: 0.2), value: isFocused || !text.isEmpty)
+
+            // TextField / SecureField with eye toggle
+            HStack {
+                Group {
+                    if isSecureField && isTextHidden {
+                        SecureField("", text: $text)
+                            .focused($isFocused)
+                    } else {
+                        TextField("", text: $text)
+                            .focused($isFocused)
+                    }
+                }
+                .font(.custom(.poppinsRegular, size: 14))
+                .foregroundColor(themesviewModel.currentTheme.allBlack)
+
+                // Eye icon
+                if isSecureField {
+                    Button(action: {
+                        isTextHidden.toggle()
+                    }) {
+                        Image(systemName: isTextHidden ? "eye.slash.fill" : "eye.fill")
+                            .foregroundColor(themesviewModel.currentTheme.allBlack)
+                    }
+                }
+            }
+            .padding(.horizontal, 12)
+            .frame(height: 55)
+        }
+        .padding(.horizontal, 8)
+    }
+}
+
+// secure pin textfeild
+
+struct securedPinTextField: View {
+    var placeHolder: String = ""
+    @ObservedObject var themesviewModel = ThemesViewModel()
+    @Binding var text: String
+    var isSecureField: Bool = false  // just to indicate this is a secure field
+    @State private var isTextHidden: Bool = true
+    @FocusState private var isFocused: Bool
+
+    var body: some View {
+        ZStack(alignment: .leading) {
+            // Border
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(
+                    themesviewModel.currentTheme.strokeColor,
+                    lineWidth: (isFocused || !text.isEmpty) ? 2 : 1
+                )
+                .frame(height: 55)
+
+            // Floating label
+            Text(placeHolder)
+                .font(.custom(.poppinsRegular, size: 14))
+                .background(Color.white)
+                .foregroundColor(themesviewModel.currentTheme.allBlack)
+                .scaleEffect((isFocused || !text.isEmpty) ? 0.8 : 1.0, anchor: .leading)
+                .offset(x: 12, y: (isFocused || !text.isEmpty) ? -28 : 0)
+                .padding(.horizontal, 4)
+                .animation(.easeInOut(duration: 0.2), value: isFocused || !text.isEmpty)
+
+            // TextField / SecureField with eye toggle
+            HStack {
+                Group {
+                    if isSecureField && isTextHidden {
+                        SecureField("", text: $text)
+                            .focused($isFocused)
+                    } else {
+                        TextField("", text: $text)
+                            .focused($isFocused)
+                    }
+                }
+                .font(.custom(.poppinsRegular, size: 14))
+                .foregroundColor(themesviewModel.currentTheme.allBlack)
+                .onChange(of: text) { newValue in
+                    if newValue.count > 4 {
+                        text = String(newValue.prefix(4))
+                    }
+                }
+
+                // Eye icon
+                if isSecureField {
+                    Button(action: {
+                        isTextHidden.toggle()
+                    }) {
+                        Image(systemName: isTextHidden ? "eye.slash.fill" : "eye.fill")
+                            .foregroundColor(themesviewModel.currentTheme.allBlack)
+                    }
+                }
+            }
+            .padding(.horizontal, 12)
+            .frame(height: 55)
+        }
+        .padding(.horizontal, 8)
+    }
+}
+
 
 struct Floatingtextfield: View {
     @StateObject var themesviewModel = ThemesViewModel()

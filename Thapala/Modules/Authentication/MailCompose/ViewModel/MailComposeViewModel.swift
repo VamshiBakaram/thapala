@@ -234,7 +234,6 @@ class MailComposeViewModel:ObservableObject{
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.detailedEmailData = response.email ?? []
-//                    print("suggested t code response \(response)")
                 }
             case .failure(let error):
                 DispatchQueue.main.async {

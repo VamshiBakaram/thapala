@@ -123,7 +123,6 @@ class HomeAwaitingViewModel: ObservableObject {
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    print("tDraftData",response)
                     self.tDraftsData = response.data ?? []
                     
                     if !self.tDraftsData.isEmpty {
@@ -303,7 +302,6 @@ class HomeAwaitingViewModel: ObservableObject {
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = self.sessionExpiredErrorMessage
                     }
@@ -333,7 +331,6 @@ class HomeAwaitingViewModel: ObservableObject {
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
                         self.error = self.sessionExpiredErrorMessage
                     }
@@ -369,6 +366,31 @@ func convertToIST(dateInput: Any) -> String? {
         dateFormatter.dateFormat = "dd-MMM-yyyy h:mm a"
     let formattedDateString = dateFormatter.string(from: date)
     return formattedDateString
+}
+
+// only hours minutes and am/pm
+
+func convertToTime(dateInput: Any) -> String? {
+    let date: Date?
+    
+    if let timestamp = dateInput as? Int {
+        date = Date(timeIntervalSince1970: TimeInterval(timestamp))
+    } else if let dateString = dateInput as? String {
+        let isoDateFormatter = ISO8601DateFormatter()
+        isoDateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        date = isoDateFormatter.date(from: dateString)
+    } else {
+        return nil
+    }
+    
+    guard let date = date else { return nil }
+    
+    let dateFormatter = DateFormatter()
+    dateFormatter.timeZone = TimeZone(identifier: "Asia/Kolkata")
+    dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+    dateFormatter.dateFormat = "h:mm a"
+    
+    return dateFormatter.string(from: date).lowercased()
 }
 
 

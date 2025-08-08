@@ -87,7 +87,8 @@ struct HomeConveyedView: View {
                                             .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
                                             .font(Font.title.weight(.medium))
                                     }
-                                    .padding([.leading,.trailing],15)
+                                    .padding(.leading,15)
+                                    .padding(.trailing , 30)
                                     
                                 }
                                 .padding(.top , -reader.size.height * 0.01)

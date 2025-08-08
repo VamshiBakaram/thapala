@@ -549,9 +549,6 @@ struct HomeDirectoryView: View {
                             .compactMap { $0.groupName }
                             .flatMap { $0.components(separatedBy: ",") }
                             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-//                        for (index, group) in groupNamesArray.enumerated() {
-//                            print("Group \(index + 1): \(group)")
-//                        }
                     }
                 }
             }

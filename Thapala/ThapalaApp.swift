@@ -27,7 +27,9 @@ struct ThapalaApp: App {
                     LoginView()
                         .environmentObject(sessionManager)
                 }else{
-                    HomeAwaitingView(imageUrl: "")
+                    HomeRecordsView(imageUrl: "")
+//                    HomeNavigatorView(imageUrl: "")
+//                    HomeAwaitingView(imageUrl: "")
                             .environmentObject(sessionManager)
                 }
             }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import ClockTimePicker
+
 struct NoteView: View {
     @Binding var isNoteVisible: Bool
     @Binding var notificationTime: Int?

@@ -17,6 +17,7 @@ class ConsoleViewModel: ObservableObject {
     @Published var selectedID: Int = 0
     @Published var theme: String?
     private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
+    
     func MailTimePeriod(timePeriod: Int) {
         isLoading = true
         let params = TimeChangeRequest(timeInHours: timePeriod)
@@ -31,6 +32,7 @@ class ConsoleViewModel: ObservableObject {
                 switch result {
                 case .success(let response):
                     self.timePeriodMessage = response.message
+                    self.error = response.message
                 case .failure(let error):
                     switch error {
                     case .error(let message):
@@ -59,6 +61,7 @@ class ConsoleViewModel: ObservableObject {
                 switch result {
                 case .success(let response):
                     self.settingdata = response.data
+                    self.error = response.message
                 case .failure(let error):
                     switch error {
                     case .error(let message):
@@ -87,6 +90,7 @@ class ConsoleViewModel: ObservableObject {
                 switch result {
                 case .success(let response):
                     self.settingdata = response.data
+                    self.error = response.message
                 case .failure(let error):
                     switch error {
                     case .error(let message):
@@ -113,6 +117,7 @@ class ConsoleViewModel: ObservableObject {
                 switch result {
                 case .success(let response):
                     self.settingdata = response.data
+                    self.error = response.message
                 case .failure(let error):
                     switch error {
                     case .error(let message):
@@ -141,6 +146,7 @@ class ConsoleViewModel: ObservableObject {
                 switch result {
                 case .success(let response):
                     self.settingdata = response.data
+                    self.error = response.message
                 case .failure(let error):
                     switch error {
                     case .error(let message):
@@ -169,6 +175,7 @@ class ConsoleViewModel: ObservableObject {
                 switch result {
                 case .success(let response):
                     self.settingdata = response.data
+                    self.error = response.message
                 case .failure(let error):
                     switch error {
                     case .error(let message):
@@ -195,6 +202,7 @@ class ConsoleViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.userSettings = response.settings
+                    self.error = response.message
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -212,30 +220,32 @@ class ConsoleViewModel: ObservableObject {
     
     // Appearance theme change
     
-    func Themchange(themes: String , accentcolour: String) {
-        isLoading = true
-        let params = Themepayload(theme: themes, accentColor: accentcolour)
-        let endPoint = "\(EndPoint.themeChange)"
-        if let jsonData = try? JSONEncoder().encode(params),
-           let _ = String(data: jsonData, encoding: .utf8) {
-        }
-        NetworkManager.shared.request(type: ThemeResponse.self,endPoint: endPoint,httpMethod: .post, parameters: params, isTokenRequired: true) { [weak self] result in
-            guard let self = self else { return }
-            DispatchQueue.main.async {
-                self.isLoading = false
-                switch result {
-                case .success(let response):
-                    self.theme = response.theme
-                case .failure(let error):
-                    switch error {
-                    case .error(let message):
-                        self.error = message
-                    case .sessionExpired:
-                        self.error = self.sessionExpiredErrorMessage
-                    }
-                }
-            }
-        }
-    }
+//    func Themchange(themes: String , accentcolour: String) {
+//        isLoading = true
+//        let params = Themepayload(theme: themes, accentColor: accentcolour)
+//        let endPoint = "\(EndPoint.themeChange)"
+//        if let jsonData = try? JSONEncoder().encode(params),
+//           let _ = String(data: jsonData, encoding: .utf8) {
+//        }
+//        NetworkManager.shared.request(type: ThemeResponse.self,endPoint: endPoint,httpMethod: .post, parameters: params, isTokenRequired: true) { [weak self] result in
+//            guard let self = self else { return }
+//            DispatchQueue.main.async {
+//                self.isLoading = false
+//                switch result {
+//                case .success(let response):
+//                    self.theme = response.theme
+//                case .failure(let error):
+//                    switch error {
+//                    case .error(let message):
+//                        self.error = message
+//                    case .sessionExpired:
+//                        self.error = self.sessionExpiredErrorMessage
+//                    }
+//                }
+//            }
+//        }
+//    }
+    
+    
     
 }
