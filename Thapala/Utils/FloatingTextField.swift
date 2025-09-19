@@ -73,7 +73,7 @@ struct floatingtextfield: View {
 
 struct floatingTextField: View {
     var placeHolder: String = ""
-    @ObservedObject var themesviewModel = ThemesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Binding var text: String
     @FocusState private var isFocused: Bool
 
@@ -108,6 +108,113 @@ struct floatingTextField: View {
         .padding(.horizontal, 8)
     }
 }
+
+
+// ------------------------------------------------------------------------------------------------------------
+
+// ***** placeholder label float on above the border for only ---------eventtextfeild----------
+
+struct EventfloatingTextField: View {
+    var placeHolder: String = ""
+    @StateObject var themesviewModel = ThemesViewModel()
+    @Binding var text: String
+    @FocusState private var isFocused: Bool
+
+    var body: some View {
+        ZStack(alignment: .leading) {
+            // Border
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(
+                    themesviewModel.currentTheme.strokeColor,
+                    lineWidth: (isFocused || !text.isEmpty) ? 2 : 1
+                )
+                .frame(height: 55)
+
+            // Floating label with background masking the border line
+            Text(placeHolder)
+                .font(.custom(.poppinsRegular, size: 14))
+                .background(Color(red: 231 / 255, green: 228 / 255, blue: 234 / 255))
+                .foregroundColor(themesviewModel.currentTheme.allBlack)
+                .scaleEffect((isFocused || !text.isEmpty) ? 0.8 : 1.0, anchor: .leading)
+                .offset(x: 12, y: (isFocused || !text.isEmpty) ? -28 : 0)
+                .padding(.horizontal, 4)
+                .animation(.easeInOut(duration: 0.2), value: isFocused || !text.isEmpty)
+
+            // TextField
+            TextField("", text: $text)
+                .focused($isFocused)
+                .font(.custom(.poppinsRegular, size: 14))
+                .foregroundColor(themesviewModel.currentTheme.allBlack)
+                .padding(.horizontal, 12)
+                .frame(height: 55)
+        }
+        .padding(.horizontal, 8)
+    }
+}
+
+
+
+
+// ------------------------------------------------------------------------------------------------------------
+
+// ***** placeholder label float on above the border for only ---------Planner Serach Feild----------
+
+struct plannerSearchTextField<TrailingView: View>: View {
+    var placeHolder: String = ""
+    @StateObject var themesviewModel = ThemesViewModel()
+    @Binding var text: String
+    @FocusState private var isFocused: Bool
+    
+    var trailing: TrailingView?   // 👈 optional trailing view
+    
+    init(placeHolder: String,
+         text: Binding<String>,
+         @ViewBuilder trailing: () -> TrailingView? = { nil }) {
+        self.placeHolder = placeHolder
+        self._text = text
+        self.trailing = trailing()
+    }
+
+    var body: some View {
+        ZStack(alignment: .leading) {
+            // Border
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(
+                    themesviewModel.currentTheme.strokeColor,
+                    lineWidth: (isFocused || !text.isEmpty) ? 2 : 1
+                )
+                .frame(height: 55)
+
+            // Floating label
+            Text(placeHolder)
+                .font(.custom(.poppinsSemiBold, size: 16))
+                .background(themesviewModel.currentTheme.windowBackground)
+                .foregroundColor(themesviewModel.currentTheme.textColor)
+                .scaleEffect((isFocused || !text.isEmpty) ? 0.8 : 1.0, anchor: .leading)
+                .offset(x: 12, y: (isFocused || !text.isEmpty) ? -28 : 0)
+                .padding(.horizontal, 4)
+                .animation(.easeInOut(duration: 0.2), value: isFocused || !text.isEmpty)
+
+            // TextField + trailing
+            HStack {
+                TextField("", text: $text)
+                    .focused($isFocused)
+                    .font(.custom(.poppinsSemiBold, size: 16))
+                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                    .padding(.leading, 12)
+                    .frame(height: 55)
+
+                if let trailing = trailing {
+                    trailing
+                        .padding(.trailing, 8)
+                }
+            }
+        }
+        .padding(.horizontal, 8)
+    }
+}
+
+
 
 
 // ------------------------------------------------------------------------------------------------------------

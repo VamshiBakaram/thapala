@@ -27,10 +27,11 @@ struct ThapalaApp: App {
                     LoginView()
                         .environmentObject(sessionManager)
                 }else{
-                    HomeRecordsView(imageUrl: "")
+//                    HomePlannerView()
+//                     HomeRecordsView(imageUrl: "")
 //                    HomeNavigatorView(imageUrl: "")
-//                    HomeAwaitingView(imageUrl: "")
-                            .environmentObject(sessionManager)
+                    HomeAwaitingView(imageUrl: "")
+                            .environmentObject(sessionManager) // inject once
                 }
             }
         }

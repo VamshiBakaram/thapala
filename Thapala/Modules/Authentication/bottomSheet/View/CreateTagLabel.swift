@@ -34,16 +34,6 @@ struct CreateTagLabel: View {
     @State var Tag: String = ""
     @State private var emailData: EmailsByIdModel?
     var body: some View {
-        ZStack {
-            Color.black.opacity(0.4)
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    if isCreateLabelVisible == false {
-                        withAnimation {
-                            isTagSheetVisible = false
-                        }
-                    }
-                }
 
             // Main BottomTagSheetView content
             if !isCreateLabelVisible {
@@ -215,16 +205,6 @@ struct CreateTagLabel: View {
                     .transition(.move(edge: .bottom)) // Smooth transition
                     .animation(.easeInOut)
             }
-        }
-        .background(
-            Color.black.opacity(isCreateLabelVisible ? 0.4 : 0)
-                .edgesIgnoringSafeArea(.all)
-                .onTapGesture {
-                    withAnimation {
-                        isTagSheetVisible = false // Dismiss the sheet
-                    }
-                }
-        )
     }
     
     func toggleCheck(for id: Int) {

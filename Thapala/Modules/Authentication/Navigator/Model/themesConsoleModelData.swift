@@ -22,6 +22,7 @@ struct ThemePayload: Codable {
 
 // themes change
 enum AppTheme: String, CaseIterable, Identifiable {
+    case `default`
     case light
     case dark
     case elegance

@@ -55,11 +55,12 @@ struct HomeAwaitingView: View {
     @State private var dragOffset: CGFloat = 0
     @State private var isCheckedLabelID: [Int] = []
     @State private var emailBodies: [String] = []
+    
     var body: some View {
         GeometryReader{ reader in
             ZStack(alignment: .bottomTrailing) {
                 themesviewModel.currentTheme.windowBackground
-                    .ignoresSafeArea()
+                    .ignoresSafeArea(edges: .bottom)
                 VStack{
                     if beforeLongPress{
                         VStack {
@@ -71,7 +72,7 @@ struct HomeAwaitingView: View {
                                         .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
                                         .background(
                                             Circle()
-                                                .fill(themesviewModel.currentTheme.colorPrimary) // Inner background
+                                                .fill(themesviewModel.currentTheme.colorPrimary)
                                         )
                                         .overlay(
                                             Circle()
@@ -145,7 +146,6 @@ struct HomeAwaitingView: View {
                                     iNotificationAppBarView = true
                                 }) {
                                     Image("notification")
-                                    
                                 }
                                 .padding(.leading,15)
                                 Button(action: {
@@ -160,9 +160,10 @@ struct HomeAwaitingView: View {
                                 }
                                 .padding(.leading,15)
                                 .padding(.trailing , 30)
-                                
                             }
-                            .padding(.top, -reader.size.height * 0.01)
+                            .padding(.top ,15)
+                            
+                            
                             HStack{
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(self.homeAwaitingViewModel.isEmailSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
@@ -173,7 +174,6 @@ struct HomeAwaitingView: View {
                                         self.homeAwaitingViewModel.isEmailSelected = true
                                         self.homeAwaitingViewModel.isPrintSelected = false
                                         self.homeAwaitingViewModel.isOntlineSelected = false
-                                       
                                     }
                                     .overlay(
                                         Group{
@@ -197,6 +197,7 @@ struct HomeAwaitingView: View {
                                             }
                                         }
                                     )
+                                
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(self.homeAwaitingViewModel.isPrintSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
                                     .frame(width: max(reader.size.width/3 - 10, 50), height: 50)
@@ -218,7 +219,6 @@ struct HomeAwaitingView: View {
                                                         RoundedRectangle(cornerRadius: 8)
                                                             .fill(themesviewModel.currentTheme.tabBackground)
                                                     )
-                                                
                                                 VStack{
                                                     Text("Intact")
                                                         .font(.custom(.poppinsMedium, size: 14, relativeTo: .title))
@@ -269,8 +269,9 @@ struct HomeAwaitingView: View {
                             .padding([.leading,.trailing,],5)
                             .padding(.bottom , 10)
                         }
-                        .frame(height: reader.size.height * 0.16)
+                        .frame(height: reader.size.height * 0.17)
                         .background(themesviewModel.currentTheme.colorPrimary)
+                        .padding(.top , 5)
                         
                         HStack{
                             if let selectedOption = homeAwaitingViewModel.selectedOption {
@@ -282,12 +283,11 @@ struct HomeAwaitingView: View {
                                     Text("")
                                 case .outline:
                                     Spacer()
-                                    
                                         ScrollView(.horizontal, showsIndicators: false) {
-                                            HStack(spacing: 12) { // Adjust spacing as needed
+                                            HStack(spacing: 16) { // Adjust spacing as needed
                                                 RoundedRectangle(cornerRadius: 25)
                                                     .fill(self.homeAwaitingViewModel.isDraftsSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
-                                                    .frame(width: 100, height: 50) // Add fixed width for consistent layout
+                                                    .frame(width: 110, height: 50) // Add fixed width for consistent layout
                                                     .onTapGesture {
                                                         self.homeAwaitingViewModel.outlineSelectedOption = .draft
                                                         self.homeAwaitingViewModel.isDraftsSelected = true
@@ -299,13 +299,13 @@ struct HomeAwaitingView: View {
                                                     }
                                                     .overlay(
                                                         Text("Drafts")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                            .font(.custom(.poppinsBold, size: 16))
                                                             .foregroundColor(self.homeAwaitingViewModel.isDraftsSelected ? themesviewModel.currentTheme.textColor : themesviewModel.currentTheme.inverseTextColor)
                                                     )
                                                 
                                                 RoundedRectangle(cornerRadius: 25)
                                                     .fill(self.homeAwaitingViewModel.istDraftselected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
-                                                    .frame(width: 100, height: 50)
+                                                    .frame(width: 110, height: 50)
                                                     .onTapGesture {
                                                         self.homeAwaitingViewModel.outlineSelectedOption = .tDraft
                                                         self.homeAwaitingViewModel.isDraftsSelected = false
@@ -317,13 +317,13 @@ struct HomeAwaitingView: View {
                                                     }
                                                     .overlay(
                                                         Text("tDrafts")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                            .font(.custom(.poppinsBold, size: 16))
                                                             .foregroundColor(self.homeAwaitingViewModel.istDraftselected ? themesviewModel.currentTheme.textColor : themesviewModel.currentTheme.inverseTextColor)
                                                     )
                                                 
                                                 RoundedRectangle(cornerRadius: 25)
                                                     .fill(self.homeAwaitingViewModel.isScheduledSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
-                                                    .frame(width: 100, height: 50)
+                                                    .frame(width: 110, height: 50)
                                                     .onTapGesture {
                                                         self.homeAwaitingViewModel.outlineSelectedOption = .schedule
                                                         self.homeAwaitingViewModel.isDraftsSelected = false
@@ -335,48 +335,15 @@ struct HomeAwaitingView: View {
                                                     }
                                                     .overlay(
                                                         Text("Scheduled")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                            .font(.custom(.poppinsBold, size: 16))
                                                             .foregroundColor(self.homeAwaitingViewModel.isScheduledSelected ? themesviewModel.currentTheme.textColor : themesviewModel.currentTheme.inverseTextColor)
                                                     )
-                                                
-                                                RoundedRectangle(cornerRadius: 25)
-                                                    .fill(self.homeAwaitingViewModel.istLetersSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
-                                                    .frame(width: 100, height: 50)
-                                                    .onTapGesture {
-                                                        self.homeAwaitingViewModel.outlineSelectedOption = .schedule
-                                                        self.homeAwaitingViewModel.isDraftsSelected = false
-                                                        self.homeAwaitingViewModel.istDraftselected = false
-                                                        self.homeAwaitingViewModel.isScheduledSelected = false
-                                                        self.homeAwaitingViewModel.istLetersSelected = true
-                                                        self.homeAwaitingViewModel.istCardsSelected = false
-                                                    }
-                                                    .overlay(
-                                                        Text("tLetters")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                            .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                                                    )
-                                                
-                                                RoundedRectangle(cornerRadius: 25)
-                                                    .fill(self.homeAwaitingViewModel.istCardsSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
-                                                    .frame(width: 100, height: 50)
-                                                    .onTapGesture {
-                                                        self.homeAwaitingViewModel.outlineSelectedOption = .schedule
-                                                        self.homeAwaitingViewModel.isDraftsSelected = false
-                                                        self.homeAwaitingViewModel.istDraftselected = false
-                                                        self.homeAwaitingViewModel.isScheduledSelected = false
-                                                        self.homeAwaitingViewModel.istLetersSelected = false
-                                                        self.homeAwaitingViewModel.istCardsSelected = true
-                                                    }
-                                                    .overlay(
-                                                        Text("tCards")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                            .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                                                    )
                                             }
-                                            .padding(.horizontal)
+                                            
                                         }
                                         .background(themesviewModel.currentTheme.tabBackground)
                                         .cornerRadius(25)
+                                        .padding(.horizontal , 20)
                                     
                                 }
                             }
@@ -442,6 +409,7 @@ struct HomeAwaitingView: View {
                                             homeAwaitingViewModel.selectedThreadIDs = Array(selectedIndices)
                                         }
                                     }
+                                    
                                     else if homeAwaitingViewModel.istDraftselected{
                                         if selectedIndices.count == homeAwaitingViewModel.tDraftsData.count {
                                             selectedIndices.removeAll()
@@ -616,6 +584,7 @@ struct HomeAwaitingView: View {
                                                         }
                                                         .frame(height: 34)
                                                     }
+                                                    .padding(.horizontal , 10)
                                                     .padding(.top , 10)
                                                     .onTapGesture {
                                                         if homeAwaitingViewModel.beforeLongPress {
@@ -645,22 +614,32 @@ struct HomeAwaitingView: View {
                                                     )
                                                     .swipeActions(edge: .leading) {
                                                         Button {
-                                                            homeAwaitingViewModel.selectedThreadIDs.append(data.threadID ?? 0)
-                                                            homeAwaitingViewModel.deleteEmailFromAwaiting(threadIDS: homeAwaitingViewModel.selectedThreadIDs)
+                                                            homeAwaitingViewModel.selectedThreadIDs = []
+                                                            showingDeleteAlert = true
+                                                            if let id = data.threadID, !homeAwaitingViewModel.selectedThreadIDs.contains(id) {
+                                                                homeAwaitingViewModel.selectedThreadIDs.append(id)
+                                                            }
+                                                            print("homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs)")
                                                         } label: {
                                                             deleteIcon
                                                                 .foregroundStyle(.white)
                                                         }
-                                                        .tint(Color.themeColor)
+                                                        .tint(Color(red: 1.0, green: 0.5, blue: 0.5))
                                                     }
                                                     .swipeActions(edge: .trailing) {
                                                         Button {
-                                                            isSheetVisible = true
+//                                                            isSheetVisible = true
+                                                            isMoreSheetvisible.toggle()
+                                                            EmailStarred = data.starred ?? 0
+                                                            markAs = data.readReceiptStatus ?? 0
+                                                            emailId = data.threadID ?? 0
+                                                            HomeawaitingViewVisible = true
+                                                            
                                                         } label: {
                                                             moreIcon
                                                                 .foregroundStyle(.white)
                                                         }
-                                                        .tint(Color(red: 1.0, green: 0.5, blue: 0.5))
+                                                        .tint(Color(red: 80/255, green: 165/255, blue: 242/255))
                                                     }
                                                     Divider()
                                                         .frame(maxWidth: .infinity)
@@ -690,7 +669,6 @@ struct HomeAwaitingView: View {
                                                                     markAs = data.readReceiptStatus ?? 0
                                                                     
                                                                     homeAwaitingViewModel.selectedID = threadId
-
                                                                 }
                                                                 emailId = homeAwaitingViewModel.selectedThreadIDs.last ?? 0
                                                                 
@@ -977,7 +955,7 @@ struct HomeAwaitingView: View {
                                                             VStack(alignment: .leading){
                                                                 if draftData.status?.rawValue ?? "" == "draft"{
                                                                     if let recipient = draftData.recipients.first(where: { $0.type == "to" }) {
-                                                                        Text(recipient.user.firstname ?? "")
+                                                                        Text(recipient.user.firstname)
                                                                             .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
                                                                             .foregroundColor(themesviewModel.currentTheme.textColor)
                                                                     }
@@ -1065,7 +1043,7 @@ struct HomeAwaitingView: View {
                                                                 VStack(alignment: .leading){
                                                                     if draftData.status?.rawValue ?? "" == "draft"{
                                                                         if let recipient = draftData.recipients.first(where: { $0.type == "to" }) {
-                                                                            Text(recipient.user.firstname ?? "")
+                                                                            Text(recipient.user.firstname)
                                                                                 .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
                                                                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                                                                         }
@@ -1185,7 +1163,7 @@ struct HomeAwaitingView: View {
                                                         VStack(alignment: .leading){
                                                             if tdraftData.status?.rawValue ?? "" == "draft"{
                                                                 if let recipient = tdraftData.recipients.first(where: { $0.type == "to" }) {
-                                                                    Text(recipient.user.firstname ?? "")
+                                                                    Text(recipient.user.firstname)
                                                                         .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
                                                                         .foregroundColor(themesviewModel.currentTheme.textColor)
                                                                 }
@@ -1296,7 +1274,7 @@ struct HomeAwaitingView: View {
                                                                 VStack(alignment: .leading){
                                                                     if tdraftData.status?.rawValue ?? "" == "draft"{
                                                                         if let recipient = tdraftData.recipients.first(where: { $0.type == "to" }) {
-                                                                            Text(recipient.user.firstname ?? "")
+                                                                            Text(recipient.user.firstname)
                                                                                 .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
                                                                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                                                                         }
@@ -1448,7 +1426,7 @@ struct HomeAwaitingView: View {
                                                         VStack(alignment: .leading){
                                                             if scheduleddata.status?.rawValue ?? "" == "scheduled"{
                                                                 if let recipient = scheduleddata.recipients.first(where: { $0.type == "to" }) {
-                                                                    Text(recipient.user.firstname ?? "")
+                                                                    Text(recipient.user.firstname)
                                                                         .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
                                                                         .foregroundColor(themesviewModel.currentTheme.textColor)
                                                                 }
@@ -1561,7 +1539,7 @@ struct HomeAwaitingView: View {
                                                                 VStack(alignment: .leading){
                                                                     if scheduleddata.status?.rawValue ?? "" == "scheduled"{
                                                                         if let recipient = scheduleddata.recipients.first(where: { $0.type == "to" }) {
-                                                                            Text(recipient.user.firstname ?? "")
+                                                                            Text(recipient.user.firstname)
                                                                                 .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
                                                                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                                                                                 .onTapGesture {
@@ -1720,7 +1698,7 @@ struct HomeAwaitingView: View {
                     if homeAwaitingViewModel.beforeLongPress{
                         TabViewNavigator()
                             .frame(height: 40)
-                            .padding(.bottom, 10)
+                            .padding(.bottom, 20)
                     }
                 }
                 .toast(message: $homeAwaitingViewModel.error)
@@ -1770,7 +1748,7 @@ struct HomeAwaitingView: View {
                             .padding(.trailing)
                             .padding(.bottom)
                     }
-                    .padding(.bottom, 50)
+                    .padding(.bottom, 100)
                 }
                 if isQuickAccessVisible {
                     ZStack {
@@ -1857,8 +1835,9 @@ struct HomeAwaitingView: View {
                                     homeAwaitingViewModel.selectedThreadIDs.contains(item.threadID ?? 0)
                                 }
                             }
-                            selectedIndices.removeAll()
 
+                            
+                            selectedIndices.removeAll()
                         }
                     }
                     .transition(.scale)
@@ -1973,6 +1952,7 @@ struct HomeAwaitingView: View {
                             Spacer()
 
                             MoreSheet(snoozetime: $snoozeTime, isMoreSheetVisible: $isMoreSheetvisible, emailId: emailId, passwordHash: passwordHash, isTagsheetvisible: $isTagsheetvisible, isSnoozeSheetvisible: $issnoozesheetvisible ,StarreEmail: $EmailStarred ,markedAs: $markAs , HomeawaitingViewVisible: $HomeawaitingViewVisible, isMoveSheetvisible: $isMoveSheetvisible)
+                            
                             .offset(y: dragOffset)
                             .gesture(
                                 DragGesture()
@@ -2143,7 +2123,7 @@ struct HomeAwaitingView: View {
 private var deleteIcon: Image {
     Image(
         size: CGSize(width: 60, height: 40),
-        label: Text("Delete").font(.custom(.poppinsLight, size: 10, relativeTo: .title))
+        label: Text("Delete")
     ) { ctx in
         ctx.draw(
             Image(systemName: "trash"),
@@ -2151,7 +2131,8 @@ private var deleteIcon: Image {
             anchor: .top
         )
         ctx.draw(
-            Text("Delete"),
+            Text("Delete")
+            .font(.custom(.poppinsLight, size: 10, relativeTo: .title)),
             at: CGPoint(x: 30, y: 20),
             anchor: .top
         )
@@ -2161,7 +2142,7 @@ private var deleteIcon: Image {
 private var moreIcon: Image {
     Image(
         size: CGSize(width: 60, height: 40),
-        label: Text("More").font(.custom(.poppinsLight, size: 10, relativeTo: .title))
+        label: Text("More")
     ) { ctx in
         ctx.draw(
             Image("more 1"),
@@ -2169,7 +2150,8 @@ private var moreIcon: Image {
             anchor: .top
         )
         ctx.draw(
-            Text("More"),
+            Text("More")
+                .font(.custom(.poppinsLight, size: 10, relativeTo: .title)),
             at: CGPoint(x: 30, y: 20),
             anchor: .top
         )

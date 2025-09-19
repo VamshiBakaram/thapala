@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 //put method model data
 struct UpdatedPlannerResponse: Decodable {
     let message: String
@@ -18,14 +19,14 @@ struct PlannerItem: Decodable {
     let type: String
     let title: String
     let note: String
-    let startDateTime: String?
-    let endDateTime: String?
+    let startDateTime: Int?
+    let endDateTime: Int?
     let userId: Int
     let `repeat`: String
     let createdTimeStamp: Int
     let status: String?
     let reminder: Int?
-    let theme: String
+    let theme: String?
     let labels: [Int]
     let isDeleted: Bool
     let deletedAt: String?
@@ -37,8 +38,16 @@ struct DiaryUpdateRequest: Encodable {
 }
 struct PlannerPayload: Codable {
     let reminder: Int?
-//    let task: [String]
     let type: String
+}
+
+
+struct updateEventPayload: Codable {
+    let endDateTime: Int?
+    let note: String
+    let `repeat`: String
+    let startDateTime: Int?
+    let title: String
 }
 
 struct UpdatePlannerPayload: Codable { // add theme payload 
@@ -79,10 +88,21 @@ enum PlannerType: String {
 
 
 // Define a model for the API payload
-struct DiaryItemPayload: Codable {
-    var reminder: String
+struct DiaryItemPayload: Encodable {
+    var reminder: Int?
     var type: String
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(type, forKey: .type)
+        try container.encodeNil(forKey: .reminder)  // <-- This forces null
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case reminder, type
+    }
 }
+
 
 
 //Get
@@ -285,8 +305,36 @@ struct NewDiary: Codable {
     }
 }
 
-struct DiaryPayload: Codable {
+struct DiaryPayload: Encodable {
     let title: String
     let note: String
     let reminder: Int?
+    var labelIds: [Int]
+    var theme: String?
+
+    enum CodingKeys: String, CodingKey {
+        case title, note, reminder, labelIds, theme
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(title, forKey: .title)
+        try container.encode(note, forKey: .note)
+        try container.encode(labelIds, forKey: .labelIds)
+
+        // Only encode reminder if not nil
+        if let reminder = reminder {
+            try container.encode(reminder, forKey: .reminder)
+        }
+
+        // Only encode theme if not nil and not empty
+        if let theme = theme, !theme.isEmpty {
+            try container.encode(theme, forKey: .theme)
+        }
+    }
+
+    
+    
+    
 }

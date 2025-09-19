@@ -87,6 +87,9 @@ struct HomeRecordsView: View {
     var body: some View {
         GeometryReader{ reader in
             ZStack{
+                themesviewModel.currentTheme.windowBackground
+                    .ignoresSafeArea(edges: .bottom)
+                
                 VStack{
                     VStack {
                         HStack(spacing:20){
@@ -142,7 +145,7 @@ struct HomeRecordsView: View {
                             .padding(.leading,15)
                             .padding(.trailing , 30)
                         }
-                        .padding(.top, -reader.size.height * 0.01)
+                        .padding(.top ,15)
                                 HStack{
                                     RoundedRectangle(cornerRadius: 10)
                                         .fill(self.homeRecordsViewModel.isWorkSelected ?themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
@@ -275,9 +278,9 @@ struct HomeRecordsView: View {
                                 .padding([.leading,.trailing,],5)
                                 .padding(.bottom , 10)
                     }
-                    
-                    .frame(height: reader.size.height * 0.16)
-                    .background(themesviewModel.currentTheme.tabBackground)
+                    .frame(height: reader.size.height * 0.17)
+                    .background(themesviewModel.currentTheme.colorPrimary)
+                    .padding(.top , 5)
                     VStack {
                         HStack {
                             Text("workspace")

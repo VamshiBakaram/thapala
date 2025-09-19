@@ -66,9 +66,16 @@ struct TagApiRespons: Codable {
 
 struct LabelTags: Codable, Identifiable {
     let id: Int
-    let labelName: String
+    var labelName: String
     var isChecked: Bool
+    var isEditing: Bool = false  // local only, not in JSON
+
+    enum CodingKeys: String, CodingKey {
+        case id, labelName, isChecked
+        // omit isEditing so it's not decoded
+    }
 }
+
 
 // update comment - put
 
@@ -142,7 +149,35 @@ struct AddTaskPayload: Encodable {
     let title: String
     let task: [String]
     let note: String
+    var reminder: Int?
+    var labelIds: [Int]
+    var theme: String?
+
+    enum CodingKeys: String, CodingKey {
+        case title, task, note, reminder, labelIds, theme
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(title, forKey: .title)
+        try container.encode(task, forKey: .task)
+        try container.encode(note, forKey: .note)
+        try container.encode(labelIds, forKey: .labelIds)
+
+        // Only encode reminder if not nil
+        if let reminder = reminder {
+            try container.encode(reminder, forKey: .reminder)
+        }
+
+        // Only encode theme if not nil and not empty
+        if let theme = theme, !theme.isEmpty {
+            try container.encode(theme, forKey: .theme)
+        }
+    }
 }
+
+
 
 
 // remove task - delete Api
@@ -218,3 +253,87 @@ struct UpdateDoitPayload: Codable {
 }
 
 
+
+// planner edit Tag Label - put Api
+
+struct UpdateTagResponse: Decodable {
+    let message: String
+}
+
+
+struct UpdateTagPayload: Codable {
+    var labelId: Int
+    var labelName: String
+}
+
+// planner edit Tag Label - Delete Api
+
+struct DeleteTagLabelResponse: Decodable {
+    let message: String
+}
+
+
+
+
+// overall planner search - Get Api
+
+struct plannerSearchResponse: Decodable {
+    let message: String
+    let data: plannerSearchData
+}
+
+
+
+struct plannerSearchData: Decodable {
+    let totalCount: TotalPlannerCount
+    let diaries: [plannerData]
+    
+    enum CodingKeys: String, CodingKey {
+        case totalCount
+        case diaries = "data" // Maps the "data" key in JSON to the `diaries` property
+    }
+}
+
+struct TotalPlannerCount: Decodable {
+    let total: Int
+}
+
+struct plannerData: Decodable, Identifiable {
+    var id: Int
+    let type: String
+    var title: String
+    var note: String
+    let theme: String?
+    let startDateTime: String?
+    let createdTimeStamp: Int
+    let endDateTime: String?
+    var reminder: Int?
+    let userId: Int
+    let repeatFrequency: String
+    let status: String?
+    let labels: [searchTagLabel]? // Changed from String to [TagLabel] to represent labels as objects
+    let comments: [searchComment]? // Fixed to be an array of Comment objects instead of an array of Strings
+
+    enum CodingKeys: String, CodingKey {
+        case id, type, title, note, theme, startDateTime, createdTimeStamp, endDateTime, reminder, userId
+        case repeatFrequency = "repeat" // `repeat` is a reserved keyword in Swift
+        case status, labels, comments
+    }
+}
+
+struct searchTagLabel: Decodable {
+    var labelId: Int
+    var labelName: String
+}
+
+struct searchComment: Decodable{
+    let status: String?
+    var comment: String
+    let commentId: Int
+    var isEditable: Bool = false
+    var deletable: Bool = false
+    
+    enum CodingKeys: String, CodingKey {
+        case status, comment, commentId
+    }
+}

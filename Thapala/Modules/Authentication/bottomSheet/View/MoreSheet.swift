@@ -9,10 +9,10 @@ import SwiftUI
 
 struct MoreSheet: View {
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var BottomsheetviewModel = BottomSheetViewModel()
+    @StateObject var BottomsheetviewModel = BottomSheetViewModel()
     @StateObject private var homePostboxViewModel = HomePostboxViewModel()
     @StateObject private var homeAwaitingViewModel = HomeAwaitingViewModel()
-    @ObservedObject var themesviewModel = ThemesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @StateObject var mailFullViewModel = MailFullViewModel()
     @StateObject var starredEmailViewModel = StarredEmailViewModel()
     @Binding var snoozetime: Int
@@ -95,7 +95,9 @@ struct MoreSheet: View {
                                         else {
                                             mailFullViewModel.markEmailAsUnRead(emailId: [emailId])
                                         }
-                                        presentationMode.wrappedValue.dismiss()
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                            isMoreSheetVisible = false
+                                        }
                                     } label: {
                                         Image(markedAs == 1 ? "emailG" : "queueOutline")
                                             .renderingMode(.template)
@@ -112,9 +114,9 @@ struct MoreSheet: View {
                             
                             HStack {
                                 Button {
-                                    isMoreSheetVisible = false
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                        isTagsheetvisible = true
+                                    isTagsheetvisible = true
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                        isMoreSheetVisible = false
                                     }
                                     
                                 } label: {
@@ -137,7 +139,6 @@ struct MoreSheet: View {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                         isMoreSheetVisible = false
                                     }
-                                    presentationMode.wrappedValue.dismiss()
                                 } label: {
                                     Image(StarEmail == 1 ? "star" : "emptystar")
                                         .renderingMode(.template)
@@ -153,9 +154,8 @@ struct MoreSheet: View {
                             
                             HStack {
                                 Button {
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                        isSnoozeSheetvisible = true
-                                    }
+                                    isSnoozeSheetvisible = true
+                                    
                                 } label: {
                                     HStack {
                                         Image("timer")
@@ -170,7 +170,6 @@ struct MoreSheet: View {
                                 }
                             }
                             if HomeawaitingViewVisible {
-                                HStack {
                                     Button {
                                         isMoreSheetVisible = false
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -188,8 +187,6 @@ struct MoreSheet: View {
                                                 .padding(.leading, 10)
                                         }
                                     }
-                                }
-                                
                             }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)  // stretch HStack full-width
@@ -276,11 +273,13 @@ struct MoreSheet: View {
                         .onTapGesture {
                             withAnimation {
                                 isTagsheetvisible = false
+                                isMoreSheetVisible = false
                             }
                         }
                     VStack {
                         Spacer() // Pushes the sheet to the bottom
                         CreateTagLabel(isTagSheetVisible: $isTagsheetvisible, isActive: $isactive, HomeawaitingViewVisible: $HomeawaitingViewVisible, selectedNewBottomTag: $selectednewDiaryTag, selectedNames: $selectednames, selectedID: $homeAwaitingViewModel.selectedThreadIDs, isclicked: $isClicked, isCheckedLabelID: $isCheckedLabelID)
+                           
                             .transition(.move(edge: .bottom))
                             .animation(.easeInOut, value: isTagsheetvisible)
                     }
@@ -298,11 +297,16 @@ struct MoreSheet: View {
                                 isSnoozeSheetvisible = false
                             }
                         }
+                    
                     VStack {
                         Spacer() // Pushes the sheet to the bottom
-                        BottomSnoozeView(isBottomSnoozeViewVisible: $isSnoozeSheetvisible, SnoozeTime: $snoozetime, selectedID: emailId)
-                            .transition(.move(edge: .bottom))
-                            .animation(.easeInOut, value: isSnoozeSheetvisible)
+                        BottomSnoozeView(
+                            isBottomSnoozeViewVisible: $isSnoozeSheetvisible,
+                            SnoozeTime: $snoozetime,
+                            selectedID: emailId
+                        )
+                        .transition(.move(edge: .bottom))
+                        .animation(.easeInOut, value: isSnoozeSheetvisible)
                     }
                 }
             }
@@ -368,14 +372,22 @@ struct MoreSheet: View {
         .toast(message: $mailFullViewModel.error)
         .toast(message: $homeAwaitingViewModel.error)
     }
+    
     func calculateTotalHeight() -> CGFloat {
         let baseHeight: CGFloat = 200 // Base height for fixed elements
-        let rowHeight: CGFloat = 44 // Estimated height for each row in the list
-        let maxHeight: CGFloat = 800 // Maximum height for the entire view
-//        let totalHeight = baseHeight + (CGFloat(homePlannerViewModel.TagLabelData.count) * rowHeight)
-        let totalHeight: CGFloat = 350
+        let rowHeight: CGFloat = 44   // Estimated height for each row in the list
+        let maxHeight: CGFloat = 800  // Maximum height for the entire view
+        
+        let totalHeight: CGFloat
+        if HomeawaitingViewVisible {
+            totalHeight = 350
+        } else {
+            totalHeight = 250
+        }
+        
         return min(totalHeight, maxHeight) // Ensure it doesn't exceed the maxHeight
     }
+
 }
 
 //#Preview {

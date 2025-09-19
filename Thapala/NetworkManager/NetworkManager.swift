@@ -24,7 +24,14 @@ class NetworkManager: NSObject {
     private override init() {}
     private let baseURL = "http://128.199.21.237:8080/api/v1/"
     
-    func request<T : Decodable>(type : T.Type, endPoint: String, httpMethod: HTTPMethod = .get, parameters: Encodable? = nil, isTokenRequired: Bool = true,passwordHash:String? = nil, pin:String? = nil, isSessionIdRequited: Bool = false, completion completionHandler: @escaping(Result<T, NetworkError>) -> Void){
+    func request<T : Decodable>(type : T.Type, endPoint: String, httpMethod: HTTPMethod = .get, parameters: Encodable? = nil, queryItems: [String: String]? = nil, isTokenRequired: Bool = true,passwordHash:String? = nil, pin:String? = nil, isSessionIdRequited: Bool = false, completion completionHandler: @escaping(Result<T, NetworkError>) -> Void){
+        
+        var urlComponents = URLComponents(string: "\(baseURL)\(endPoint)")
+        
+        // ✅ Add query items if provided
+        if let queryItems = queryItems {
+            urlComponents?.queryItems = queryItems.map { URLQueryItem(name: $0.key, value: $0.value) }
+        }
         guard let url = URL(string: "\(baseURL)\(endPoint)") else {
             completionHandler(.failure(.error(error: "Invalid URL")))
             return
@@ -43,12 +50,18 @@ class NetworkManager: NSObject {
         if isSessionIdRequited {
             request.setValue(UserDataManager.shared.sessionId, forHTTPHeaderField: "sessionId")
         }
+//        if isTokenRequired {
+//            let sessionManager = SessionManager()
+//        //    request.setValue(sessionManager.token, forHTTPHeaderField: "token")
+//            request.setValue("Bearer \(sessionManager.token)", forHTTPHeaderField: "Authorization")
+//            print("sessionManager.token",sessionManager.token)
+//        }
         if isTokenRequired {
-            let sessionManager = SessionManager()
-        //    request.setValue(sessionManager.token, forHTTPHeaderField: "token")
-            request.setValue("Bearer \(sessionManager.token)", forHTTPHeaderField: "Authorization")
-            print("sessionManager.token",sessionManager.token)
+            let token = UserDataManager.shared.token
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            print("Using token:", token)
         }
+
         if passwordHash != nil{
             request.setValue(passwordHash, forHTTPHeaderField: "password")
         }
@@ -255,9 +268,9 @@ class NetworkManager: NSObject {
                        print(decodedResponse)
                        let json = try JSONDecoder().decode(LoginModel.self, from: data)
                        let headers = (httpResponse).allHeaderFields
-//                       if let token = headers["token"] {
-//                           print("token header",token)
-//                       }
+                       if let token = headers["token"] {
+                           print("token header",token)
+                       }
                        completion(.success(LoginResponse(model: json as? LoginModel, token: headers["token"] as? String) as! T))
                        
                    } catch {

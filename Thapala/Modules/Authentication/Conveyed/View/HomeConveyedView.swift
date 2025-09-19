@@ -32,7 +32,7 @@ struct HomeConveyedView: View {
             GeometryReader{ reader in
                 ZStack(alignment: .bottomTrailing) {
                     themesviewModel.currentTheme.windowBackground
-                        .ignoresSafeArea()
+                        .ignoresSafeArea(edges: .bottom)
                     VStack{
                         if homeConveyedViewModel.beforeLongPress{
                             VStack {
@@ -91,7 +91,7 @@ struct HomeConveyedView: View {
                                     .padding(.trailing , 30)
                                     
                                 }
-                                .padding(.top , -reader.size.height * 0.01)
+                                .padding(.top ,15)
                                 
                                 
                                 
@@ -201,8 +201,10 @@ struct HomeConveyedView: View {
                                 
                             }
 //                            .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top ?? 30)
-                            .frame(height: reader.size.height * 0.16)
-                            .background(themesviewModel.currentTheme.tabBackground)
+                            .frame(height: reader.size.height * 0.17)
+                            .background(themesviewModel.currentTheme.colorPrimary)
+                            .padding(.top , 5)
+
                             
                         }else{
                                 VStack{
@@ -367,6 +369,7 @@ struct HomeConveyedView: View {
                                                                     }
                                                             }
                                                         }
+                                                        .padding(.horizontal , 10)
                                                         .padding(.vertical, 8)
                                                         .onTapGesture {
                                                             conveyedView = true
@@ -389,22 +392,37 @@ struct HomeConveyedView: View {
                                                         )
                                                         .swipeActions(edge: .leading) {
                                                             Button {
-                                                                homeConveyedViewModel.selectedThreadIDs.append(data.threadID ?? 0)
-                                                                homeConveyedViewModel.deleteEmailFromConvey()
+                                                                homeConveyedViewModel.selectedThreadIDs = []
+                                                                showingDeleteAlert = true
+                                                                if let id = data.threadID, !homeConveyedViewModel.selectedThreadIDs.contains(id) {
+                                                                    homeConveyedViewModel.selectedThreadIDs.append(id)
+                                                                }
                                                             } label: {
                                                                 deleteIcon
                                                                     .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                             }
-                                                            .tint(Color.themeColor)
+                                                            .tint(Color(red: 1.0, green: 0.5, blue: 0.5))
                                                         }
                                                         .swipeActions(edge: .trailing) {
                                                             Button {
-                                                                isSheetVisible = true
+                                                                    if let threadID = data.threadID,
+                                                                       let index = homeConveyedViewModel.conveyedEmailData.firstIndex(where: { $0.threadID == threadID }) {
+                                                                        homeConveyedViewModel.conveyedEmailData[index].starred = (homeConveyedViewModel.conveyedEmailData[index].starred == 1) ? 0 : 1
+                                                                        homeConveyedViewModel.getStarredEmail(selectedEmail: threadID)
+                                                                    }
+                                                                
+
                                                             } label: {
-                                                                moreIcon
-                                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                                if data.starred == 0 {
+                                                                    starIcon
+                                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                                }
+                                                                else {
+                                                                    RemoveStarIcon
+                                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                                }
                                                             }
-                                                            .tint(Color(red: 1.0, green: 0.5, blue: 0.5))
+                                                            .tint(Color(red: 80/255, green: 165/255, blue: 242/255))
                                                         }
                                                         
                                                         Divider()
@@ -492,6 +510,8 @@ struct HomeConveyedView: View {
                                                                     }
                                                             }
                                                         }
+                                                        .padding(.horizontal , 10)
+                                                        
                                                         Divider()
                                                             .frame(maxWidth: .infinity)
                                                             .frame(height: 1)
@@ -586,7 +606,7 @@ struct HomeConveyedView: View {
                         if homeConveyedViewModel.beforeLongPress{
                             TabViewNavigator()
                                 .frame(height: 40)
-                                .padding(.bottom , 10)
+                                .padding(.bottom , 20)
                             
                         }
 
@@ -630,7 +650,7 @@ struct HomeConveyedView: View {
                                     .padding(.trailing, 20)
                                     .padding(.bottom, 20)
                             }
-                            .padding(.bottom, 50)                        
+                            .padding(.bottom, 100)
                     }
                     
                     if isMenuVisible{
@@ -715,44 +735,44 @@ struct HomeConveyedView: View {
                     MailFullView(isMailFullViewVisible: $mailComposeViewModel.mailFullView ,conveyedView: $conveyedView, PostBoxView: $PostBoxView, SnoozedView: $SnoozedView, awaitingView: $AwaitingView, emailId: homeConveyedViewModel.selectedID ?? 0, passwordHash: "", StarreEmail: $mailComposeViewModel.mailStars, markAs: $markAs).toolbar(.hidden)
                 }
                 //
-                .sheet(isPresented: $isSheetVisible, content: {
-                    EmailOptionsView( replyAction: {
-                        // Perform reply action
-                        dismissSheet()
-                    },
-                                      replyAllAction: {
-                        // Perform reply all action
-                        dismissSheet()
-                    },
-                                      forwardAction: {
-                        // Perform forward action
-                        dismissSheet()
-                    },
-                                      markAsReadAction: {
-                        dismissSheet()
-                    },
-                                      markAsUnReadAction: {
-                        dismissSheet()
-                    },
-                                      createLabelAction: {
-                        dismissSheet()
-                    },
-                                      moveToFolderAction: {
-                        dismissSheet()
-                    },
-                                      starAction: {
-                        dismissSheet()
-                    },
-                                      snoozeAction: {
-                        dismissSheet()
-                    },
-                                      trashAction: {
-                        dismissSheet()
-                    }
-                    )
-                    .presentationDetents([.medium])
-                    .presentationDragIndicator(.hidden)
-                })
+//                .sheet(isPresented: $isSheetVisible, content: {
+//                    EmailOptionsView( replyAction: {
+//                        // Perform reply action
+//                        dismissSheet()
+//                    },
+//                                      replyAllAction: {
+//                        // Perform reply all action
+//                        dismissSheet()
+//                    },
+//                                      forwardAction: {
+//                        // Perform forward action
+//                        dismissSheet()
+//                    },
+//                                      markAsReadAction: {
+//                        dismissSheet()
+//                    },
+//                                      markAsUnReadAction: {
+//                        dismissSheet()
+//                    },
+//                                      createLabelAction: {
+//                        dismissSheet()
+//                    },
+//                                      moveToFolderAction: {
+//                        dismissSheet()
+//                    },
+//                                      starAction: {
+//                        dismissSheet()
+//                    },
+//                                      snoozeAction: {
+//                        dismissSheet()
+//                    },
+//                                      trashAction: {
+//                        dismissSheet()
+//                    }
+//                    )
+//                    .presentationDetents([.medium])
+//                    .presentationDragIndicator(.hidden)
+//                })
                 
                 
                 
@@ -770,7 +790,7 @@ struct HomeConveyedView: View {
 private var deleteIcon: Image {
     Image(
         size: CGSize(width: 60, height: 40),
-        label: Text("Delete").font(.custom(.poppinsLight, size: 10, relativeTo: .title))
+        label: Text("Delete")
     ) { ctx in
         ctx.draw(
             Image(systemName: "trash"),
@@ -778,27 +798,62 @@ private var deleteIcon: Image {
             anchor: .top
         )
         ctx.draw(
-            Text("Delete"),
+            Text("Delete")
+                .font(.custom(.poppinsLight, size: 10, relativeTo: .title)),
             at: CGPoint(x: 30, y: 20),
+            anchor: .top
+        )
+    }
+}
+//Image(data.starred == 1 ? "star" : "emptystar")
+private var starIcon: Image {
+//    if let data = homeConveyedViewModel.conveyedEmailData) { data in
+    Image(
+        size: CGSize(width: 60, height: 40),
+        label: Text("Add Star")
+    ) { ctx in
+        ctx.draw(
+            Image("emptystar"),
+            at: CGPoint(x: 30, y: 0),
+            anchor: .top
+        )
+        ctx.draw(
+            Text("Add Star")
+                .font(.custom(.poppinsLight, size: 10, relativeTo: .title)),
+            at: CGPoint(x: 30, y: 28),
             anchor: .top
         )
     }
 }
 
-private var moreIcon: Image {
+private var RemoveStarIcon: Image {
     Image(
-        size: CGSize(width: 60, height: 40),
-        label: Text("More").font(.custom(.poppinsLight, size: 10, relativeTo: .title))
+        size: CGSize(width: 60, height: 40), // Bigger canvas
+        label: Text("Remove Star")
     ) { ctx in
+        // Draw star icon (just from Assets, no resizable here)
         ctx.draw(
-            Image("more 1"),
+            Image("star"),
             at: CGPoint(x: 30, y: 0),
             anchor: .top
         )
+        
+        // Draw "Remove"
         ctx.draw(
-            Text("More"),
-            at: CGPoint(x: 30, y: 20),
+            Text("Remove")
+                .font(.custom(.poppinsLight, size: 10, relativeTo: .title)),
+            at: CGPoint(x: 30, y: 15),
+            anchor: .top
+        )
+        
+        // Draw "Star"
+        ctx.draw(
+            Text("Star")
+                .font(.custom(.poppinsLight, size: 10, relativeTo: .title)),
+            at: CGPoint(x: 40, y: 25),
             anchor: .top
         )
     }
 }
+
+

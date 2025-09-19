@@ -27,6 +27,8 @@ struct BlueprintView: View {
     var body: some View {
             GeometryReader{ reader in
                 ZStack{
+                    themesviewModel.currentTheme.windowBackground
+                        .ignoresSafeArea(edges: .bottom)
                     VStack{
                         VStack {
                             HStack(spacing:20){
@@ -84,7 +86,7 @@ struct BlueprintView: View {
                                 .padding(.leading,15)
                                 .padding(.trailing , 30)
                             }
-                            .padding(.top , -reader.size.height * 0.01)
+                            .padding(.top ,15)
 
                                     HStack{
                                         RoundedRectangle(cornerRadius: 10)
@@ -187,8 +189,9 @@ struct BlueprintView: View {
                                     .padding(.bottom , 10)
                             
                         }
-                        .frame(height: reader.size.height * 0.16)
-                        .background(themesviewModel.currentTheme.tabBackground)
+                        .frame(height: reader.size.height * 0.17)
+                        .background(themesviewModel.currentTheme.colorPrimary)
+                        .padding(.top , 5)
                         
                         if let selectedOption = blueprintViewModel.selectedOption {
                             switch selectedOption {
@@ -204,7 +207,7 @@ struct BlueprintView: View {
                                             
                         TabViewNavigator()
                             .frame(height: 40)
-                            .padding(.bottom , 10)
+                            .padding(.bottom , 30)
                         
                     }
                     .toast(message: $blueprintViewModel.error)

@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct ReplyEmailView: View {
-    @ObservedObject var replyEmailViewModel:ReplyEmailViewModel
-    @ObservedObject var mailComposeViewModel = MailComposeViewModel()
-    @ObservedObject var themesviewModel = ThemesViewModel()
+    @StateObject var replyEmailViewModel:ReplyEmailViewModel
+    @StateObject var mailComposeViewModel = MailComposeViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject private var sessionManager: SessionManager
     @State private var isFilePickerPresented:Bool = false
@@ -21,7 +21,7 @@ struct ReplyEmailView: View {
         VStack {
             HStack {
                 Button(action: {
-                    presentationMode.wrappedValue.dismiss()
+                    isPresented = false
                 }) {
                     Image(systemName: "xmark")
                         .font(.title2)

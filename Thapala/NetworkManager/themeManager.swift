@@ -11,6 +11,11 @@ import SwiftUICore
 struct ThemeManager {
     static func getTheme(_ theme: AppTheme) -> Theme {
         switch theme {
+            
+        case .default:
+            return Theme(
+                colorPrimary: Color.appColor ?? Color.red, colorPrimaryDark: Color.appColor?.opacity(0.7) ?? Color.red, colorAccent: Color.appColor ?? Color.red, windowBackground: Color.pureWhite ?? Color.red, textColor: Color.black, inverseTextColor: Color.pureWhite ?? Color.red, iconColor: Color.black, inverseIconColor: Color.pureWhite ?? Color.red, strokeColor: Color.lightStrokeColor ?? Color.red, tabBackground: Color.appColor ?? Color.red, tabIndicatorColor: Color.pureWhite ?? Color.red, customButtonColor: Color.lightButtonSelected ?? Color.red, customButtonColorUnselected: Color.lightButtonUnselected ?? Color.red, customBackgroundTint: Color.black, colorControlNormal: Color.black, customEditTextColor: Color.pureWhite ?? Color.red, attachmentBGColor: Color.mailAttachmentColor ?? Color.red, bottomSheetBG: Color.pureWhite ?? Color.red, allBlack: Color.black, allGray: Color.gray ?? Color.red
+            )
         case .light:
             return Theme(
                 colorPrimary: Color.lightPrimary ?? Color.red, colorPrimaryDark: Color.lightPrimaryDark ?? Color.red, colorAccent: Color.lightTabBg ?? Color.red, windowBackground: Color.pureWhite ?? Color.red, textColor: Color.black, inverseTextColor: Color.pureWhite ?? Color.red, iconColor: Color.black, inverseIconColor: Color.pureWhite ?? Color.red, strokeColor: Color.lightStrokeColor ?? Color.red, tabBackground: Color.lightTabBg ?? Color.red, tabIndicatorColor: Color.pureWhite ?? Color.red, customButtonColor: Color.lightButtonSelected ?? Color.red, customButtonColorUnselected: Color.lightButtonUnselected ?? Color.red, customBackgroundTint: Color.black, colorControlNormal: Color.black, customEditTextColor: Color.pureWhite ?? Color.red, attachmentBGColor: Color.mailAttachmentColor ?? Color.red, bottomSheetBG: Color.pureWhite ?? Color.red, allBlack: Color.black, allGray: Color.gray ?? Color.red
@@ -48,7 +53,7 @@ extension Color {
     static let black = Color(hex: "#FF000000")
     static let lightBlack = Color(hex: "#CC707070")
     static let brown = Color(hex: "#707070")
-    static let white = Color(hex: "#9FFFFFFF")
+    static let darkBlack = Color(hex: "#9FFFFFFF")
     static let white80 = Color(hex: "#CCFFFFFF")
     static let lightGray = Color(hex: "#A2A2A2")
     static let highlightTextColor = Color(hex: "#2196F3")

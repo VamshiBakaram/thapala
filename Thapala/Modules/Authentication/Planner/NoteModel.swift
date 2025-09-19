@@ -51,12 +51,33 @@ struct Notelist: Codable {
     }
 }
 // above post api payload
-struct NotePayload: Codable {
+struct NotePayload: Encodable {
     let title: String
     let task: [String]
     let note: String
     let reminder: Int?
+    var labelIds: [Int]?
+    var theme: String? = nil
+
+    enum CodingKeys: String, CodingKey {
+        case title, task, note, reminder, labelIds, theme
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(title, forKey: .title)
+        try container.encode(task, forKey: .task)
+        try container.encode(note, forKey: .note)
+        try container.encodeIfPresent(reminder, forKey: .reminder)
+        try container.encodeIfPresent(labelIds, forKey: .labelIds)
+
+        if let theme = theme, !theme.isEmpty {
+            try container.encode(theme, forKey: .theme)
+        }
+    }
 }
+
 
 
 
@@ -89,8 +110,8 @@ struct Note: Decodable,Identifiable {
     let userId: Int
     let repeatFrequency : String
     let status: String?
-    let labels: [TagLabels]?
-    let comments: String?
+    var labels: [TagLabels]?
+    let comments: CommentsWrapper?
     
     enum CodingKeys: String, CodingKey {
         case id, type, title, note, theme, startDateTime, createdTimeStamp, endDateTime, reminder, userId
@@ -103,9 +124,34 @@ struct Note: Decodable,Identifiable {
 struct TagLabels: Decodable {
     var labelId: Int
     var labelName: String
-//    var isRemoved: Bool = false
 }
 
+
+struct comment: Decodable {
+    let commentId: Int
+    let comment: String
+    let status: String?
+}
+
+enum CommentsWrapper: Decodable {
+    case none
+    case array([comment])
+    case string(String)   // just in case API sometimes returns a string
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        
+        if container.decodeNil() {
+            self = .none
+        } else if let arr = try? container.decode([comment].self) {
+            self = .array(arr)
+        } else if let str = try? container.decode(String.self) {
+            self = .string(str)
+        } else {
+            self = .none
+        }
+    }
+}
 
 //Get label
 struct ApiRespons: Codable {

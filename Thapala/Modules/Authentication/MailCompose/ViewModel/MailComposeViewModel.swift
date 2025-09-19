@@ -42,7 +42,9 @@ class MailComposeViewModel:ObservableObject{
     @Published var isPasswordProtected:Bool = false
     @Published var isSubMenu:Bool = false
     @Published var isSchedule:Bool = false
-    @Published var sendEmailResponse:SendEmailsModel?
+//    @Published var sendEmailResponse: SendEmailsModel?
+    @Published var sendEmailData: SendEmailData?
+    @Published var userDatum: [UserDatum] = []
     @Published var backToscreen:Bool = false
     @Published var isInsertFromRecords:Bool = false
     @Published var selectedFiles: [URL] = []
@@ -85,15 +87,9 @@ class MailComposeViewModel:ObservableObject{
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.error = response.message
-                    self.sendEmailResponse = response
+                    self.sendEmailData = response.emailData
+                    self.userDatum = response.userData ?? []
                 }
-                if response.message == "Email sent securely with password protection." || response.message == "Email sent successfully!." || response.message == "Email scheduled successfully." || response.message == "Email sent successfully."{
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-                        self.resetComposeEmailData()
-                        self.backToscreen = true
-                    })
-                }
-                
             case .failure(let error):
                 DispatchQueue.main.async {
                     self.isLoading = false

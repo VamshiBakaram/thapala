@@ -109,6 +109,7 @@ struct CreateLabelResponse: Codable {
     let data: Labeldata
 }
 
+
 // The `data` object inside the response
 struct Labeldata: Codable, Identifiable {
     let id: Int

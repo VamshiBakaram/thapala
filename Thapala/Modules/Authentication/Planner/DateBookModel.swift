@@ -29,9 +29,9 @@ struct DatebookItem: Codable {
     let status: String?
     let reminder: Int?
     let theme: String?
-    let labels: [String]
+    let labels: [Int]
     let isDeleted: Int
-    let deletedAt: String?
+    let deletedAt: Int?
     let createdAt: String
     let updatedAt: String
 }

@@ -55,6 +55,7 @@
 		D30DAC632E1C01D200F556A7 /* bottomSheetModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D30DAC622E1C01D200F556A7 /* bottomSheetModelData.swift */; };
 		D322C41D2E16A95500332A67 /* BottomSnoozeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D322C41C2E16A95500332A67 /* BottomSnoozeView.swift */; };
 		D3283ADE2C36BE0B00CA88FB /* SaveEmailToDraftsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3283ADD2C36BE0B00CA88FB /* SaveEmailToDraftsModel.swift */; };
+		D32930192E4B44FA00F5A1BF /* WaterfallGrid in Frameworks */ = {isa = PBXBuildFile; productRef = D32930182E4B44FA00F5A1BF /* WaterfallGrid */; };
 		D32A219F2C22AE0000765A23 /* AddNewGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32A219E2C22AE0000765A23 /* AddNewGroupView.swift */; };
 		D32A21A72C22B43300765A23 /* HomeRecordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32A21A62C22B43300765A23 /* HomeRecordsView.swift */; };
 		D32A21A92C22B44F00765A23 /* HomeRecordsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32A21A82C22B44F00765A23 /* HomeRecordsViewModel.swift */; };
@@ -384,6 +385,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D392E2732E42491F00DEDA09 /* ClockTimePicker in Frameworks */,
+				D32930192E4B44FA00F5A1BF /* WaterfallGrid in Frameworks */,
 				D305B35D2E44C31300B0AA2D /* Bcrypt in Frameworks */,
 				D392E2762E42495200DEDA09 /* SocketIO in Frameworks */,
 			);
@@ -1328,7 +1330,7 @@
 		D392CF082C255E6F00636ACC /* Planner */ = {
 			isa = PBXGroup;
 			children = (
-				D392CF0D2C255EBA00636ACC /* Model */,
+				D3C9AD9E2E530A54006BA241 /* Model */,
 				D392CF0C2C255EAE00636ACC /* ViewModel */,
 				D392CF0B2C255E9E00636ACC /* View */,
 			);
@@ -1357,17 +1359,6 @@
 				D392CF182C25A32600636ACC /* AddEventViewModel.swift */,
 			);
 			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		D392CF0D2C255EBA00636ACC /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				D3E75B9A2CEF56E400038827 /* DiaryModel.swift */,
-				D34A1A742CF5AC620020128E /* NoteModel.swift */,
-				D37A260B2D15857900EAE1C0 /* DoitModel.swift */,
-				D339CF7B2D352FF20069B9AB /* DateBookModel.swift */,
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		D398A6612CB557D30069CCD7 /* Info */ = {
@@ -1499,6 +1490,17 @@
 				D3B75F672BFDCB2E008DA18C /* SecurityAnswerViewModel.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		D3C9AD9E2E530A54006BA241 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				D339CF7B2D352FF20069B9AB /* DateBookModel.swift */,
+				D3E75B9A2CEF56E400038827 /* DiaryModel.swift */,
+				D34A1A742CF5AC620020128E /* NoteModel.swift */,
+				D37A260B2D15857900EAE1C0 /* DoitModel.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		D3D757B72C24294A00F127FF /* PostBox */ = {
@@ -1649,6 +1651,7 @@
 				D392E2722E42491F00DEDA09 /* ClockTimePicker */,
 				D392E2752E42495200DEDA09 /* SocketIO */,
 				D305B35C2E44C31300B0AA2D /* Bcrypt */,
+				D32930182E4B44FA00F5A1BF /* WaterfallGrid */,
 			);
 			productName = Thapala;
 			productReference = 7B22B3532BD6CAB700020111 /* Thapala.app */;
@@ -1682,6 +1685,7 @@
 				D392E2712E42491F00DEDA09 /* XCRemoteSwiftPackageReference "ClockTimePicker" */,
 				D392E2742E42495200DEDA09 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */,
 				D305B35B2E44C31300B0AA2D /* XCRemoteSwiftPackageReference "swift-bcrypt" */,
+				D32930172E4B44FA00F5A1BF /* XCRemoteSwiftPackageReference "WaterfallGrid" */,
 			);
 			productRefGroup = 7B22B3542BD6CAB700020111 /* Products */;
 			projectDirPath = "";
@@ -2130,6 +2134,14 @@
 				minimumVersion = 0.1.0;
 			};
 		};
+		D32930172E4B44FA00F5A1BF /* XCRemoteSwiftPackageReference "WaterfallGrid" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/paololeonardi/WaterfallGrid.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.0;
+			};
+		};
 		D392E2712E42491F00DEDA09 /* XCRemoteSwiftPackageReference "ClockTimePicker" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/workingDog/ClockTimePicker.git";
@@ -2153,6 +2165,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D305B35B2E44C31300B0AA2D /* XCRemoteSwiftPackageReference "swift-bcrypt" */;
 			productName = Bcrypt;
+		};
+		D32930182E4B44FA00F5A1BF /* WaterfallGrid */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D32930172E4B44FA00F5A1BF /* XCRemoteSwiftPackageReference "WaterfallGrid" */;
+			productName = WaterfallGrid;
 		};
 		D392E2722E42491F00DEDA09 /* ClockTimePicker */ = {
 			isa = XCSwiftPackageProductDependency;

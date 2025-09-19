@@ -10,7 +10,8 @@ import SwiftUI
 struct AddEventView: View {
     
     @Binding var isAddEventVisible: Bool
-    @ObservedObject private var addEventViewModel = AddEventViewModel()
+    @StateObject private var addEventViewModel = AddEventViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     
     var body: some View {
         ZStack{
@@ -18,6 +19,7 @@ struct AddEventView: View {
                 .opacity(0.3)
                 .ignoresSafeArea()
             VStack(spacing:16){
+                
                 HStack{
                     Spacer()
                     Text("Add Event")
@@ -32,27 +34,32 @@ struct AddEventView: View {
                     })
                     .padding(.top,25)
                     .padding(.trailing, 15)
-                
-                }
-               
-                FloatingTextField(text: $addEventViewModel.title, placeHolder: "Title", allowedCharacter: .defaultType)
-                    .padding(.horizontal)
-                HStack {
-                    FloatingTextField(text: $addEventViewModel.startDate, placeHolder: "Start Date", allowedCharacter: .defaultType)
-                        .padding(.horizontal)
-                    FloatingTextField(text: $addEventViewModel.startTime, placeHolder: "Time", allowedCharacter: .defaultType)
-                        .padding(.horizontal)
                 }
                 
+                floatingTextField(placeHolder : "Title", text:  $addEventViewModel.title)
+                    .padding(.horizontal)
                 HStack {
-                    FloatingTextField(text: $addEventViewModel.endDate, placeHolder: "End Date", allowedCharacter: .defaultType)
+                    floatingTextField(placeHolder : "Start Date", text:  $addEventViewModel.startDate)
+                        .foregroundColor(themesviewModel.currentTheme.allBlack)
                         .padding(.horizontal)
-                    FloatingTextField(text: $addEventViewModel.startTime, placeHolder: "Time", allowedCharacter: .defaultType)
+                    floatingTextField(placeHolder : "Time", text:   $addEventViewModel.startTime)
+                        .foregroundColor(themesviewModel.currentTheme.allBlack)
                         .padding(.horizontal)
                 }
-                FloatingTextField(text: $addEventViewModel.repeatEvent, placeHolder: "Repeat", allowedCharacter: .defaultType)
+                
+                HStack {
+                    floatingTextField(placeHolder : "End Date", text:   $addEventViewModel.endDate)
+                        .foregroundColor(themesviewModel.currentTheme.allBlack)
+                        .padding(.horizontal)
+                    floatingTextField(placeHolder : "Time", text:   $addEventViewModel.startTime)
+                        .foregroundColor(themesviewModel.currentTheme.allBlack)
+                        .padding(.horizontal)
+                }
+                floatingTextField(placeHolder : "Repeat", text:   $addEventViewModel.repeatEvent)
+                    .foregroundColor(themesviewModel.currentTheme.allBlack)
                     .padding(.horizontal)
-                FloatingTextField(text: $addEventViewModel.note, placeHolder: "Note", allowedCharacter: .defaultType)
+                floatingTextField(placeHolder : "Note", text:   $addEventViewModel.note)
+                    .foregroundColor(themesviewModel.currentTheme.allBlack)
                     .padding(.horizontal)
                 
                 Button(action: {

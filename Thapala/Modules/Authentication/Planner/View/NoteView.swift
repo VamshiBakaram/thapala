@@ -9,12 +9,12 @@ import SwiftUI
 import ClockTimePicker
 
 struct NoteView: View {
+    @StateObject private var plannerAddTaskViewModel = PlannerAddTaskViewModel()
+    @StateObject var homePlannerViewModel = HomePlannerViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Binding var isNoteVisible: Bool
     @Binding var notificationTime: Int?
     @Binding var isTagActive: Bool
-    @ObservedObject private var plannerAddTaskViewModel = PlannerAddTaskViewModel()
-    @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var themesviewModel = ThemesViewModel()
     @State private var title: String = ""
     @State private var note: String = ""
     @State private var selectedID : Int?
@@ -23,41 +23,44 @@ struct NoteView: View {
     @State private var isTagSheetVisible: Bool = false
     @State private var isclicked: Bool = false
     @State private var selectedTag: [Int] = []
-    @State private var isScreenActive: Bool = false
+//    @State private var isScreenActive: Bool = false
     @State private var isViewActive: Bool = false
     @State private var isBackgroundSheetVisible: Bool = false
     @State private var BackgroundThemeimage: String?
     @State private var onTapTheme: Bool = false
     @State private var isPostBoxMailViewActive: Bool = false
     @State var themeImage: String = ""
+    @State private var dragOffset: CGFloat = 0
+    @State private var tagslabels: [TagLabels] = []
     
     var body: some View {
         ZStack {
-            if onTapTheme {
-                Image(BackgroundThemeimage!)
-                    .resizable()
-                    .ignoresSafeArea()
+            
+            if !themeImage.isEmpty {
+                        Image(themeImage)
+                            .resizable() // Make the image resizable
+                            .ignoresSafeArea()
+                
+                if onTapTheme {
+                    Image(BackgroundThemeimage!)
+                        .resizable()
+                        .ignoresSafeArea()
+                }
+
             }
+
             else {
-                Color.white
+                themesviewModel.currentTheme.windowBackground
                     .ignoresSafeArea()
             }
             
             VStack {
                 HStack {
                     Button(action: {
+                        
+                        homePlannerViewModel.AddNewNote(title: title,notes: note,reminder: notificationTime, labelIds: selectedTag, backgroundTheme: themeImage)
+//                            notificationTime = nil
                         self.isNoteVisible = false
-                        if let reminderTime = notificationTime {
-                            homePlannerViewModel.AddNewNote(title: title,notes: note,reminder: reminderTime)
-                        }
-                        if isTagActive {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                homePlannerViewModel.ApplyTag(listId: id, tagIds: selectedTag)
-                            }
-                        }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            homePlannerViewModel.ScheduledonclickDone(selectedID: id, reminder: notificationTime)
-                            }
                     }, label: {
                         Image("wrongmark")
                             .renderingMode(.template)
@@ -67,16 +70,29 @@ struct NoteView: View {
                     .padding(.top, 16) // Add spacing of 16 from the top edge
                     Spacer() // Push the button to the top-left
                 }
-                .frame(maxWidth: .infinity, alignment: .leading) // Ensure HStack stretches across the screen, aligning left
+                .frame(maxWidth: .infinity, alignment: .leading)
                 
                 
                 
                 ZStack(alignment: .leading) {
                     if title.isEmpty {
-                        Text("What's new")
-                            .foregroundColor(themesviewModel.currentTheme.textColor) // your custom placeholder color
+                        Text("Note title")
+                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                            .font(.custom(.poppinsMedium, size: 18))
                             .padding(.horizontal, 20)
                             .padding(.top, 15)
+                            .onTapGesture {
+                                print("homePlannerViewModel.selectedLabelNoteID  \( homePlannerViewModel.selectedLabelNoteID)")
+                                print("homePlannerViewModel.selectedtagslabel  \( homePlannerViewModel.selectedtagslabel)")
+                                print("onAppear homePlannerViewModel tagLabelNoteData  \(homePlannerViewModel.tagLabelNoteData)")
+                                print("selectedTag  \(selectedTag)")
+                                homePlannerViewModel.selectedtagslabel = homePlannerViewModel.tagLabelNoteData
+                                    .filter { selectedTag.contains($0.id) }
+                                    .map { $0.labelName }
+
+                                print("Selected label names: \(homePlannerViewModel.selectedtagslabel)")
+          
+                            }
                     }
 
                     TextField("", text: $title)
@@ -85,7 +101,7 @@ struct NoteView: View {
                         .cornerRadius(8)
                         .padding(.top, 15)
                         .padding(.horizontal, 16)
-                        .foregroundColor(themesviewModel.currentTheme.textColor) // actual text color
+                        .foregroundColor(themesviewModel.currentTheme.textColor)
                 }
                 Rectangle()
                     .frame(maxWidth: .infinity)
@@ -95,10 +111,12 @@ struct NoteView: View {
 
                 ZStack(alignment: .leading) {
                     if note.isEmpty {
-                        Text("Write about it")
-                            .foregroundColor(themesviewModel.currentTheme.textColor) // your custom placeholder color
+                        Text("Start Writing")
+                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                            .font(.custom(.poppinsMedium, size: 18))
                             .padding(.horizontal, 20)
                             .padding(.top, 15)
+                        
                     }
 
                     TextField("", text: $note)
@@ -107,9 +125,114 @@ struct NoteView: View {
                         .cornerRadius(8)
                         .padding(.top, 15)
                         .padding(.horizontal, 16)
-                        .foregroundColor(themesviewModel.currentTheme.textColor) // actual text color
+                        .foregroundColor(themesviewModel.currentTheme.textColor)
                 }
+                
+                
+                VStack(alignment: .leading, spacing: 10) {
+                    
+                    if (notificationTime != nil) {
+                        HStack {
+                            Image("notification1")
+                                .resizable()
+                                .renderingMode(.template)
+                                .foregroundColor(themesviewModel.currentTheme.allBlack)
+                                .frame(width: 16, height: 16)
+                                .padding(.leading, 5)
+                            
+                            TextField("", text: Binding(
+                                get: {
+                                    if let time = notificationTime {
+                                        let date = Date(timeIntervalSince1970: TimeInterval(time))
+                                        return formatDateTime(date)
+                                    }
+                                    return ""
+                                },
+                                set: { newValue in
+                                    if let newDate = parseDateTime(newValue) {
+                                        notificationTime = Int(newDate.timeIntervalSince1970)
+                                        if let index = homePlannerViewModel.noteListData.firstIndex(where: { $0.id == selectedID }) {
+                                            homePlannerViewModel.noteListData[index].reminder = notificationTime
+                                        }
+                                    }
+                                }
+                            ))
+                            .foregroundColor(themesviewModel.currentTheme.allBlack)
+                            .font(.custom(.poppinsMedium, size: 14))
+                            
+                            Image("wrongmark")
+                                .resizable()
+                                .renderingMode(.template)
+                                .foregroundColor(themesviewModel.currentTheme.allBlack)
+                                .frame(width: 16, height: 16)
+                                .padding(.trailing, 5)
+                                .onTapGesture {
+                                    notificationTime = nil
+                                }
+                        }
+                        .frame(width: 200, height: 35)
+                        .padding(.leading, 16)
+                        .background(notificationTime != nil ? Color(red: 187/255, green: 190/255, blue: 238/255) : Color.clear) // Background color conditionally
+                        .cornerRadius(8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(notificationTime != nil ? Color.black : Color.clear, lineWidth: 1) // Border color conditionally
+                        )
+                    }
+                    
+                    Spacer().frame(height: 15)
+                    
+                    // 3 columns for 3 items per row
+                    let columns = [
+                        GridItem(.flexible(), spacing: 8),
+                        GridItem(.flexible(), spacing: 8),
+                        GridItem(.flexible(), spacing: 8)
+                    ]
 
+                    LazyVGrid(columns: columns, spacing: 8) {
+                        ForEach(homePlannerViewModel.selectedtagslabel, id: \.self) { labelName in
+                            HStack {
+                                Text(labelName) // show each selected name
+                                    .foregroundColor(themesviewModel.currentTheme.allBlack)
+                                    .font(.custom(.poppinsRegular, size: 14))
+                                    .frame(height: 35)
+                                    .padding(.leading, 10)
+
+                                Image("wrongmark")
+                                    .resizable()
+                                    .renderingMode(.template)
+                                    .foregroundColor(themesviewModel.currentTheme.allBlack)
+                                    .frame(width: 16, height: 16)
+                                    .padding(.trailing, 5)
+                                    .onTapGesture {
+                                        homePlannerViewModel.selectedtagslabel.removeAll { $0 == labelName }
+                                        
+                                        selectedTag = homePlannerViewModel.tagLabelNoteData
+                                            .filter { homePlannerViewModel.selectedtagslabel.contains($0.labelName) }
+                                            .map { $0.id}
+                                        
+                                        print("homePlannerViewModel.selectedtagslabel \(homePlannerViewModel.selectedtagslabel)")
+                                        print("selectedTag  \(selectedTag)")
+                                    }
+                            }
+//                            .frame(maxWidth: .infinity) // makes each cell expand equally
+                            .background(Color(red: 187/255, green: 190/255, blue: 238/255))
+                            .cornerRadius(8)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(themesviewModel.currentTheme.strokeColor, lineWidth: 1) // Border around the TextField
+                            )
+
+                        }
+                    }
+                    .padding(.horizontal, 5)
+
+                    
+                    
+                }
+//                .frame(maxWidth: .infinity, alignment: .leading)
+//                    .padding(.leading, 16)
+                .padding(.horizontal, 10)
                 
                 Spacer() // Push content upwards
                 
@@ -117,9 +240,12 @@ struct NoteView: View {
                 HStack {
                     Button(action: {
                         isNotificationVisible.toggle()
-
+                        print("$selectedTag  \(selectedTag)")
+                        print("homePlannerViewModel.selectedLabelNoteID  \( homePlannerViewModel.selectedLabelNoteID)")
+                        print("homePlannerViewModel.selectedtagslabel  \( homePlannerViewModel.selectedtagslabel)")
                     }, label: {
                         Image("plannerbell")
+                            .renderingMode(.template)
                             .foregroundColor(themesviewModel.currentTheme.iconColor)
                     })
                         .padding(.bottom, 10)
@@ -128,8 +254,12 @@ struct NoteView: View {
                     
                     Button(action: {
                         isBackgroundSheetVisible.toggle()
+                        print("$selectedTag  \(selectedTag)")
+                        print("homePlannerViewModel.selectedLabelNoteID  \( homePlannerViewModel.selectedLabelNoteID)")
+                        print("homePlannerViewModel.selectedtagslabel  \( homePlannerViewModel.selectedtagslabel)")
                     }, label: {
                         Image("backgroundimage")
+                            .renderingMode(.template)
                             .foregroundColor(themesviewModel.currentTheme.iconColor)
                     })
                         .padding(.bottom, 10)
@@ -137,9 +267,12 @@ struct NoteView: View {
                     
                     Button(action: {
                         isTagSheetVisible.toggle()
-
+                        print("homePlannerViewModel.selectedtagslabel  \(homePlannerViewModel.selectedtagslabel)")
+                        print("$selectedTag  \(selectedTag)")
+                        print("selectedID \(selectedID)")
                     }, label: {
                         Image("Tags")
+                            .renderingMode(.template)
                             .foregroundColor(themesviewModel.currentTheme.iconColor)
                     })
                         .padding(.bottom, 10)
@@ -147,23 +280,83 @@ struct NoteView: View {
                     Spacer()
                 }
                 .padding(.top, 20)
-                .background(Color.gray)
+                
             }
-            .background(themesviewModel.currentTheme.windowBackground)
             
             .onAppear {
-                isScreenActive = true
                 isViewActive = true
+                print("isViewActive  \(isViewActive)")
+//                let flattened = homePlannerViewModel.tagLabelNoteData.map { ($0.id, $0.labelName) }
+//                print("Flattened:", flattened)
+                print("homePlannerViewModel.selectedLabelNoteID  \( homePlannerViewModel.selectedLabelNoteID)")
+                print("homePlannerViewModel.selectedtagslabel  \( homePlannerViewModel.selectedtagslabel)")
+                homePlannerViewModel.GetTagNoteLabelList()
+                print("onAppear $selectedTag  \(selectedTag)")
+                print("onAppear selectedID \(selectedID)")
+                print("tagslabels  \(tagslabels.count)")
+//                isScreenActive = true
+                
                 
                 if homePlannerViewModel.noteListData.isEmpty {
-                    homePlannerViewModel.GetNoteDataList()
+                    homePlannerViewModel.GetNoteDataList(query: "", type: "note", page: 1, pageSize: 30, searchType: "", status: "", labelname: "", startdate: 0, enddate: 0)
                 }
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    if let note = homePlannerViewModel.noteListData.first {
-                        let incrementedId = note.id // `id` is a non-optional Int
-                        id = incrementedId + 1
+                    if let maxId = homePlannerViewModel.noteListData.map({ $0.id }).max() {
+                        id = maxId + 1
+                        print(" homePlannerViewModel.noteListData id \(id)")
                     }
+                }
+            }
+            
+            .onChange(of: isNotificationVisible) { newValue in
+                if newValue {
+                    dragOffset = 0 // Reset every time it's shown
+                    homePlannerViewModel.GetNoteDataList(query: "", type: "note", page: 1, pageSize: 30, searchType: "", status: "", labelname: "", startdate: 0, enddate: 0)
+                    print("on change works")
+                    print("homePlannerViewModel.selectedLabelNoteID  \( homePlannerViewModel.selectedLabelNoteID)")
+                    print("homePlannerViewModel.selectedtagslabel  \( homePlannerViewModel.selectedtagslabel)")
+                }
+            }
+            
+            
+            .onChange(of: isBackgroundSheetVisible) { newValue in
+                if newValue {
+                    print("if after Selected  homePlannerViewModel.imagetheme: \(homePlannerViewModel.imagetheme)")
+//                        homePlannerViewModel.imagetheme = BackgroundThemeimage
+                } else {
+                    print("BackgroundThemeimage \(BackgroundThemeimage)")
+                    themeImage = BackgroundThemeimage ?? ""
+
+                    print("themeImage  \(themeImage)")
+                    
+                     let theme = themeImage
+                    if let fileName = theme.components(separatedBy: "/").last?.replacingOccurrences(of: ".png", with: "") {
+                        themeImage = fileName
+                        print("themeImage ID \(selectedID)")
+                        print("after theme \(themeImage)")
+                    }
+                    
+                    print("theme \(themeImage)")
+                }
+            }
+            
+            
+            .onChange(of: isTagSheetVisible) { newValue in
+                if newValue {
+                    print("homePlannerViewModel.selectedLabelNoteID  \( homePlannerViewModel.selectedLabelNoteID)")
+                }
+                else {
+                    print("themeImage \(themeImage)")
+                    print("homePlannerViewModel.selectedLabelNoteID  \( homePlannerViewModel.selectedLabelNoteID)")
+                    print("homePlannerViewModel.selectedtagslabel  \( homePlannerViewModel.selectedtagslabel)")
+                    print("onAppear homePlannerViewModel tagLabelNoteData  \(homePlannerViewModel.tagLabelNoteData)")
+                    print("selectedTag  \(selectedTag)")
+                    homePlannerViewModel.selectedtagslabel = homePlannerViewModel.tagLabelNoteData
+                        .filter { selectedTag.contains($0.id) }
+                        .map { $0.labelName }
+                    
+                    print("Selected label names: \(homePlannerViewModel.selectedtagslabel)")
                 }
             }
 
@@ -182,9 +375,37 @@ struct NoteView: View {
                     VStack {
                         Spacer()
                         BottomNotificationView(isNotificationVisible: $isNotificationVisible, notificationTime: $notificationTime, isViewActive: $isViewActive, ispostBoxMailViewActive: $isPostBoxMailViewActive, selectedID: selectedID ?? 0)
-                        .transition(.move(edge: .bottom))
-                        .animation(.easeInOut, value: isNotificationVisible)
+                            .offset(y: dragOffset)
+                            .gesture(
+                                DragGesture()
+                                    .onChanged { value in
+                                        if value.translation.height > 0 {
+                                            dragOffset = value.translation.height
+                                        }
+                                    }
+                                    .onEnded { value in
+                                        let dragHeight = value.translation.height
+                                        let dismissThreshold: CGFloat = 50
+
+                                        if dragHeight > dismissThreshold {
+                                            withAnimation {
+                                                isNotificationVisible = false
+                                            }
+                                        } else {
+                                            withAnimation {
+                                                dragOffset = 0
+                                            }
+                                        }
+                                    }
+                            )
+                            .onAppear {
+                                dragOffset = 0 // ← THIS fixes the “halfway open” issue
+                            }
+                            .transition(.move(edge: .bottom))
+                            .animation(.easeInOut, value: isNotificationVisible)
                     }
+                    
+                    
                 }
             }
             
@@ -202,9 +423,35 @@ struct NoteView: View {
 
                     VStack {
                         Spacer()
-                        BottomTagView(isTagVisible: $isTagSheetVisible, selectedID: selectedID ?? 0, isclicked: $isclicked, selectedTag: $selectedTag, isScreenActive: $isScreenActive)
-                        .transition(.move(edge: .bottom))
-                        .animation(.easeInOut, value: isTagSheetVisible)
+                        BottomTagView(isTagVisible: $isTagSheetVisible, selectedID: selectedID ?? 0, isclicked: $isclicked, selectedTag: $selectedTag , isViewActive: $isViewActive)
+                            .offset(y: dragOffset)
+                            .gesture(
+                                DragGesture()
+                                    .onChanged { value in
+                                        if value.translation.height > 0 {
+                                            dragOffset = value.translation.height
+                                        }
+                                    }
+                                    .onEnded { value in
+                                        let dragHeight = value.translation.height
+                                        let dismissThreshold: CGFloat = 50
+
+                                        if dragHeight > dismissThreshold {
+                                            withAnimation {
+                                                isTagSheetVisible = false
+                                            }
+                                        } else {
+                                            withAnimation {
+                                                dragOffset = 0
+                                            }
+                                        }
+                                    }
+                            )
+                            .onAppear {
+                                dragOffset = 0 // ← THIS fixes the “halfway open” issue
+                            }
+                            .transition(.move(edge: .bottom))
+                            .animation(.easeInOut, value: isTagSheetVisible)
                     }
                 }
             }
@@ -223,22 +470,62 @@ struct NoteView: View {
 
                     VStack {
                         Spacer()
-                        BottomThemeView(themeimage: $BackgroundThemeimage, selectedIconIndex: themeImage, isBackgroundSheetVisible: $isBackgroundSheetVisible, selectedID: id, onTapTheme: $onTapTheme)
-                        .transition(.move(edge: .bottom))
-                        .animation(.easeInOut, value: isBackgroundSheetVisible)
+                        BottomThemeView(isBackgroundSheetVisible: $isBackgroundSheetVisible , themeimage: $BackgroundThemeimage, selectedIconIndex: themeImage, selectedID: id, onTapTheme: $onTapTheme, isViewActive: $isViewActive)
+                            .offset(y: dragOffset)
+                            .gesture(
+                                DragGesture()
+                                    .onChanged { value in
+                                        if value.translation.height > 0 {
+                                            dragOffset = value.translation.height
+                                        }
+                                    }
+                                    .onEnded { value in
+                                        let dragHeight = value.translation.height
+                                        let dismissThreshold: CGFloat = 50
+
+                                        if dragHeight > dismissThreshold {
+                                            withAnimation {
+                                                isBackgroundSheetVisible = false
+                                            }
+                                        } else {
+                                            withAnimation {
+                                                dragOffset = 0
+                                            }
+                                        }
+                                    }
+                            )
+                            .onAppear {
+                                dragOffset = 0 // ← THIS fixes the “halfway open” issue
+                            }
+                            .transition(.move(edge: .bottom))
+                            .animation(.easeInOut, value: isBackgroundSheetVisible)
                     }
                 }
 
             }
         }
     }
+    func formatDateTime(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium   // or .short, .long
+        return formatter.string(from: date)
+    }
+
+    func parseDateTime(_ dateString: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter.date(from: dateString)
+    }
+
+
 }
 
 struct NoteUpdateView: View {
+    @StateObject private var plannerAddTaskViewModel = PlannerAddTaskViewModel()
+    @StateObject var homePlannerViewModel = HomePlannerViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Binding var isNoteupdateVisible: Bool
     @Binding var notificationTime: Int?
-    @ObservedObject private var plannerAddTaskViewModel = PlannerAddTaskViewModel()
-    @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
     @State private var textInput: String = ""
     @State private var text: String = ""
     var selectedID: Int
@@ -256,14 +543,14 @@ struct NoteUpdateView: View {
     @State private var showingDeleteAlert = false
     @State private var isEditable = false
     @State private var tagslabels: [TagLabels] = []
-    @State private var isScreenActive: Bool = false
+//    @State private var isScreenActive: Bool = false
     @State private var isViewActive: Bool = false
     @State private var isBackgroundSheetVisible: Bool = false
     @State private var BackgroundThemeimage: String?
     @State private var onTapTheme: Bool = false
     @State private var isPostBoxMailViewActive: Bool = false
     @State var themeImage: String = ""
-    
+    @State private var dragOffset: CGFloat = 0
     
     var body: some View {
         ZStack {
@@ -294,17 +581,15 @@ struct NoteUpdateView: View {
 
             
             else {
-                // Default theme color if `themeImage` is empty
-                Color.white
+                themesviewModel.currentTheme.windowBackground
                     .ignoresSafeArea()
             }
             
             VStack {
                 HStack {
                     Button(action: {
-                        homePlannerViewModel.NoteDiaryData(selectedID: selectedID, notediary: tNotetitle, titlediary: tNotenote)
+                        homePlannerViewModel.NoteDiaryData(selectedID: selectedID, notediary: tNotenote, titlediary: tNotetitle)
                         self.isNoteupdateVisible = false
-                        
                     }, label: {
                         Image("wrongmark")
                     })
@@ -319,7 +604,7 @@ struct NoteUpdateView: View {
                         .cornerRadius(8)
                         .padding(.top, 30) // Add top padding to the TextField
                         .padding(.horizontal, 16) // Add horizontal padding
-                        .foregroundStyle(Color.black)
+                        .foregroundColor(themesviewModel.currentTheme.textColor)
                         .disabled(!isEditable)
                         .onSubmit {
                             isEditable = false // Set `isEditable` to false when tick mark is pressed
@@ -327,7 +612,7 @@ struct NoteUpdateView: View {
                     Rectangle()
                         .frame(maxWidth: .infinity)
                         .frame(height: 1)
-                        .foregroundColor(Color.black)
+                        .foregroundColor(themesviewModel.currentTheme.strokeColor)
                         .padding(.horizontal, 16) // Horizontal padding for the Rectangle
                 }
 
@@ -339,7 +624,7 @@ struct NoteUpdateView: View {
                         .cornerRadius(8)
                         .padding(.top, 15)
                         .padding(.horizontal, 16)
-                        .foregroundStyle(Color.black)
+                        .foregroundColor(themesviewModel.currentTheme.textColor)
                         .disabled(!isEditable)
                         .onSubmit {
                             isEditable = false // Set `isEditable` to false when tick mark is pressed
@@ -351,7 +636,7 @@ struct NoteUpdateView: View {
                            let reminderTimestamp = homePlannerViewModel.noteListData[selectedDiaryIndex].reminder {
                             // Convert Int (timestamp) to Date
                             let reminderDate = Date(timeIntervalSince1970: TimeInterval(reminderTimestamp))
-                            
+
                             // Format the date and time
                             let formattedDateTime = formatDateTime(reminderDate)
                             
@@ -360,6 +645,8 @@ struct NoteUpdateView: View {
                                 if isTextFieldVisible {
                                     Image("notification1")
                                         .resizable()
+                                        .renderingMode(.template)
+                                        .foregroundColor(themesviewModel.currentTheme.allBlack)
                                         .frame(width: 16, height: 16)
                                         .padding(.leading, 5)
                                 
@@ -375,8 +662,8 @@ struct NoteUpdateView: View {
                                             }
                                         }
                                     ))
-                                    .foregroundColor(.black)
-                                    .font(.system(size: 12))
+                                    .foregroundColor(themesviewModel.currentTheme.allBlack)
+                                    .font(.custom(.poppinsMedium, size: 14))
                                     .disabled(!canEdit())
                                     .frame(height: 30)
                                 
@@ -384,6 +671,8 @@ struct NoteUpdateView: View {
                                 // Remove icon aligned on the right
                                     Image("wrongmark")
                                         .resizable()
+                                        .renderingMode(.template)
+                                        .foregroundColor(themesviewModel.currentTheme.allBlack)
                                         .frame(width: 16, height: 16)
                                         .padding(.trailing, 5)
                                             .onTapGesture {
@@ -402,45 +691,52 @@ struct NoteUpdateView: View {
                                     .stroke(isTextFieldVisible ? Color.black : Color.clear, lineWidth: 1) // Border color conditionally
                             )
                         }
-                        let columns = [GridItem(.adaptive(minimum: 100), spacing: 10)]
-                        LazyVGrid(columns: columns, spacing: 10) {
-                            ForEach($tagslabels, id: \.labelId) { $label in
-                                if !$label.labelName.wrappedValue.isEmpty {
-                                    HStack {
-                                        if !label.labelName.isEmpty {
-                                            TextField("", text: $label.labelName)
-                                                .frame(height: 35)
-                                                .padding(.leading, 10)
-                                                .foregroundColor(.black)
-                                                .disabled(!canEdit())
-                                            
-                                            Image("wrongmark")
-                                                .resizable()
-                                                .frame(width: 16, height: 16)
-                                                .padding(.trailing, 5)
-                                                .onTapGesture {
-                                                    label.labelName = ""
-                                                    if let selectedDiary = homePlannerViewModel.noteListData.first(where: { $0.id == selectedID }) {
-                                                        homePlannerViewModel.removeTag(selectedID: selectedID, Tagid: label.labelId)
-                                                    }
 
-                                                    
+                        if !tagslabels.isEmpty {
+                            // Exactly 3 columns
+                            let columns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 3)
+                            
+                            LazyVGrid(columns: columns, spacing: 8) {
+                                ForEach(tagslabels, id: \.labelId) { label in
+                                    HStack {
+                                        Text(label.labelName ?? "")
+                                            .foregroundColor(themesviewModel.currentTheme.allBlack)
+                                            .font(.custom(.poppinsMedium, size: 14))
+                                            .padding(.horizontal, 5)
+                                            .padding(.vertical, 4)
+                                        
+                                        Image("wrongmark")
+                                            .resizable()
+                                            .renderingMode(.template)
+                                            .foregroundColor(themesviewModel.currentTheme.allBlack)
+                                            .frame(width: 16, height: 16)
+                                            .padding(.trailing, 2)
+                                            .onTapGesture {
+                                                // Remove from backend
+                                                if let selectedDiary = homePlannerViewModel.noteListData.first(where: { $0.id == selectedID }) {
+                                                    homePlannerViewModel.removeTag(selectedID: selectedID, Tagid: label.labelId)
                                                 }
-                                        }
+                                                // Remove from local array (UI update)
+                                                tagslabels.removeAll { $0.labelId == label.labelId }
+                                            }
                                     }
-                                    .background(Color(red: 187/255, green: 190/255, blue: 238/255)) // Background color
+                                    .frame(maxWidth: .infinity) // ensures each item spreads evenly in 3 columns
+                                    .background(Color(red: 187/255, green: 190/255, blue: 238/255))
                                     .cornerRadius(8)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 8)
-                                            .stroke(Color.black, lineWidth: 1) // Border around the TextField
+                                            .stroke(Color.black, lineWidth: 1)
                                     )
                                 }
                             }
+                            .padding(.horizontal, 5)
                         }
-                        
+
+
                     }
-                    .padding(.leading, 10)
-                    .padding(.horizontal, 10)
+                    .frame(maxWidth: .infinity, alignment: .leading) // <-- Force leading alignment
+//                    .padding(.leading, 16)
+                    .padding(.horizontal, 16)
                     
                     Spacer() // Push content upwards
                     
@@ -450,6 +746,8 @@ struct NoteUpdateView: View {
                             isEditable = true
                         }, label: {
                             Image("edits")
+                                .renderingMode(.template)
+                                .foregroundColor(themesviewModel.currentTheme.iconColor)
                         })
                         .padding(.bottom, 10)
                         .padding(.leading, 40)
@@ -457,9 +755,10 @@ struct NoteUpdateView: View {
                         
                         Button(action: {
                             isBackgroundSheetVisible.toggle()
-                            
                         }, label: {
                             Image("backgroundimage")
+                                .renderingMode(.template)
+                                .foregroundColor(themesviewModel.currentTheme.iconColor)
                         })
                         .padding(.bottom, 10)
                         .padding(.leading, 40)
@@ -467,9 +766,10 @@ struct NoteUpdateView: View {
                         
                         Button(action: {
                             isTagVisible.toggle()
-                            
                         }, label: {
                             Image("Tags")
+                                .renderingMode(.template)
+                                .foregroundColor(themesviewModel.currentTheme.iconColor)
                         })
                         .padding(.bottom, 10)
                         .padding(.leading, 40)
@@ -479,6 +779,8 @@ struct NoteUpdateView: View {
                             
                         }, label: {
                             Image("plannerbell")
+                                .renderingMode(.template)
+                                .foregroundColor(themesviewModel.currentTheme.iconColor)
                         })
                         .padding(.bottom, 10)
                         .padding(.leading, 40)
@@ -487,6 +789,8 @@ struct NoteUpdateView: View {
                             self.isHistorySheetVisible = true
                         }, label: {
                             Image("timer")
+                                .renderingMode(.template)
+                                .foregroundColor(themesviewModel.currentTheme.iconColor)
                         })
                         .padding(.bottom, 10)
                         .padding(.leading, 40)
@@ -496,38 +800,76 @@ struct NoteUpdateView: View {
                             
                         }, label: {
                             Image("del")
+                                .renderingMode(.template)
+                                .foregroundColor(themesviewModel.currentTheme.iconColor)
                         })
                         .padding(.bottom, 10)
                         .padding(.leading, 40)
                         Spacer()
                     }
                     .padding(.top, 20)
-                    .background(Color.gray)
+                    .background(themesviewModel.currentTheme.windowBackground)
                 }
-            }
-            .onAppear {
+                .onAppear {
 
-                if homePlannerViewModel.noteListData.isEmpty {
-                    homePlannerViewModel.GetNoteDataList()
-                }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    if let note = homePlannerViewModel.noteListData.first(where: { $0.id == selectedID }) {
-                        tNotetitle = note.title
-                        tNotenote = note.note
-                        tagslabels = note.labels ?? []
-                        tNoteType = note.type
-                        if let theme = note.theme {
-                            themeImage = theme
-                            if let fileName = theme.components(separatedBy: "/").last?.replacingOccurrences(of: ".png", with: "") {
-                                themeImage = fileName
+                    if homePlannerViewModel.noteListData.isEmpty {
+                        homePlannerViewModel.GetNoteDataList(query: "", type: "note", page: 1, pageSize: 30, searchType: "", status: "", labelname: "", startdate: 0, enddate: 0)
+                    }
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        if let note = homePlannerViewModel.noteListData.first(where: { $0.id == selectedID }) {
+                            tNotetitle = note.title
+                            tNotenote = note.note
+                            tagslabels = note.labels ?? []
+                            tNoteType = note.type
+                            homePlannerViewModel.selectedLabelNoteID = tagslabels.compactMap { $0.labelId }
+                            print("homePlannerViewModel.selectedLabelNoteID \(homePlannerViewModel.selectedLabelNoteID)")
+                            print("tagslabels  \(tagslabels)")
+                            if let theme = note.theme {
+                                themeImage = theme
+                                if let fileName = theme.components(separatedBy: "/").last?.replacingOccurrences(of: ".png", with: "") {
+                                    themeImage = fileName
+                                    print("themeImage \(themeImage)")
+                                }
+                            } else {
+                                themeImage = "" // Default value if theme is nil
                             }
-                        } else {
-                            themeImage = "" // Default value if theme is nil
                         }
                     }
                 }
-            }
+            
+                .onChange(of: isNotificationVisible  || isTagVisible || isBackgroundSheetVisible || isHistorySheetVisible) { newValue in
+                    if newValue {
+                            homePlannerViewModel.GetNoteDataList(query: "", type: "note", page: 1, pageSize: 30, searchType: "", status: "", labelname: "", startdate: 0, enddate: 0)
+                            print("on change works")
+                            dragOffset = 0
+                    }
+                    else {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            homePlannerViewModel.GetNoteDataList(query: "", type: "note", page: 1, pageSize: 30, searchType: "", status: "", labelname: "", startdate: 0, enddate: 0)
+                            print("on change else works")
+                            dragOffset = 0
+                        }
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        if let note = homePlannerViewModel.noteListData.first(where: { $0.id == selectedID }) {
+                            tagslabels = note.labels ?? []
+                            print("tagslabels  \(tagslabels)")
+                            homePlannerViewModel.selectedLabelNoteID = tagslabels.compactMap { $0.labelId }
+                            print("homePlannerViewModel.selectedLabelNoteID \(homePlannerViewModel.selectedLabelNoteID)")
+                            if let theme = note.theme {
+                                themeImage = theme
+                                if let fileName = theme.components(separatedBy: "/").last?.replacingOccurrences(of: ".png", with: "") {
+                                    themeImage = fileName
+                                    print("themeImage \(themeImage)")
+                                }
+                            } else {
+                                themeImage = "" // Default value if theme is nil
+                            }
+                        }
+                    }
+                    }
+                }
             
             if isNotificationVisible {
                 ZStack {
@@ -544,8 +886,34 @@ struct NoteUpdateView: View {
                     VStack {
                         Spacer()
                         BottomNotificationView(isNotificationVisible: $isNotificationVisible, notificationTime: $notificationTime, isViewActive: $isViewActive, ispostBoxMailViewActive: $isPostBoxMailViewActive, selectedID: selectedID)
-                        .transition(.move(edge: .bottom))
-                        .animation(.easeInOut, value: isTagVisible)
+                            .offset(y: dragOffset)
+                            .gesture(
+                                DragGesture()
+                                    .onChanged { value in
+                                        if value.translation.height > 0 {
+                                            dragOffset = value.translation.height
+                                        }
+                                    }
+                                    .onEnded { value in
+                                        let dragHeight = value.translation.height
+                                        let dismissThreshold: CGFloat = 50
+
+                                        if dragHeight > dismissThreshold {
+                                            withAnimation {
+                                                isNotificationVisible = false
+                                            }
+                                        } else {
+                                            withAnimation {
+                                                dragOffset = 0
+                                            }
+                                        }
+                                    }
+                            )
+                            .onAppear {
+                                dragOffset = 0 // ← THIS fixes the “halfway open” issue
+                            }
+                            .transition(.move(edge: .bottom))
+                            .animation(.easeInOut, value: isNotificationVisible)
                     }
                 }
             }
@@ -564,9 +932,34 @@ struct NoteUpdateView: View {
 
                 VStack {
                     Spacer()
-                    BottomTagView(isTagVisible: $isTagVisible,selectedID: selectedID,isclicked: $isclicked,selectedTag: $homePlannerViewModel.selectedLabelNoteID,
-                        isScreenActive: $isScreenActive
+                    BottomTagView(isTagVisible: $isTagVisible,selectedID: selectedID,isclicked: $isclicked,selectedTag: $homePlannerViewModel.selectedLabelNoteID, isViewActive: $isViewActive
                     )
+                    .offset(y: dragOffset)
+                    .gesture(
+                        DragGesture()
+                            .onChanged { value in
+                                if value.translation.height > 0 {
+                                    dragOffset = value.translation.height
+                                }
+                            }
+                            .onEnded { value in
+                                let dragHeight = value.translation.height
+                                let dismissThreshold: CGFloat = 50
+
+                                if dragHeight > dismissThreshold {
+                                    withAnimation {
+                                        isTagVisible = false
+                                    }
+                                } else {
+                                    withAnimation {
+                                        dragOffset = 0
+                                    }
+                                }
+                            }
+                    )
+                    .onAppear {
+                        dragOffset = 0 // ← THIS fixes the “halfway open” issue
+                    }
                     .transition(.move(edge: .bottom))
                     .animation(.easeInOut, value: isTagVisible)
                 }
@@ -590,8 +983,34 @@ struct NoteUpdateView: View {
                 VStack {
                     Spacer()
                     HistoryView(isHistorySheetVisible: $isHistorySheetVisible, selectedID: selectedID)
-                    .transition(.move(edge: .bottom))
-                    .animation(.easeInOut, value: isTagVisible)
+                        .offset(y: dragOffset)
+                        .gesture(
+                            DragGesture()
+                                .onChanged { value in
+                                    if value.translation.height > 0 {
+                                        dragOffset = value.translation.height
+                                    }
+                                }
+                                .onEnded { value in
+                                    let dragHeight = value.translation.height
+                                    let dismissThreshold: CGFloat = 50
+
+                                    if dragHeight > dismissThreshold {
+                                        withAnimation {
+                                            isHistorySheetVisible = false
+                                        }
+                                    } else {
+                                        withAnimation {
+                                            dragOffset = 0
+                                        }
+                                    }
+                                }
+                        )
+                        .onAppear {
+                            dragOffset = 0 // ← THIS fixes the “halfway open” issue
+                        }
+                        .transition(.move(edge: .bottom))
+                        .animation(.easeInOut, value: isHistorySheetVisible)
                 }
             }
         }
@@ -626,12 +1045,46 @@ struct NoteUpdateView: View {
 
                 VStack {
                     Spacer()
-                    BottomThemeView(themeimage: $BackgroundThemeimage, selectedIconIndex: themeImage, isBackgroundSheetVisible: $isBackgroundSheetVisible, selectedID: selectedID, onTapTheme: $onTapTheme)
-                    .transition(.move(edge: .bottom))
-                    .animation(.easeInOut, value: isTagVisible)
+                    BottomThemeView(isBackgroundSheetVisible: $isBackgroundSheetVisible, themeimage: $BackgroundThemeimage, selectedIconIndex: themeImage, selectedID: selectedID, onTapTheme: $onTapTheme, isViewActive: $isViewActive)
+                        .offset(y: dragOffset)
+                        .gesture(
+                            DragGesture()
+                                .onChanged { value in
+                                    if value.translation.height > 0 {
+                                        dragOffset = value.translation.height
+                                    }
+                                }
+                                .onEnded { value in
+                                    let dragHeight = value.translation.height
+                                    let dismissThreshold: CGFloat = 50
+
+                                    if dragHeight > dismissThreshold {
+                                        withAnimation {
+                                            isBackgroundSheetVisible = false
+                                        }
+                                    } else {
+                                        withAnimation {
+                                            dragOffset = 0
+                                        }
+                                    }
+                                }
+                        )
+                        .onAppear {
+                            dragOffset = 0 // ← THIS fixes the “halfway open” issue
+                        }
+                        .transition(.move(edge: .bottom))
+                        .animation(.easeInOut, value: isBackgroundSheetVisible)
                 }
             }
         }
+            
+
+        }
+        
+
+
+            
+
             
         }
 
@@ -658,9 +1111,9 @@ struct NoteUpdateView: View {
 
 
 struct BottomNotificationView: View {
-    @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var themesviewModel = ThemesViewModel()
-    @ObservedObject var snoozedMailsViewModel = SnoozedMailsViewModel()
+    @StateObject var homePlannerViewModel = HomePlannerViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
+    @StateObject var snoozedMailsViewModel = SnoozedMailsViewModel()
     @Binding var isNotificationVisible: Bool
     @Binding var notificationTime: Int?
     @Binding var isViewActive: Bool
@@ -670,7 +1123,7 @@ struct BottomNotificationView: View {
     @State private var selectedDate = Date() // Holds the current date or time
     @State private var isDatePickerVisibled = false // Controls date picker dialog
     @State private var isTimePickerVisiblee = false
-    @ObservedObject private var options = ClockLooks()
+    @StateObject private var options = ClockLooks()
     @State var id:Int = 0
     
     var body: some View {
@@ -688,7 +1141,9 @@ struct BottomNotificationView: View {
                     Button(action: {
                         if isViewActive {
                             if let selectedDateTime = homePlannerViewModel.selectedDateTime {
+                                print("before notificationTime \(notificationTime)")
                                 notificationTime = Int(selectedDateTime.timeIntervalSince1970)
+                                print("After notificationTime \(notificationTime)")
                                 homePlannerViewModel.ScheduledonclickDone(selectedID: id, reminder: notificationTime)
                                 isNotificationVisible = false
                             }
@@ -783,14 +1238,14 @@ struct BottomNotificationView: View {
             options.withHands = true
             
             if homePlannerViewModel.noteListData.isEmpty {
-                homePlannerViewModel.GetNoteDataList()
+                homePlannerViewModel.GetNoteDataList(query: "", type: "note", page: 1, pageSize: 30, searchType: "", status: "", labelname: "", startdate: 0, enddate: 0)
             }
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                if let note = homePlannerViewModel.noteListData.first {
-                    let incrementedId = note.id // `id` is a non-optional Int
-                    id = incrementedId + 1
-                    
+                if let maxId = homePlannerViewModel.noteListData.map({ $0.id }).max() {
+                    id = maxId + 1
+                } else {
+                    id = 1 // fallback if no data
                 }
             }
         }
@@ -852,8 +1307,8 @@ struct BottomNotificationView: View {
 
 
 struct BottomTagView: View {
-    @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var themesviewModel = ThemesViewModel()
+    @StateObject var homePlannerViewModel = HomePlannerViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Binding var isTagVisible: Bool
     @State var comment: String = ""
     var selectedID: Int
@@ -863,10 +1318,11 @@ struct BottomTagView: View {
     @State private var isChecked: Bool = false
     @Binding var isclicked: Bool
     @Binding var selectedTag: [Int]
-    @Binding var isScreenActive: Bool
+    @Binding var isViewActive: Bool
+//    @Binding var isScreenActive: Bool
     @State var id:Int = 0
     @State private var isTagActive: Bool = false
-
+//    @State private var tagLabels: [Int] = []
     var body: some View {
         ZStack {
             // Main BottomTagSheetView content
@@ -879,37 +1335,28 @@ struct BottomTagView: View {
                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                                 .padding(.top, 20)
                                 .padding(.leading, 16)
-                            
                             Spacer()
                             Button(action: {
                                 withAnimation {
-                                    selectedTag = homePlannerViewModel.selectedLabelNoteID
-                                    if homePlannerViewModel.selectedLabelNoteID != [0] { // Check if the array is not empty
-                                        if isScreenActive {
+                                    
+                                    if isViewActive {
                                             isTagActive = true
-                                            homePlannerViewModel.ApplyTag(listId: id, tagIds: homePlannerViewModel.selectedLabelNoteID) // Pass the array
+                                        selectedTag = homePlannerViewModel.selectedLabelNoteID
+                                            homePlannerViewModel.ApplyTag(listId: id, tagIds: selectedTag) // Pass the array
                                             isTagVisible = false // Dismiss the sheet
                                             isclicked = true
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 200 / 1000.0) {
-                                                if homePlannerViewModel.noteListData.isEmpty {
-                                                    homePlannerViewModel.GetNoteDataList()
-
-                                                }
-                                            }
-                                            
+                                            print("click on Apply button")
+                                        print("on apply selectedTag \(selectedTag)")
+                                        print("on Apply homePlannerViewModel.selectedLabelNoteID  \( homePlannerViewModel.selectedLabelNoteID)")
                                         }
-                                        else {
-                                            homePlannerViewModel.ApplyTag(listId: selectedID, tagIds: homePlannerViewModel.selectedLabelNoteID) // Pass the array
-                                            isTagVisible = false // Dismiss the sheet
-                                            isclicked = true
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 200 / 1000.0) {
-                                                if homePlannerViewModel.noteListData.isEmpty {
-                                                    homePlannerViewModel.GetNoteDataList()
-                                                }
-                                            }
-                                        }
-
-
+                                    
+                                    
+                                    else {
+                                        isTagActive = true
+                                        homePlannerViewModel.ApplyTag(listId: selectedID, tagIds: homePlannerViewModel.selectedLabelNoteID) // Pass the array
+                                        isTagVisible = false // Dismiss the sheet
+                                        isclicked = true
+                                       print("click on Apply button")
                                     }
                                 }
                             }, label: {
@@ -984,17 +1431,26 @@ struct BottomTagView: View {
                                     HStack {
                                         Button(action: {
                                             toggleCheck(for: label.id) // Toggle state based on the label's ID
+                                            if let index = homePlannerViewModel.selectedtagslabel.firstIndex(of: label.labelName) {
+                                                // If already selected, remove it
+                                                homePlannerViewModel.selectedtagslabel.remove(at: index)
+                                                print(" homePlannerViewModel.selectedtagslabel  \(homePlannerViewModel.selectedtagslabel)")
+                                                print(" homePlannerViewModel.selectedLabelNoteID  \( homePlannerViewModel.selectedLabelNoteID)")
+                                            } else {
+                                                // Otherwise, add it
+                                                homePlannerViewModel.selectedtagslabel.append(label.labelName)
+                                                print(" homePlannerViewModel.selectedtagslabel  \(homePlannerViewModel.selectedtagslabel)")
+                                            }
                                         }) {
-                                            Image(label.isChecked ? "checkbox" : "Check")
+                                            Image(systemName: homePlannerViewModel.selectedLabelNoteID.contains(label.id) ? "checkmark.square" : "square")
                                                 .resizable()
-                                                .renderingMode(.template)
                                                 .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                 .frame(width: 24, height: 24)
                                                 .padding(.leading, 25)
                                         }
-
+                                        
                                         Button(action: {
-                                            // Handle label text button action here if needed
+                                            
                                         }) {
                                             Text(label.labelName)
                                                 .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -1015,20 +1471,22 @@ struct BottomTagView: View {
                 .cornerRadius(16)
                 .shadow(radius: 10)
                 .onAppear{
+                    homePlannerViewModel.selectedLabelNoteID = selectedTag
+                    print("Note homePlannerViewModel.tagLabelNoteData.count  \(homePlannerViewModel.tagLabelNoteData.count)")
+                    print("id  \(id)")
+                    print("Tag View selectedID  \(selectedID)")
                     homePlannerViewModel.GetTagNoteLabelList()
                     if homePlannerViewModel.noteListData.isEmpty {
-                        homePlannerViewModel.GetNoteDataList()
+                        homePlannerViewModel.GetNoteDataList(query: "", type: "note", page: 1, pageSize: 30, searchType: "", status: "", labelname: "", startdate: 0, enddate: 0)
                     }
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        if let note = homePlannerViewModel.noteListData.first {
-                            let incrementedId = note.id // `id` is a non-optional Int
-                            id = incrementedId + 1
+                        if let maxId = homePlannerViewModel.noteListData.map({ $0.id }).max() {
+                            id = maxId + 1
+                        } else {
+                            id = 1 // fallback if no data
                         }
-                    }
-                    
-                    
-                }
+                    }                }
             }
 
             if isCreateLabelVisible {
@@ -1128,8 +1586,8 @@ struct DialogViews<Content: View>: View {
 }
 
 struct createTagView: View {
-    @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var themesviewModel = ThemesViewModel()
+    @StateObject var homePlannerViewModel = HomePlannerViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Binding var iscreatelabelvisible: Bool
     @Binding var Textfill: String
 
@@ -1198,9 +1656,9 @@ struct createTagView: View {
 }
 
 struct HistoryView: View {
-    @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var homeNavigatorViewModel = HomeNavigatorViewModel()
-    @ObservedObject var themesviewModel = ThemesViewModel()
+    @StateObject var homePlannerViewModel = HomePlannerViewModel()
+    @StateObject var homeNavigatorViewModel = HomeNavigatorViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Binding var isHistorySheetVisible: Bool
     @State var comment: String = ""
     var selectedID: Int
@@ -1278,7 +1736,7 @@ struct HistoryView: View {
     func calculateHeight() -> CGFloat {
         let baseHeight: CGFloat = 150 // Base height for fixed elements
         let rowHeight: CGFloat = 50 // Estimated height for each row in the list
-        let maxHeight: CGFloat = 800 // Maximum height for the entire view
+        let maxHeight: CGFloat = 600 // Maximum height for the entire view
         let totalHeight = baseHeight + (CGFloat(homePlannerViewModel.historyScheduleData.count) * rowHeight)
         return min(totalHeight, maxHeight) // Ensure it doesn't exceed the maxHeight
     }
@@ -1309,7 +1767,7 @@ struct HistoryView: View {
     }
 }
 struct DeleteNoteAlert: View {
-    @ObservedObject var themesviewModel = ThemesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Binding var isPresented: Bool
     var onDelete: () -> Void
     
@@ -1383,23 +1841,25 @@ struct DeleteNoteAlert: View {
 
 
 struct BottomThemeView: View {
-    @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
+    @StateObject var homePlannerViewModel = HomePlannerViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
+    @Binding var isBackgroundSheetVisible: Bool
     @Binding var themeimage: String?
     @State private var selectedColor: Color = .blue
     @State var selectedIconIndex: String
-    @Binding var isBackgroundSheetVisible: Bool
+    
     @State var selectedID: Int
     @Binding var onTapTheme: Bool
+    @Binding var isViewActive: Bool
     @State var subImage: [String] = []
     @State var selectedToolTip: String?
-    
+    @State var id:Int = 0
     
     // Array of hex color codes
     let colors: [String] = [
         "#ffffff", "#f9b0a8", "#f39f76", "#fff8b9", "#e2f6d3", "#b5ddd4", "#d5e2e9","#aeccdc", "#d3c0db", "#f6e2dd", "#e9e2d4", "#efeff0"
     ]
     
-//    let availableBackgrounds: [Background] = [
         let availableBackgrounds: [Background] = [
             Background(type: .image,
                       value: "fruits-7434339_1920",
@@ -1598,7 +2058,6 @@ struct BottomThemeView: View {
                        ]),
         ]
 
-
     var body: some View {
         VStack {
             Spacer()
@@ -1632,6 +2091,9 @@ struct BottomThemeView: View {
                 }
                 .padding(.horizontal)
                 
+                // Image Picker Section (Second Row)
+                // Inside the Image Picker Section (Second Row)
+                
                 // Background Picker Section (Third Row)
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 5) {
@@ -1641,14 +2103,12 @@ struct BottomThemeView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 36, height: 36)
-                            //                                .background(Color.red) // Add this line for debugging
                                 .clipShape(Circle())
                                 .overlay(
                                     Circle().stroke(Color.black, lineWidth: 0.5) // Add a border with your desired color and width
                                 )
                                 .onTapGesture {
                                     selectedToolTip = background.tooltip
-                                    
                                     let subImages = background.subImages
                                     let processedFileNames = subImages.map { image in
                                         image.value
@@ -1659,8 +2119,18 @@ struct BottomThemeView: View {
                                     themeimage = background.value
                                     subImage = processedFileNames
                                     onTapTheme = true
-                                    homePlannerViewModel.AddTheme(theme: "assets/plannerBackground/\(background.tooltip.lowercased())/\(themeimage!).png", selectedID: selectedID)
+                                    homePlannerViewModel.imagetheme = "assets/plannerBackground/\(selectedToolTip!.lowercased())/\(themeimage!).png"
                                     
+                                    if isViewActive {
+                                        homePlannerViewModel.AddTheme(theme:"assets/plannerBackground/\(selectedToolTip!.lowercased())/\(themeimage!).png", selectedID: id)
+                                    }
+                                    
+                                    else {
+                                        homePlannerViewModel.AddTheme(theme:"assets/plannerBackground/\(selectedToolTip!.lowercased())/\(themeimage!).png", selectedID: selectedID)
+                                    }
+
+
+                                                                        
                                 }
                         }
                     }
@@ -1672,7 +2142,6 @@ struct BottomThemeView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 5) {
                         ForEach(subImage, id: \.self) { imageName in
-//                            let themeimage = background.value
                             Image(imageName)
                                 .resizable()
                                 .scaledToFill()
@@ -1683,8 +2152,14 @@ struct BottomThemeView: View {
                                 )
                                 .onTapGesture {
                                     themeimage = imageName
-                                    homePlannerViewModel.AddTheme(theme:"assets/plannerBackground/\(selectedToolTip!.lowercased())/\(themeimage!).png", selectedID: selectedID)
+                                    homePlannerViewModel.imagetheme = "assets/plannerBackground/\(selectedToolTip!.lowercased())/\(themeimage!).png"
+                                    if isViewActive {
+                                        homePlannerViewModel.AddTheme(theme:"assets/plannerBackground/\(selectedToolTip!.lowercased())/\(themeimage!).png", selectedID: id)
+                                    }
                                     
+                                    else {
+                                        homePlannerViewModel.AddTheme(theme:"assets/plannerBackground/\(selectedToolTip!.lowercased())/\(themeimage!).png", selectedID: selectedID)
+                                    }
                                 }
                         }
                     }
@@ -1693,18 +2168,29 @@ struct BottomThemeView: View {
                     .frame(height: 60)
                     .padding(.horizontal)
             }
-
-            }
+        }
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(Color(UIColor.systemBackground))
+                    .fill(themesviewModel.currentTheme.windowBackground)
                     .shadow(radius: 10)
             )
         }
         .edgesIgnoringSafeArea(.bottom)
         .onAppear {
+            onTapTheme = false
+            print("id  \(id)")
+            print("Tag View selectedID  \(selectedID)")
             if homePlannerViewModel.noteListData.isEmpty {
-                homePlannerViewModel.GetNoteDataList()
+                homePlannerViewModel.GetNoteDataList(query: "", type: "note", page: 1, pageSize: 30, searchType: "", status: "", labelname: "", startdate: 0, enddate: 0)
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                if let maxId = homePlannerViewModel.noteListData.map({ $0.id }).max() {
+                    id = maxId + 1
+                    homePlannerViewModel.id = id
+                } else {
+                    id = 1 // fallback if no data
+                }
             }
 
             // Safely handle any logic without mutating `selectedID`
@@ -1715,10 +2201,19 @@ struct BottomThemeView: View {
                         selectedIconIndex = theme
                         if let fileName = theme.components(separatedBy: "/").last?.replacingOccurrences(of: ".png", with: "") {
                             selectedIconIndex = fileName
+                            print("selectedIconIndex  \(selectedIconIndex)")
                         }
                     } else {
                         selectedIconIndex = "" // Default value if theme is nil
                     }
+                }
+                
+                else {
+                    selectedIconIndex = themeimage ?? ""
+                        if let fileName = selectedIconIndex.components(separatedBy: "/").last?.replacingOccurrences(of: ".png", with: "") {
+                            selectedIconIndex = fileName
+                            print("new todo selectedIconIndex  \(selectedIconIndex)")
+                        }
                 }
             }
            
@@ -1731,3 +2226,5 @@ struct BottomThemeView: View {
 //#Preview {
 //    NoteView(isNoteVisible: .constant(true))
 //}
+
+

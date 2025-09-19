@@ -485,7 +485,7 @@ struct draftView: View {
 
 struct DeleteTrashAlert: View {
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var themesviewModel = ThemesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Binding var isPresented: Bool
     var onDelete: () -> Void    
     var body: some View {

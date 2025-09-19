@@ -9,10 +9,10 @@ import SwiftUI
 import ClockTimePicker
 
 struct BottomSnoozeView: View {
-    @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
+    @StateObject var homePlannerViewModel = HomePlannerViewModel()
     @StateObject var mailFullViewModel = MailFullViewModel()
     @StateObject private var homeAwaitingViewModel = HomeAwaitingViewModel()
-    @ObservedObject var themesviewModel = ThemesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Binding var isBottomSnoozeViewVisible: Bool
     @Binding var SnoozeTime: Int
     @State var comment: String = ""
@@ -24,10 +24,7 @@ struct BottomSnoozeView: View {
     @State var id:Int = 0
     var body: some View {
         
-        ZStack {
-            VStack {
-                if isBottomSnoozeViewVisible {
-                    VStack(spacing: 16) {
+            VStack(spacing: 16) {
                         VStack(alignment: .leading) {
                             HStack {
                                 Text("Reminder")
@@ -122,7 +119,7 @@ struct BottomSnoozeView: View {
                         .background(themesviewModel.currentTheme.windowBackground)
                         .cornerRadius(16)
                         .shadow(radius: 10)
-                    }
+                    
 
                     .overlay(
                         Group {
@@ -167,22 +164,13 @@ struct BottomSnoozeView: View {
                             }
                         }
                     )
-                }
+                
             }
             .onAppear {
                 options.withHands = true
 
             }
-        }
-        .background(
-            Color.black.opacity(0.4)
-                .edgesIgnoringSafeArea(.all)
-                .onTapGesture {
-                    withAnimation {
-                        isBottomSnoozeViewVisible = false // Dismiss the sheet
-                    }
-                }
-        )
+
 
         
     }

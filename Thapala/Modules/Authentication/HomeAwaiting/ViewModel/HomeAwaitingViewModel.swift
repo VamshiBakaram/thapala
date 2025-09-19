@@ -215,7 +215,6 @@ class HomeAwaitingViewModel: ObservableObject {
         }
     }
     
-
     var shouldDisplayOpenEnvelope: Bool {
         guard let emailFullData = emailFullData else { return false }
         let selectedEmails = emailFullData.data?.filter { selectedThreadIDs.contains($0.threadID ?? 0) }
@@ -291,7 +290,7 @@ class HomeAwaitingViewModel: ObservableObject {
         if let jsonData = try? JSONEncoder().encode(params),
            let jsonString = String(data: jsonData, encoding: .utf8) {
         }
-        NetworkManager.shared.request(type: CreateLabelResponse.self,endPoint: endPoint,httpMethod: .post, parameters: params, isTokenRequired: true) { [weak self] result in
+        NetworkManager.shared.request(type: CreateLabelResponse.self,endPoint: endPoint, httpMethod: .post, parameters: params, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.isLoading = false

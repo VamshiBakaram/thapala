@@ -74,10 +74,10 @@ class BlueprintViewModel:ObservableObject{
     
     func resetComposeEmailData(){
         ComposeEmailData.shared.isPasswordProtected = false
-        ComposeEmailData.shared.isScheduleCreated = false
+//        ComposeEmailData.shared.isScheduleCreated = false
         ComposeEmailData.shared.passwordHash = ""
         ComposeEmailData.shared.passwordHint = ""
-        ComposeEmailData.shared.timeStap = 0.0
+//        ComposeEmailData.shared.timeStap = 0.0
     }
     
     func scheduleSend() {

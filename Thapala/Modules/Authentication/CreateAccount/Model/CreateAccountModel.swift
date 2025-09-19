@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 struct countriesCode: Decodable, Hashable {
     let name: String
     let dial_code: String

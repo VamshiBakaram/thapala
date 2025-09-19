@@ -40,8 +40,8 @@ struct EndPoint {
     static  let searchTcode = "emails/suggestions"
     static let createNewDiary = "planner?type=diary"
     static let plannerDiarySave = "planner/update/"
-    static let diaryList = "planner?type=diary&page=1&pageSize=10"
-    static let noteList = "planner?type=note&page=1&pageSize=10"
+//    static let diaryList = "planner?type=diary&page=1&pageSize=10"
+//    static let noteList = "planner?type=note&page=1&pageSize=10"
     static let plannerNoteSave = "planner?type=note"
     static let addComment = "planner/add-comment"
     static let delcomment = "planner/delete-comment?"
@@ -65,10 +65,14 @@ struct EndPoint {
     static let createLabel = "emails/create-label"
     static let ApplyLabel = "emails/add-emails-to-labels"
     
+    /// planner
+    static let plannerTagLabelEdit = "planner/edit-label"
+    static let deletePlannerTag = "planner/delete-label/"
+    static let plannerSearch = "planner"
     //Note
     static let historySchedule = "planner/get-planner-history/" // history bottom sheet
     static let deletenote = "planner/move-to-trash"
-    static let getDoIt = "planner?type=doit&page=1&pageSize=10"
+//    static let getDoIt = "planner?type=doit&page=1&pageSize=10"
     static let updateDoitcomment = "planner/update-comment"
     static let doItHistory = "planner/get-planner-history/"
     static let addDoItTask = "planner?type=doit"
