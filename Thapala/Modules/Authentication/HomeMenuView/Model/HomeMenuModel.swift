@@ -7,13 +7,6 @@
 
 import Foundation
 
-
-//struct HomeMenuData: Identifiable, Hashable, Equatable{
-//    let id = UUID()
-//    let image:String
-//    let menuType:String
-//}
-
 struct HomeMenuData: Identifiable, Hashable {
     let id = UUID()
     let image: String

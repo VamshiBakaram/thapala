@@ -17,12 +17,8 @@ class InfoViewViewModel: ObservableObject {
     @Published var guideitems: [Guide] = []
     @Published var guidecontentItems: [GuideContent] = []
     @Published var isComposeEmail: Bool = false
-    
-//    let endUrl = "\(EndPoint.info)contentType=\(selectedOption)&page=1&limit=10"
-    
-//    init() {
-//        self.getInfoData(selectedOption: "info")
-//    }
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
+    @Published var isInfoView: Bool = true
     
     func getInfoData(selectedOption: String) {
         self.isLoading = true
@@ -36,7 +32,6 @@ class InfoViewViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.content = response.data.content
-                    print("info Data: \(self.content.count)")
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -45,7 +40,7 @@ class InfoViewViewModel: ObservableObject {
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -65,7 +60,6 @@ class InfoViewViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.faqcontent = response.data.faq
-                    print("FAQ Data Loaded: \(self.faqcontent.count)")
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -74,7 +68,7 @@ class InfoViewViewModel: ObservableObject {
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -101,7 +95,7 @@ class InfoViewViewModel: ObservableObject {
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

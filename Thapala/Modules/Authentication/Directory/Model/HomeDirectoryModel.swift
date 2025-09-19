@@ -7,12 +7,6 @@
 
 import Foundation
 
-//enum DirectoryOption {
-//    case tContacts
-//    case test
-//    case test2
-//}
-
 struct DirectoryResponse: Decodable {
     let message: String
     let data: DirectoryUserData

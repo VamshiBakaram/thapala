@@ -9,7 +9,7 @@ import SwiftUI
 
 struct postBoxMoreSheet: View {
     @ObservedObject var BottomsheetviewModel = BottomSheetViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @State private var isMoreVisible: Bool = false
     @Binding var isMoreSheetVisible: Bool
     @Binding var conveyedView: Bool

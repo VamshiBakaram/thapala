@@ -24,8 +24,7 @@ struct EditProfileView: View {
                     Image(systemName: "arrow.backward")
                         .foregroundColor(Color.black)
                 })
-//                Text("Back")
-//                    .font(.custom(.poppinsMedium, size: 11, relativeTo: .title))
+
                 Spacer()
             }
             ZStack {

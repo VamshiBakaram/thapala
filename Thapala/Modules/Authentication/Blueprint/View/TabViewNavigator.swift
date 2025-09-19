@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TabViewNavigator: View {
     @ObservedObject var consoleViewModel = ConsoleViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @StateObject var mailComposeViewModel = MailComposeViewModel()
     @State private var isMailViewActive = false
     @State private var isBluePrintViewActive = false
@@ -39,7 +39,7 @@ struct TabViewNavigator: View {
                                 .foregroundColor(isMailViewActive ? themesviewModel.currentTheme.tabIndicatorColor: themesviewModel.currentTheme.iconColor)
                         }
                         Text("Mail")
-                            .font(.system(size: 16))
+                            .font(.custom(.poppinsRegular, size: 10))
                             .foregroundColor(isMailViewActive ? themesviewModel.currentTheme.tabIndicatorColor: themesviewModel.currentTheme.iconColor)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -62,7 +62,7 @@ struct TabViewNavigator: View {
                                 .foregroundColor(isBluePrintViewActive ? themesviewModel.currentTheme.tabIndicatorColor: themesviewModel.currentTheme.iconColor)
                         }
                         Text("Blue Print")
-                            .font(.system(size: 12))
+                            .font(.custom(.poppinsRegular, size: 10))
                             .foregroundColor(isBluePrintViewActive ? themesviewModel.currentTheme.tabIndicatorColor: themesviewModel.currentTheme.iconColor)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -85,7 +85,7 @@ struct TabViewNavigator: View {
                                 .foregroundColor(isQuickAccessViewActive ? themesviewModel.currentTheme.tabIndicatorColor: themesviewModel.currentTheme.iconColor)
                         }
                         Text("Quick Access")
-                            .font(.system(size: 12))
+                            .font(.custom(.poppinsRegular, size: 10))
                             .foregroundColor(isQuickAccessViewActive ? themesviewModel.currentTheme.tabIndicatorColor: themesviewModel.currentTheme.iconColor)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -108,7 +108,7 @@ struct TabViewNavigator: View {
                                 .foregroundColor(isPlannerViewActive ? themesviewModel.currentTheme.tabIndicatorColor: themesviewModel.currentTheme.iconColor)
                         }
                         Text("Planner")
-                            .font(.system(size: 12))
+                            .font(.custom(.poppinsRegular, size: 10))
                             .foregroundColor(isPlannerViewActive ? themesviewModel.currentTheme.tabIndicatorColor: themesviewModel.currentTheme.iconColor)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -131,7 +131,7 @@ struct TabViewNavigator: View {
                                 .foregroundColor(isConsoleViewActive ? themesviewModel.currentTheme.tabIndicatorColor: themesviewModel.currentTheme.iconColor)
                         }
                         Text("Console")
-                            .font(.system(size: 12))
+                            .font(.custom(.poppinsRegular, size: 10))
                             .foregroundColor(isConsoleViewActive ? themesviewModel.currentTheme.tabIndicatorColor: themesviewModel.currentTheme.iconColor)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)

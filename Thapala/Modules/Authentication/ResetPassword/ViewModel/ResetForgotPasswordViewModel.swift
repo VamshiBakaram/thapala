@@ -33,7 +33,6 @@ class ResetForgotPasswordViewModel:ObservableObject{
     
     func createUserResetPassword(resetToken:String) {
         self.isLoading = true
-        print(resetToken)
         let parametes = UserResetPasswordData(newPassword: password, confirmPassword: confirmPassword)
         NetworkManager.shared.request(type: UserResetPasswordModel.self, endPoint: "\(EndPoint.userResetPassword)/\(resetToken)", httpMethod: .put, parameters: parametes, isSessionIdRequited: false) { [weak self]result in
             guard let self = self else { return }

@@ -125,11 +125,8 @@ struct ResetPasswordView: View {
                 .padding(.horizontal, 25)
             }
             .navigationDestination(isPresented: $securityAnswerViewModel.isPresenter, destination: {
-//                if securityAnswerViewModel.navigateToResetPass{
                 SecurityAnswerView(tCode: securityAnswerViewModel.tCode,question: forgetUserData.securityQuestion?.question ?? "",verifyCodeViewModel:VerifyCodeViewModel(tCode: verifyCodeViewModel.tCode)).toolbar(.hidden)
-//                }else {
-//                    EmptyView()
-//                }
+
             })
             .toast(message: $securityAnswerViewModel.error)
             .navigationDestination(isPresented: $verifyCodeViewModel.isPresenter, destination: {

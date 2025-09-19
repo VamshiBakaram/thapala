@@ -9,6 +9,8 @@ import SwiftUI
 import AVKit
 import _PhotosUI_SwiftUI
 import PhotosUI
+import Bcrypt
+
 struct HomeRecordsView: View {
     @State private var isMenuVisible = false
     @EnvironmentObject private var sessionManager: SessionManager
@@ -16,8 +18,8 @@ struct HomeRecordsView: View {
     @StateObject var homeRecordsViewModel = HomeRecordsViewModel()
     @StateObject var homeAwaitingViewModel = HomeAwaitingViewModel()
     @StateObject var mailComposeViewModel = MailComposeViewModel()
-    @StateObject var consoleViewModel = consoleviewModel()
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var consoleViewModel = ConsoleNavigatiorViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @State private var selectedTabID : Int = 1059
     @State private var Foldertype : String = "work"
     @State private var subFoldertype : String = "files"
@@ -25,7 +27,6 @@ struct HomeRecordsView: View {
     @State private var workspace: Bool = true
     @State private var isfilesView: Bool = false
     @State private var ismailsView: Bool = false
-    @State private var isPicturesView: Bool = false
     @State private var isvideosView: Bool = false
     @State private var typeview: Bool = true
     @State private var showViewer = false // video
@@ -60,7 +61,6 @@ struct HomeRecordsView: View {
     @State private var newPinView: Bool = false
     @State private var subFolderView: Bool = false
     @State private var subFolderViewFiles: Bool = false
-//    @State private var setPin: String = ""
     @State private var password: String = ""
     @State private var newPin: String = ""
     @State private var confirmPin: String = ""
@@ -78,6 +78,7 @@ struct HomeRecordsView: View {
     @State private var isSearchView = false
     @State private var iNotificationAppBarView = false
     @State private var markAs : Int = 0
+    @State private var BottomBars: Bool = true
     func subFolderIndex(for name: String) -> Int? {
         return subFolders.firstIndex(of: name)
     }
@@ -86,39 +87,35 @@ struct HomeRecordsView: View {
     var body: some View {
         GeometryReader{ reader in
             ZStack{
+                themesviewModel.currentTheme.windowBackground
+                    .ignoresSafeArea(edges: .bottom)
+                
                 VStack{
                     VStack {
                         HStack(spacing:20){
-                            AsyncImage(url: URL(string: imageUrl)) { phase in
-                                switch phase {
-                                case .empty:
-                                    ProgressView()
-                                case .success(let image):
-                                    image
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                        .aspectRatio(contentMode: .fit)
-                                        .clipShape(Circle())
-                                        .padding(.leading,20)
-                                case .failure:
-                                    Image("person")
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                        .aspectRatio(contentMode: .fit)
-                                        .clipShape(Circle())
-                                        .padding(.leading,20)
-                                @unknown default:
-                                    EmptyView()
-                                }
-                            }
+                            Image("contactW")
+                                .resizable()
+                                .renderingMode(.template)
+                                .frame(width: 35, height: 35)
+                                .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                .background(
+                                    Circle()
+                                        .fill(themesviewModel.currentTheme.colorPrimary) // Inner background
+                                )
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color.white, lineWidth: 2) // Border
+                                )
+                                .clipShape(Circle())
+                                .padding(.leading, 16)
                             
                             Text("Records")
-                                .padding(.leading,20)
                                 .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                                .font(.custom(.poppinsRegular, size: 16, relativeTo: .title))
+                                .font(.custom(.poppinsSemiBold, size: 16, relativeTo: .title))
+                            
                             Spacer()
+                            
                             Button(action: {
-                                print("search button pressed")
                                 appBarElementsViewModel.isSearch = true
                             }) {
                                 Image("magnifyingglass")
@@ -129,49 +126,42 @@ struct HomeRecordsView: View {
                             .padding(.leading,15)
                             
                             Button(action: {
-                                print("bell button pressed")
                                 iNotificationAppBarView = true
                             }) {
-                                Image("bell")
-                                    .renderingMode(.template)
-                                    .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
-                                    .font(Font.title.weight(.medium))
+                                Image("notification")
                             }
+                            .padding(.leading,15)
                             
                             Button(action: {
-                                print("line.3.horizontal button pressed")
                                 withAnimation {
                                     isMenuVisible.toggle()
                                 }
                             }) {
-                                Image(systemName: "line.3.horizontal")
-                                    .font(Font.title.weight(.medium))
+                                Image("MenuIcon")
+                                    .renderingMode(.template)
                                     .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                    .font(Font.title.weight(.medium))
                             }
-                            .padding(.trailing,15)
+                            .padding(.leading,15)
+                            .padding(.trailing , 30)
                         }
-                        .padding(.top, -reader.size.height * 0.01)
-                        HStack {
-                            ScrollView(.horizontal,showsIndicators: false){
+                        .padding(.top ,15)
                                 HStack{
                                     RoundedRectangle(cornerRadius: 10)
                                         .fill(self.homeRecordsViewModel.isWorkSelected ?themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
-                                        .frame(width: reader.size.width/3 - 10, height: 50)
+                                        .frame(width: max(reader.size.width/3 - 10, 50), height: 50)
                                         .onTapGesture {
                                             selectedTAB = "work"
                                             isfilesView = false
-                                            typeview = false
                                             lockerView = false
                                             subFolderView = false
                                             subFolderViewFiles = false
                                             workspace = true
+                                            typeview = true
                                             Foldertype = "work"; subFoldertype = "files"
+                                            selectedTabID = MainselectedTabID[0]
+                                            homeRecordsViewModel.folderID = MainselectedTabID[0] ; homeRecordsViewModel.fileType = "work" ; homeRecordsViewModel.subfoldertype = "files"
                                             homeRecordsViewModel.getRecordsData(selectedTabID: MainselectedTabID[0], Type: Foldertype, SubFoldersType: subFoldertype)
-//                                            print("archive TypeselectedTabID \(TypeselectedTabID)")
-//                                            print("archive TypeselectedTabID index 0 \(TypeselectedTabID[0])")
-//                                            print("archive TypeselectedTabID index 1 \(TypeselectedTabID[1])")
-//                                            print("archive TypeselectedTabID index 2 \(TypeselectedTabID[2])")
-//                                            print("archive TypeselectedTabID index 2 \(TypeselectedTabID[3])")
                                             
                                             self.homeRecordsViewModel.selectedOption = .work
                                             self.homeRecordsViewModel.isWorkSelected = true
@@ -182,13 +172,18 @@ struct HomeRecordsView: View {
                                             Group{
                                                 HStack{
                                                     Image("workSpace")
+                                                        .resizable()
                                                         .renderingMode(.template)
                                                         .frame(width: 20, height: 20)
-                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                        .background(themesviewModel.currentTheme.tabBackground)
+                                                        .padding(5)
+                                                        .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 8)
+                                                                .fill(themesviewModel.currentTheme.tabBackground)
+                                                        )
                                                     VStack{
                                                         Text("WorkSpace")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                            .font(.custom(.poppinsMedium, size: 14, relativeTo: .title))
                                                             .foregroundColor(themesviewModel.currentTheme.textColor)
                                                     }
                                                 }
@@ -197,23 +192,19 @@ struct HomeRecordsView: View {
                                     
                                     RoundedRectangle(cornerRadius: 10)
                                         .fill(self.homeRecordsViewModel.isArchiveSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
-                                        .frame(width: reader.size.width/3 - 10, height: 50)
+                                        .frame(width: max(reader.size.width/3 - 10, 50), height: 50)
                                         .onTapGesture {
                                             selectedTAB = "archive"
                                             isfilesView = false
-                                            typeview = false
                                             lockerView = false
                                             subFolderView = false
                                             subFolderViewFiles = false
                                             workspace = true
-                                            Foldertype = "archive"; subFoldertype = "files"
+                                            typeview = true
+                                            Foldertype = "archive"
+                                            subFoldertype = "files"
+                                            selectedTabID = MainselectedTabID[1]
                                             homeRecordsViewModel.getRecordsData(selectedTabID: MainselectedTabID[1], Type: Foldertype, SubFoldersType: subFoldertype)
-//                                            TypeselectedTabID = homeRecordsViewModel.defaultRecordsData.map { $0.id }
-//                                                print("archive TypeselectedTabID \(TypeselectedTabID)")
-//                                                print("archive TypeselectedTabID index 0 \(TypeselectedTabID[0])")
-//                                            print("archive TypeselectedTabID index 1 \(TypeselectedTabID[1])")
-//                                            print("archive TypeselectedTabID index 2 \(TypeselectedTabID[2])")
-//                                            print("archive TypeselectedTabID index 2 \(TypeselectedTabID[3])")
                                             self.homeRecordsViewModel.selectedOption = .archive
                                             self.homeRecordsViewModel.isWorkSelected = false
                                             self.homeRecordsViewModel.isArchiveSelected = true
@@ -223,14 +214,18 @@ struct HomeRecordsView: View {
                                             Group{
                                                 HStack{
                                                     Image("Archieve")
+                                                        .resizable()
                                                         .renderingMode(.template)
                                                         .frame(width: 20, height: 20)
-                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                        .background(themesviewModel.currentTheme.tabBackground)
-                                                    //  .padding()
+                                                        .padding(5)
+                                                        .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 8)
+                                                                .fill(themesviewModel.currentTheme.tabBackground)
+                                                        )
                                                     VStack{
                                                         Text("Archive")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                            .font(.custom(.poppinsMedium, size: 14, relativeTo: .title))
                                                             .foregroundColor(themesviewModel.currentTheme.textColor)
                                                     }
                                                 }
@@ -240,7 +235,7 @@ struct HomeRecordsView: View {
                                     
                                     RoundedRectangle(cornerRadius: 10)
                                         .fill(self.homeRecordsViewModel.isLockerSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
-                                        .frame(width: reader.size.width/3 - 10, height: 50)
+                                        .frame(width: max(reader.size.width/3 - 10, 50), height: 50)
                                         .onTapGesture {
                                             selectedTAB = "Locker"
                                             workspace = false
@@ -250,6 +245,9 @@ struct HomeRecordsView: View {
                                             subFolderView = false
                                             subFolderViewFiles = false
                                             lockerView = true
+                                            Foldertype = "locker"
+                                            subFoldertype = "files"
+                                            selectedTabID = MainselectedTabID[2]
                                             self.homeRecordsViewModel.selectedOption = .locker
                                             self.homeRecordsViewModel.isWorkSelected = false
                                             self.homeRecordsViewModel.isArchiveSelected = false
@@ -259,1012 +257,829 @@ struct HomeRecordsView: View {
                                             Group{
                                                 HStack{
                                                     Image("Locker")
+                                                        .resizable()
                                                         .renderingMode(.template)
                                                         .frame(width: 20, height: 20)
-                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                        .background(themesviewModel.currentTheme.tabBackground)
+                                                        .padding(5)
+                                                        .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 8)
+                                                                .fill(themesviewModel.currentTheme.tabBackground)
+                                                        )
                                                     VStack{
                                                         Text("Locker")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                            .font(.custom(.poppinsMedium, size: 14, relativeTo: .title))
                                                             .foregroundColor(themesviewModel.currentTheme.textColor)
                                                     }
                                                 }
                                             }
                                         )
                                 }
-                                .padding([.leading,.trailing])
-                            }
-                            
-                        }
-//                        .padding(.top , 1)
-                      
+                                .padding([.leading,.trailing,],5)
+                                .padding(.bottom , 10)
                     }
-                    
-                    .frame(height: reader.size.height * 0.16)
-                    .background(themesviewModel.currentTheme.tabBackground)
-                    
-
-                    HStack {
-                        Text("workspace")
-                            .foregroundColor(themesviewModel.currentTheme.textColor)
-                            .padding(.leading,16)
-                        Spacer()
-                        Image(typeview ? "printIcon" : "GrId")
-                            .resizable()
-                            .renderingMode(.template)
-                            .scaledToFit()
-                            .frame(width: 30, height: 30)
-                            .foregroundColor(themesviewModel.currentTheme.iconColor)
-                            .padding([.leading, .trailing], 10)
-                            .padding([.top, .bottom], 5)
-                            .background(themesviewModel.currentTheme.tabBackground)
-                            .cornerRadius(10)
-                            .padding(.trailing, 20)
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                print("before typeview.toggle() \(typeview)")
-                                typeview.toggle()
-                                print("After typeview.toggle() \(typeview)")
-                            }
-                    }
-                    if workspace {
-                        if homeRecordsViewModel.recordsData.count != 0 {
-                            VStack(alignment: .leading, spacing: 10) {
-                                Text("Folders")
-                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                    .fontWeight(.bold)
-                                    .padding(.leading, 16)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                                // Define flexible columns to wrap horizontally
-                                let columns = [
-                                    GridItem(.flexible(minimum: 100), spacing: 10),
-                                    GridItem(.flexible(minimum: 100), spacing: 10),
-                                    GridItem(.flexible(minimum: 100), spacing: 10)
-                                ]
-                                
-                                LazyVGrid(columns: columns, alignment: .leading, spacing: 12) {
-                                    ForEach(homeRecordsViewModel.recordsData.indices, id: \.self) { index in
-                                        let folder = homeRecordsViewModel.recordsData[index]
-                                        
-                                        VStack(alignment: .leading) {
-                                            HStack {
-                                                Image(systemName: "folder.fill")
-                                                    .resizable()
-                                                    .frame(width: 50, height: 40)
-                                                    .foregroundColor(.yellow)
-                                                Spacer()
-                                                Button(action: {
-                                                    isMoreSheetvisible.toggle()
-                                                    fileType = "folder"
-                                                    fileclicks = false
-                                                    print("selectedTabID \(selectedTabID )Foldertype \(Foldertype) SubFoldersType \(subFoldertype) ")
-                                                }) {
-                                                    Image("dots")
-                                                        .resizable()
-                                                        .frame(width: 30, height: 30, alignment: .topTrailing)
-                                                        .padding(.top, 1)
-                                                        .padding(.trailing, 1)
-                                                        .foregroundColor(.black)
-                                                }
-                                                
-                                            }
-                                            
-                                            Text(folder.folderName)
-                                                .foregroundColor(.black)
-                                        }
-                                        .onTapGesture{
-                                            subfoldersViewIds = folder.id
-                                            subfoldersViewType = folder.type
-                                            
-                                            print("on click of folder")
-//                                            homeRecordsViewModel.getRecordsData(selectedTabID: folder.id, Type: folder.type, SubFoldersType: "")
-                                            print("before subFolderView \(subFolderView)")
-                                            workspace = false
-                                            typeview = false
-                                            isfilesView = false
-                                            subFolderView = true
-                                            subFolderViewFiles = true
-                                            print("After subFolderView \(subFolderView)")
-                                        }
-                                        .padding()
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 12)
-                                                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-                                        )
-                                        .background(Color.white)
-                                        .cornerRadius(12)
-                                        .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
-                                    }
-                                }
-                                .padding(.horizontal, 16)
-                            }
-                        }
-                    }
-                    
-                    if subFolderView {
-                            VStack(alignment: .leading, spacing: 10) {
-                                Text("Folders")
-                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                    .fontWeight(.bold)
-                                    .padding(.leading, 16)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                                // Define flexible columns to wrap horizontally
-                                let columns = [
-                                    GridItem(.flexible(minimum: 100), spacing: 10),
-                                    GridItem(.flexible(minimum: 100), spacing: 10),
-                                    GridItem(.flexible(minimum: 100), spacing: 10)
-                                ]
-                                
-                                LazyVGrid(columns: columns, alignment: .leading, spacing: 12) {
-                                    ForEach(homeRecordsViewModel.defaultRecordsData.indices, id: \.self) { index in
-                                        let folder = homeRecordsViewModel.defaultRecordsData[index]
-                                        
-                                        VStack(alignment: .leading) {
-                                            HStack {
-                                                Image(systemName: "folder.fill")
-                                                    .resizable()
-                                                    .frame(width: 50, height: 40)
-                                                    .foregroundColor(.yellow)
-                                                Spacer()
-                                            }
-                                            
-                                            Text(folder.folderName)
-                                                .foregroundColor(.black)
-                                        }
-                                        .onAppear{
-                                            print("sub folder view appears")
-                                            print("folder \(folder)")
-                                            print("folder.folderName \(folder.folderName)")
-                                            
-                                        }
-                                        .padding()
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 12)
-                                                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-                                        )
-                                        .background(Color.white)
-                                        .cornerRadius(12)
-                                        .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
-                                    }
-                                }
-                                .padding(.horizontal, 16)
-                                Spacer()
-                                    .frame(height: reader.size.height )
-                            }
-                            .onAppear{
-                                homeRecordsViewModel.getSubRecordsData(selectedTabID: subfoldersViewIds, Type: subfoldersViewType)
-                                print("check appears")
-                                print("folder id is \(subfoldersViewIds)")
-                                print("subfoldersViewType is \(subfoldersViewType)")
-                            }
-
-                        
-                    }
-                    
-                    Spacer()
-                    HStack{
-                        Spacer()
-                        Button(action: {
-                            plusmark = true
-                        }) {
-                            Image("plus")
+                    .frame(height: reader.size.height * 0.17)
+                    .background(themesviewModel.currentTheme.colorPrimary)
+                    .padding(.top , 5)
+                    VStack {
+                        HStack {
+                            Text("workspace")
+                                .font(.custom(.poppinsRegular, size: 16))
+                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                .padding(.leading,16)
+                            Spacer()
+                            Image(typeview ? "printIcon" : "GrId")
                                 .resizable()
+                                .renderingMode(.template)
                                 .scaledToFit()
-                                .frame(width: 40, height: 40) // You can adjust size here
-                                .padding()
-                                .background(themesviewModel.currentTheme.tabBackground)
-                                .clipShape(Circle())
+                                .frame(width: 20, height: 20)
                                 .foregroundColor(themesviewModel.currentTheme.iconColor)
-                        }
-                        .padding(.trailing,15)
-                    }
-                    Spacer()
-                        .frame(height: 15)
-                    // Replace your current bottom navigation HStack with this version:
-
-                    HStack{
-                        Button(action: {
-                            print("file button clicked")
-                            if selectedTAB == "work" {
-                                selectedTabID = MainselectedTabID[0]+1 ; Foldertype = "work"; subFoldertype = "files"
-                                
-                                homeRecordsViewModel.folderID = MainselectedTabID[0]+1 ; homeRecordsViewModel.fileType = "work" ; homeRecordsViewModel.subfoldertype = "files"
-                                homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
-                                workspace = false
-                                ismailsView = false
-                                subFolderView = false
-                                subFolderViewFiles = false
-                                typeview = true
-                                isfilesView = true
-                            }
-                            else if selectedTAB == "archive" {
-                                selectedTabID = MainselectedTabID[1]+1 ;Foldertype = "archive"; subFoldertype = "files"
-                                homeRecordsViewModel.folderID = MainselectedTabID[1]+1 ; homeRecordsViewModel.fileType = "archive" ; homeRecordsViewModel.subfoldertype = "files"
-                                homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
-                                workspace = false
-                                ismailsView = false
-                                subFolderView = false
-                                subFolderViewFiles = false
-                                typeview = true
-                                isfilesView = true
-                            }
-                            else if selectedTAB == "Locker"{
-                                selectedTabID = MainselectedTabID[2]+1 ;Foldertype = "locker"; subFoldertype = "files"
-                                homeRecordsViewModel.folderID = MainselectedTabID[2]+1 ; homeRecordsViewModel.fileType = "locker" ; homeRecordsViewModel.subfoldertype = "files"
-                                homeRecordsViewModel.getLockerData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
-                                workspace = false
-                                ismailsView = false
-                                subFolderView = false
-                                subFolderViewFiles = false
-                                typeview = true
-                                isfilesView = true
-                            }
-                        }) {
-                            Image("RecordFiles")
-                                .renderingMode(.template)
-                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-                        }
-                        .contentShape(Rectangle())
-                        Spacer()
-
-                        Button(action: {
-                            print("mails button clicked")
-                            if selectedTAB == "work" {
-                                selectedTabID = MainselectedTabID[0]+2 ; Foldertype = "work"; subFoldertype = "mails"
-                                homeRecordsViewModel.folderID = MainselectedTabID[0]+2 ; homeRecordsViewModel.fileType = "work" ; homeRecordsViewModel.subfoldertype = "mails"
-                                homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
-                                workspace = false
-                                isfilesView = false
-                                subFolderView = false
-                                subFolderViewFiles = false
-                                typeview = false
-                                ismailsView = true
-                            }
-                            else if selectedTAB == "archive" {
-                                selectedTabID = MainselectedTabID[1]+2 ; Foldertype = "archive"; subFoldertype = "mails"
-                                homeRecordsViewModel.folderID = MainselectedTabID[1]+2 ; homeRecordsViewModel.fileType = "archive" ; homeRecordsViewModel.subfoldertype = "mails"
-                                homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
-                                workspace = false
-                                isfilesView = false
-                                subFolderView = false
-                                subFolderViewFiles = false
-                                typeview = false
-                                ismailsView = true
-                            }
-                            else if selectedTAB == "Locker" {
-                                selectedTabID = MainselectedTabID[2]+2; Foldertype = "locker"; subFoldertype = "mails"
-                                homeRecordsViewModel.folderID = MainselectedTabID[2]+2 ; homeRecordsViewModel.fileType = "locker" ; homeRecordsViewModel.subfoldertype = "mails"
-                                homeRecordsViewModel.getLockerData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
-                                workspace = false
-                                isfilesView = false
-                                subFolderView = false
-                                subFolderViewFiles = false
-                                typeview = false
-                                ismailsView = true
-                            }
-                        }) {
-                            Image("RecordMails")
-                                .renderingMode(.template)
-                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-                        }
-                        .contentShape(Rectangle())
-                        Spacer()
-
-                        Button(action: {
-                            print("pictures button clicked")
-                            if selectedTAB == "work" {
-                                selectedTabID = MainselectedTabID[0]+3 ;Foldertype = "work"; subFoldertype = "pictures"
-                                homeRecordsViewModel.folderID = MainselectedTabID[0]+3 ; homeRecordsViewModel.fileType = "work" ; homeRecordsViewModel.subfoldertype = "pictures"
-                                homeRecordsViewModel.getRecordsData(selectedTabID: MainselectedTabID[0]+3, Type: Foldertype, SubFoldersType: subFoldertype)
-                                workspace = false
-                                ismailsView = false
-                                isPicturesView = false
-                                subFolderView = false
-                                subFolderViewFiles = false
-                                typeview = true
-                                isfilesView = true
-                            }
-                            else if selectedTAB == "archive" {
-                                selectedTabID = MainselectedTabID[1]+3 ;Foldertype = "archive"; subFoldertype = "pictures"
-                                homeRecordsViewModel.folderID = MainselectedTabID[1]+3 ; homeRecordsViewModel.fileType = "archive" ; homeRecordsViewModel.subfoldertype = "pictures"
-                                homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
-                                workspace = false
-                                ismailsView = false
-                                subFolderView = false
-                                subFolderViewFiles = false
-                                typeview = true
-                                isfilesView = true
-                            }
-                            else if selectedTAB == "Locker" {
-                                selectedTabID = MainselectedTabID[2]+3 ; Foldertype = "locker"; subFoldertype = "pictures"
-                                homeRecordsViewModel.folderID = MainselectedTabID[2]+3 ; homeRecordsViewModel.fileType = "locker" ; homeRecordsViewModel.subfoldertype = "pictures"
-                                homeRecordsViewModel.getLockerData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
-                                workspace = false
-                                ismailsView = false
-                                subFolderView = false
-                                subFolderViewFiles = false
-                                typeview = true
-                                isfilesView = true
-                            }
-                        }) {
-                            Image("picture")
-                                .renderingMode(.template)
-                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-                        }
-                        .contentShape(Rectangle())
-                        Spacer()
-                        
-                        Button(action: {
-                            print("videos button clicked")
-                            if selectedTAB == "work" {
-                                selectedTabID = MainselectedTabID[0]+4 ;Foldertype = "work"; subFoldertype = "videos"
-
-                                homeRecordsViewModel.folderID = 1063 ; homeRecordsViewModel.fileType = "work" ; homeRecordsViewModel.subfoldertype = "videos"
-                                homeRecordsViewModel.getRecordsData(selectedTabID: MainselectedTabID[0]+4, Type: Foldertype, SubFoldersType: subFoldertype)
-                                workspace = false
-                                isfilesView = false
-                                subFolderView = false
-                                subFolderViewFiles = false
-                                typeview = true
-                                isfilesView = true
-
-                            }
-                            else if selectedTAB == "archive" {
-                                selectedTabID = MainselectedTabID[1]+4 ; Foldertype = "archive"; subFoldertype = "videos"
-                                homeRecordsViewModel.folderID = 1068 ; homeRecordsViewModel.fileType = "archive" ; homeRecordsViewModel.subfoldertype = "videos"
-                                homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
-                                workspace = false
-                                isfilesView = false
-                                subFolderView = false
-                                subFolderViewFiles = false
-                                typeview = true
-                                isfilesView = true
-                            }
-                            else if selectedTAB == "Locker" {
-                                selectedTabID = MainselectedTabID[2]+4 ; Foldertype = "locker"; subFoldertype = "videos"
-                                homeRecordsViewModel.folderID = 1073 ; homeRecordsViewModel.fileType = "locker" ; homeRecordsViewModel.subfoldertype = "videos"
-                                homeRecordsViewModel.getLockerData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
-                                workspace = false
-                                isfilesView = false
-                                subFolderView = false
-                                subFolderViewFiles = false
-                                typeview = true
-                                isfilesView = true
-                            }
-                        }) {
-                            Image(systemName: "video")
-                                .renderingMode(.template)
-                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-                        }
-                        .contentShape(Rectangle())
-                        Spacer()
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 10)
-                    .frame(maxWidth: .infinity)
-                    .background(themesviewModel.currentTheme.windowBackground)
-                    .zIndex(1000)
-                    
-                }
-                .toast(message: $homeRecordsViewModel.error)
-                .toast(message: $consoleViewModel.error)
-                .toast(message: $toastMessage)
-
-                .background(themesviewModel.currentTheme.windowBackground)
-                .onAppear{
-                    if homeRecordsViewModel.mainRecords.isEmpty {
-                        homeRecordsViewModel.getMainRecordsData()
-                    }
-                    homeRecordsViewModel.setPin = sessionManager.pin
-                    homeRecordsViewModel.password = sessionManager.password
-                    password = sessionManager.password
-                    print("check pin \(homeRecordsViewModel.setPin)")
-                    print("password \(password)")
-                    
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        let records = homeRecordsViewModel.mainRecords
-                        if !records.isEmpty {
-                            // Dynamically map tab IDs from the model
-                            MainselectedTabID = records.map { $0.id }
-
-                            // Optional: Default to Work tab (index 0)
-                            if MainselectedTabID.indices.contains(0) {
-                                selectedTabID = MainselectedTabID[0]
-                                Foldertype = "work"
-                                subFoldertype = "files"
-
-                                homeRecordsViewModel.getRecordsData(
-                                    selectedTabID: selectedTabID,
-                                    Type: Foldertype,
-                                    SubFoldersType: subFoldertype
-                                )
-
-                                print("MainselectedTabID: \(MainselectedTabID)")
-                                print("Initial selectedTabID: \(selectedTabID)")
-                            }
-                        } else {
-                            print("mainRecords is still empty.")
-                        }
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
-                    }
-                }
-
-
-//                .fileImporter(isPresented: $isFilePickerPresent, allowedContentTypes: [.image, .pdf, .plainText], allowsMultipleSelection: true) { result in
-//                    switch result {
-//                    case .success(let urls):
-//                        mailComposeViewModel.selectedFiles.append(contentsOf: urls)
-//                        mailComposeViewModel.uploadFiles(fileURLs: urls)
-//                    case .failure(let error):
-//                        print("Failed to select files: \(error.localizedDescription)")
-//                    }
-//                }
-//                if homeRecordsViewModel.isLoading {
-//                    CustomProgressView()
-//                }
-                if isMenuVisible{
-                    HomeMenuView(isSidebarVisible: $isMenuVisible)
-                }
-
-                
-                if ismailsView {
-                    if homeRecordsViewModel.emailsData.count != 0 {
-                        VStack {
-                            ForEach(homeRecordsViewModel.emailsData.indices, id: \.self) { index in
-                                let folder = homeRecordsViewModel.emailsData[index]
-                                HStack {
-                                    Button(action: {
-                                    }) {
-                                        Image("unchecked")
-                                            .renderingMode(.template)
-                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                            .padding([.trailing, .leading], 5)
-                                            .frame(width: 34, height: 34)
-                                            .clipShape(Circle())
-                                    }
-                                    
-                                    VStack(alignment: .leading) {
-                                        HStack {
-                                            Text("\(folder.firstname)\(folder.lastname)")
-                                                .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
-                                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                            
-                                            Text("Draft")
-                                                .foregroundColor(Color.red)
-                                            
-                                            Spacer()
-                                            if let unixTimestamp = folder.sentAt,
-                                               let istDateStringFromISO = convertToIST(dateInput: unixTimestamp) {
-                                                Text(istDateStringFromISO)
-                                                    .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
-                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                    .padding(.top, 0)
-                                                    .padding(.trailing , 10)
-                                                    .frame(maxWidth: .infinity, alignment: .topTrailing)
-                                            }
-                                        }
-                                        HStack {
-                                            Text(folder.subject)
-                                                .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
-                                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                            
-                                            Spacer()
-                                            
-                                            Image(folder.starred == 1 ? "star" : "emptystar")
-                                                .resizable()
-                                                .renderingMode(.template)
-                                                .frame(width: 20, height: 20)
-                                                .padding(.trailing , 10)
-                                                .foregroundColor(folder.starred == 1 ? themesviewModel.currentTheme.colorAccent : .white)
-                                            //                                            .onTapGesture {
-                                            //                                                let threadID = homeRecordsViewModel.emailsData[index].threadId
-                                            //                                                if let threadID {
-                                            //                                                    print("thread id:", threadID)
-                                            //                                                    // Toggle the 'starred' status
-                                            //                                                    homeRecordsViewModel.emailsData[index].starred =
-                                            //                                                        homeRecordsViewModel.emailsData[index].starred == 1 ? 0 : 1
-                                            //                                                    homeAwaitingViewModel.getStarredEmail(selectedEmail: threadID)
-                                            //                                                } else {
-                                            //                                                    print("threadID is nil")
-                                            //                                                }
-                                            //                                            }
-                                            
-                                        }
-                                    }
-                                }
-                                .listRowBackground(themesviewModel.currentTheme.windowBackground)
+                                .padding(.trailing, 20)
+                                .contentShape(Rectangle())
                                 .onTapGesture {
-                                    homeRecordsViewModel.selectedId = folder.threadId
-                                    homeRecordsViewModel.isEmailScreen = true
+                                    typeview.toggle()
                                 }
-                            }
-                            .listStyle(PlainListStyle())
-                            .scrollContentBackground(.hidden)
                         }
-                        .background(themesviewModel.currentTheme.windowBackground)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                        .padding(.leading, 16)
-                        .padding(.top , 180)
-                        .padding(.bottom, 80)
-                    }
-                }
+                        
+                        if workspace {
+                                if typeview == true{
+                                    GeometryReader { geometry in
+                                        ScrollView(.vertical, showsIndicators: false) {
+                                            VStack {
+                                                // FOLDERS GRID
+                                                if homeRecordsViewModel.recordsData.count != 0 {
+                                                    VStack(alignment: .leading, spacing: 10) {
+                                                        Text("Folders")
+                                                            .font(.custom(.poppinsBold, size: 16))
+                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                            .fontWeight(.bold)
+                                                        
+                                                        let columns = [
+                                                            GridItem(.flexible(minimum: 100), spacing: 10),
+                                                            GridItem(.flexible(minimum: 100), spacing: 10),
+                                                            GridItem(.flexible(minimum: 100), spacing: 10)
+                                                        ]
+                                                        
+                                                        LazyVGrid(columns: columns, alignment: .leading, spacing: 12) {
+                                                            ForEach(homeRecordsViewModel.recordsData.indices, id: \.self) { index in
+                                                                let folder = homeRecordsViewModel.recordsData[index]
+                                                                VStack(alignment: .leading) {
+                                                                    HStack {
+                                                                        Image("trashFolder")
+                                                                            .resizable()
+                                                                            .frame(width: 50, height: 40)
+                                                                            .foregroundColor(.yellow)
+                                                                        Spacer()
+                                                                        
+                                                                            Button(action: {
+                                                                                isMoreSheetvisible.toggle()
+                                                                                emailID = 1
+                                                                                fieldID = 1
+                                                                                recordID = folder.id
+                                                                                FileAzureName = ""
+                                                                                foldername = folder.folderName
+                                                                                createdAt = folder.createdAt
+                                                                                UpdatedAt = folder.updatedAt
+                                                                                filesize = ""
+                                                                                fileType = "folder"
+                                                                                fileclicks = false
+                                                                                homeRecordsViewModel.fileType = Foldertype
+                                                                                homeRecordsViewModel.subfoldertype = subFoldertype
+                                                                                homeRecordsViewModel.folderID = selectedTabID
+                                                                            }) {
+                                                                                Image("dots")
+                                                                                    .resizable()
+                                                                                    .renderingMode(.template)
+                                                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                                                    .frame(width: 24, height: 24, alignment: .topTrailing)
+                                                                                    .padding(.top, 1)
+                                                                                    .padding(.trailing, 1)
+                                                                                    
+                                                                            }
+                                                                         
+                                                                        
+                                                                    }
 
-
-                    // GRID VIEW
-                    if isfilesView {
-                        if typeview == true{
-                        VStack {
-                            // FOLDERS GRID
-                            if homeRecordsViewModel.recordsData.count != 0 {
-                                VStack(alignment: .leading, spacing: 10) {
-                                    Text("Folders")
-                                        .font(.custom(.poppinsBold, size: 16))
-                                        .foregroundColor(themesviewModel.currentTheme.textColor)
-                                        .fontWeight(.bold)
-                                    
-                                    let columns = [
-                                        GridItem(.flexible(minimum: 100), spacing: 10),
-                                        GridItem(.flexible(minimum: 100), spacing: 10),
-                                        GridItem(.flexible(minimum: 100), spacing: 10)
-                                    ]
-                                    
-                                    LazyVGrid(columns: columns, alignment: .leading, spacing: 12) {
-                                        ForEach(homeRecordsViewModel.recordsData.indices, id: \.self) { index in
-                                            let folder = homeRecordsViewModel.recordsData[index]
-                                            
-                                            VStack(alignment: .leading) {
-                                                HStack {
-                                                    Image(systemName: "folder.fill")
-                                                        .resizable()
-                                                        .frame(width: 50, height: 40)
-                                                        .foregroundColor(.yellow)
-                                                    Spacer()
-                                                    Button(action: {
-                                                        isMoreSheetvisible.toggle()
-                                                        print("selectedTabID \(selectedTabID )Foldertype \(Foldertype) SubFoldersType \(subFoldertype) ")
-                                                        emailID = 0
-                                                        fieldID = 0
-                                                        recordID = folder.id
-                                                        FileAzureName = ""
-                                                        foldername = folder.folderName
-                                                        createdAt = folder.createdAt
-                                                        UpdatedAt = folder.updatedAt
-                                                        filesize = ""
-                                                        fileType = "folder"
-                                                        fileclicks = false
-                                                        print("foldername \(foldername)  createdAt  \(createdAt) UpdatedAt \(UpdatedAt) filesize \(filesize)")
-                                                    }) {
-                                                        Image("dots")
-                                                            .resizable()
-                                                            .frame(width: 30, height: 30, alignment: .topTrailing)
-                                                            .padding(.top, 1)
-                                                            .padding(.trailing, 1)
-                                                            .foregroundColor(.black)
+                                                                        Text(folder.folderName)
+                                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                            .font(.custom(.poppinsRegular, size: 12))
+                                                                            .lineLimit(1)
+                                                                    
+                                                                }
+                                                                .padding()
+                                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                                                .background(
+                                                                    RoundedRectangle(cornerRadius: 12)
+                                                                        .stroke(themesviewModel.currentTheme.allBlack.opacity(0.1), lineWidth: 1)
+                                                                )
+                                                                .background(themesviewModel.currentTheme.windowBackground)
+                                                                .cornerRadius(12)
+                                                                .shadow(color: themesviewModel.currentTheme.colorControlNormal.opacity(0.3), radius: 4, x: 0, y: 2)
+                                                            }
+                                                        }
                                                     }
+                                                    .padding(.horizontal, 16)
+                                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
 
                                                 }
                                                 
-                                                Text(folder.folderName)
-                                                    .foregroundColor(.black)
-                                                    .font(.custom(.poppinsRegular, size: 14))
-                                                    .lineLimit(1)
-                                            }
-                                            .padding()
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 12)
-                                                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-                                            )
-                                            .background(Color.white)
-                                            .cornerRadius(12)
-                                            .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
-                                        }
-                                    }
-                                }
-                                .padding(.top, 180)
-                                .padding(.leading, 16)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                            }
-
-                            // FILES GRID
-                            if homeRecordsViewModel.FilesData.count != 0 {
-                                VStack(alignment: .leading, spacing: 10) {
-                                    Text("Files")
-                                        .font(.custom(.poppinsBold, size: 16))
-                                        .foregroundColor(themesviewModel.currentTheme.textColor)
-                                        .fontWeight(.bold)
-                                    
-                                    let columns = [
-                                        GridItem(.flexible(minimum: 100), spacing: 20),
-                                        GridItem(.flexible(minimum: 100), spacing: 20),
-                                        GridItem(.flexible(minimum: 100), spacing: 0)
-                                    ]
-                                        LazyVGrid(columns: columns, alignment: .leading, spacing: 12) {
-                                            ForEach(homeRecordsViewModel.FilesData.indices, id: \.self) { index in
-                                                let file = homeRecordsViewModel.FilesData[index]
-                                                VStack(alignment: .leading, spacing: 8) {
-                                                    HStack(alignment: .top, spacing: 10) {
-                                                        let fileURL = URL(string: file.fileLink)
+                                                // FILES GRID
+                                                if homeRecordsViewModel.filesData.count != 0 {
+                                                    VStack(alignment: .leading, spacing: 10) {
+                                                        Text("Files")
+                                                            .font(.custom(.poppinsBold, size: 16))
+                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                            .fontWeight(.bold)
                                                         
-                                                        Group {
-                                                            if file.fileLink.lowercased().hasSuffix(".mp4") || file.fileLink.lowercased().hasSuffix(".mov") || file.fileLink.lowercased().hasSuffix(".3gp") || file.fileLink.lowercased().hasSuffix(".asf") || file.fileLink.lowercased().hasSuffix(".avi") || file.fileLink.lowercased().hasSuffix(".f4v") || file.fileLink.lowercased().hasSuffix(".flv") || file.fileLink.lowercased().hasSuffix(".hevc") ||
-                                                                file.fileLink.lowercased().hasSuffix(".m2ts") || file.fileLink.lowercased().hasSuffix(".m2v") || file.fileLink.lowercased().hasSuffix(".m4v") || file.fileLink.lowercased().hasSuffix(".mjpeg") || file.fileLink.lowercased().hasSuffix(".mpg") || file.fileLink.lowercased().hasSuffix(".mts") ||
-                                                                file.fileLink.lowercased().hasSuffix(".mxf") || file.fileLink.lowercased().hasSuffix(".ogv") || file.fileLink.lowercased().hasSuffix(".rm") || file.fileLink.lowercased().hasSuffix(".swf") || file.fileLink.lowercased().hasSuffix(".ts") || file.fileLink.lowercased().hasSuffix(".vob") || file.fileLink.lowercased().hasSuffix(".webm") || file.fileLink.lowercased().hasSuffix(".wmv") ||
-                                                                file.fileLink.lowercased().hasSuffix(".wtv") {
-                                                                if let url = fileURL {
-                                                                    ZStack {
-                                                                        VideoPlayer(player: AVPlayer(url: url))
-                                                                            .frame(width: 50, height: 40)
-                                                                            .cornerRadius(8)
-                                                                            .disabled(true) // prevents autoplay here
-                                                                        Image(systemName: "play.circle.fill")
-                                                                            .resizable()
-                                                                            .frame(width: 30, height: 30)
-                                                                            .foregroundColor(.white)
-                                                                    }
-                                                                    .onTapGesture {
-                                                                        print("on click of video")
-                                                                        if let safeURL = fileURL {
-                                                                            confirmedURL = safeURL
-                                                                            isVideo = true
-
-                                                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                                                                showViewer = true
-                                                                            }
-
-                                                                            print("confirmedURL = \(confirmedURL!)")
-                                                                        }
-                                                                    }
-
-
-
-                                                                }
-                                                            }
-                                                            else if isDocumentOrAudioOrArchive(file.fileLink) {
-                                                                    ZStack {
-                                                                        RoundedRectangle(cornerRadius: 8)
-                                                                            .fill(Color.gray.opacity(0.2))
-                                                                            .frame(width: 50, height: 40)
-                                                                        Image(systemName: "doc.fill") // you can customize based on extension
-                                                                            .resizable()
-                                                                            .frame(width: 24, height: 30)
-                                                                            .foregroundColor(.blue)
-                                                                    }
-                                                                    .onTapGesture {
-                                                                        print("click on file format")
-                                                                        toastMessage = "Format not supported for preview"
-                                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                                                            toastMessage = nil // hide the toast after 2 seconds
-                                                                        }
-                                                                    }
-
-                                                                }
-                                                            
-                                                            else {
-                                                                AsyncImage(url: fileURL) { phase in
-                                                                    if let image = phase.image {
-                                                                        image
-                                                                            .resizable()
-                                                                            .scaledToFill()
-                                                                            .frame(width: 50, height: 40)
-                                                                            .clipped()
-                                                                            .cornerRadius(8)
-                                                                            .onTapGesture {
-                                                                                print("on click of image")
-                                                                                if let safeURL = fileURL {
-                                                                                    confirmedURL = safeURL
-                                                                                    isVideo = false
-                                                                                    print("confirmedURL = \(safeURL)")
-                                                                                }
-                                                                            }
-
-
-                                                                    } else if phase.error != nil {
-                                                                        Image(systemName: "xmark.octagon")
-                                                                            .resizable()
-                                                                            .frame(width: 50, height: 40)
-                                                                            .foregroundColor(.red)
-                                                                    } else {
-                                                                        ProgressView()
-                                                                            .frame(width: 50, height: 40)
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                        
-                                                        Spacer()
-                                                            .frame(width: 5)
-                                                        Button(action: {
-                                                            isMoreSheetvisible.toggle()
-                                                            print("selectedTabID \(selectedTabID )Foldertype \(Foldertype) SubFoldersType \(subFoldertype) ")
-                                                            emailID = 0
-                                                            fieldID = file.id
-                                                            recordID = 0
-                                                            FileAzureName = file.azureFileName
-                                                            foldername = file.fileName
-                                                            createdAt = file.createdAt
-                                                            UpdatedAt = file.updatedAt
-                                                            filesize = file.fileSize
-                                                            AzureLink = file.fileLink
-                                                            fileType = "file"
-                                                            fileFormat = URL(fileURLWithPath: file.fileName).pathExtension.lowercased()
-                                                            fileclicks = true
-                                                            print("foldername \(foldername)  createdAt  \(createdAt) UpdatedAt \(UpdatedAt) filesize \(filesize)  AzureLink  \(AzureLink)")
-                                                        }) {
-                                                            Image("dots")
-                                                                .resizable()
-                                                                .frame(width: 25, height: 25, alignment: .topTrailing)
-                                                                .padding(.top, 1)
-                                                                .padding(.trailing, 1)
-                                                                .foregroundColor(.black)
-                                                        }
-                                                    }
-                                                    Text(file.fileName)
-                                                        .foregroundColor(.black)
-                                                        .font(.custom(.poppinsRegular, size: 12))
-                                                        .lineLimit(1)
-                                                }
-                                                .padding(5)
-                                                .padding(.trailing, (index % 3 == 2) ? 16 : 0)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
-                                                .background(
-                                                    RoundedRectangle(cornerRadius: 12)
-                                                        .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-                                                )
-                                                .background(Color.white)
-                                                .cornerRadius(12)
-                                                .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
-                                            }
-                                        }
-                                    
-                                }
-                                .padding(.top, homeRecordsViewModel.recordsData.count == 0 ? 180 : 0)
-                                .padding(.leading, 16)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                                .fullScreenCover(isPresented: Binding<Bool>(
-                                    get: { confirmedURL != nil },
-                                    set: { newValue in
-                                        if !newValue {
-                                            confirmedURL = nil // Clear URL when dismissed
-                                        }
-                                    })
-                                ) {
-                                    ZStack {
-                                        Color.black.ignoresSafeArea()
-
-                                        if let url = confirmedURL {
-                                            if isVideo {
-                                                VideoPlayer(player: AVPlayer(url: url))
-                                                    .edgesIgnoringSafeArea(.all)
-                                            } else {
-                                                AsyncImage(url: url) { phase in
-                                                    switch phase {
-                                                    case .empty:
-                                                        CustomProgressView()
-                                                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                                    case .success(let image):
-                                                        image
-                                                            .resizable()
-                                                            .scaledToFit()
-                                                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                                    case .failure:
-                                                        Text("Failed to load image")
-                                                            .foregroundColor(.white)
-                                                    @unknown default:
-                                                        CustomProgressView()
-                                                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                                    }
-                                                }
-                                                .background(Color.black)
-                                            }
-                                        }
-
-                                        // Top-right Close Button
-                                        VStack {
-                                            HStack {
-                                                Spacer()
-                                                Button(action: {
-                                                    confirmedURL = nil
-                                                }) {
-                                                    Image("wrongmark")
-                                                        .resizable()
-                                                        .renderingMode(.template)
-                                                        .frame(width: 32, height: 32)
-                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                        .padding()
-                                                }
-                                            }
-                                            Spacer()
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                            
-                    }
-                        else if typeview == false {
-                            // LIST VIEW using SwiftUI's List
-                            GeometryReader { geometry in
-                                VStack {
-                                    List {
-                                        // FOLDERS SECTION
-                                        if homeRecordsViewModel.recordsData.count != 0 {
-                                            Section(header: Text("Folders")
-                                                .font(.custom(.poppinsBold, size: 16))
-                                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                .fontWeight(.bold)
-                                            ) {
-                                                ForEach(homeRecordsViewModel.recordsData.indices, id: \.self) { index in
-                                                    let folder = homeRecordsViewModel.recordsData[index]
-                                                    HStack(spacing: 12) {
-                                                        Image(systemName: "folder.fill")
-                                                            .resizable()
-                                                            .frame(width: 40, height: 30)
-                                                            .foregroundColor(.yellow)
-                                                        
-                                                        Text(folder.folderName)
-                                                            .foregroundColor(.black)
-                                                        Spacer()
-                                                        Button(action: {
-                                                            isMoreSheetvisible.toggle()
-                                                            print("selectedTabID \(selectedTabID )Foldertype \(Foldertype) SubFoldersType \(subFoldertype) ")
-                                                            emailID = 0
-                                                            fieldID = 0
-                                                            recordID = folder.id
-                                                            FileAzureName = ""
-                                                            FileAzureName = ""
-                                                            foldername = folder.folderName
-                                                            createdAt = folder.createdAt
-                                                            UpdatedAt = folder.updatedAt
-                                                            filesize = ""
-                                                            fileType = "folder"
-                                                            fileclicks = false
-                                                            print("foldername \(foldername)  createdAt  \(createdAt) UpdatedAt \(UpdatedAt) filesize \(filesize)")
-                                                        }) {
-                                                            Image("dots")
-                                                                .resizable()
-                                                                .frame(width: 30, height: 30, alignment: .topTrailing)
-                                                                .padding(.top, 1)
-                                                                .padding(.trailing, 1)
-                                                                .foregroundColor(.black)
-                                                        }
-                                                    }
-                                                    .padding()
-                                                    .background(
-                                                        RoundedRectangle(cornerRadius: 12)
-                                                            .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-                                                    )
-                                                    .background(Color.white)
-                                                    .cornerRadius(12)
-                                                    .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
-                                                    .listRowBackground(Color.clear)
-                                                }
-                                            }
-                                        }
-                                        
-                                            if homeRecordsViewModel.FilesData.count != 0 {
-                                                Section(header: Text("Files")
-                                                    .font(.custom(.poppinsBold, size: 16))
-                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                    .fontWeight(.bold)
-                                                    .padding(.leading)
-                                                ) {
-                                                    ForEach(homeRecordsViewModel.FilesData.indices, id: \.self) { index in
-                                                        let file = homeRecordsViewModel.FilesData[index]
-                                                        let fileURL = URL(string: file.fileLink)
-
-                                                        HStack(spacing: 12) {
-                                                            Group {
-                                                                if file.fileLink.lowercased().hasSuffix(".mp4") || file.fileLink.lowercased().hasSuffix(".mov") {
-                                                                    if let url = fileURL {
-                                                                        ZStack {
-                                                                            VideoPlayer(player: AVPlayer(url: url))
-                                                                                .frame(width: 60, height: 50)
-                                                                                .cornerRadius(8)
-                                                                                .disabled(true)
-
-                                                                            Image(systemName: "play.circle.fill")
-                                                                                .resizable()
-                                                                                .frame(width: 20, height: 20)
-                                                                                .foregroundColor(.white)
-                                                                        }
-                                                                        .onTapGesture {
-                                                                            print("on click of video")
-                                                                            confirmedURL = url
-                                                                            isVideo = true
-                                                                        }
-                                                                    }
-                                                                } else {
-                                                                    AsyncImage(url: fileURL) { phase in
-                                                                        if let image = phase.image {
-                                                                            image
-                                                                                .resizable()
-                                                                                .scaledToFill()
-                                                                                .frame(width: 60, height: 50)
-                                                                                .clipped()
-                                                                                .cornerRadius(8)
-                                                                                .onTapGesture {
-                                                                                    print("on click of image")
-                                                                                    if let safeURL = fileURL {
-                                                                                        confirmedURL = safeURL
-                                                                                        isVideo = false
+                                                        let columns = [
+                                                            GridItem(.flexible(minimum: 100), spacing: 20),
+                                                            GridItem(.flexible(minimum: 100), spacing: 20),
+                                                            GridItem(.flexible(minimum: 100), spacing: 0)
+                                                        ]
+                                                        LazyVGrid(columns: columns, alignment: .leading, spacing: 12) {
+                                                            ForEach(homeRecordsViewModel.filesData.indices, id: \.self) { index in
+                                                                let file = homeRecordsViewModel.filesData[index]
+                                                                VStack(alignment: .leading) {
+    //                                                                HStack(alignment: .top, spacing: 10) {
+                                                                        let fileURL = URL(string: file.fileLink)
+                                                                        
+                                                                        Group {
+                                                                            if file.fileLink.lowercased().hasSuffix(".mp4") || file.fileLink.lowercased().hasSuffix(".mov") || file.fileLink.lowercased().hasSuffix(".3gp") || file.fileLink.lowercased().hasSuffix(".asf") || file.fileLink.lowercased().hasSuffix(".avi") || file.fileLink.lowercased().hasSuffix(".f4v") || file.fileLink.lowercased().hasSuffix(".flv") || file.fileLink.lowercased().hasSuffix(".hevc") ||
+                                                                                file.fileLink.lowercased().hasSuffix(".m2ts") || file.fileLink.lowercased().hasSuffix(".m2v") || file.fileLink.lowercased().hasSuffix(".m4v") || file.fileLink.lowercased().hasSuffix(".mjpeg") || file.fileLink.lowercased().hasSuffix(".mpg") || file.fileLink.lowercased().hasSuffix(".mts") ||
+                                                                                file.fileLink.lowercased().hasSuffix(".mxf") || file.fileLink.lowercased().hasSuffix(".ogv") || file.fileLink.lowercased().hasSuffix(".rm") || file.fileLink.lowercased().hasSuffix(".swf") || file.fileLink.lowercased().hasSuffix(".ts") || file.fileLink.lowercased().hasSuffix(".vob") || file.fileLink.lowercased().hasSuffix(".webm") || file.fileLink.lowercased().hasSuffix(".wmv") ||
+                                                                                file.fileLink.lowercased().hasSuffix(".wtv") {
+                                                                                if let url = fileURL {
+                                                                                    ZStack {
+                                                                                        if url != nil {
+                                                                                            VideoPlayer(player: AVPlayer(url: url))
+                                                                                                .scaledToFit()
+                                                                                                .frame(width: .infinity, height: 60)
+                                                                                                .cornerRadius(8)
+                                                                                                .disabled(true) // prevents autoplay here
+                                                                                        }
+                                                                                        else {
+                                                                                           ProgressView()
+                                                                                               .frame(width: 50, height: 40)
+                                                                                       }
+                                                                                    }
+                                                                                    .onTapGesture {
+                                                                                        if let safeURL = fileURL {
+                                                                                            confirmedURL = safeURL
+                                                                                            isVideo = true
+                                                                                            
+                                                                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                                                                                showViewer = true
+                                                                                            }
+                                                                                            
+                                                                                        }
                                                                                     }
                                                                                 }
-                                                                        } else if phase.error != nil {
-                                                                            Image(systemName: "xmark.octagon")
+                                                                            }
+                                                                            else if isDocumentOrAudioOrArchive(file.fileLink) {
+                                                                                ZStack {
+                                                                                    RoundedRectangle(cornerRadius: 8)
+                                                                                        .fill(Color.gray.opacity(0.2))
+                                                                                    Image(systemName: "doc.fill") // you can customize based on extension
+                                                                                        .resizable()
+                                                                                        .frame(width: 24, height: 30)
+                                                                                        .foregroundColor(.blue)
+                                                                                }
+                                                                                .onTapGesture {
+                                                                                    toastMessage = "Format not supported for preview"
+                                                                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                                                                        toastMessage = nil // hide the toast after 2 seconds
+                                                                                    }
+                                                                                }
+                                                                                
+                                                                            }
+                                                                            
+                                                                            else {
+                                                                                AsyncImage(url: fileURL) { phase in
+                                                                                    if let image = phase.image {
+                                                                                        image
+                                                                                            .resizable()
+                                                                                            .frame(width: .infinity, height: 60)
+                                                                                            .scaledToFit()
+                                                                                            .clipped()
+                                                                                            .cornerRadius(8)
+                                                                                            .onTapGesture {
+                                                                                                if let safeURL = fileURL {
+                                                                                                    confirmedURL = safeURL
+                                                                                                    isVideo = false
+                                                                                                }
+                                                                                            }
+                                                                                        
+                                                                                        
+                                                                                    }
+    //                                                                                else if phase.error != nil {
+    //                                                                                    Image(systemName: "xmark.octagon")
+    //                                                                                        .resizable()
+    //                                                                                        .frame(width: 50, height: 40)
+    //                                                                                        .foregroundColor(.red)
+    //                                                                                }
+                                                                                    else {
+                                                                                        ProgressView()
+                                                                                            .frame(width: 50, height: 40)
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        
+                
+    //                                                                }
+                                                                    HStack {
+                                                                        Text(file.fileName)
+                                                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                            .font(.custom(.poppinsRegular, size: 12))
+                                                                            .lineLimit(1)
+                                                                            .padding(.leading, 1)
+                                                                        
+                                                                        
+                                                                        Spacer()
+                                                                        Button(action: {
+                                                                            isMoreSheetvisible.toggle()
+                                                                            emailID = 0
+                                                                            fieldID = file.id
+                                                                            recordID = 0
+                                                                            FileAzureName = file.azureFileName
+                                                                            foldername = file.fileName
+                                                                            createdAt = file.createdAt
+                                                                            UpdatedAt = file.updatedAt
+                                                                            filesize = file.fileSize
+                                                                            AzureLink = file.fileLink
+                                                                            fileType = "file"
+                                                                            fileFormat = URL(fileURLWithPath: file.fileName).pathExtension.lowercased()
+                                                                            fileclicks = true
+                                                                        }) {
+                                                                            Image("dots")
                                                                                 .resizable()
-                                                                                .frame(width: 30, height: 30)
-                                                                                .foregroundColor(.red)
-                                                                        } else {
-                                                                            ProgressView()
-                                                                                .frame(width: 30, height: 30)
+                                                                                .renderingMode(.template)
+                                                                                .frame(width: 25, height: 25, alignment: .topTrailing)
+                                                                                .padding(.top, 1)
+                                                                                .padding(.trailing, 1)
+                                                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                                         }
                                                                     }
                                                                 }
-                                                            }
-
-                                                            Text(file.fileName)
-                                                                .foregroundColor(.black)
-                                                                .lineLimit(1)
-
-                                                            Spacer()
-
-                                                            Button(action: {
-                                                                isMoreSheetvisible.toggle()
-                                                                print("selectedTabID \(selectedTabID) Foldertype \(Foldertype) SubFoldersType \(subFoldertype)")
-                                                                emailID = 0
-                                                                fieldID = file.id
-                                                                recordID = 0
-                                                                FileAzureName = file.azureFileName
-                                                                foldername = file.fileName
-                                                                createdAt = file.createdAt
-                                                                UpdatedAt = file.updatedAt
-                                                                filesize = file.fileSize
-                                                                AzureLink = file.fileLink
-                                                                fileType = "file"
-                                                                fileFormat = URL(fileURLWithPath: file.fileName).pathExtension.lowercased()
-                                                                fileclicks = true
-                                                                print("foldername \(foldername) createdAt \(createdAt) UpdatedAt \(UpdatedAt) filesize \(filesize) AzureLink \(AzureLink)")
-                                                            }) {
-                                                                Image("dots")
-                                                                    .resizable()
-                                                                    .frame(width: 30, height: 30)
-                                                                    .padding(.top, 1)
-                                                                    .padding(.trailing, 1)
-                                                                    .foregroundColor(.black)
+    //                                                            .padding(.trailing, (index % 3 == 2) ? 16 : 0)
+                                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                                                .background(
+                                                                    RoundedRectangle(cornerRadius: 12)
+                                                                        .stroke(themesviewModel.currentTheme.allBlack.opacity(0.1), lineWidth: 1)
+                                                                )
+                                                                .background(themesviewModel.currentTheme.windowBackground)
+                                                                .cornerRadius(12)
+                                                                .shadow(color: themesviewModel.currentTheme.colorControlNormal.opacity(0.3), radius: 4, x: 0, y: 2)
                                                             }
                                                         }
-                                                        .padding()
-                                                        .background(
-                                                            RoundedRectangle(cornerRadius: 12)
-                                                                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-                                                        )
-                                                        .background(Color.white)
-                                                        .cornerRadius(12)
-                                                        .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
-                                                        .listRowBackground(Color.clear)
+                                                        
+                                                    }
+    //                                                .padding(.top, homeRecordsViewModel.recordsData.count == 0 ? 180 : 0)
+                                                    .padding(.horizontal, 16)
+                                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                                                    .fullScreenCover(isPresented: Binding<Bool>(
+                                                        get: { confirmedURL != nil },
+                                                        set: { newValue in
+                                                            if !newValue {
+                                                                confirmedURL = nil // Clear URL when dismissed
+                                                            }
+                                                        })
+                                                    ) {
+                                                        ZStack {
+                                                            Color.black.ignoresSafeArea()
+                                                            
+                                                            if let url = confirmedURL {
+                                                                if isVideo {
+                                                                    VideoPlayer(player: AVPlayer(url: url))
+                                                                        .edgesIgnoringSafeArea(.all)
+                                                                } else {
+                                                                    AsyncImage(url: url) { phase in
+                                                                        switch phase {
+                                                                        case .empty:
+                                                                            CustomProgressView()
+                                                                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                                                        case .success(let image):
+                                                                            image
+                                                                                .resizable()
+                                                                                .scaledToFit()
+                                                                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                                                        case .failure:
+                                                                            Text("Failed to load image")
+                                                                                .foregroundColor(.white)
+                                                                        @unknown default:
+                                                                            CustomProgressView()
+                                                                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                                                        }
+                                                                    }
+                                                                    .background(Color.black)
+                                                                }
+                                                            }
+                                                            
+                                                            // Top-right Close Button
+                                                            VStack {
+                                                                HStack {
+                                                                    Spacer()
+                                                                    Button(action: {
+                                                                        confirmedURL = nil
+                                                                    }) {
+                                                                        Image("wrongmark")
+                                                                            .resizable()
+                                                                            .renderingMode(.template)
+                                                                            .frame(width: 32, height: 32)
+                                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                                            .padding()
+                                                                    }
+                                                                }
+                                                                Spacer()
+                                                            }
+                                                        }
+                                                    }
+                                                    Spacer()
+                                                }
+                                            }
+
+                                            .background(themesviewModel.currentTheme.windowBackground)
+                                        }
+                                    }
+                                }
+                                
+                                else if typeview == false {
+                                    // LIST VIEW using SwiftUI's List
+                                    GeometryReader { geometry in
+                                        VStack {
+                                            List {
+                                                // FOLDERS SECTION
+                                                if homeRecordsViewModel.recordsData.count != 0 {
+                                                    Section(header: Text("Folders")
+                                                        .font(.custom(.poppinsBold, size: 16))
+                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                            
+                                                    ) {
+                                                        ForEach(homeRecordsViewModel.recordsData.indices, id: \.self) { index in
+                                                            let folder = homeRecordsViewModel.recordsData[index]
+                                                            HStack(spacing: 12) {
+                                                                Image("trashFolder")
+                                                                    .resizable()
+                                                                    .frame(width: 40, height: 40)
+                                                                
+                                                                Text(folder.folderName)
+                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                    .font(.custom(.poppinsMedium, size: 12))
+                                                                Spacer()
+                                                                Button(action: {
+                                                                    isMoreSheetvisible.toggle()
+                                                                    emailID = 0
+                                                                    fieldID = 0
+                                                                    recordID = folder.id
+                                                                    FileAzureName = ""
+                                                                    FileAzureName = ""
+                                                                    foldername = folder.folderName
+                                                                    createdAt = folder.createdAt
+                                                                    UpdatedAt = folder.updatedAt
+                                                                    filesize = ""
+                                                                    fileType = "folder"
+                                                                    fileclicks = false
+                                                                    
+                                                                }) {
+                                                                    Image("dots")
+                                                                        .resizable()
+                                                                        .renderingMode(.template)
+                                                                        .frame(width: 30, height: 30, alignment: .topTrailing)
+                                                                        .padding(.top, 1)
+                                                                        .padding(.trailing, 1)
+                                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                                }
+                                                            }
+                                                            .padding()
+                                                            .background(
+                                                                RoundedRectangle(cornerRadius: 12)
+                                                                    .stroke(themesviewModel.currentTheme.allBlack.opacity(0.1), lineWidth: 1)
+                                                            )
+                                                            .background(themesviewModel.currentTheme.windowBackground)
+                                                            .cornerRadius(12)
+                                                            .shadow(color: themesviewModel.currentTheme.colorControlNormal.opacity(0.3), radius: 4, x: 0, y: 2)
+                                                            .listRowBackground(Color.clear)
+                                                        }
                                                     }
                                                 }
-                                                .padding(.horizontal)
+                                                
+                                                if homeRecordsViewModel.filesData.count != 0 {
+                                                    Section(header: Text("Files")
+                                                        .font(.custom(.poppinsBold, size: 16))
+                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                        .fontWeight(.bold)
+                                                        .padding(.leading)
+                                                    ) {
+                                                        ForEach(homeRecordsViewModel.filesData.indices, id: \.self) { index in
+                                                            let file = homeRecordsViewModel.filesData[index]
+                                                            let fileURL = URL(string: file.fileLink)
+                                                            
+                                                            HStack(spacing: 12) {
+                                                                Group {
+                                                                    if file.fileLink.lowercased().hasSuffix(".mp4") || file.fileLink.lowercased().hasSuffix(".mov") {
+                                                                        if let url = fileURL {
+                                                                            ZStack {
+                                                                                VideoPlayer(player: AVPlayer(url: url))
+                                                                                    .frame(width: 60, height: 50)
+                                                                                    .cornerRadius(8)
+                                                                                    .disabled(true)
+                                                                                
+                                                                                Image(systemName: "play.circle.fill")
+                                                                                    .resizable()
+                                                                                    .frame(width: 20, height: 20)
+                                                                                    .foregroundColor(.white)
+                                                                            }
+                                                                            .onTapGesture {
+                                                                                confirmedURL = url
+                                                                                isVideo = true
+                                                                            }
+                                                                        }
+                                                                    } else {
+                                                                        AsyncImage(url: fileURL) { phase in
+                                                                            if let image = phase.image {
+                                                                                image
+                                                                                    .resizable()
+                                                                                    .scaledToFill()
+                                                                                    .frame(width: 60, height: 50)
+                                                                                    .clipped()
+                                                                                    .cornerRadius(8)
+                                                                                    .onTapGesture {
+                                                                                        if let safeURL = fileURL {
+                                                                                            confirmedURL = safeURL
+                                                                                            isVideo = false
+                                                                                        }
+                                                                                    }
+                                                                            } else if phase.error != nil {
+                                                                                Image(systemName: "xmark.octagon")
+                                                                                    .resizable()
+                                                                                    .frame(width: 30, height: 30)
+                                                                                    .foregroundColor(.red)
+                                                                            } else {
+                                                                                ProgressView()
+                                                                                    .frame(width: 30, height: 30)
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                                
+                                                                Text(file.fileName)
+                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                    .font(.custom(.poppinsMedium, size: 12))
+                                                                    .lineLimit(1)
+                                                                
+                                                                Spacer()
+                                                                
+                                                                Button(action: {
+                                                                    isMoreSheetvisible.toggle()
+                                                                    emailID = 0
+                                                                    fieldID = file.id
+                                                                    recordID = 0
+                                                                    FileAzureName = file.azureFileName
+                                                                    foldername = file.fileName
+                                                                    createdAt = file.createdAt
+                                                                    UpdatedAt = file.updatedAt
+                                                                    filesize = file.fileSize
+                                                                    AzureLink = file.fileLink
+                                                                    fileType = "file"
+                                                                    fileFormat = URL(fileURLWithPath: file.fileName).pathExtension.lowercased()
+                                                                    fileclicks = true
+                                                                }) {
+                                                                    Image("dots")
+                                                                        .resizable()
+                                                                        .renderingMode(.template)
+                                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                                        .frame(width: 30, height: 30)
+                                                                        .padding(.top, 1)
+                                                                        .padding(.trailing, 1)
+                                                                        
+                                                                }
+                                                            }
+                                                            .padding()
+                                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                                            .background(
+                                                                RoundedRectangle(cornerRadius: 12)
+                                                                    .stroke(themesviewModel.currentTheme.allBlack.opacity(0.1), lineWidth: 1)
+                                                            )
+                                                            .background(themesviewModel.currentTheme.windowBackground)
+                                                            .cornerRadius(12)
+                                                            .shadow(color: themesviewModel.currentTheme.colorControlNormal.opacity(0.3), radius: 4, x: 0, y: 2)
+                                                            .listRowBackground(Color.clear)
+                                                        }
+                                                    }
+                                                    .padding(.horizontal)
+                                                    .fullScreenCover(isPresented: Binding<Bool>(
+                                                        get: { confirmedURL != nil },
+                                                        set: { newValue in
+                                                            if !newValue {
+                                                                confirmedURL = nil
+                                                            }
+                                                        })
+                                                    ) {
+                                                        ZStack {
+                                                            Color.black.ignoresSafeArea()
+                                                            
+                                                            if let url = confirmedURL {
+                                                                if isVideo {
+                                                                    VideoPlayer(player: AVPlayer(url: url))
+                                                                        .edgesIgnoringSafeArea(.all)
+                                                                } else {
+                                                                    AsyncImage(url: url) { phase in
+                                                                        switch phase {
+                                                                        case .empty:
+                                                                            CustomProgressView()
+                                                                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                                                        case .success(let image):
+                                                                            image
+                                                                                .resizable()
+                                                                                .scaledToFit()
+                                                                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                                                        case .failure:
+                                                                            Text("Failed to load image")
+                                                                                .foregroundColor(.white)
+                                                                        @unknown default:
+                                                                            CustomProgressView()
+                                                                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                                                        }
+                                                                    }
+                                                                    .background(Color.black)
+                                                                }
+                                                            }
+                                                            VStack {
+                                                                HStack {
+                                                                    Spacer()
+                                                                    Button(action: {
+                                                                        confirmedURL = nil
+                                                                    }) {
+                                                                        Image("wrongmark")
+                                                                            .resizable()
+                                                                            .renderingMode(.template)
+                                                                            .frame(width: 32, height: 32)
+                                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                                            .padding()
+                                                                    }
+                                                                }
+                                                                Spacer()
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            .listStyle(PlainListStyle())
+                                            .scrollContentBackground(.hidden)
+                                            .background(themesviewModel.currentTheme.windowBackground)
+                                            
+                                        }
+    //                                    .padding(.leading, 16)
+                                        .frame(maxWidth: .infinity, alignment: .topLeading)
+                                    }
+                                }
+                            
+                        }
+                        
+                        if isfilesView {
+                            if typeview == true{
+                                GeometryReader { geometry in
+                                    ScrollView(.vertical, showsIndicators: false) {
+                                        VStack {
+                                            // FOLDERS GRID
+                                            if homeRecordsViewModel.recordsData.count != 0 {
+                                                VStack(alignment: .leading, spacing: 10) {
+                                                    Text("Folders")
+                                                        .font(.custom(.poppinsBold, size: 16))
+                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                        .fontWeight(.bold)
+                                                    
+                                                    let columns = [
+                                                        GridItem(.flexible(minimum: 100), spacing: 10),
+                                                        GridItem(.flexible(minimum: 100), spacing: 10),
+                                                        GridItem(.flexible(minimum: 100), spacing: 10)
+                                                    ]
+                                                    
+                                                    LazyVGrid(columns: columns, alignment: .leading, spacing: 12) {
+                                                        ForEach(homeRecordsViewModel.recordsData.indices, id: \.self) { index in
+                                                            let folder = homeRecordsViewModel.recordsData[index]
+                                                            VStack(alignment: .leading) {
+                                                                HStack {
+                                                                    Image("trashFolder")
+                                                                        .resizable()
+                                                                        .frame(width: 50, height: 40)
+                                                                        .foregroundColor(.yellow)
+                                                                    Spacer()
+                                                                    
+                                                                        Button(action: {
+                                                                            isMoreSheetvisible.toggle()
+                                                                            emailID = 0
+                                                                            fieldID = 0
+                                                                            recordID = folder.id
+                                                                            FileAzureName = ""
+                                                                            foldername = folder.folderName
+                                                                            createdAt = folder.createdAt
+                                                                            UpdatedAt = folder.updatedAt
+                                                                            filesize = ""
+                                                                            fileType = "folder"
+                                                                            fileclicks = false
+                                                                        }) {
+                                                                            Image("dots")
+                                                                                .resizable()
+                                                                                .renderingMode(.template)
+                                                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                                                .frame(width: 24, height: 24, alignment: .topTrailing)
+                                                                                .padding(.top, 1)
+                                                                                .padding(.trailing, 1)
+                                                                                
+                                                                        }
+                                                                     
+                                                                    
+                                                                }
+
+                                                                    Text(folder.folderName)
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .font(.custom(.poppinsRegular, size: 12))
+                                                                        .lineLimit(1)
+                                                                
+                                                            }
+                                                            .padding()
+                                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                                            .background(
+                                                                RoundedRectangle(cornerRadius: 12)
+                                                                    .stroke(themesviewModel.currentTheme.allBlack.opacity(0.1), lineWidth: 1)
+                                                            )
+                                                            .background(themesviewModel.currentTheme.windowBackground)
+                                                            .cornerRadius(12)
+                                                            .shadow(color: themesviewModel.currentTheme.colorControlNormal.opacity(0.3), radius: 4, x: 0, y: 2)
+                                                        }
+                                                    }
+                                                }
+                                                .padding(.horizontal, 16)
+                                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+
+                                            }
+                                            
+                                            // FILES GRID
+                                            if homeRecordsViewModel.filesData.count != 0 {
+                                                VStack(alignment: .leading, spacing: 10) {
+                                                    Text("Files")
+                                                        .font(.custom(.poppinsBold, size: 16))
+                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                        .fontWeight(.bold)
+                                                    
+                                                    let columns = [
+                                                        GridItem(.flexible(minimum: 100), spacing: 20),
+                                                        GridItem(.flexible(minimum: 100), spacing: 20),
+                                                        GridItem(.flexible(minimum: 100), spacing: 0)
+                                                    ]
+                                                    LazyVGrid(columns: columns, alignment: .leading, spacing: 12) {
+                                                        ForEach(homeRecordsViewModel.filesData.indices, id: \.self) { index in
+                                                            let file = homeRecordsViewModel.filesData[index]
+                                                            VStack(alignment: .leading) {
+//                                                                HStack(alignment: .top, spacing: 10) {
+                                                                    let fileURL = URL(string: file.fileLink)
+                                                                    
+                                                                    Group {
+                                                                        if file.fileLink.lowercased().hasSuffix(".mp4") || file.fileLink.lowercased().hasSuffix(".mov") || file.fileLink.lowercased().hasSuffix(".3gp") || file.fileLink.lowercased().hasSuffix(".asf") || file.fileLink.lowercased().hasSuffix(".avi") || file.fileLink.lowercased().hasSuffix(".f4v") || file.fileLink.lowercased().hasSuffix(".flv") || file.fileLink.lowercased().hasSuffix(".hevc") ||
+                                                                            file.fileLink.lowercased().hasSuffix(".m2ts") || file.fileLink.lowercased().hasSuffix(".m2v") || file.fileLink.lowercased().hasSuffix(".m4v") || file.fileLink.lowercased().hasSuffix(".mjpeg") || file.fileLink.lowercased().hasSuffix(".mpg") || file.fileLink.lowercased().hasSuffix(".mts") ||
+                                                                            file.fileLink.lowercased().hasSuffix(".mxf") || file.fileLink.lowercased().hasSuffix(".ogv") || file.fileLink.lowercased().hasSuffix(".rm") || file.fileLink.lowercased().hasSuffix(".swf") || file.fileLink.lowercased().hasSuffix(".ts") || file.fileLink.lowercased().hasSuffix(".vob") || file.fileLink.lowercased().hasSuffix(".webm") || file.fileLink.lowercased().hasSuffix(".wmv") ||
+                                                                            file.fileLink.lowercased().hasSuffix(".wtv") {
+                                                                            if let url = fileURL {
+                                                                                ZStack {
+                                                                                    if url != nil {
+                                                                                        VideoPlayer(player: AVPlayer(url: url))
+                                                                                            .scaledToFit()
+                                                                                            .frame(width: .infinity, height: 60)
+                                                                                            .cornerRadius(8)
+                                                                                            .disabled(true) // prevents autoplay here
+                                                                                    }
+                                                                                    else {
+                                                                                       ProgressView()
+                                                                                           .frame(width: 50, height: 40)
+                                                                                   }
+                                                                                }
+                                                                                .onTapGesture {
+                                                                                    if let safeURL = fileURL {
+                                                                                        confirmedURL = safeURL
+                                                                                        isVideo = true
+                                                                                        
+                                                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                                                                            showViewer = true
+                                                                                        }
+                                                                                        
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        else if isDocumentOrAudioOrArchive(file.fileLink) {
+                                                                            ZStack {
+                                                                                RoundedRectangle(cornerRadius: 8)
+                                                                                    .fill(Color.gray.opacity(0.2))
+                                                                                Image(systemName: "doc.fill") // you can customize based on extension
+                                                                                    .resizable()
+                                                                                    .frame(width: 24, height: 30)
+                                                                                    .foregroundColor(.blue)
+                                                                            }
+                                                                            .onTapGesture {
+                                                                                toastMessage = "Format not supported for preview"
+                                                                                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                                                                    toastMessage = nil // hide the toast after 2 seconds
+                                                                                }
+                                                                            }
+                                                                            
+                                                                        }
+                                                                        
+                                                                        else {
+                                                                            AsyncImage(url: fileURL) { phase in
+                                                                                if let image = phase.image {
+                                                                                    image
+                                                                                        .resizable()
+                                                                                        .frame(width: .infinity, height: 60)
+                                                                                        .scaledToFit()
+                                                                                        .clipped()
+                                                                                        .cornerRadius(8)
+                                                                                        .onTapGesture {
+                                                                                            if let safeURL = fileURL {
+                                                                                                confirmedURL = safeURL
+                                                                                                isVideo = false
+                                                                                            }
+                                                                                        }
+                                                                                    
+                                                                                    
+                                                                                }
+//                                                                                else if phase.error != nil {
+//                                                                                    Image(systemName: "xmark.octagon")
+//                                                                                        .resizable()
+//                                                                                        .frame(width: 50, height: 40)
+//                                                                                        .foregroundColor(.red)
+//                                                                                }
+                                                                                else {
+                                                                                    ProgressView()
+                                                                                        .frame(width: 50, height: 40)
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    
+            
+//                                                                }
+                                                                HStack {
+                                                                    Text(file.fileName)
+                                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                        .font(.custom(.poppinsRegular, size: 12))
+                                                                        .lineLimit(1)
+                                                                        .padding(.leading, 1)
+                                                                    
+                                                                    
+                                                                    Spacer()
+                                                                    Button(action: {
+                                                                        isMoreSheetvisible.toggle()
+                                                                        emailID = 0
+                                                                        fieldID = file.id
+                                                                        recordID = 0
+                                                                        FileAzureName = file.azureFileName
+                                                                        foldername = file.fileName
+                                                                        createdAt = file.createdAt
+                                                                        UpdatedAt = file.updatedAt
+                                                                        filesize = file.fileSize
+                                                                        AzureLink = file.fileLink
+                                                                        fileType = "file"
+                                                                        fileFormat = URL(fileURLWithPath: file.fileName).pathExtension.lowercased()
+                                                                        fileclicks = true
+                                                                    }) {
+                                                                        Image("dots")
+                                                                            .resizable()
+                                                                            .renderingMode(.template)
+                                                                            .frame(width: 25, height: 25, alignment: .topTrailing)
+                                                                            .padding(.top, 1)
+                                                                            .padding(.trailing, 1)
+                                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                                    }
+                                                                }
+                                                            }
+//                                                            .padding(.trailing, (index % 3 == 2) ? 16 : 0)
+                                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                                            .background(
+                                                                RoundedRectangle(cornerRadius: 12)
+                                                                    .stroke(themesviewModel.currentTheme.allBlack.opacity(0.1), lineWidth: 1)
+                                                            )
+                                                            .background(themesviewModel.currentTheme.windowBackground)
+                                                            .cornerRadius(12)
+                                                            .shadow(color: themesviewModel.currentTheme.colorControlNormal.opacity(0.3), radius: 4, x: 0, y: 2)
+                                                        }
+                                                    }
+                                                    
+                                                }
+//                                                .padding(.top, homeRecordsViewModel.recordsData.count == 0 ? 180 : 0)
+                                                .padding(.horizontal, 16)
+                                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                                                 .fullScreenCover(isPresented: Binding<Bool>(
                                                     get: { confirmedURL != nil },
                                                     set: { newValue in
                                                         if !newValue {
-                                                            confirmedURL = nil
+                                                            confirmedURL = nil // Clear URL when dismissed
                                                         }
                                                     })
                                                 ) {
                                                     ZStack {
                                                         Color.black.ignoresSafeArea()
-
+                                                        
                                                         if let url = confirmedURL {
                                                             if isVideo {
                                                                 VideoPlayer(player: AVPlayer(url: url))
@@ -1291,8 +1106,236 @@ struct HomeRecordsView: View {
                                                                 .background(Color.black)
                                                             }
                                                         }
+                                                        
+                                                        // Top-right Close Button
+                                                        VStack {
+                                                            HStack {
+                                                                Spacer()
+                                                                Button(action: {
+                                                                    confirmedURL = nil
+                                                                }) {
+                                                                    Image("wrongmark")
+                                                                        .resizable()
+                                                                        .renderingMode(.template)
+                                                                        .frame(width: 32, height: 32)
+                                                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                                        .padding()
+                                                                }
+                                                            }
+                                                            Spacer()
+                                                        }
+                                                    }
+                                                }
+                                                Spacer()
+                                            }
+                                        }
 
-                                                        // ❌ Close Button
+                                        .background(themesviewModel.currentTheme.windowBackground)
+                                    }
+                                }
+                            }
+                            
+                            else if typeview == false {
+                                // LIST VIEW using SwiftUI's List
+                                GeometryReader { geometry in
+                                    VStack {
+                                        List {
+                                            // FOLDERS SECTION
+                                            if homeRecordsViewModel.recordsData.count != 0 {
+                                                Section(header: Text("Folders")
+                                                    .font(.custom(.poppinsBold, size: 16))
+                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                        
+                                                ) {
+                                                    ForEach(homeRecordsViewModel.recordsData.indices, id: \.self) { index in
+                                                        let folder = homeRecordsViewModel.recordsData[index]
+                                                        HStack(spacing: 12) {
+                                                            Image("trashFolder")
+                                                                .resizable()
+                                                                .frame(width: 40, height: 40)
+                                                            
+                                                            Text(folder.folderName)
+                                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                .font(.custom(.poppinsMedium, size: 12))
+                                                            Spacer()
+                                                            Button(action: {
+                                                                isMoreSheetvisible.toggle()
+                                                                emailID = 0
+                                                                fieldID = 0
+                                                                recordID = folder.id
+                                                                FileAzureName = ""
+                                                                FileAzureName = ""
+                                                                foldername = folder.folderName
+                                                                createdAt = folder.createdAt
+                                                                UpdatedAt = folder.updatedAt
+                                                                filesize = ""
+                                                                fileType = "folder"
+                                                                fileclicks = false
+                                                                
+                                                            }) {
+                                                                Image("dots")
+                                                                    .resizable()
+                                                                    .renderingMode(.template)
+                                                                    .frame(width: 30, height: 30, alignment: .topTrailing)
+                                                                    .padding(.top, 1)
+                                                                    .padding(.trailing, 1)
+                                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                            }
+                                                        }
+                                                        .padding()
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 12)
+                                                                .stroke(themesviewModel.currentTheme.allBlack.opacity(0.1), lineWidth: 1)
+                                                        )
+                                                        .background(themesviewModel.currentTheme.windowBackground)
+                                                        .cornerRadius(12)
+                                                        .shadow(color: themesviewModel.currentTheme.colorControlNormal.opacity(0.3), radius: 4, x: 0, y: 2)
+                                                        .listRowBackground(Color.clear)
+                                                    }
+                                                }
+                                            }
+                                            
+                                            if homeRecordsViewModel.filesData.count != 0 {
+                                                Section(header: Text("Files")
+                                                    .font(.custom(.poppinsBold, size: 16))
+                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                    .fontWeight(.bold)
+                                                    .padding(.leading)
+                                                ) {
+                                                    ForEach(homeRecordsViewModel.filesData.indices, id: \.self) { index in
+                                                        let file = homeRecordsViewModel.filesData[index]
+                                                        let fileURL = URL(string: file.fileLink)
+                                                        
+                                                        HStack(spacing: 12) {
+                                                            Group {
+                                                                if file.fileLink.lowercased().hasSuffix(".mp4") || file.fileLink.lowercased().hasSuffix(".mov") {
+                                                                    if let url = fileURL {
+                                                                        ZStack {
+                                                                            VideoPlayer(player: AVPlayer(url: url))
+                                                                                .frame(width: 60, height: 50)
+                                                                                .cornerRadius(8)
+                                                                                .disabled(true)
+                                                                            
+                                                                            Image(systemName: "play.circle.fill")
+                                                                                .resizable()
+                                                                                .frame(width: 20, height: 20)
+                                                                                .foregroundColor(.white)
+                                                                        }
+                                                                        .onTapGesture {
+                                                                            confirmedURL = url
+                                                                            isVideo = true
+                                                                        }
+                                                                    }
+                                                                } else {
+                                                                    AsyncImage(url: fileURL) { phase in
+                                                                        if let image = phase.image {
+                                                                            image
+                                                                                .resizable()
+                                                                                .scaledToFill()
+                                                                                .frame(width: 60, height: 50)
+                                                                                .clipped()
+                                                                                .cornerRadius(8)
+                                                                                .onTapGesture {
+                                                                                    if let safeURL = fileURL {
+                                                                                        confirmedURL = safeURL
+                                                                                        isVideo = false
+                                                                                    }
+                                                                                }
+                                                                        } else if phase.error != nil {
+                                                                            Image(systemName: "xmark.octagon")
+                                                                                .resizable()
+                                                                                .frame(width: 30, height: 30)
+                                                                                .foregroundColor(.red)
+                                                                        } else {
+                                                                            ProgressView()
+                                                                                .frame(width: 30, height: 30)
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            
+                                                            Text(file.fileName)
+                                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                .font(.custom(.poppinsMedium, size: 12))
+                                                                .lineLimit(1)
+                                                            
+                                                            Spacer()
+                                                            
+                                                            Button(action: {
+                                                                isMoreSheetvisible.toggle()
+                                                                emailID = 0
+                                                                fieldID = file.id
+                                                                recordID = 0
+                                                                FileAzureName = file.azureFileName
+                                                                foldername = file.fileName
+                                                                createdAt = file.createdAt
+                                                                UpdatedAt = file.updatedAt
+                                                                filesize = file.fileSize
+                                                                AzureLink = file.fileLink
+                                                                fileType = "file"
+                                                                fileFormat = URL(fileURLWithPath: file.fileName).pathExtension.lowercased()
+                                                                fileclicks = true
+                                                            }) {
+                                                                Image("dots")
+                                                                    .resizable()
+                                                                    .renderingMode(.template)
+                                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                                    .frame(width: 30, height: 30)
+                                                                    .padding(.top, 1)
+                                                                    .padding(.trailing, 1)
+                                                                    
+                                                            }
+                                                        }
+                                                        .padding()
+                                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 12)
+                                                                .stroke(themesviewModel.currentTheme.allBlack.opacity(0.1), lineWidth: 1)
+                                                        )
+                                                        .background(themesviewModel.currentTheme.windowBackground)
+                                                        .cornerRadius(12)
+                                                        .shadow(color: themesviewModel.currentTheme.colorControlNormal.opacity(0.3), radius: 4, x: 0, y: 2)
+                                                        .listRowBackground(Color.clear)
+                                                    }
+                                                }
+                                                .padding(.horizontal)
+                                                .fullScreenCover(isPresented: Binding<Bool>(
+                                                    get: { confirmedURL != nil },
+                                                    set: { newValue in
+                                                        if !newValue {
+                                                            confirmedURL = nil
+                                                        }
+                                                    })
+                                                ) {
+                                                    ZStack {
+                                                        Color.black.ignoresSafeArea()
+                                                        
+                                                        if let url = confirmedURL {
+                                                            if isVideo {
+                                                                VideoPlayer(player: AVPlayer(url: url))
+                                                                    .edgesIgnoringSafeArea(.all)
+                                                            } else {
+                                                                AsyncImage(url: url) { phase in
+                                                                    switch phase {
+                                                                    case .empty:
+                                                                        CustomProgressView()
+                                                                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                                                    case .success(let image):
+                                                                        image
+                                                                            .resizable()
+                                                                            .scaledToFit()
+                                                                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                                                    case .failure:
+                                                                        Text("Failed to load image")
+                                                                            .foregroundColor(.white)
+                                                                    @unknown default:
+                                                                        CustomProgressView()
+                                                                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                                                    }
+                                                                }
+                                                                .background(Color.black)
+                                                            }
+                                                        }
                                                         VStack {
                                                             HStack {
                                                                 Spacer()
@@ -1312,30 +1355,477 @@ struct HomeRecordsView: View {
                                                     }
                                                 }
                                             }
+                                        }
+                                        .listStyle(PlainListStyle())
+                                        .scrollContentBackground(.hidden)
+                                        .background(themesviewModel.currentTheme.windowBackground)
                                         
-
-                                        // ✅ Fullscreen Viewer for Image / Video
-
+                                    }
+//                                    .padding(.leading, 16)
+                                    .frame(maxWidth: .infinity, alignment: .topLeading)
+                                }
+                            }
+                        }
+                        
+                        if ismailsView {
+                            if homeRecordsViewModel.emailsData.count != 0 {
+                                VStack {
+                                    HStack{
+                                        Text("Mails")
+                                            .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                                        Spacer()
+                                    }
+                                    
+                                    ScrollView(.vertical, showsIndicators: false) {
+                                        ForEach(homeRecordsViewModel.emailsData.indices, id: \.self) { index in
+                                            let folder = homeRecordsViewModel.emailsData[index]
+                                            VStack {
+                                                HStack {
+                                                    Button(action: {
+                                                    }) {
+                                                        Image("unchecked")
+                                                            .renderingMode(.template)
+                                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                            .padding([.trailing, .leading], 5)
+                                                            .frame(width: 34, height: 34)
+                                                            .clipShape(Circle())
+                                                    }
+                                                    
+                                                    VStack(alignment: .leading) {
+                                                        HStack {
+                                                            Text("\(folder.firstname)\(folder.lastname)")
+                                                                .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                            
+                                                            
+                                                            Spacer()
+                                                            if let unixTimestamp = folder.sentAt,
+                                                               let istDateStringFromISO = convertToTime(dateInput: unixTimestamp) {
+                                                                Text(istDateStringFromISO)
+                                                                    .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
+                                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                                    .padding(.top, 0)
+                                                                    .padding(.trailing , 10)
+                                                                    .frame(maxWidth: .infinity, alignment: .topTrailing)
+                                                            }
+                                                        }
+                                                        HStack {
+                                                            Text(folder.subject)
+                                                                .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                            
+                                                            Spacer()
+                                                            
+                                                            Image(folder.starred == 1 ? "star" : "emptystar")
+                                                                .resizable()
+                                                                .renderingMode(.template)
+                                                                .frame(width: 20, height: 20)
+                                                                .padding(.trailing , 10)
+                                                                .foregroundColor(folder.starred == 1 ? themesviewModel.currentTheme.colorAccent : .white)
+                                                        }
+                                                    }
+                                                }
+                                                .padding(.top , 10)
+                                                
+                                                Divider()
+                                                    .frame(maxWidth: .infinity)
+                                                    .frame(height: 1)
+                                                    .background(themesviewModel.currentTheme.strokeColor.opacity(0.2))
+                                                    .listRowBackground(themesviewModel.currentTheme.windowBackground)
+                                                    .onTapGesture {
+                                                        homeRecordsViewModel.selectedId = folder.threadId
+                                                        homeRecordsViewModel.isEmailScreen = true
+                                                    }
+                                            }
+                                            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                            .listRowBackground(themesviewModel.currentTheme.windowBackground)
+                                        }
+                                        .listStyle(PlainListStyle())
+                                        .scrollContentBackground(.hidden)
                                         
+                                    }
+                                }
+                            }
+                        }
+                        
+                        if subFolderView {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("Folders")
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .fontWeight(.bold)
+                                    .padding(.leading, 16)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                
+                                // Define flexible columns to wrap horizontally
+                                let columns = [
+                                    GridItem(.flexible(minimum: 100), spacing: 10),
+                                    GridItem(.flexible(minimum: 100), spacing: 10),
+                                    GridItem(.flexible(minimum: 100), spacing: 10)
+                                ]
+                                
+                                LazyVGrid(columns: columns, alignment: .leading, spacing: 12) {
+                                    ForEach(homeRecordsViewModel.defaultRecordsData.indices, id: \.self) { index in
+                                        let folder = homeRecordsViewModel.defaultRecordsData[index]
+                                        
+                                        VStack(alignment: .leading) {
+                                            HStack {
+                                                Image("trashFolder")
+                                                    .resizable()
+                                                    .frame(width: 50, height: 40)
+                                                    .foregroundColor(.yellow)
+                                                Spacer()
+                                            }
+                                            
+                                            Text(folder.folderName)
+                                                .foregroundColor(.black)
+                                        }
+                                        .padding()
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                                        )
+                                        .background(Color.white)
+                                        .cornerRadius(12)
+                                        .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
+                                    }
+                                }
+                                .padding(.horizontal, 16)
+                                Spacer()
+                                    .frame(height: reader.size.height )
+                            }
+                            .onAppear{
+                                homeRecordsViewModel.getSubRecordsData(selectedTabID: subfoldersViewIds, Type: subfoldersViewType)
+                            }
+                            
+                            
+                        }
+                    }
+                    Spacer()
+
+
+                }
+                .padding(.bottom , 50)
+                .toast(message: $homeRecordsViewModel.error)
+                .toast(message: $consoleViewModel.error)
+                .toast(message: $toastMessage)
+
+                .background(themesviewModel.currentTheme.windowBackground)
+                .onAppear{
+                        homeRecordsViewModel.getMainRecordsData()
+                    homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
+                    
+                    homeRecordsViewModel.setPin = sessionManager.pin
+                    homeRecordsViewModel.password = sessionManager.password
+                    password = sessionManager.password
+                }
+                .onChange(of: homeRecordsViewModel.mainRecordsData) { newValue in
+                    if !newValue.isEmpty {
+                        MainselectedTabID = newValue.map { $0.id }
+
+                        if MainselectedTabID.indices.contains(0) {
+                            selectedTabID = MainselectedTabID[0]
+                            Foldertype = "work"
+                            subFoldertype = "files"
+
+                            homeRecordsViewModel.getRecordsData(
+                                selectedTabID: selectedTabID,
+                                Type: Foldertype,
+                                SubFoldersType: subFoldertype
+                            )
+                        }
+                    }
+                }
+                
+                .onChange(of: isMoreSheetvisible) { newValue in
+                    if newValue == false {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                            homeRecordsViewModel.getRecordsData(selectedTabID: homeRecordsViewModel.folderID, Type: homeRecordsViewModel.fileType,  SubFoldersType: homeRecordsViewModel.subfoldertype)
+                        }
+                    }
+                }
+
+
+                
+                if BottomBars {
+                    VStack {
+                        Spacer()
+                        HStack{
+                            Spacer()
+                            Button(action: {
+                                plusmark = true
+                            }) {
+                                Image("plus")
+                                    .renderingMode(.template)
+                                    .scaledToFit()
+                                    .frame(width: 20, height: 20) // You can adjust size here
+                                    .padding()
+                                    .background(themesviewModel.currentTheme.tabBackground)
+                                    .clipShape(Circle())
+                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                            }
+                            .padding(.trailing,15)
+                        }
+                        Spacer()
+                            .frame(height: 15)
+                        // Replace your current bottom navigation HStack with this version:
+                        
+                        HStack{
+                            VStack {
+                                Button(action: {
+                                    if selectedTAB == "work" {
+                                        selectedTabID = MainselectedTabID[0]+1 ; Foldertype = "work"; subFoldertype = "files"
+                                        
+                                        homeRecordsViewModel.folderID = MainselectedTabID[0]+1 ; homeRecordsViewModel.fileType = "work" ; homeRecordsViewModel.subfoldertype = "files"
+                                        DispatchQueue.main.async {
+                                            homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
+                                        }
+                                        
+                                        workspace = false
+                                        ismailsView = false
+                                        subFolderView = false
+                                        subFolderViewFiles = false
+                                        typeview = true
+                                        isfilesView = true
+                                        homeRecordsViewModel.getMainRecordsData()
+
+                                    }
+                                    else if selectedTAB == "archive" {
+                                        selectedTabID = MainselectedTabID[1]+1 ;Foldertype = "archive"; subFoldertype = "files"
+                                        homeRecordsViewModel.folderID = MainselectedTabID[1]+1 ; homeRecordsViewModel.fileType = "archive" ; homeRecordsViewModel.subfoldertype = "files"
+                                        DispatchQueue.main.async {
+                                            homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
+                                        }
+                                        workspace = false
+                                        ismailsView = false
+                                        subFolderView = false
+                                        subFolderViewFiles = false
+                                        typeview = true
+                                        isfilesView = true
                                         
                                         
                                     }
-                                    .frame(height: geometry.size.height - 380)
-                                    .listStyle(PlainListStyle())
-                                    .scrollContentBackground(.hidden)
-                                    .background(themesviewModel.currentTheme.windowBackground)
-                                    
+                                    else if selectedTAB == "Locker"{
+                                        selectedTabID = MainselectedTabID[2]+1 ;Foldertype = "locker"; subFoldertype = "files"
+                                        homeRecordsViewModel.folderID = MainselectedTabID[2]+1 ; homeRecordsViewModel.fileType = "locker" ; homeRecordsViewModel.subfoldertype = "files"
+                                        DispatchQueue.main.async {
+                                            homeRecordsViewModel.getLockerData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
+                                        }
+                                        workspace = false
+                                        ismailsView = false
+                                        subFolderView = false
+                                        subFolderViewFiles = false
+                                        typeview = true
+                                        isfilesView = true
+                                        
+                                    }
+                                }) {
+                                    Image("RecordFiles")
+                                        .renderingMode(.template)
+                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                        .frame(width: 24 , height: 24)
                                 }
-                                .padding(.leading, 16)
-                                .padding(.top, 180)
-                                .frame(maxWidth: .infinity, alignment: .topLeading)
+                                
+                                
+                                Text("Files")
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .font(.custom(.poppinsRegular, size: 10))
                             }
-                        }
+                            .contentShape(Rectangle())
+                            Spacer()
+                            VStack {
+                                Button(action: {
+                                    if selectedTAB == "work" {
+                                        selectedTabID = MainselectedTabID[0]+2 ; Foldertype = "work"; subFoldertype = "mails"
+                                        homeRecordsViewModel.folderID = MainselectedTabID[0]+2 ; homeRecordsViewModel.fileType = "work" ; homeRecordsViewModel.subfoldertype = "mails"
+                                        DispatchQueue.main.async {
+                                            homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
+                                        }
+                                        
+                                        workspace = false
+                                        isfilesView = false
+                                        subFolderView = false
+                                        subFolderViewFiles = false
+                                        typeview = false
+                                        ismailsView = true
+                                        
+                                    }
+                                    else if selectedTAB == "archive" {
+                                        selectedTabID = MainselectedTabID[1]+2 ; Foldertype = "archive"; subFoldertype = "mails"
+                                        homeRecordsViewModel.folderID = MainselectedTabID[1]+2 ; homeRecordsViewModel.fileType = "archive" ; homeRecordsViewModel.subfoldertype = "mails"
+                                        DispatchQueue.main.async {
+                                            homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
+                                        }
+                                        workspace = false
+                                        isfilesView = false
+                                        subFolderView = false
+                                        subFolderViewFiles = false
+                                        typeview = false
+                                        ismailsView = true
+                                    }
+                                    else if selectedTAB == "Locker" {
+                                        selectedTabID = MainselectedTabID[2]+2; Foldertype = "locker"; subFoldertype = "mails"
+                                        homeRecordsViewModel.folderID = MainselectedTabID[2]+2 ; homeRecordsViewModel.fileType = "locker" ; homeRecordsViewModel.subfoldertype = "mails"
+                                        DispatchQueue.main.async {
+                                            homeRecordsViewModel.getLockerData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
+                                        }
+                                        workspace = false
+                                        isfilesView = false
+                                        subFolderView = false
+                                        subFolderViewFiles = false
+                                        typeview = false
+                                        ismailsView = true
+                                    }
+                                }) {
+                                    Image("RecordMails")
+                                        .renderingMode(.template)
+                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                        .frame(width: 24 , height: 24)
+                                }
+                                Text("Mails")
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .font(.custom(.poppinsRegular, size: 10))
+                            }
+                            .contentShape(Rectangle())
+                            Spacer()
+                            
+                            VStack {
+                                Button(action: {
+                                    if selectedTAB == "work" {
+                                        selectedTabID = MainselectedTabID[0]+3 ;Foldertype = "work"; subFoldertype = "pictures"
+                                        homeRecordsViewModel.folderID = MainselectedTabID[0]+3 ; homeRecordsViewModel.fileType = "work" ; homeRecordsViewModel.subfoldertype = "pictures"
+                                        DispatchQueue.main.async {
+                                            homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
+                                        }
+                                        workspace = false
+                                        ismailsView = false
+                                        subFolderView = false
+                                        subFolderViewFiles = false
+                                        typeview = true
+                                        isfilesView = true
+                                        
+                                        homeRecordsViewModel.getMainRecordsData()
 
+                                    }
+                                    else if selectedTAB == "archive" {
+                                        selectedTabID = MainselectedTabID[1]+3 ;Foldertype = "archive"; subFoldertype = "pictures"
+                                        homeRecordsViewModel.folderID = MainselectedTabID[1]+3 ; homeRecordsViewModel.fileType = "archive" ; homeRecordsViewModel.subfoldertype = "pictures"
+                                        DispatchQueue.main.async {
+                                            homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
+                                        }
+                                        workspace = false
+                                        ismailsView = false
+                                        subFolderView = false
+                                        subFolderViewFiles = false
+                                        typeview = true
+                                        isfilesView = true
+                                    }
+                                    else if selectedTAB == "Locker" {
+                                        selectedTabID = MainselectedTabID[2]+3 ; Foldertype = "locker"; subFoldertype = "pictures"
+                                        homeRecordsViewModel.folderID = MainselectedTabID[2]+3 ; homeRecordsViewModel.fileType = "locker" ; homeRecordsViewModel.subfoldertype = "pictures"
+                                        DispatchQueue.main.async {
+                                            homeRecordsViewModel.getLockerData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
+                                        }
+                                        workspace = false
+                                        ismailsView = false
+                                        subFolderView = false
+                                        subFolderViewFiles = false
+                                        typeview = true
+                                        isfilesView = true
+                                    }
+                                }) {
+                                    Image("picture")
+                                        .renderingMode(.template)
+                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                        .frame(width: 24 , height: 24)
+                                }
+                                
+                                Text("Pictures")
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .font(.custom(.poppinsRegular, size: 10))
+                            }
+                            .contentShape(Rectangle())
+                            Spacer()
+                            
+                            VStack {
+                                Button(action: {
+                                    if selectedTAB == "work" {
+                                        selectedTabID = MainselectedTabID[0]+4 ;Foldertype = "work"; subFoldertype = "videos"
+                                        
+                                        homeRecordsViewModel.folderID = MainselectedTabID[0]+4 ; homeRecordsViewModel.fileType = "work" ; homeRecordsViewModel.subfoldertype = "videos"
+                                        DispatchQueue.main.async {
+                                            homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
+                                        }
+                                        workspace = false
+                                        ismailsView = false
+                                        subFolderView = false
+                                        subFolderViewFiles = false
+                                        typeview = true
+                                        isfilesView = true
+                                    }
+                                    else if selectedTAB == "archive" {
+                                        selectedTabID = MainselectedTabID[1]+4 ; Foldertype = "archive"; subFoldertype = "videos"
+                                        homeRecordsViewModel.folderID = MainselectedTabID[1]+4 ; homeRecordsViewModel.fileType = "archive" ; homeRecordsViewModel.subfoldertype = "videos"
+                                        DispatchQueue.main.async {
+                                            homeRecordsViewModel.getRecordsData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
+                                        }
+                                        workspace = false
+                                        ismailsView = false
+                                        subFolderView = false
+                                        subFolderViewFiles = false
+                                        typeview = true
+                                        isfilesView = true
+                                    }
+                                    else if selectedTAB == "Locker" {
+                                        selectedTabID = MainselectedTabID[2]+4 ; Foldertype = "locker"; subFoldertype = "videos"
+                                        homeRecordsViewModel.folderID = MainselectedTabID[2]+4 ; homeRecordsViewModel.fileType = "locker" ; homeRecordsViewModel.subfoldertype = "videos"
+                                        DispatchQueue.main.async {
+                                            homeRecordsViewModel.getLockerData(selectedTabID: selectedTabID, Type: Foldertype, SubFoldersType: subFoldertype)
+                                        }
+                                        workspace = false
+                                        ismailsView = false
+                                        subFolderView = false
+                                        subFolderViewFiles = false
+                                        typeview = true
+                                        isfilesView = true
+                                    }
+                                }) {
+                                    Image(systemName: "video")
+                                        .renderingMode(.template)
+                                        .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                        .frame(width: 24 , height: 24)
+                                }
+                                
+                                Text("Videos")
+                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                    .font(.custom(.poppinsRegular, size: 10))
+                            }
+                            .contentShape(Rectangle())
+                        }
+                        .padding([.bottom , .top] , 10)
+                        .padding([.leading , .trailing], 30)
+                        .frame(maxWidth: .infinity)
+                        .background(themesviewModel.currentTheme.windowBackground)
+                        .zIndex(1000)
+                    }
+                    
                 }
+                
+                if isMenuVisible{
+                    HomeMenuView(isSidebarVisible: $isMenuVisible)
+                }
+
+                
+
+
+
+                    // GRID VIEW
+
                     
                 if subFolderViewFiles {
-                        if homeRecordsViewModel.FilesData.count != 0 {
+                        if homeRecordsViewModel.filesData.count != 0 {
                             VStack(alignment: .leading, spacing: 10) {
                                 Text("Files")
                                     .font(.custom(.poppinsBold, size: 16))
@@ -1348,8 +1838,8 @@ struct HomeRecordsView: View {
                                     GridItem(.flexible(minimum: 100), spacing: 0)
                                 ]
                                 LazyVGrid(columns: columns, alignment: .leading, spacing: 12) {
-                                    ForEach(homeRecordsViewModel.FilesData.indices, id: \.self) { index in
-                                        let file = homeRecordsViewModel.FilesData[index]
+                                    ForEach(homeRecordsViewModel.filesData.indices, id: \.self) { index in
+                                        let file = homeRecordsViewModel.filesData[index]
                                         VStack(alignment: .leading, spacing: 8) {
                                             HStack(alignment: .top, spacing: 10) {
                                                 let fileURL = URL(string: file.fileLink)
@@ -1371,7 +1861,6 @@ struct HomeRecordsView: View {
                                                                     .foregroundColor(.white)
                                                             }
                                                             .onTapGesture {
-                                                                print("on click of video")
                                                                 if let safeURL = fileURL {
                                                                     confirmedURL = safeURL
                                                                     isVideo = true
@@ -1380,7 +1869,6 @@ struct HomeRecordsView: View {
                                                                         showViewer = true
                                                                     }
                                                                     
-                                                                    print("confirmedURL = \(confirmedURL!)")
                                                                 }
                                                             }
                                                             
@@ -1399,7 +1887,6 @@ struct HomeRecordsView: View {
                                                                 .foregroundColor(.blue)
                                                         }
                                                         .onTapGesture {
-                                                            print("click on file format")
                                                             toastMessage = "Format not supported for preview"
                                                             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                                                 toastMessage = nil // hide the toast after 2 seconds
@@ -1418,11 +1905,9 @@ struct HomeRecordsView: View {
                                                                     .clipped()
                                                                     .cornerRadius(8)
                                                                     .onTapGesture {
-                                                                        print("on click of image")
                                                                         if let safeURL = fileURL {
                                                                             confirmedURL = safeURL
                                                                             isVideo = false
-                                                                            print("confirmedURL = \(safeURL)")
                                                                         }
                                                                     }
                                                                 
@@ -1447,23 +1932,6 @@ struct HomeRecordsView: View {
                                                     fileType = "folder"
                                                     fileclicks = true
                                                     homeRecordsViewModel.getSubRecordsData(selectedTabID: subfoldersViewIds, Type: subfoldersViewType)
-//                                                    isMoreSheetvisible.toggle()
-//                                                    selectedTabID = subfoldersViewIds
-//                                                    print("isMoreSheetvisible \(isMoreSheetvisible)")
-//                                                    print("selectedTabID \(selectedTabID) Foldertype \(Foldertype) SubFoldersType \(subFoldertype)")
-//                                                    emailID = 0
-//                                                    fieldID = file.id
-//                                                    recordID = 0
-//                                                    FileAzureName = file.azureFileName
-//                                                    foldername = file.fileName
-//                                                    createdAt = file.createdAt
-//                                                    UpdatedAt = file.updatedAt
-//                                                    filesize = file.fileSize
-//                                                    AzureLink = file.fileLink
-//                                                    fileType = "file"
-//                                                    fileFormat = URL(fileURLWithPath: file.fileName).pathExtension.lowercased()
-//                                                    fileclicks = true
-//                                                    print("foldername \(foldername) createdAt \(createdAt) UpdatedAt \(UpdatedAt) filesize \(filesize) AzureLink \(AzureLink)")
                                                 }) {
                                                     Image("dots")
                                                         .resizable()
@@ -1555,7 +2023,6 @@ struct HomeRecordsView: View {
                                 }
                             }
                         }
-                    
                 }
                 
                 if isMoreSheetvisible {
@@ -1566,14 +2033,13 @@ struct HomeRecordsView: View {
                             .edgesIgnoringSafeArea(.all)
                             .onTapGesture {
                                 withAnimation {
-                                    print("dismiss isMoreSheetvisible")
                                     isMoreSheetvisible = false
                                 }
                             }
                                 
                                 VStack {
                                     Spacer() // Pushes the sheet to the bottom
-                                    RecordsThreeDotsView(selectedTabID: $selectedTabID, folderName: $Foldertype, subFolderName: $subFoldertype, emailIds: $emailID, recordIDs: $recordID, fieldIDs: $fieldID, azureName: $FileAzureName, FileName: $foldername, createdTime: $createdAt, UpdatedTime: $UpdatedAt, Foldersize: $filesize, azureLink: $AzureLink , filetype: $fileType , formatFile: $fileFormat, fileClicked: $fileclicks)
+                                    RecordsThreeDotsView(selectedTabID: $selectedTabID, folderName: $Foldertype, subFolderName: $subFoldertype, emailIds: $emailID, recordIDs: $recordID, fieldIDs: $fieldID, azureName: $FileAzureName, FileName: $foldername, createdTime: $createdAt, UpdatedTime: $UpdatedAt, Foldersize: $filesize, azureLink: $AzureLink , filetype: $fileType , formatFile: $fileFormat, fileClicked: $fileclicks , isPresented: $isMoreSheetvisible)
                                         .transition(.move(edge: .bottom))
                                         .animation(.easeInOut, value: isMoreSheetvisible)
                                 }
@@ -1629,7 +2095,6 @@ struct HomeRecordsView: View {
                                 
                                 HStack {
                                     Button {
-//                                        isFilePickerPresent = true
                                         showPhotoPicker = true
                                     } label: {
                                         Image("uploadFile")
@@ -1659,8 +2124,6 @@ struct HomeRecordsView: View {
                             .frame(height: 200)
                             .background(themesviewModel.currentTheme.windowBackground)
                             .cornerRadius(20)
-                            .padding(.horizontal,10)
-                            .padding(.bottom, 20) // Optional bottom padding
                         }
                     }
                 }
@@ -1690,10 +2153,6 @@ struct HomeRecordsView: View {
                                 Spacer()
                                 Button{
                                     homeRecordsViewModel.createNewFolder(folderName: newFolderName, parentID: selectedTabID, Type: selectedTAB, subFolderType: subFoldertype)
-                                    print("newFolderName  \(newFolderName)")
-                                    print("selectedTabID  \(selectedTabID)")
-                                    print("selectedTAB  \(selectedTAB)")
-                                    print("subFoldertype  \(subFoldertype)")
                                     createFolder = false
                                 }label: {
                                     Text("Create")
@@ -1788,13 +2247,12 @@ struct HomeRecordsView: View {
                                         Button{
                                             lockerView = false
                                             homeRecordsViewModel.setPin = LockerPin
-                                                homeRecordsViewModel.getLockerData(selectedTabID: MainselectedTabID[2], Type: "locker", SubFoldersType: "locker")
-//                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                                workspace = true
-//                                                lockerfilesView = true
                                             
-                                            LockerPin = ""
-                                            Lockerpassword = ""
+                                            homeRecordsViewModel.getLockerData(selectedTabID: MainselectedTabID[2], Type: "locker", SubFoldersType: "locker")
+                                                workspace = true
+                                                typeview = true
+                                                LockerPin = ""
+                                                Lockerpassword = ""
                                         }label: {
                                             Text("Submit")
                                                 .padding()
@@ -1868,7 +2326,6 @@ struct HomeRecordsView: View {
                                         consoleViewModel.setPin(Newpin: newPin, confirmationPin: confirmPin)
                                         newPinView = false
                                         lockerView = true
-                                        print(".toast(message: $consoleViewModel.error) \($consoleViewModel.error)")
                                         if newPin == confirmPin {
                                             sessionManager.pin = newPin
                                         }

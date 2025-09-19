@@ -16,10 +16,15 @@ struct SendEmailsModel: Decodable {
 
 struct SendEmailData: Decodable {
     let id: Int?
-    let subject, body: String?
-    let passwordProtected, draft: Bool?
+    let subject: String?
+    let body: String?
+    let passwordProtected: Bool?
+    let draft: Bool?
     let type: String?
-    let attachments, passwordHash, passwordHint, scheduledStatus: String?
+    let attachments: String?
+    let passwordHash: String?
+    let passwordHint: String?
+    let scheduledStatus: String?
     let scheduledTime: String?
     let senderID, sentAt: Int?
     let updatedAt, createdAt: String?
@@ -32,15 +37,19 @@ struct SendEmailData: Decodable {
 }
 
 struct UserDatum: Decodable {
-    let isDeleted, starred: Bool?
-    let id, emailID, threadID: Int?
+    let isDeleted: Bool?
+    let starred: Bool?
+    let id: Int?
+    let emailID: Int?
+    let threadID: Int?
     let type: String?
     let userID: Int?
     let status: String?
     let sentAt: Int?
     let readReceiptStatus: Bool?
     let timeOfRead: Int?
-    let updatedAt, createdAt: String?
+    let updatedAt: String?
+    let createdAt: String?
 
     enum CodingKeys: String, CodingKey {
         case isDeleted, starred, id
@@ -75,7 +84,9 @@ struct AttachmentModel: Decodable {
 
 struct AttachmentDataModel: Codable {
     let fileLink: String?
-    let fileName, azureFileName, fileSize: String?
+    let fileName: String?
+    let azureFileName: String?
+    let fileSize: String?
 }
 struct TcodeSuggest: Decodable {
     var data: [TcodeData]?

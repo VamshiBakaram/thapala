@@ -22,6 +22,7 @@ struct ThemePayload: Codable {
 
 // themes change
 enum AppTheme: String, CaseIterable, Identifiable {
+    case `default`
     case light
     case dark
     case elegance
@@ -64,6 +65,6 @@ struct Theme {
     let attachmentBGColor: Color
     let bottomSheetBG: Color
     
-    let AllBlack: Color
-    let AllGray: Color
+    let allBlack: Color
+    let allGray: Color
 }

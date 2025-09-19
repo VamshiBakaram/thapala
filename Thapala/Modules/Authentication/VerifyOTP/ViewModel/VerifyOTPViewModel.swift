@@ -15,16 +15,10 @@ class VerifyOTPViewModel: ObservableObject {
     @Published var error: String?
     @Published var isNavigateToSecurutyQuestions = false
     @Published var isNavigateToPassword = false
-    /*
-     var resetToken:String = ""
-     let tCode:String
-     init(tCode:String){
-         self.tCode = tCode
-     }
-     */
     let isfromForgot:Bool
     var resetToken:String = ""
     let tCode:String
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     init(dialCode: String, phoneNumber: String,isfromForgot:Bool,tCode:String) {
         self.phoneNumber = "\(dialCode) \(phoneNumber.prefix(2))*** ***\(phoneNumber.suffix(2))"
         self.isfromForgot = isfromForgot
@@ -69,7 +63,6 @@ class VerifyOTPViewModel: ObservableObject {
                         self.error = response.message ?? ""
                     }else{
                         self.error = response.message ?? ""
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
                             switch navigateTo {
                             case .securityQuestions:
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
@@ -80,7 +73,6 @@ class VerifyOTPViewModel: ObservableObject {
                                     self.isNavigateToPassword = true
                                 })
                             }
-//                        })
                     }
                 }
             case .failure(let error):
@@ -90,7 +82,7 @@ class VerifyOTPViewModel: ObservableObject {
                     case .error(error: let message):
                         self.error = message
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -111,10 +103,6 @@ class VerifyOTPViewModel: ObservableObject {
                         self.error = "OTP sent successfully."
                         UserDataManager.shared.sessionId = response.sessionId ?? ""
                         self.resetToken = response.message ?? ""
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-//                            self.isOtpTapNextNavigateView = true
-//                            self.isPresenter = true
-//                        })
                     }
                 }
             case .failure(let error):
@@ -124,7 +112,7 @@ class VerifyOTPViewModel: ObservableObject {
                     case .error(error: let message):
                         self.error = message
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

@@ -10,7 +10,7 @@ struct ChatBoxView: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var homePostboxViewModel = HomePostboxViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @State private var messageText: String = ""
     var selectID: Int
     var roomid: String
@@ -18,7 +18,6 @@ struct ChatBoxView: View {
     @State private var profile: String = ""
     @State private var chatMessage: [String] = []
     @State private var messages: [Message] = []
-//    @State private var Getmessages: [ChatMessage] = []
     private var socketManager = WebSocketManager()
     init(selectID: Int, roomid: String, homePostboxViewModel: HomePostboxViewModel = HomePostboxViewModel()) {
         self.selectID = selectID
@@ -78,7 +77,7 @@ struct ChatBoxView: View {
                                         .padding()
                                         .padding(.trailing , 16)
                                         .background(themesviewModel.currentTheme.attachmentBGColor)
-                                        .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                        .foregroundColor(themesviewModel.currentTheme.allBlack)
                                         .cornerRadius(12)
                                         .id(index) // Assign unique ID for scrolling
                                 }
@@ -92,13 +91,13 @@ struct ChatBoxView: View {
                                         Text(message.text)
                                             .padding()
                                             .background(themesviewModel.currentTheme.attachmentBGColor)
-                                            .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                            .foregroundColor(themesviewModel.currentTheme.allBlack)
                                             .foregroundColor(.white)
                                             .cornerRadius(12)
                                     } else {
                                         Text(message.text)
                                             .padding()
-                                            .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                            .foregroundColor(themesviewModel.currentTheme.allBlack)
                                             .background(Color.gray.opacity(0.2))
                                             .cornerRadius(12)
                                         Spacer()
@@ -139,7 +138,6 @@ struct ChatBoxView: View {
                         Button(action: {
                             guard !messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
                             messages.append(Message(text: messageText, isSentByUser: true, timestamp: Date()))
-                            print("messageText \(messageText)")
                             messageText = ""
                         }) {
                             Image(systemName: "paperplane.fill")
@@ -158,30 +156,22 @@ struct ChatBoxView: View {
             }
         }
         .onAppear {
-            if homePostboxViewModel.ContactsList.isEmpty {
+            if homePostboxViewModel.contactsList.isEmpty {
                 homePostboxViewModel.getContactsList()
-                print("Fetching getContactsList()...")
-                print("selected id \(selectID)")
                 
             }
-            if homePostboxViewModel.GetChatMessage.isEmpty {
-                print("fetching before GetChatMessage")
+            if homePostboxViewModel.getChatMessage.isEmpty {
                 homePostboxViewModel.getAllChats(senderID: sessionManager.userId, recieverId: selectID)
-                print("fetching before GetChatMessage")
             }
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                if let settings = homePostboxViewModel.ContactsList.first(where: { $0.id == selectID }) {
+                if let settings = homePostboxViewModel.contactsList.first(where: { $0.id == selectID }) {
                     firstname = settings.firstname
                     profile = settings.profile ?? ""
-                    print("first name \(firstname)")
-                    print("profile  \(profile)")
                 }
-                chatMessage = homePostboxViewModel.GetChatMessage.map { $0.message }
+                chatMessage = homePostboxViewModel.getChatMessage.map { $0.message }
             }
-            print("before socketManager calls")
             socketManager.connect()
-            print("After socketManager calls")
         }
         .navigationBarHidden(true)
     }

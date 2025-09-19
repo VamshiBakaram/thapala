@@ -39,7 +39,7 @@ struct SnoozedMailsDataModel: Decodable,Identifiable {
     let tCode: String?
     let senderProfile: String?
     let attachments: [String]?
-    let labels: [String]?
+    let labels: [snnozedLabelItems]?
     let emailCountInThread: Int?
     let hasDraft: Int?
     let snoozeAtThread: Int?
@@ -48,4 +48,11 @@ struct SnoozedMailsDataModel: Decodable,Identifiable {
 
 struct SnoozedEmailCount: Decodable {
     let totalCount: Int?
+}
+
+
+struct snnozedLabelItems: Codable, Identifiable, Equatable {
+    let labelId: Int
+    let labelName: String
+    var id: Int { labelId } // For Identifiable
 }

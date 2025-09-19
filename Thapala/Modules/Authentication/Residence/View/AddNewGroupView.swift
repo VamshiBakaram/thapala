@@ -8,10 +8,8 @@
 import SwiftUI
 
 struct AddNewGroupView: View {
-    // @Environment(\.presentationMode) var presentationMode
      @Binding var isNewGroupVisible: Bool
-     @ObservedObject private var addNewGroupViewModel = AddNewGroupViewModel()
-     
+    @ObservedObject var homeResidenceViewModel = HomeResidenceViewModel()
      var body: some View {
          ZStack{
              Color(red: 0, green: 0, blue: 0)
@@ -35,7 +33,7 @@ struct AddNewGroupView: View {
                  
                  }
                 
-                 FloatingTextField(text: $addNewGroupViewModel.groupName, placeHolder: "Group Name", allowedCharacter: .defaultType)
+                 FloatingTextField(text: $homeResidenceViewModel.groupName, placeHolder: "Group Name", allowedCharacter: .defaultType)
                      .padding(.horizontal)
                  
                  Button(action: {

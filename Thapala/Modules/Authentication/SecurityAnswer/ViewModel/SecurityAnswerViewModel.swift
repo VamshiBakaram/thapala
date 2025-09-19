@@ -60,35 +60,6 @@ class SecurityAnswerViewModel:ObservableObject{
                 }
             }
         }
-//        NetworkManager.shared.getSessionId(endPoint: EndPoint.forgotPasswordOtp, httpMethod: .post, parameters: parametes) { [weak self]result in
-//            guard let self = self else { return }
-//            switch result {
-//            case .success(let response):
-//                DispatchQueue.main.async {
-//                    self.isLoading = false
-//                    if let _ = response.status {
-//                        self.error = response.message ?? ""
-//                    }else{
-//                        self.error = response.message ?? ""
-//                        UserDataManager.shared.sessionId = response.sessionId ?? ""
-//                        print("Session Is",response.sessionId ?? "")
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-//                            self.navigateToResetPass = true
-//                        })
-//                    }
-//                }
-//            case .failure(let error):
-//                DispatchQueue.main.async {
-//                    self.isLoading = false
-//                    switch error {
-//                    case .error(error: let message):
-//                        self.error = message
-//                    case .sessionExpired(error: _ ):
-//                        self.error = "Please try again later"
-//                    }
-//                }
-//            }
-//        }
     }
     
 }

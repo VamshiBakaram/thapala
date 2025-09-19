@@ -40,7 +40,7 @@ struct StarredEmailDataModel: Decodable,Identifiable {
     let tCode: String?
     let senderProfile: String?
     let attachments: [SttaredEmailAttachment]?
-    let labels: [Int]?
+    let labels: [StarredLabelItems]?
     let emailCountInThread: Int?
     let hasDraft: Int?
     let snoozeAtThread: Int?
@@ -59,6 +59,12 @@ struct SttaredEmailAttachment: Decodable {
     let fileName: String?
     let fileSize: String?
     let azureFileName: String?
+}
+
+struct StarredLabelItems: Codable, Identifiable, Equatable {
+    let labelId: Int
+    let labelName: String
+    var id: Int { labelId } // For Identifiable
 }
 
 //put starred unstarred

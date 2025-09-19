@@ -22,6 +22,7 @@ class InsertTCodeViewModel: ObservableObject{
     @Published var tCodes: [TCode] = []
     @Published var ccTCodes: [TCode] = []
     @Published var bccTCodes: [TCode] = []
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     
     init(){
         getContactsData()
@@ -56,7 +57,7 @@ class InsertTCodeViewModel: ObservableObject{
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

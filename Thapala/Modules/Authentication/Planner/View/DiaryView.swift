@@ -8,11 +8,12 @@
 
 import SwiftUI
 import ClockTimePicker
+
 struct DiaryView: View {
     @Binding var isDiaryVisible: Bool
-    @ObservedObject private var plannerAddTaskViewModel = PlannerAddTaskViewModel()
-    @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @StateObject private var plannerAddTaskViewModel = PlannerAddTaskViewModel()
+    @StateObject var homePlannerViewModel = HomePlannerViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Binding var DiarynotificationTime: Int?
     @Binding var isDiaryTagActive: Bool
     @State private var textInput: String = ""
@@ -26,21 +27,32 @@ struct DiaryView: View {
     @State private var isclicked: Bool = false
     @State private var isDiaryViewActive: Bool = false
     @State private var isActive: Bool = false
-    @State private var selectedNewDiaryTag: [Int] = []
+//    @State private var selectedNewDiaryTag: [Int] = []
     @State private var BackgroundThemeimage: String?
     @State private var onTapTheme: Bool = false
     @State var themeImage: String = ""
     @State var selectedNames: [String]
+    @State private var dragOffset: CGFloat = 0
+    @State private var selectedTag: [Int] = []
+
     var body: some View {
         ZStack {
-            if onTapTheme {
-                Image(BackgroundThemeimage!)
-                    .resizable()
-                    .foregroundColor(themesviewModel.currentTheme.iconColor)
-                    .ignoresSafeArea()
+            
+            if !themeImage.isEmpty {
+                        Image(themeImage)
+                            .resizable() // Make the image resizable
+                            .ignoresSafeArea()
+                
+                if onTapTheme {
+                    Image(BackgroundThemeimage!)
+                        .resizable()
+                        .ignoresSafeArea()
+                }
+
             }
+            
             else {
-                Color.white
+                themesviewModel.currentTheme.windowBackground
                     .ignoresSafeArea()
             }
             
@@ -49,27 +61,13 @@ struct DiaryView: View {
                     Button(action: {
                         onTapTheme = false
                         self.isDiaryVisible = false
-                        print("Valid DiarynotificationTime: \(DiarynotificationTime)")
-                        if let reminderTime = DiarynotificationTime {
-                            print("Valid reminderTime: \(reminderTime)")
-                            homePlannerViewModel.AddNewDiary(title: textInput, notes: text, reminder: reminderTime)
-                            print("if Case")
-                        } else {
-                            print("DiarynotificationTime is nil. Using default value or handling it differently.")
-                            print("else case")
-                            homePlannerViewModel.AddNewDiary(title: textInput, notes: text, reminder: DiarynotificationTime ?? nil) // Pass nil if reminder is optional
-                        }
-//                        homePlannerViewModel.postDiary(selectedID: selectedID ?? 0,text: text, textInput: textInput)
-                        print("api calling")
-                        print("isDiaryTagActive\(isDiaryTagActive)")
-                        if isDiaryTagActive {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                homePlannerViewModel.ApplyTag(listId: id, tagIds: selectedNewDiaryTag)
-                                print("ApplyTag API called after 3 seconds")
-                            }
-                        }
+                        homePlannerViewModel.AddNewDiary(title: textInput, notes: text, reminder: DiarynotificationTime, labels: selectedTag , backgroundTheme: themeImage)
+                        
+                        DiarynotificationTime = nil
                     }, label: {
                         Image("wrongmark")
+                            .renderingMode(.template)
+                            .foregroundColor(themesviewModel.currentTheme.iconColor)
                     })
                     .padding(.leading, 16) // Add spacing of 16 from the leading edge
                     .padding(.top, 16) // Add spacing of 16 from the top edge
@@ -78,37 +76,149 @@ struct DiaryView: View {
                 .frame(maxWidth: .infinity, alignment: .leading) // Ensure HStack stretches across the screen, aligning left
                 
                 // Add the first TextField and Rectangle separator
-                VStack(alignment: .leading, spacing: 1) { // Set spacing explicitly between the elements
-                    TextField("What's new", text: $textInput)
-//                                .padding()
-                        .background(Color.clear)
-                        .cornerRadius(8)
-                        .padding(.top, 30) // Add top padding to the TextField
-                        .padding(.horizontal, 16) // Add horizontal padding
-                        .foregroundStyle(Color.black)
-//                        .disabled(!canEdit())
+                ZStack(alignment: .leading) {
+                    if textInput.isEmpty {
+                        Text("what's new")
+                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                            .font(.custom(.poppinsMedium, size: 18))
+                            .padding(.horizontal, 20)
+                            .padding(.top, 15)
+                    }
 
-                    // Add a Spacer here to force the correct spacing if needed
-//                            Spacer().frame(height: 1) // Add space between TextField and Rectangle
-
-                    Rectangle()
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 1)
-                        .foregroundColor(Color.black)
-                        .padding(.horizontal, 16) // Horizontal padding for the Rectangle
-                }
-
-                VStack(alignment: .leading) {
-                    // TextField for the note
-                    TextField("Write about it", text: $text)
+                    TextField("", text: $textInput)
                         .padding()
                         .background(Color.clear)
                         .cornerRadius(8)
                         .padding(.top, 15)
                         .padding(.horizontal, 16)
-                        .foregroundStyle(Color.black)
-//                        .disabled(!canEdit())
+                        .foregroundColor(themesviewModel.currentTheme.textColor)
                 }
+                
+                Rectangle()
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 1)
+                    .foregroundColor(themesviewModel.currentTheme.strokeColor)
+                    .padding(.horizontal, 16)
+                
+                ZStack(alignment: .leading) {
+                    if text.isEmpty {
+                        Text("Write about it: ")
+                            .foregroundColor(themesviewModel.currentTheme.textColor)
+                            .font(.custom(.poppinsMedium, size: 18))
+                            .padding(.horizontal, 20)
+                            .padding(.top, 15)
+                    }
+
+                    TextField("", text: $text)
+                        .padding()
+                        .background(Color.clear)
+                        .cornerRadius(8)
+                        .padding(.top, 15)
+                        .padding(.horizontal, 16)
+                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                }
+                
+                VStack(alignment: .leading, spacing: 15) {
+                    if (DiarynotificationTime != nil) {
+                        HStack {
+                            Image("notification1")
+                                .resizable()
+                                .renderingMode(.template)
+                                .foregroundColor(themesviewModel.currentTheme.allBlack)
+                                .frame(width: 16, height: 16)
+                                .padding(.leading, 5)
+                            
+                            TextField("", text: Binding(
+                                get: {
+                                    if let time = DiarynotificationTime {
+                                        let date = Date(timeIntervalSince1970: TimeInterval(time))
+                                        return formatDateTime(date)
+                                    }
+                                    return ""
+                                },
+                                set: { newValue in
+                                    if let newDate = parseDateTime(newValue) {
+                                        DiarynotificationTime = Int(newDate.timeIntervalSince1970)
+                                        if let index = homePlannerViewModel.listData.firstIndex(where: { $0.id == selectedID }) {
+                                            homePlannerViewModel.listData[index].reminder = DiarynotificationTime
+                                        }
+                                    }
+                                }
+                            ))
+                            .foregroundColor(themesviewModel.currentTheme.allBlack)
+                            .font(.custom(.poppinsMedium, size: 14))
+                            
+                            Image("wrongmark")
+                                .resizable()
+                                .renderingMode(.template)
+                                .foregroundColor(themesviewModel.currentTheme.allBlack)
+                                .frame(width: 16, height: 16)
+                                .padding(.trailing, 5)
+                                .onTapGesture {
+                                    DiarynotificationTime = nil
+                                }
+                        }
+                        .frame(width: 200, height: 35)
+                        .padding(.leading, 16)
+                        .background(DiarynotificationTime != nil ? Color(red: 187/255, green: 190/255, blue: 238/255) : Color.clear) // Background color conditionally
+                        .cornerRadius(8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(DiarynotificationTime != nil ? Color.black : Color.clear, lineWidth: 1) // Border color conditionally
+                        )
+                    }
+                    
+                    Spacer().frame(height: 15)
+                    
+                    
+                    let columns = [
+                        GridItem(.flexible(), spacing: 8),
+                        GridItem(.flexible(), spacing: 8),
+                        GridItem(.flexible(), spacing: 8)
+                    ]
+
+                    LazyVGrid(columns: columns, spacing: 8) {
+                        ForEach(homePlannerViewModel.selectedtagslabel, id: \.self) { labelName in
+                            HStack {
+                                Text(labelName) // show each selected name
+                                    .foregroundColor(themesviewModel.currentTheme.allBlack)
+                                    .font(.custom(.poppinsRegular, size: 14))
+                                    .frame(height: 35)
+                                    .padding(.leading, 10)
+
+                                Image("wrongmark")
+                                    .resizable()
+                                    .renderingMode(.template)
+                                    .foregroundColor(themesviewModel.currentTheme.allBlack)
+                                    .frame(width: 16, height: 16)
+                                    .padding(.trailing, 5)
+                                    .onTapGesture {
+                                        homePlannerViewModel.selectedtagslabel.removeAll { $0 == labelName }
+                                        
+                                        selectedTag = homePlannerViewModel.tagLabelData    
+                                            .filter { homePlannerViewModel.selectedtagslabel.contains($0.labelName) }
+                                            .map { $0.id}
+                                        
+                                        print("homePlannerViewModel.selectedtagslabel \(homePlannerViewModel.selectedtagslabel)")
+                                        print("selectedTag  \(selectedTag)")
+                                    }
+                            }
+//                            .frame(maxWidth: .infinity) // makes each cell expand equally
+                            .background(Color(red: 187/255, green: 190/255, blue: 238/255))
+                            .cornerRadius(8)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(themesviewModel.currentTheme.strokeColor, lineWidth: 1)
+                            )
+
+                        }
+                    }
+                    .padding(.horizontal, 5)
+                    
+                    
+                }
+                .padding(.leading , 16)
+                
                 Spacer() // Push content upwards
                 // Align the tags image at the bottom
                 HStack {
@@ -117,6 +227,8 @@ struct DiaryView: View {
 
                     }, label: {
                         Image("plannerbell")
+                            .renderingMode(.template)
+                            .foregroundColor(themesviewModel.currentTheme.iconColor)
                     })
                         .padding(.bottom, 10)
                         .padding(.leading, 40)
@@ -126,6 +238,8 @@ struct DiaryView: View {
                         isBackgroundSheetVisible.toggle()
                     }, label: {
                         Image("backgroundimage")
+                            .renderingMode(.template)
+                            .foregroundColor(themesviewModel.currentTheme.iconColor)
                     })
                         .padding(.bottom, 10)
                         .padding(.leading, 40)
@@ -134,96 +248,233 @@ struct DiaryView: View {
                         isTagSheetVisible.toggle()
                     }, label: {
                         Image("Tags")
+                            .renderingMode(.template)
+                            .foregroundColor(themesviewModel.currentTheme.iconColor)
                     })
                         .padding(.bottom, 10)
                         .padding(.leading, 40)
                     Spacer()
                 }
                 .padding(.top, 20)
-                .background(Color.gray)
 
             }
             
             .onAppear{
                 isDiaryViewActive = true
-                isActive = true
+                homePlannerViewModel.GetTagLabelList()
+                homePlannerViewModel.GetDiaryDataList(query: "", type: "diary", page: 1, pageSize: 30, searchType: "", status: "", labelname: "", startdate: 0, enddate: 0)
                 
-                if homePlannerViewModel.NotelistData.isEmpty {
-                    homePlannerViewModel.GetDiaryDataList()
-                }
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    if let note = homePlannerViewModel.listData.first {
-                        let incrementedId = note.id
-                        id = incrementedId + 1
-                        print("Let's check the first id: \(incrementedId), Incremented id: \(id)")
+                    if let maxId = homePlannerViewModel.listData.map({ $0.id }).max() {
+                        id = maxId + 1
                     } else {
-                        print("No diary found with ID: \((id))")
+                        id = 1 // fallback if no data
                     }
                 }
             }
-            if isNotificationSheetVisible {
-                VStack {
-                    Spacer() // Pushes the sheet to the bottom
-                    BottomSheetNotificationView(isNotificationSheetVisible: $isNotificationSheetVisible, DiarynotificationTime: $DiarynotificationTime, isDiaryViewActive: $isDiaryViewActive, selectedID: selectedID ?? 0)
-                        .transition(.move(edge: .bottom)) // Smooth transition
-                        .animation(.easeInOut)
+            
+            .onChange(of: isTagSheetVisible) { newValue in
+                if newValue {
+                    print("homePlannerViewModel.selectedLabelNoteID")
+                } else {
+                    print("selectedTag  \(selectedTag)")
+                    print("before homePlannerViewModel.selectedtagslabel  \( homePlannerViewModel.selectedtagslabel)")
+                    print("available tagLabelData ids: \(homePlannerViewModel.tagLabelData.map { $0.id })")
+
+                    homePlannerViewModel.selectedtagslabel = homePlannerViewModel.tagLabelData
+                        .filter { selectedTag.contains($0.id) }
+                        .map { $0.labelName }
+
+                    print("after Selected label names: \(homePlannerViewModel.selectedtagslabel)")
                 }
-                .background(
-                    Color.black.opacity(0.3)
+            }
+            
+            .onChange(of: isBackgroundSheetVisible) { newValue in
+                if newValue {
+                    print("if after Selected  homePlannerViewModel.imagetheme: \(homePlannerViewModel.imagetheme)")
+//                        homePlannerViewModel.imagetheme = BackgroundThemeimage
+                } else {
+                    print("BackgroundThemeimage \(BackgroundThemeimage)")
+                    themeImage = BackgroundThemeimage ?? ""
+
+                    print("themeImage  \(themeImage)")
+                    
+                     let theme = themeImage
+                    if let fileName = theme.components(separatedBy: "/").last?.replacingOccurrences(of: ".png", with: "") {
+                        themeImage = fileName
+                        print("themeImage ID \(selectedID)")
+                        print("after theme \(themeImage)")
+                    }
+                    
+                    print("theme \(themeImage)")
+                }
+            }
+
+            
+            if isNotificationSheetVisible {
+                ZStack {
+                    // Tappable background
+                    Rectangle()
+                        .fill(Color.black.opacity(0.3))
                         .edgesIgnoringSafeArea(.all)
                         .onTapGesture {
                             withAnimation {
-                                isNotificationSheetVisible = false // Dismiss the sheet
+                                isNotificationSheetVisible = false
                             }
                         }
-                )
+
+                    VStack {
+                        Spacer()
+                        BottomSheetNotificationView(isNotificationSheetVisible: $isNotificationSheetVisible, DiarynotificationTime: $DiarynotificationTime, isDiaryViewActive: $isDiaryViewActive, selectedID: selectedID ?? 0)
+                            .offset(y: dragOffset)
+                            .gesture(
+                                DragGesture()
+                                    .onChanged { value in
+                                        if value.translation.height > 0 {
+                                            dragOffset = value.translation.height
+                                        }
+                                    }
+                                    .onEnded { value in
+                                        let dragHeight = value.translation.height
+                                        let dismissThreshold: CGFloat = 50
+
+                                        if dragHeight > dismissThreshold {
+                                            withAnimation {
+                                                isNotificationSheetVisible = false
+                                            }
+                                        } else {
+                                            withAnimation {
+                                                dragOffset = 0
+                                            }
+                                        }
+                                    }
+                            )
+                            .onAppear {
+                                dragOffset = 0 // ← THIS fixes the “halfway open” issue
+                            }
+                            .transition(.move(edge: .bottom))
+                            .animation(.easeInOut, value: isNotificationSheetVisible)
+                    }
+                    
+                    
+                }
             }
             
             if isTagSheetVisible {
-                VStack {
-                    Spacer() // Pushes the sheet to the bottom
-                    BottomTagSheetView(isTagSheetVisible: $isTagSheetVisible, isActive: $isActive, selectedNewDiaryTag: $selectedNewDiaryTag, selectedNames: $selectedNames, selectedID: selectedID ?? 0, isclicked: $isclicked)
-                        .transition(.move(edge: .bottom)) // Smooth transition
-                        .animation(.easeInOut)
-                }
-                .background(
-                    Color.black.opacity(0.3)
+                ZStack {
+                    // Tappable background
+                    Rectangle()
+                        .fill(Color.black.opacity(0.3))
                         .edgesIgnoringSafeArea(.all)
                         .onTapGesture {
                             withAnimation {
-                                isTagSheetVisible = false // Dismiss the sheet
+                                isTagSheetVisible = false
                             }
                         }
-                )
+
+                    VStack {
+                        Spacer()
+                        BottomTagSheetView(isTagSheetVisible: $isTagSheetVisible, isDiaryViewActive: $isDiaryViewActive, selectedNewDiaryTag: $selectedTag, selectedNames: $selectedNames, selectedID: id, isclicked: $isclicked)
+                            .offset(y: dragOffset)
+                            .gesture(
+                                DragGesture()
+                                    .onChanged { value in
+                                        if value.translation.height > 0 {
+                                            dragOffset = value.translation.height
+                                        }
+                                    }
+                                    .onEnded { value in
+                                        let dragHeight = value.translation.height
+                                        let dismissThreshold: CGFloat = 50
+
+                                        if dragHeight > dismissThreshold {
+                                            withAnimation {
+                                                isTagSheetVisible = false
+                                            }
+                                        } else {
+                                            withAnimation {
+                                                dragOffset = 0
+                                            }
+                                        }
+                                    }
+                            )
+                            .onAppear {
+                                dragOffset = 0 // ← THIS fixes the “halfway open” issue
+                            }
+                            .transition(.move(edge: .bottom))
+                            .animation(.easeInOut, value: isTagSheetVisible)
+                    }
+                }
             }
             if isBackgroundSheetVisible {
-                VStack {
-                    Spacer() // Pushes the sheet to the bottom
-                    BottomBackgroundSheetView(themeimage: $BackgroundThemeimage, selectedIconIndex: themeImage, isBackgroundSheetVisible: $isBackgroundSheetVisible, selectedID: id, onTapTheme: $onTapTheme)
-                        .transition(.move(edge: .bottom)) // Smooth transition
-                        .animation(.easeInOut)
-                }
-                .background(
-                    Color.black.opacity(0.3)
+                
+                ZStack {
+                    // Tappable background
+                    Rectangle()
+                        .fill(Color.black.opacity(0.3))
                         .edgesIgnoringSafeArea(.all)
                         .onTapGesture {
                             withAnimation {
-                                isBackgroundSheetVisible = false // Dismiss the sheet
+                                isBackgroundSheetVisible = false
                             }
                         }
-                )
+
+                    VStack {
+                        Spacer()
+                        BottomBackgroundSheetView(themeimage: $BackgroundThemeimage, selectedIconIndex: themeImage, isBackgroundSheetVisible: $isBackgroundSheetVisible, selectedID: id, onTapTheme: $onTapTheme, isDairyViewActive: $isDiaryViewActive)
+                            .offset(y: dragOffset)
+                            .gesture(
+                                DragGesture()
+                                    .onChanged { value in
+                                        if value.translation.height > 0 {
+                                            dragOffset = value.translation.height
+                                        }
+                                    }
+                                    .onEnded { value in
+                                        let dragHeight = value.translation.height
+                                        let dismissThreshold: CGFloat = 50
+
+                                        if dragHeight > dismissThreshold {
+                                            withAnimation {
+                                                isBackgroundSheetVisible = false
+                                            }
+                                        } else {
+                                            withAnimation {
+                                                dragOffset = 0
+                                            }
+                                        }
+                                    }
+                            )
+                            .onAppear {
+                                dragOffset = 0 // ← THIS fixes the “halfway open” issue
+                            }
+                            .transition(.move(edge: .bottom))
+                            .animation(.easeInOut, value: isBackgroundSheetVisible)
+                    }
+                }
             }
         }
+    }
+    func formatDateTime(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium   // or .short, .long
+        return formatter.string(from: date)
+    }
+
+    func parseDateTime(_ dateString: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter.date(from: dateString)
     }
 }
 
 struct DiaryUpdateView: View {
     @Binding var isDiaryupdateVisible: Bool
     @Binding var DiarynotificationTime: Int?
-    @ObservedObject private var plannerAddTaskViewModel = PlannerAddTaskViewModel()
+    @StateObject private var plannerAddTaskViewModel = PlannerAddTaskViewModel()
     @StateObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @State private var textInput: String = ""
     @State private var text: String = ""
     var selectedID: Int
@@ -242,18 +493,18 @@ struct DiaryUpdateView: View {
     @State private var onTapTheme: Bool = false
     @State private var tagslabel: [TagLabel] = []
     @State private var scheduletime : Date?
-    @State private var reminders = 0
+    @State private var reminders: Int = 0
     @State private var comment: String = ""
     @State var isCommentAdded: Bool = false
     @State private var label: [RemoveLabelRequest] = []
     @State private var isTextFieldVisible = true // Add a state to track visibility
-//    @State private var selectedLabelIDs: Int?
     @State var selectedLabelID: [Int] = []
     @State private var isclicked: Bool = false
     @State private var isDiaryViewActive: Bool = false
     @State private var isActive: Bool = false
     @Binding var selectedNames: [String]
-
+    @State private var dragOffset: CGFloat = 0
+    @State private var isPostBoxMailViewActive: Bool = false
     var body: some View {
         ZStack {
             if themeImage.isEmpty {
@@ -285,25 +536,13 @@ struct DiaryUpdateView: View {
 
             }
 
-
-            
-//            else {
-//                // Default theme color if `themeImage` is empty
-//                Color.white
-//                    .ignoresSafeArea()
-//            }
-
             VStack {
                 HStack {
                     Button(action: {
-                        print("selected names on click wrong mark \(selectedNames)")
-                        print("homePlannerViewModel.selectedLabelNames   \(homePlannerViewModel.selectedLabelNames)")
                         onTapTheme = false
-                        print("onTapTheme    \(onTapTheme)")
                         self.isDiaryupdateVisible = false
                         if homePlannerViewModel.listData.firstIndex(where: { $0.id == selectedID }) == 0 {
                             homePlannerViewModel.updateDiaryData(selectedID: selectedID, notediary: notediary, titlediary: titlediary)
-                            print("API called with ID: \(selectedID), Title: \(titlediary), Content: \(notediary)")
                         }
                     }, label: {
                         Image("wrongmark")
@@ -319,17 +558,12 @@ struct DiaryUpdateView: View {
                     VStack (alignment: .leading) {
                         VStack(alignment: .leading, spacing: 1) { // Set spacing explicitly between the elements
                             TextField("What's new", text: $titlediary)
-//                                .padding()
                                 .background(Color.clear)
                                 .cornerRadius(8)
                                 .padding(.top, 30) // Add top padding to the TextField
                                 .padding(.horizontal, 16) // Add horizontal padding
                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                                 .disabled(!canEdit())
-
-                            // Add a Spacer here to force the correct spacing if needed
-//                            Spacer().frame(height: 1) // Add space between TextField and Rectangle
-
                             Rectangle()
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 1)
@@ -354,27 +588,24 @@ struct DiaryUpdateView: View {
 //
                         VStack(alignment: .leading, spacing: 10) { // Set spacing to 15 between views
                             
-                            if var selectedDiary = homePlannerViewModel.listData.first(where: { $0.id == selectedID }),
+                            if let selectedDiary = homePlannerViewModel.listData.first(where: { $0.id == selectedID }),
                                let reminderTimestamp = selectedDiary.reminder {
                                 // Convert Int (timestamp) to Date
-                                let reminderDate = Date(timeIntervalSince1970: TimeInterval(reminderTimestamp) ?? 0)
+                                let reminderDate = Date(timeIntervalSince1970: TimeInterval(reminderTimestamp))
                                 
                                 // Format the date and time
                                 var formattedDateTime = formatDateTime(reminderDate)
-                                
                                 HStack(spacing: 10) {
                                     // Notification icon aligned on the left
                                     if isTextFieldVisible {
                                         Image("notification1")
                                             .resizable()
                                             .renderingMode(.template)
-                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                            .foregroundColor(themesviewModel.currentTheme.allBlack)
                                             .frame(width: 16, height: 16)
                                             .padding(.leading, 5)
-                                    }
                                     
                                     // Conditionally render TextField based on isTextFieldVisible
-                                    if isTextFieldVisible {
                                         TextField("", text: Binding(
                                             get: { formattedDateTime },
                                             set: { newValue in
@@ -386,54 +617,37 @@ struct DiaryUpdateView: View {
                                                 }
                                             }
                                         ))
-                                        .foregroundColor(themesviewModel.currentTheme.textColor)
-                                        .font(.system(size: 12))
+                                        .foregroundColor(themesviewModel.currentTheme.allBlack)
+                                        .font(.custom(.poppinsMedium, size: 14))
                                         .disabled(!canEdit())
                                         .frame(height: 30)
-                                    }
+                                    
                                     
                                     // Remove icon aligned on the right
-                                    if isTextFieldVisible {
                                         Image("wrongmark")
                                             .resizable()
                                             .renderingMode(.template)
-                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                            .foregroundColor(themesviewModel.currentTheme.allBlack)
                                             .frame(width: 16, height: 16)
                                             .padding(.trailing, 5)
                                             .onTapGesture {
-                                                formattedDateTime = ""
-                                                isTextFieldVisible = false // Hide TextField when tapped
-                                                //                                                homePlannerViewModel.removescheduleDiary(selectedID: selectedID, reminder: nil)
-                                                print("isCommentAdded\(isCommentAdded)")
+                                                if let selectedDiary = homePlannerViewModel.listData.first(where: { $0.id == selectedID }) {
+                                                    homePlannerViewModel.removescheduleDiary(selectedID: selectedID , type: "diary")
+                                                    isTextFieldVisible = false // Hide TextField when tapped
+                                                }
                                             }
                                     }
-                                    
                                 }
-                                .frame(width: 200, height: 35)
-                                .background(themesviewModel.currentTheme.windowBackground) // Background color conditionally
+                                .frame(width: 230, height: 35)
+                                .background(isTextFieldVisible ? Color(red: 187/255, green: 190/255, blue: 238/255) : Color.clear) // Background color conditionally
                                 .cornerRadius(8)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(themesviewModel.currentTheme.strokeColor, lineWidth: 1) // Border color conditionally
+                                        .stroke(isTextFieldVisible ? themesviewModel.currentTheme.strokeColor : Color.clear , lineWidth: 1)
                                 )
                             }
-                            
-                            
-                            //                            if isclicked {
-                            //                                ForEach(selectedNames, id: \.self) { name in
-                            //                                    Text(name)
-                            //                                        .padding()
-                            //                                        .background(Color.clear)
-                            //                                        .cornerRadius(8)
-                            //                                        .padding(.top, 15)
-                            //                                        .padding(.horizontal, 16)
-                            //                                        .foregroundStyle(Color.black)
-                            //                                        .disabled(!canEdit())
-                            //                                }
-                            //                            }
                             Spacer().frame(height: 15)
                             // ScrollView for tags
-                            
                             
                             let columns = [GridItem(.adaptive(minimum: 100), spacing: 10)]
                             LazyVGrid(columns: columns, spacing: 10) {
@@ -444,33 +658,26 @@ struct DiaryUpdateView: View {
                                                 TextField("", text: $label.labelName)
                                                     .frame(height: 35)
                                                     .padding(.leading, 10)
-                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                    .font(.custom(.poppinsMedium, size: 14))
+                                                    .foregroundColor(themesviewModel.currentTheme.allBlack)
                                                     .disabled(!canEdit())
                                                 
                                                 Image("wrongmark")
                                                     .resizable()
                                                     .renderingMode(.template)
-                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                    .foregroundColor(themesviewModel.currentTheme.allBlack)
                                                     .frame(width: 16, height: 16)
                                                     .padding(.trailing, 5)
                                                     .onTapGesture {
-                                                        print("selected names on click wrong mark \(selectedNames)")
                                                         label.labelName = ""
-                                                        //                                                        label.isRemoved = true
-                                                        print("letcheck \(label.labelId)")
                                                         if let selectedDiary = homePlannerViewModel.listData.first(where: { $0.id == selectedID }) {
                                                             homePlannerViewModel.removeTag(selectedID: selectedID, Tagid: label.labelId)
                                                         }
-                                                        else {
-                                                            // Handle case where no matching diary was found
-                                                            print("No diary found with id: \(selectedID)")
-                                                        }
-                                                        
                                                     }
                                             }
                                         }
-                                        
-                                        .background(themesviewModel.currentTheme.windowBackground)
+
+                                        .background(Color(red: 187/255, green: 190/255, blue: 238/255))
                                         .cornerRadius(8)
                                         .overlay(
                                             RoundedRectangle(cornerRadius: 8)
@@ -479,122 +686,8 @@ struct DiaryUpdateView: View {
                                     }
                                 }
                             }
-                            
-                            if isclicked {
-                            let columness = [GridItem(.adaptive(minimum: 100), spacing: 10)]
-                            LazyVGrid(columns: columness, spacing: 10) {
-                                ForEach(selectedNames, id: \.self) { name in
-                                        HStack {
-                                            Text(name)
-                                                    .frame(height: 35)
-                                                    .padding(.leading, 10)
-                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                    .disabled(!canEdit())
-                                                
-                                                Image("wrongmark")
-                                                    .resizable()
-                                                    .renderingMode(.template)
-                                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                                    .frame(width: 16, height: 16)
-                                                    .padding(.trailing, 5)
-                                                    .onTapGesture {
-                                                        print("selected names on click wrong mark \(name)")
-//                                                        ForEach($tagslabel, id: \.labelId) { $label in
-//                                                            if $label.labelName.wrappedValue == name {
-//                                                                let id = $label.labelId.wrappedValue
-//                                                                let ide = $label.plannerId.wrappedValue
-////                                                                print("Label ID: \(id)")
-//                                                                // Do something with `id`
-////                                                                print("letcheck \(id)")
-//                                                                if let selectedDiary = homePlannerViewModel.listData.first(where: { $0.id == ide }) {
-//                                                                    homePlannerViewModel.removeTag(selectedID: ide, Tagid: id)
-//                                                                }
-//                                                                else {
-//                                                                    // Handle case where no matching diary was found
-//                                                                    print("No diary found with id: \(selectedID)")
-//                                                                }
-//                                                            }
-//                                                        }
-
-//                                                        //                                                        label.isRemoved = true
-
-                                                        
-                                                    }
-                                            
-                                        }
-                                        .background(themesviewModel.currentTheme.windowBackground)
-                                        .cornerRadius(8)
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 8)
-                                                .stroke(Color.black, lineWidth: 1) // Border around the TextField
-                                        )
-                                    
-                                }
-                            }
-                        }
-                            
-//                            if isclicked {
-//                                let columnss = [GridItem(.adaptive(minimum: 100), spacing: 10)]
-//                                LazyVGrid(columns: columnss, spacing: 10) {
-//                                    ForEach(selectedNames, id: \.self) { name in
-//                                        Text(name)
-//                                            .frame(height: 35)
-//                                            .padding(.leading, 10)
-//                                            .foregroundColor(.black)
-//                                            .disabled(!canEdit())
-//                                    }
-//                                }
-//                            } else {
-//                                // Optionally, display a message or placeholder when isclicked is false
-//                                Text("No names to display")
-//                            }
-                        
-                            
-//                            let columns = [GridItem(.adaptive(minimum: 100), spacing: 10)]
-//                            LazyVGrid(columns: columns, spacing: 10) {
-//                                ForEach(selectedNames, id: \.self) { $name in
-//                                        HStack {
-//                                            
-//                                            if isclicked && !selectedNames.isEmpty {
-//                                                TextField("", text: $name)
-//                                                    .frame(height: 35)
-//                                                    .padding(.leading, 10)
-//                                                    .foregroundColor(.black)
-//                                                    .disabled(!canEdit())
-//                                                
-//                                                Image("wrongmark")
-//                                                    .resizable()
-//                                                    .frame(width: 16, height: 16)
-//                                                    .padding(.trailing, 5)
-//                                                    .onTapGesture {
-//                                                        label.labelName = ""
-////                                                        label.isRemoved = true
-//                                                        print("letcheck \(label.labelId)")
-//                                                        if let selectedDiary = homePlannerViewModel.listData.first(where: { $0.id == selectedID }) {
-//                                                            homePlannerViewModel.removeTag(selectedID: selectedID, Tagid: label.labelId)
-//                                                        }
-//                                                        else {
-//                                                            // Handle case where no matching diary was found
-//                                                            print("No diary found with id: \(selectedID)")
-//                                                        }
-//                                                        
-//                                                    }
-//                                            }
-//                                            }
-//
-////                                        planner/remove-label?plannerId=332&labelId=106
-//                                        .background(Color(red: 187/255, green: 190/255, blue: 238/255)) // Background color
-//                                        .cornerRadius(8)
-//                                        .overlay(
-//                                            RoundedRectangle(cornerRadius: 8)
-//                                                .stroke(Color.black, lineWidth: 1) // Border around the TextField
-//                                        )
-//                                    
-//                                }
-//                            }
 
                             Spacer().frame(height: 15)
-
 
                             // ScrollView for comments
                             ScrollView {
@@ -605,7 +698,7 @@ struct DiaryUpdateView: View {
                                                 TextField("", text: $comment.comment)
                                                     .frame(height: 45)
                                                     .padding(.leading, 10)
-                                                    .background(themesviewModel.currentTheme.windowBackground)
+                                                    .background(Color(red: 187/255, green: 190/255, blue: 238/255))
                                                     .overlay(
                                                         RoundedRectangle(cornerRadius: 8)
                                                             .stroke(themesviewModel.currentTheme.strokeColor, lineWidth: 1) // Border around the TextField
@@ -613,24 +706,21 @@ struct DiaryUpdateView: View {
                                                     .cornerRadius(8)
                                                     .foregroundColor(themesviewModel.currentTheme.textColor)
                                                     .disabled(!comment.isEditable)  // Enable or disable based on isEditable
-                                            }
                                             
-                                            if !comment.comment.isEmpty {
+                                            
                                                 Button(action: {
                                                     comment.isEditable.toggle() // Toggle isEditable state
                                                     if !comment.isEditable {
                                                         homePlannerViewModel.updateCommentData(selectedId: selectedID, commentide: comment.commentId, comment: comment.comment)
                                                     }
-                                                    print("comment.isEditable.toggle()\(comment.isEditable)")
                                                 }, label: {
                                                     Image("edits")
                                                         .renderingMode(.template)
                                                         .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                         .padding(.trailing, 50)
                                                 })
-                                            }
+                                            
 
-                                            if !comment.comment.isEmpty {
                                                 Button(action: {
                                                     // Handle comment deletion
                                                     comment.comment = "" // Empty the comment text to hide the TextField
@@ -639,7 +729,6 @@ struct DiaryUpdateView: View {
                                                     if let selectedDiary = homePlannerViewModel.listData.first(where: { $0.id == selectedID }) {
                                                         homePlannerViewModel.deletecomments(selectedIDs: selectedID, commentIDs: comment.commentId)
                                                     }
-                                                    print("selectedID: \(selectedID)")
                                                 }, label: {
                                                     Image("del")
                                                         .renderingMode(.template)
@@ -659,7 +748,7 @@ struct DiaryUpdateView: View {
                                                     .foregroundColor(themesviewModel.currentTheme.textColor)
                                                     .frame(height: 45)
                                                     .padding(.leading, 10)
-                                                    .background(themesviewModel.currentTheme.windowBackground)
+                                                    .background(Color(red: 187/255, green: 190/255, blue: 238/255))
                                                     .overlay(
                                                         RoundedRectangle(cornerRadius: 8)
                                                             .stroke(themesviewModel.currentTheme.strokeColor, lineWidth: 1) // Border around the TextField
@@ -668,7 +757,6 @@ struct DiaryUpdateView: View {
                                                     .foregroundColor(.black)
                                                     .disabled(!canEdit())
                                                 Button(action: {
-                                                    print("Edit button pressed")
                                                 }, label: {
                                                     Image("edits")
                                                         .padding(.trailing, 50)
@@ -677,7 +765,6 @@ struct DiaryUpdateView: View {
                                                 
                                                 Button(action: {
                                                     // Handle comment deletion or action here
-                                                    print("selectedID: \(selectedID)")
                                                 }, label: {
                                                     Image("del")
                                                         .renderingMode(.template)
@@ -689,7 +776,7 @@ struct DiaryUpdateView: View {
                                     }
 
                                 }
-                                .background(themesviewModel.currentTheme.windowBackground)
+//                                .background(themesviewModel.currentTheme.windowBackground)
                                 .padding(.horizontal, 10) // Apply horizontal padding only once to the VStack
                             }
 
@@ -713,6 +800,8 @@ struct DiaryUpdateView: View {
                             }
                         }, label: {
                             Image("label")
+                                .renderingMode(.template)
+                                .foregroundColor(themesviewModel.currentTheme.iconColor)
                         })
                         .padding(.bottom, 10)
                         .padding(.leading, 40)
@@ -721,6 +810,8 @@ struct DiaryUpdateView: View {
                             isNotificationSheetVisible.toggle()
                         }, label: {
                             Image("plannerbell")
+                                .renderingMode(.template)
+                                .foregroundColor(themesviewModel.currentTheme.iconColor)
                         })
                         .padding(.bottom, 10)
                         .padding(.leading, 40)
@@ -729,6 +820,8 @@ struct DiaryUpdateView: View {
                             isBackgroundSheetVisible.toggle()
                         }, label: {
                             Image("backgroundimage")
+                                .renderingMode(.template)
+                                .foregroundColor(themesviewModel.currentTheme.iconColor)
                         })
                         .padding(.bottom, 10)
                         .padding(.leading, 40)
@@ -737,46 +830,78 @@ struct DiaryUpdateView: View {
                             isTagSheetVisible.toggle()
                         }, label: {
                             Image("Tags")
+                                .renderingMode(.template)
+                                .foregroundColor(themesviewModel.currentTheme.iconColor)
                         })
                         .padding(.bottom, 10)
                         .padding(.leading, 40)
-                        
                         Spacer()
                     }
                     .padding(.top, 20)
-                    .background(Color.gray)
+                    .background(themesviewModel.currentTheme.windowBackground)
                 }
                 
 
             }
             .onAppear {
-                print("homePlannerViewModel.selectedLabelNames: \(homePlannerViewModel.selectedLabelNames)")
-                print("onTapTheme   \(onTapTheme)")
+                homePlannerViewModel.GetTagNoteLabelList()
                 if homePlannerViewModel.listData.isEmpty {
-                    homePlannerViewModel.GetDiaryDataList()
+                    homePlannerViewModel.GetDiaryDataList(query: "", type: "diary", page: 1, pageSize: 30, searchType: "", status: "", labelname: "", startdate: 0, enddate: 0)
                 }
                 
                 // Change 200 milliseconds to 0.2 seconds
-                DispatchQueue.main.asyncAfter(deadline: .now() + 500 / 1000.0) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     if let diary = homePlannerViewModel.listData.first(where: { $0.id == selectedID }) {
                         titlediary = diary.title
                         notediary = diary.note
                         labelcomments = diary.comments ?? []
                         tagslabel = diary.labels ?? []
                         scheduletime = homePlannerViewModel.selectedDateTime
-//                        let selectedLabelIDs = tagslabel.map { $0.labelId }
-//                        print("selectedLabelIDs\(selectedLabelIDs)")
+                        reminders = diary.reminder ?? 0
+                        homePlannerViewModel.selectedLabelID = tagslabel.compactMap { $0.labelId }
+                        print("homePlannerViewModel.selectedLabelID  \(homePlannerViewModel.selectedLabelID)")
+                        print("tagslabel  \(tagslabel)")
+                        print("reminders  \(reminders)")
                         if let theme = diary.theme {
                             themeImage = theme
                             if let fileName = theme.components(separatedBy: "/").last?.replacingOccurrences(of: ".png", with: "") {
                                 themeImage = fileName
                             }
-                            print("themeImage   \(themeImage)")
                         } else {
                             themeImage = "" // Default value if theme is nil
                         }
-
-
+                    }
+                }
+            }
+            .onChange(of: isLabelSheetVisible  || isNotificationSheetVisible || isTagSheetVisible || isBackgroundSheetVisible) { newValue in
+                if newValue {
+                    homePlannerViewModel.GetDiaryDataList(query: "", type: "diary", page: 1, pageSize: 30, searchType: "", status: "", labelname: "", startdate: 0, enddate: 0)
+                    print("on change works")
+                    dragOffset = 0
+                }
+                else {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        homePlannerViewModel.GetDiaryDataList(query: "", type: "diary", page: 1, pageSize: 30, searchType: "", status: "", labelname: "", startdate: 0, enddate: 0)
+                        print("on change works")
+                        dragOffset = 0
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        if let diary = homePlannerViewModel.listData.first(where: { $0.id == selectedID }) {
+                            labelcomments = diary.comments ?? []
+                            tagslabel = diary.labels ?? []
+                            reminders = diary.reminder ?? 0
+                            print("onchange reminder \(reminders)")
+                            scheduletime = homePlannerViewModel.selectedDateTime
+                            homePlannerViewModel.selectedLabelID = tagslabel.compactMap { $0.labelId }
+                            if let theme = diary.theme {
+                                themeImage = theme
+                                if let fileName = theme.components(separatedBy: "/").last?.replacingOccurrences(of: ".png", with: "") {
+                                    themeImage = fileName
+                                }
+                            } else {
+                                themeImage = ""
+                            }
+                        }
                     }
                 }
             }
@@ -785,74 +910,199 @@ struct DiaryUpdateView: View {
             
             // Custom Bottom Sheet
             if isLabelSheetVisible {
-                VStack {
-                    Spacer() // Pushes the sheet to the bottom
-//                    BottomSheetView(homePlannerViewModel: homePlannerViewModel, isLabelSheetVisible: $isLabelSheetVisible, comment: $comment, isCommentAdded: $isCommentAdded, selectedID: selectedID)
-                    BottomSheetView(homePlannerViewModel: homePlannerViewModel, isLabelSheetVisible: $isLabelSheetVisible, selectedID: selectedID)
-                        .transition(.move(edge: .bottom)) // Smooth transition
-                        .animation(.easeInOut)
-                }
-                .background(
-                    Color.black.opacity(0.3)
+                ZStack {
+                    // Tappable background
+                    Rectangle()
+                        .fill(Color.black.opacity(0.3))
                         .edgesIgnoringSafeArea(.all)
                         .onTapGesture {
                             withAnimation {
-                                isLabelSheetVisible = false // Dismiss the sheet
+                                isLabelSheetVisible = false
                             }
                         }
-                )
+                    
+                    VStack {
+                        Spacer() // Pushes the sheet to the bottom
+                        BottomSheetView(homePlannerViewModel: homePlannerViewModel, isLabelSheetVisible: $isLabelSheetVisible, selectedID: selectedID)
+                            .offset(y: dragOffset)
+                            .gesture(
+                                DragGesture()
+                                    .onChanged { value in
+                                        if value.translation.height > 0 {
+                                            dragOffset = value.translation.height
+                                        }
+                                    }
+                                    .onEnded { value in
+                                        let dragHeight = value.translation.height
+                                        let dismissThreshold: CGFloat = 50
+
+                                        if dragHeight > dismissThreshold {
+                                            withAnimation {
+                                                isLabelSheetVisible = false
+                                            }
+                                        } else {
+                                            withAnimation {
+                                                dragOffset = 0
+                                            }
+                                        }
+                                    }
+                            )
+                            .onAppear {
+                                dragOffset = 0 // ← THIS fixes the “halfway open” issue
+                            }
+                            .transition(.move(edge: .bottom))
+                            .animation(.easeInOut, value: isLabelSheetVisible)
+                        
+                    }
+                    
+                    
+                }
+                
             }
+            
             if isNotificationSheetVisible {
-                VStack {
-                    Spacer() // Pushes the sheet to the bottom
-                    BottomSheetNotificationView(isNotificationSheetVisible: $isNotificationSheetVisible, DiarynotificationTime: $DiarynotificationTime, isDiaryViewActive: $isDiaryViewActive, selectedID: selectedID)
-                        .transition(.move(edge: .bottom)) // Smooth transition
-                        .animation(.easeInOut)
-                }
-                .background(
-                    Color.black.opacity(0.3)
+                
+                ZStack {
+                    // Tappable background
+                    Rectangle()
+                        .fill(Color.black.opacity(0.3))
                         .edgesIgnoringSafeArea(.all)
                         .onTapGesture {
                             withAnimation {
-                                isNotificationSheetVisible = false // Dismiss the sheet
+                                isNotificationSheetVisible = false
                             }
                         }
-                )
+
+                    VStack {
+                        Spacer()
+                        BottomSheetNotificationView(isNotificationSheetVisible: $isNotificationSheetVisible, DiarynotificationTime: $DiarynotificationTime, isDiaryViewActive: $isDiaryViewActive, selectedID: selectedID)
+                            .offset(y: dragOffset)
+                            .gesture(
+                                DragGesture()
+                                    .onChanged { value in
+                                        if value.translation.height > 0 {
+                                            dragOffset = value.translation.height
+                                        }
+                                    }
+                                    .onEnded { value in
+                                        let dragHeight = value.translation.height
+                                        let dismissThreshold: CGFloat = 50
+
+                                        if dragHeight > dismissThreshold {
+                                            withAnimation {
+                                                isNotificationSheetVisible = false
+                                            }
+                                        } else {
+                                            withAnimation {
+                                                dragOffset = 0
+                                            }
+                                        }
+                                    }
+                            )
+                            .onAppear {
+                                dragOffset = 0 // ← THIS fixes the “halfway open” issue
+                            }
+                            .transition(.move(edge: .bottom))
+                            .animation(.easeInOut, value: isNotificationSheetVisible)
+                    }
+                }
+                
+                
             }
             
             if isTagSheetVisible {
-                VStack {
-                    Spacer() // Pushes the sheet to the bottom
-                    BottomTagSheetView(isTagSheetVisible: $isTagSheetVisible, isActive: $isActive, selectedNewDiaryTag: $homePlannerViewModel.selectedLabelID, selectedNames: $selectedNames, selectedID: selectedID,  isclicked: $isclicked)
-                        .transition(.move(edge: .bottom)) // Smooth transition
-                        .animation(.easeInOut)
-                }
-                .background(
-                    Color.black.opacity(0.3)
+                ZStack {
+                    // Tappable background
+                    Rectangle()
+                        .fill(Color.black.opacity(0.3))
                         .edgesIgnoringSafeArea(.all)
                         .onTapGesture {
                             withAnimation {
-                                isTagSheetVisible = false // Dismiss the sheet
+                                isTagSheetVisible = false
                             }
                         }
-                )
+
+                    VStack {
+                        Spacer()
+                        BottomTagSheetView(isTagSheetVisible: $isTagSheetVisible, isDiaryViewActive: $isDiaryViewActive, selectedNewDiaryTag: $homePlannerViewModel.selectedLabelID, selectedNames: $selectedNames, selectedID: selectedID,  isclicked: $isclicked)
+                        .offset(y: dragOffset)
+                        .gesture(
+                            DragGesture()
+                                .onChanged { value in
+                                    if value.translation.height > 0 {
+                                        dragOffset = value.translation.height
+                                    }
+                                }
+                                .onEnded { value in
+                                    let dragHeight = value.translation.height
+                                    let dismissThreshold: CGFloat = 50
+
+                                    if dragHeight > dismissThreshold {
+                                        withAnimation {
+                                            isTagSheetVisible = false
+                                        }
+                                    } else {
+                                        withAnimation {
+                                            dragOffset = 0
+                                        }
+                                    }
+                                }
+                        )
+                        .onAppear {
+                            dragOffset = 0 // ← THIS fixes the “halfway open” issue
+                        }
+                        .transition(.move(edge: .bottom))
+                        .animation(.easeInOut, value: isTagSheetVisible)
+                    }
+                }
             }
+            
             if isBackgroundSheetVisible {
-                VStack {
-                    Spacer() // Pushes the sheet to the bottom
-                    BottomBackgroundSheetView(themeimage: $BackgroundThemeimage, selectedIconIndex: themeImage, isBackgroundSheetVisible: $isBackgroundSheetVisible, selectedID: selectedID, onTapTheme: $onTapTheme)
-                        .transition(.move(edge: .bottom)) // Smooth transition
-                        .animation(.easeInOut)
-                }
-                .background(
-                    Color.black.opacity(0.3)
+                
+                ZStack {
+                    // Tappable background
+                    Rectangle()
+                        .fill(Color.black.opacity(0.3))
                         .edgesIgnoringSafeArea(.all)
                         .onTapGesture {
                             withAnimation {
-                                isBackgroundSheetVisible = false // Dismiss the sheet
+                                isBackgroundSheetVisible = false
                             }
                         }
-                )
+
+                    VStack {
+                        Spacer()
+                        BottomBackgroundSheetView(themeimage: $BackgroundThemeimage, selectedIconIndex: themeImage, isBackgroundSheetVisible: $isBackgroundSheetVisible, selectedID: selectedID, onTapTheme: $onTapTheme, isDairyViewActive: $isDiaryViewActive)
+                            .offset(y: dragOffset)
+                            .gesture(
+                                DragGesture()
+                                    .onChanged { value in
+                                        if value.translation.height > 0 {
+                                            dragOffset = value.translation.height
+                                        }
+                                    }
+                                    .onEnded { value in
+                                        let dragHeight = value.translation.height
+                                        let dismissThreshold: CGFloat = 50
+
+                                        if dragHeight > dismissThreshold {
+                                            withAnimation {
+                                                isBackgroundSheetVisible = false
+                                            }
+                                        } else {
+                                            withAnimation {
+                                                dragOffset = 0
+                                            }
+                                        }
+                                    }
+                            )
+                            .onAppear {
+                                dragOffset = 0 // ← THIS fixes the “halfway open” issue
+                            }
+                            .transition(.move(edge: .bottom))
+                            .animation(.easeInOut, value: isBackgroundSheetVisible)
+                    }
+                }
             }
         }
     }
@@ -860,34 +1110,38 @@ struct DiaryUpdateView: View {
     private func canEdit() -> Bool {
         homePlannerViewModel.listData.firstIndex(where: { $0.id == selectedID }) == 0
     }
+    
     func canbeEdit() -> Bool {
         // Add your logic here
         return true // Replace this with your actual condition
     }
     private func formatDateTime(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter.string(from: date)
+        formatter.locale = Locale(identifier: "en_US_POSIX") // Stable for fixed formats
+        formatter.timeZone = TimeZone.current
+        formatter.dateFormat = "dd-MMM-yyyy, h:mm a" // "29-Aug-2025, 10:15 AM"
+        
+        // Convert AM/PM to lowercase
+        let formatted = formatter.string(from: date)
+        return formatted.replacingOccurrences(of: "AM", with: "am")
+                       .replacingOccurrences(of: "PM", with: "pm")
     }
-    
-    // Function to parse string back to Date
+
     private func parseDateTime(_ dateTimeString: String) -> Date? {
         let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone.current
+        formatter.dateFormat = "dd-MMM-yyyy, h:mm a"
         return formatter.date(from: dateTimeString)
     }
+
 
 }
 
 struct BottomSheetView: View {
     @ObservedObject var homePlannerViewModel: HomePlannerViewModel
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var isLabelSheetVisible: Bool
-//    @State var comment: String = ""
-//    @Binding var comment: String
-//    @Binding var isCommentAdded: Bool
     var selectedID: Int
     @State private var subtasks: [Subtask] = [] // State to store subtasks
     @State private var comment: String = "" // State for comment input
@@ -906,34 +1160,25 @@ struct BottomSheetView: View {
                     .padding(.leading , 20)
                 Spacer()
 
-
-                Button(action: {
-                    // Only add the comment if it's not empty
-                    if !comment.isEmpty {
-                        // Append the new comment to the subtasks array
-                        subtasks.append(Subtask(text: comment))
-                        
-                        print("Added comment: \(comment)") // Debugging print statement
-                        print("Current subtasks: \(subtasks)") // Debugging print statement
-
-                        // Assuming you're calling the function to add the comment to the backend
-                        homePlannerViewModel.addComment(comment: comment, selectedID: selectedID)
-
-                        // Reset the comment field and close the sheet
-                        isCommentAdded = true
-                        comment = "" // Clear the comment field
-                        self.isLabelSheetVisible = false
-                        
-                        print("isCommentAdded: \(isCommentAdded)")
-                        print("Subtasks after addition: \(subtasks)") // Final state of subtasks
-                    }
-                    print("Subtasks array: \(subtasks)") // Final state of subtasks
-                }, label: {
-                    Text("Add Comment")
-                        .foregroundColor(themesviewModel.currentTheme.colorAccent)
-                        .padding(.top, 20)
-                        .padding(.leading , 20)
-                })
+                if !comment.isEmpty {
+                    Button(action: {
+                        // Only add the comment if it's not empty
+                        if !comment.isEmpty {
+                            subtasks.append(Subtask(text: comment))
+                            homePlannerViewModel.addComment(comment: comment, selectedID: selectedID)
+                            
+                            // Reset the comment field and close the sheet
+                            isCommentAdded = true
+                            comment = "" // Clear the comment field
+                            self.isLabelSheetVisible = false
+                        }
+                    }, label: {
+                        Text("Add Comment")
+                            .foregroundColor(themesviewModel.currentTheme.colorAccent)
+                            .padding(.top, 20)
+                            .padding(.leading , 20)
+                    })
+                }
 
             }
             .padding()
@@ -948,6 +1193,7 @@ struct BottomSheetView: View {
 
             TextField("Enter Comment", text: $comment)
                 .padding()
+                .font(.custom(.poppinsMedium, size: 16))
                 .foregroundColor(themesviewModel.currentTheme.textColor)
                 .background(themesviewModel.currentTheme.windowBackground)
                 .cornerRadius(8) // Rounded corners
@@ -973,7 +1219,7 @@ struct BottomSheetView: View {
 
 struct BottomSheetNotificationView: View {
     @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var isNotificationSheetVisible: Bool
     @Binding var DiarynotificationTime: Int?
     @Binding var isDiaryViewActive: Bool
@@ -1003,15 +1249,13 @@ struct BottomSheetNotificationView: View {
                                 // Convert the Date to an Int (e.g., timestamp)
                                 DiarynotificationTime = Int(selectedDateTime.timeIntervalSince1970)
                                 homePlannerViewModel.onclickDone(selectedID: id, reminder: DiarynotificationTime!)
-                                print("DiarynotificationTime  \(DiarynotificationTime!)")
                                 self.isNotificationSheetVisible = false
                             }
                         }
                         else {
                             if let selectedDateTime = homePlannerViewModel.selectedDateTime {
                                 let reminderInt = Int(selectedDateTime.timeIntervalSince1970)
-                                homePlannerViewModel.onclickDone(selectedID: id, reminder: reminderInt)
-                                print("reminderInt  \(reminderInt)")
+                                homePlannerViewModel.onclickDone(selectedID: selectedID, reminder: reminderInt)
                                 self.isNotificationSheetVisible = false
                             }
                         }
@@ -1033,7 +1277,6 @@ struct BottomSheetNotificationView: View {
                 
                 HStack {
                     Button(action: {
-                        print("")
                     }, label: {
                         Text("Tomorrow")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -1043,7 +1286,6 @@ struct BottomSheetNotificationView: View {
                     Spacer()
                     
                     Button(action: {
-                        print("")
                     }, label: {
                         Text("8:00 AM")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -1054,7 +1296,6 @@ struct BottomSheetNotificationView: View {
                 
                 HStack {
                     Button(action: {
-                        print("")
                     }, label: {
                         Text("Next Week")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -1064,7 +1305,6 @@ struct BottomSheetNotificationView: View {
                     Spacer()
                     
                     Button(action: {
-                        print("")
                     }, label: {
                         Text("8:00 AM")
                             .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -1078,9 +1318,6 @@ struct BottomSheetNotificationView: View {
                         .foregroundColor(themesviewModel.currentTheme.textColor)
                         .frame(width: 24, height: 24)
                         .padding(.leading, 16)
-                        .onTapGesture {
-                            print("Timer clicked")
-                        }
                     
                     Button(action: {
                          isDatePickerVisible = true
@@ -1102,18 +1339,17 @@ struct BottomSheetNotificationView: View {
             options.withHands = true
                                         
                     if homePlannerViewModel.listData.isEmpty {
-                        homePlannerViewModel.GetDiaryDataList()
+                        homePlannerViewModel.GetDiaryDataList(query: "", type: "diary", page: 1, pageSize: 30, searchType: "", status: "", labelname: "", startdate: 0, enddate: 0)
                     }
                     
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        if let Diary = homePlannerViewModel.listData.first {
-                            let incrementedId = Diary.id // `id` is a non-optional Int
-                            id = incrementedId + 1
-                            print("Let's check the first id: \(incrementedId), Incremented id: \(id)")
-                        } else {
-                            print("No diary found with ID: \((id))")
-                        }
+            
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    if let maxId = homePlannerViewModel.listData.map({ $0.id }).max() {
+                        id = maxId + 1
+                    } else {
+                        id = 1 // fallback if no data
                     }
+                }
         }
         .overlay(
             Group {
@@ -1173,17 +1409,16 @@ struct BottomSheetNotificationView: View {
 
 
 struct BottomTagSheetView: View {
-    @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @StateObject var homePlannerViewModel = HomePlannerViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Binding var isTagSheetVisible: Bool
-    @Binding var isActive: Bool
+    @Binding var isDiaryViewActive: Bool
     @Binding var selectedNewDiaryTag: [Int]
     @Binding var selectedNames: [String]
     @State var comment: String = ""
     var selectedID: Int
     @State private var searchText: String = ""
     @State private var isCreateLabelVisible: Bool = false // Tracks visibility of createLabelView
-//    @State var labelname: String = ""
     @State private var Textfill: String = ""
     @State private var isChecked: Bool = false
     @Binding var isclicked: Bool
@@ -1205,46 +1440,18 @@ struct BottomTagSheetView: View {
                             Spacer()
                             Button(action: {
                                 withAnimation {
-                                    selectedNewDiaryTag = homePlannerViewModel.selectedLabelID
                                     if !homePlannerViewModel.selectedLabelID.isEmpty { // Check if the array is not empty
-                                        print("selectedLabelIDs: \(homePlannerViewModel.selectedLabelID)") // Print the array of selected IDs
-                                        print("isActive    \(isActive)")
-                                        print("selected Names :\(selectedNames)")
-//                                        homePlannerViewModel.selectedLabelNames = selectedNames
-                                        print("homePlannerViewModel.selectedLabelNames   \(homePlannerViewModel.selectedLabelNames)")
-                                        if isActive {
-                                            print("appears isActive ")
+                                        if isDiaryViewActive {
                                             isDiaryTagActive = true
-                                            print("isDiaryTagActive \(isDiaryTagActive)")
                                             homePlannerViewModel.ApplyTag(listId: newid, tagIds: homePlannerViewModel.selectedLabelID) // Pass the array
                                             self.isTagSheetVisible = false // Dismiss the sheet
                                             isclicked = true
-                                            print("isclicked\(isclicked)")
-                                        //                                        print("homePlannerViewModel.selectedLabelID\(homePlannerViewModel.selectedLabelID)")
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 200 / 1000.0) {
-                                            if homePlannerViewModel.listData.isEmpty {
-                                                print("get diary list api is calling")
-                                                homePlannerViewModel.GetDiaryDataList()
-                                                print("get diary list api is calling")
-                                            }
-                                        }
                                     }
                                         else {
                                             homePlannerViewModel.ApplyTag(listId: selectedID, tagIds: homePlannerViewModel.selectedLabelID) // Pass the array
                                             self.isTagSheetVisible = false // Dismiss the sheet
                                             isclicked = true
-                                            print("isclicked\(isclicked)")
-                                            //                                        print("homePlannerViewModel.selectedLabelID\(homePlannerViewModel.selectedLabelID)")
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 200 / 1000.0) {
-                                                if homePlannerViewModel.listData.isEmpty {
-                                                    print("get diary list api is calling")
-                                                    homePlannerViewModel.GetDiaryDataList()
-                                                    print("get diary list api is calling")
-                                                }
-                                            }
                                         }
-                                    } else {
-                                        print("No labels selected") // Log if no labels are selected
                                     }
                                 }
                             }, label: {
@@ -1308,27 +1515,35 @@ struct BottomTagSheetView: View {
                         // Scrollable list with filtered data
                         ScrollView {
                             VStack(alignment: .leading, spacing: 10) {
-                                ForEach(homePlannerViewModel.TagLabelData.filter { label in
+                                ForEach(homePlannerViewModel.tagLabelData.filter { label in
                                     searchText.isEmpty || label.labelName.lowercased().contains(searchText.lowercased())
                                 }) { label in
                                     HStack {
                                         Button(action: {
-                                            toggleCheck(for: label.id) // Toggle state based on the label's ID
-                                            print("label.id: \(label.id)")
-                                            if !label.isChecked{
-                                                // Add the label name to the selectedNames array if it's checked
-                                                print("label.labelName.lowercased(): \(label.labelName.lowercased())")
-                                                if !selectedNames.contains(label.labelName.lowercased()) {
-                                                    selectedNames.append(label.labelName.lowercased())
-                                                    print("if case selected names \(selectedNames)")
-                                                }
+                                            toggleCheck(for: label.id)
+                                            selectedNewDiaryTag = homePlannerViewModel.selectedLabelID
+                                            print("selectedNewDiaryTag  \(selectedNewDiaryTag)")
+                                            print("homePlannerViewModel.selectedLabelID  \(homePlannerViewModel.selectedLabelID)")
+                                            if let index = homePlannerViewModel.selectedtagslabel.firstIndex(of: label.labelName) {
+                                                // If already selected, remove it
+                                                homePlannerViewModel.selectedtagslabel.remove(at: index)
+                                                print(" homePlannerViewModel.selectedtagslabel  \(homePlannerViewModel.selectedtagslabel)")
+                                                print(" homePlannerViewModel.selectedLabelNoteID  \( homePlannerViewModel.selectedLabelDoitID)")
+                                                
+                                                print("selectedNewDiaryTag   \(selectedNewDiaryTag)")
                                             } else {
-                                                // Remove the label name from the selectedNames array if it's unchecked
-                                                selectedNames.removeAll { $0 == label.labelName.lowercased() }
-                                                print("else case selected names \(selectedNames)")
+                                                // Otherwise, add it
+                                                homePlannerViewModel.selectedtagslabel.append(label.labelName)
+                                                print(" homePlannerViewModel.selectedtagslabel  \(homePlannerViewModel.selectedtagslabel)")
+                                                
+                                                print(" homePlannerViewModel.selectedLabelNoteID  \( homePlannerViewModel.selectedLabelDoitID)")
+                                                
+                                                print("selectedNewDiaryTag   \(selectedNewDiaryTag)")
                                             }
+                                            
+                                            
                                         }) {
-                                            Image(label.isChecked ? "checkbox" : "Check")
+                                            Image(systemName: homePlannerViewModel.selectedLabelID.contains(label.id) ? "checkmark.square" : "square")
                                                 .resizable()
                                                 .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                 .frame(width: 24, height: 24)
@@ -1356,19 +1571,23 @@ struct BottomTagSheetView: View {
                 .cornerRadius(16)
                 .shadow(radius: 10)
                 .onAppear{
+                    homePlannerViewModel.selectedLabelID = selectedNewDiaryTag
+                    print("newid  \(newid)")
+                    print("Tag View selectedID  \(selectedID)")
+                    print("selectedNewDiaryTag  \(selectedNewDiaryTag)")
+                    print("homePlannerViewModel.selectedLabelID  \(homePlannerViewModel.selectedLabelID)")
+                    print("Dairy homePlannerViewModel.tagLabelData.count\(homePlannerViewModel.tagLabelData.count)")
                     homePlannerViewModel.GetTagLabelList()
                     
-                    if homePlannerViewModel.NotelistData.isEmpty {
-                        homePlannerViewModel.GetDiaryDataList()
+                    if homePlannerViewModel.listData.isEmpty {
+                        homePlannerViewModel.GetDiaryDataList(query: "", type: "diary", page: 1, pageSize: 30, searchType: "", status: "", labelname: "", startdate: 0, enddate: 0)
                     }
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        if let Diary = homePlannerViewModel.listData.first {
-                            let incrementedId = Diary.id
-                            newid = incrementedId + 1
-                            print("Let's check the first newid: \(incrementedId), Incremented newid: \(newid)")
+                        if let maxId = homePlannerViewModel.listData.map({ $0.id }).max() {
+                            newid = maxId + 1
                         } else {
-                            print("No diary found with newid: \((newid))")
+                            newid = 1 // fallback if no data
                         }
                     }
                 }
@@ -1393,55 +1612,48 @@ struct BottomTagSheetView: View {
     }
     
     func toggleCheck(for id: Int) {
-        if let index = homePlannerViewModel.TagLabelData.firstIndex(where: { $0.id == id }) {
-            homePlannerViewModel.TagLabelData[index].isChecked.toggle()
-            if homePlannerViewModel.TagLabelData[index].isChecked {
+        if let index = homePlannerViewModel.tagLabelData.firstIndex(where: { $0.id == id }) {
+            homePlannerViewModel.tagLabelData[index].isChecked.toggle()
+            if homePlannerViewModel.tagLabelData[index].isChecked {
                 homePlannerViewModel.selectedLabelID.append(id)
             } else {
                 homePlannerViewModel.selectedLabelID.removeAll { $0 == id }
             }
         }
     }
-
-    
-//    func handleCheckedLabel(id: Int) {
-//        print("Checked label ID: \(id)")
-//    }
-
         
     func calculateTotalHeight() -> CGFloat {
         let baseHeight: CGFloat = 200 // Base height for fixed elements
         let rowHeight: CGFloat = 44 // Estimated height for each row in the list
         let maxHeight: CGFloat = 800 // Maximum height for the entire view
-        let totalHeight = baseHeight + (CGFloat(homePlannerViewModel.TagLabelData.count) * rowHeight)
+        let totalHeight = baseHeight + (CGFloat(homePlannerViewModel.tagLabelData.count) * rowHeight)
         return min(totalHeight, maxHeight) // Ensure it doesn't exceed the maxHeight
     }
         
-
-
 }
 
 
-
+//@Binding var isDairyViewActive: Bool
+// isDairyViewActive
 struct BottomBackgroundSheetView: View {
-    
-    @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
+    @StateObject var homePlannerViewModel = HomePlannerViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Binding var themeimage: String?
     @State private var selectedColor: Color = .blue
     @State var selectedIconIndex: String
     @Binding var isBackgroundSheetVisible: Bool
     @State var selectedID: Int
     @Binding var onTapTheme: Bool
+    @Binding var isDairyViewActive: Bool
     @State var subImage: [String] = []
     @State var selectedToolTip: String?
-    
+    @State var id:Int = 0
     
     // Array of hex color codes
     let colors: [String] = [
         "#ffffff", "#f9b0a8", "#f39f76", "#fff8b9", "#e2f6d3", "#b5ddd4", "#d5e2e9","#aeccdc", "#d3c0db", "#f6e2dd", "#e9e2d4", "#efeff0"
     ]
     
-//    let availableBackgrounds: [Background] = [
         let availableBackgrounds: [Background] = [
             Background(type: .image,
                       value: "fruits-7434339_1920",
@@ -1603,6 +1815,7 @@ struct BottomBackgroundSheetView: View {
                         SubImage(value: "assets/plannerBackground/urbn/store-4156934_1920.png", tooltip: ""),
                         SubImage(value: "assets/plannerBackground/urbn/traveling-4323759_1920.png", tooltip: "")
                        ]),
+            
         // water
             Background(type: .image,
                       value: "sea-7920977_1280",
@@ -1639,15 +1852,6 @@ struct BottomBackgroundSheetView: View {
                         SubImage(value: "assets/plannerBackground/work/work-4997565_1280.png", tooltip: ""),
                        ]),
         ]
-        
-        // Food backgrounds
-
-//                 
-//               ],
-
-    
-    // Array of image names for icons
-
 
     var body: some View {
         VStack {
@@ -1673,8 +1877,6 @@ struct BottomBackgroundSheetView: View {
                                     )
                                     .onTapGesture {
                                         let correctedHex = hex.lowercased()
-                                        print("selectedColor \(correctedHex)")
-                                        print("selected ID : \(selectedID)")
                                         homePlannerViewModel.AddTheme(theme: correctedHex, selectedID: selectedID)
                                     }
                                 
@@ -1696,17 +1898,13 @@ struct BottomBackgroundSheetView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 36, height: 36)
-                            //                                .background(Color.red) // Add this line for debugging
                                 .clipShape(Circle())
                                 .overlay(
                                     Circle().stroke(Color.black, lineWidth: 0.5) // Add a border with your desired color and width
                                 )
                                 .onTapGesture {
                                     selectedToolTip = background.tooltip
-                                    
-                                    print("selectedToolTip \(selectedToolTip)")
                                     let subImages = background.subImages
-                                    print("SubImages Bakcground images:      \(subImages)")
                                     let processedFileNames = subImages.map { image in
                                         image.value
                                             .components(separatedBy: "/")
@@ -1715,12 +1913,15 @@ struct BottomBackgroundSheetView: View {
                                     }
                                     themeimage = background.value
                                     subImage = processedFileNames
-                                    print("Processed File Names: \(subImage)")
-                                    
-                                    print("background image : \(themeimage)")
                                     onTapTheme = true
-                                    print("onTapTheme \(onTapTheme)")
-                                    homePlannerViewModel.AddTheme(theme: "assets/plannerBackground/\(background.tooltip.lowercased())/\(themeimage!).png", selectedID: selectedID)
+                                    homePlannerViewModel.imagetheme = "assets/plannerBackground/\(selectedToolTip!.lowercased())/\(themeimage!).png"
+                                    
+                                    if isDairyViewActive {
+                                        homePlannerViewModel.AddTheme(theme:"assets/plannerBackground/\(selectedToolTip!.lowercased())/\(themeimage!).png", selectedID: homePlannerViewModel.id ?? 1)
+                                    }
+                                    else {
+                                        homePlannerViewModel.AddTheme(theme:"assets/plannerBackground/\(selectedToolTip!.lowercased())/\(themeimage!).png", selectedID: selectedID)
+                                    }
                                     
                                 }
                         }
@@ -1733,19 +1934,24 @@ struct BottomBackgroundSheetView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 5) {
                         ForEach(subImage, id: \.self) { imageName in
-//                            let themeimage = background.value
                             Image(imageName)
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: 36, height: 36)
-                            //                                .background(Color.red) // Add this line for debugging
                                 .clipShape(Circle())
                                 .overlay(
                                     Circle().stroke(Color.black, lineWidth: 0.5) // Add a border with your desired color and width
                                 )
                                 .onTapGesture {
                                     themeimage = imageName
-                                    homePlannerViewModel.AddTheme(theme:"assets/plannerBackground/\(selectedToolTip!.lowercased())/\(themeimage!).png", selectedID: selectedID)
+                                    homePlannerViewModel.imagetheme = "assets/plannerBackground/\(selectedToolTip!.lowercased())/\(themeimage!).png"
+                                    if isDairyViewActive {
+                                        homePlannerViewModel.AddTheme(theme:"assets/plannerBackground/\(selectedToolTip!.lowercased())/\(themeimage!).png", selectedID: homePlannerViewModel.id ?? 1)
+                                    }
+                                    else {
+                                        homePlannerViewModel.AddTheme(theme:"assets/plannerBackground/\(selectedToolTip!.lowercased())/\(themeimage!).png", selectedID: selectedID)
+                                    }
+
                                     
                                 }
                         }
@@ -1755,32 +1961,45 @@ struct BottomBackgroundSheetView: View {
                     .frame(height: 60)
                     .padding(.horizontal)
             }
-
-            }
+        }
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(Color(UIColor.systemBackground))
+                    .fill(themesviewModel.currentTheme.windowBackground)
                     .shadow(radius: 10)
             )
         }
         .edgesIgnoringSafeArea(.bottom)
         .onAppear {
+            onTapTheme = false
+            print("isViewActive  \(isDairyViewActive)")
+            print("id  \(id)")
+            print("Tag View selectedID  \(selectedID)")
             if homePlannerViewModel.listData.isEmpty {
-                homePlannerViewModel.GetDiaryDataList()
+                homePlannerViewModel.GetDiaryDataList(query: "", type: "diary", page: 1, pageSize: 30, searchType: "", status: "", labelname: "", startdate: 0, enddate: 0)
             }
+            
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                if let maxId = homePlannerViewModel.listData.map({ $0.id }).max() {
+                    id = maxId + 1
+                    homePlannerViewModel.id = id
+                } else {
+                    id = 1 // fallback if no data
+                }
+            }
+                
 
             // Safely handle any logic without mutating `selectedID`
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 if let diary = homePlannerViewModel.listData.first(where: { $0.id == selectedID }) {
                     selectedID = diary.id
-                    print("Diary found with ID: \(selectedID)")
 //                    selectedIconIndex = diary.theme
                     if let theme = diary.theme {
                         selectedIconIndex = theme
                         if let fileName = theme.components(separatedBy: "/").last?.replacingOccurrences(of: ".png", with: "") {
                             selectedIconIndex = fileName
+                            print("selectedIconIndex  \(selectedIconIndex)")
                         }
-                        print("themeImage   \(selectedIconIndex)")
                     } else {
                         selectedIconIndex = "" // Default value if theme is nil
                     }
@@ -1814,89 +2033,6 @@ extension Color {
 }
 
 
-//
-//struct BottomSheetView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        BottomSheetView()
-//    }
-//}
-
-//struct createLabelView: View {
-//    @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
-//    @StateObject var themesviewModel = themesViewModel()
-//    @Binding var iscreatelabelvisible: Bool
-////    @State private var Textfill: String = ""
-//    @Binding var Textfill: String
-//
-//    var body: some View {
-//        ZStack {
-//            themesviewModel.currentTheme.windowBackground
-//                .ignoresSafeArea() // Ensure the color extends to the edges of the screen
-//            
-//            VStack {
-//                HStack(alignment: .top) {
-//                    // Left-aligned close button
-//                    Button(action: {
-//                        Textfill = ""
-//                        iscreatelabelvisible = false
-//                    }, label: {
-//                        Image("wrongmark")
-//                            .renderingMode(.template)
-//                            .frame(width: 30 , height: 30)
-//                            .padding(.leading , 16)
-//                            .foregroundColor(themesviewModel.currentTheme.iconColor)
-//                    })
-//                    .padding(.leading, 16)
-//                    .frame(height: 44) // Ensure consistent height
-//                    
-//                    // Centered "Create Label" text
-//                    Spacer()
-//                    Text("Create Label")
-//                        .padding() // Add padding around the text
-//                        .frame(height: 44) // Ensure consistent height
-//                        .foregroundColor(themesviewModel.currentTheme.textColor)
-//                    Spacer()
-//                    
-//                    // Conditionally display "Create" text
-//                    if Textfill.count >= 1 {
-//                        Text("Create")
-//                            .padding() // Add padding around the text
-//                            .frame(height: 44) // Ensure consistent height
-//                            .foregroundColor(themesviewModel.currentTheme.AllGray)
-//                            .padding(.trailing, 16)
-//                            .onTapGesture {
-//                                homePlannerViewModel.CreateLabelDiary(title: Textfill)
-//                                print("CreateLabelDiary")
-//                                iscreatelabelvisible = false
-//                                Textfill = ""
-//                            }
-//                    }
-//                }
-//                .frame(maxWidth: .infinity) // Stretch HStack to full width
-//
-//                VStack(alignment: .leading) {
-//                    Text("Name")
-//                        .padding() // Add padding around the text
-//                        .padding(.top, 10) // Add top padding
-//                        .padding(.leading, 16)
-//                        .foregroundColor(themesviewModel.currentTheme.textColor)
-//                    
-//                    TextField("", text: $Textfill)
-//                        .padding()
-//                        .foregroundColor(themesviewModel.currentTheme.textColor)
-//                        .background(themesviewModel.currentTheme.attachmentBGColor)
-//                        .cornerRadius(8) // Rounded corners
-//                        .padding(.horizontal)
-//                }
-//                .frame(maxWidth: .infinity, alignment: .leading) // Make the VStack take up full width and align content to the leading
-//
-//                Spacer() // Push content up to fill space below
-//            }
-//            .frame(maxWidth: .infinity, maxHeight: .infinity)
-//            .background(themesviewModel.currentTheme.windowBackground)
-//        }
-//    }
-//}
 
 struct DialogView<Content: View>: View {
     let title: String
@@ -1946,8 +2082,6 @@ struct DialogView<Content: View>: View {
             RoundedRectangle(cornerRadius: 16)
                 .stroke(Color.red.opacity(0.2), lineWidth: 1)
         )
-//        .frame(maxWidth: .infinity, maxHeight: .infinity)
-//        .background(Color.clear.edgesIgnoringSafeArea(.all))
     }
 }
 
@@ -1956,3 +2090,41 @@ struct DialogView<Content: View>: View {
 //#Preview {
 //    DiaryView(isDiaryVisible: .constant(true))
 //}
+
+
+
+
+
+
+
+//if selectedCommentId == comment.commentId {
+//    VStack(alignment: .leading) {
+//        ForEach(["todo", "inprogress", "completed"], id: \.self) { status in
+//            HStack {
+//                Image(status)
+//                    .resizable()
+//                    .frame(width: 20, height: 20)
+//                Text(status)
+//                    .font(.subheadline)
+//                    .foregroundColor(.secondary)
+//            }
+//            .onTapGesture {
+//                selectedStatus = status
+//                homePlannerViewModel.updateComment(
+//                    selectedId: data.id,
+//                    commenttid: selectedCommentId!,
+//                    comment: comment.comment,
+//                    selectedStatus: selectedStatus
+//                )
+//                selectedCommentId = nil
+//            }
+//        }
+//    }
+//    .frame(width: 120, height: 100)
+//    .padding()
+//    .cornerRadius(10)
+//    .shadow(radius: 10)
+//    .zIndex(2)
+//}
+
+

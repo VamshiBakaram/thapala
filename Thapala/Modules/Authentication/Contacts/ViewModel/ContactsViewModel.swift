@@ -11,6 +11,7 @@ class ContactsViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var error: String?
     @Published var contactsData:[ContactsDataModel] = []
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     
     init() {
         self.getContactsData()
@@ -37,7 +38,7 @@ class ContactsViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

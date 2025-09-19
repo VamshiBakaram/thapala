@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SearchView: View {
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @ObservedObject var appBarElementsViewModel: AppBarElementsViewModel
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var homeAwaitingViewModel = HomeAwaitingViewModel()
@@ -30,7 +30,6 @@ struct SearchView: View {
                     HStack(alignment: .center) {
                         // Back Button
                         Button(action: {
-                            print("clicked")
                             self.presentationMode.wrappedValue.dismiss()
                         }, label: {
                             Image("backButton")
@@ -40,16 +39,6 @@ struct SearchView: View {
                                 .foregroundColor(themesviewModel.currentTheme.iconColor)
                                 .padding(.leading, 16)
                         })
-
-//                        Image("backButton")
-//                            .resizable()
-//                            .renderingMode(.template)
-//                            .frame(width: 20, height: 20)
-//                            .foregroundColor(themesviewModel.currentTheme.iconColor)
-//                            .padding(.leading, 16)
-//                            .onTapGesture {
-//                                appBarElementsViewModel.isSearch = false
-//                            }
 
                         // Search Field
                         ZStack(alignment: .leading) {
@@ -200,12 +189,8 @@ struct SearchView: View {
                                             .onTapGesture {
                                                 if let threadID = EmailData.threadId,
                                                    let index = appBarElementsViewModel.emailData.firstIndex(where: { $0.threadId == threadID }) {
-                                                    print("thread id:", threadID)
-                                                    // Toggle the 'starred' status between 1 and 0
                                                     appBarElementsViewModel.emailData[index].starred = (appBarElementsViewModel.emailData[index].starred == 1) ? 0 : 1
                                                     homeAwaitingViewModel.getStarredEmail(selectedEmail: threadID)
-                                                } else {
-                                                    print("threadID is nil")
                                                 }
                                             }
                                     }
@@ -253,9 +238,6 @@ struct SearchView: View {
                                                     Text(draftData.firstname ?? "")
                                                         .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
                                                         .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                        .onTapGesture {
-                                                            print("recipient.user.firstname \(draftData.firstname)")
-                                                        }
                                             }
                                                 Text(draftData.subject ?? "")
                                                     .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -268,26 +250,13 @@ struct SearchView: View {
                                     }
                                 }
                                 .listRowBackground(themesviewModel.currentTheme.windowBackground)
-                                .onTapGesture {
-                                    if appBarElementsViewModel.beforeLongPress {
-                                        print("appBarElementsViewModel.beforeLongPress")
-//                                        appBarElementsViewModel.selectedID = draftData.threadID
-                                    }
-                                }
                             }
-//                            .refreshable{
-//                            }
-                            
                             .listStyle(PlainListStyle())
                             .scrollContentBackground(.hidden)
                             .background(themesviewModel.currentTheme.windowBackground)
                         }
                     
                     }
-                .onAppear{
-                        print("appBarElementsViewModel.isSearch appears  \(appBarElementsViewModel.isSearch)")
-                    
-                }
                 .toast(message: $appBarElementsViewModel.error)
 
                     Spacer()
@@ -303,7 +272,7 @@ struct FilterButton: View {
     var isSelected: Bool
     var width: CGFloat
     var action: () -> Void
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
 
     var body: some View {
         RoundedRectangle(cornerRadius: 10)
@@ -316,7 +285,6 @@ struct FilterButton: View {
             )
             .onTapGesture {
                 action()
-                print("isSelected \(isSelected)")
             }
     }
 }

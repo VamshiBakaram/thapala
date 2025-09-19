@@ -33,8 +33,3 @@ class ScheduleEmailViewModel:ObservableObject{
     }
     
 }
-
-//struct ScheduleEmailData{
-//    var timeStap:Double
-//    var isScheduleCreated:Bool
-//}

@@ -217,14 +217,11 @@ struct MainRecord: Codable, Identifiable , Equatable{
     let parentId: Int
     let type: String
     let isDeleted: Bool
-    let deletedAt: Int
+    let deletedAt: Int?
     let subFolderType: String
     let `default`: Bool
     let createdAt: String
     let updatedAt: String
 }
-
-
-// sub records Data - Get api
 
 

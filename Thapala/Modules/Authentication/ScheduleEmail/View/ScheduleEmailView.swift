@@ -25,7 +25,6 @@ struct ScheduleEmailView: View {
                 Spacer()
                 VStack{
                     HStack{
-                       // Spacer()
                         Text("Schedule mail")
                             .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
                             .padding(.top,25)
@@ -183,14 +182,8 @@ struct ScheduleEmailView: View {
                 }
                 .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: 15.3))
-              //  .padding(.horizontal, 25)
-
             }
         }
-//        .navigationDestination(isPresented: $scheduleEmailViewModel.isScheduleCreated) {
-//            MailComposeView()
-//                .toolbar(.hidden)
-//        }
         .toast(message: $scheduleEmailViewModel.error)
         
     }

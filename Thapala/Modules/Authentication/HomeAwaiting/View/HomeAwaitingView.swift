@@ -12,7 +12,7 @@ struct HomeAwaitingView: View {
     @StateObject var mailComposeViewModel = MailComposeViewModel()
     @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
     @StateObject var mailFullViewModel = MailFullViewModel()
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Environment(\.presentationMode) var presentationMode
     @State private var isSheetVisible = false
     @State private var isMultiSelectionSheetVisible = false
@@ -27,7 +27,6 @@ struct HomeAwaitingView: View {
     @State private var conveyedView: Bool = false
     @State private var PostBoxView: Bool = false
     @State private var SnoozedView: Bool = false
-//    @State private var AwaitingView: Bool = false
     @State private var beforeLongPress = true
     @State private var AppBar = true
     @State private var selectedCheck = false
@@ -56,11 +55,12 @@ struct HomeAwaitingView: View {
     @State private var dragOffset: CGFloat = 0
     @State private var isCheckedLabelID: [Int] = []
     @State private var emailBodies: [String] = []
+    
     var body: some View {
         GeometryReader{ reader in
             ZStack(alignment: .bottomTrailing) {
                 themesviewModel.currentTheme.windowBackground
-                    .ignoresSafeArea()
+                    .ignoresSafeArea(edges: .bottom)
                 VStack{
                     if beforeLongPress{
                         VStack {
@@ -72,7 +72,7 @@ struct HomeAwaitingView: View {
                                         .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
                                         .background(
                                             Circle()
-                                                .fill(themesviewModel.currentTheme.colorPrimary) // Inner background
+                                                .fill(themesviewModel.currentTheme.colorPrimary)
                                         )
                                         .overlay(
                                             Circle()
@@ -133,7 +133,6 @@ struct HomeAwaitingView: View {
                                 
                                 Spacer()
                                 Button(action: {
-                                    print("search button pressed")
                                     appBarElementsViewModel.isSearch = true
                                 }) {
                                     Image("magnifyingglass")
@@ -144,15 +143,12 @@ struct HomeAwaitingView: View {
                                 .padding(.leading,15)
 
                                 Button(action: {
-                                    print("bell button pressed")
                                     iNotificationAppBarView = true
                                 }) {
                                     Image("notification")
-                                    
                                 }
                                 .padding(.leading,15)
                                 Button(action: {
-                                    print("line.3.horizontal button pressed")
                                     withAnimation {
                                         isMenuVisible.toggle()
                                     }
@@ -164,24 +160,20 @@ struct HomeAwaitingView: View {
                                 }
                                 .padding(.leading,15)
                                 .padding(.trailing , 30)
-                                
                             }
-                            .padding(.top, -reader.size.height * 0.01)
-                            //   ScrollView(.horizontal,showsIndicators: false){
+                            .padding(.top ,15)
+                            
+                            
                             HStack{
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(self.homeAwaitingViewModel.isEmailSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
                                     .frame(width: max(reader.size.width/3 - 10, 50), height: 50)
                                     .onTapGesture {
                                         self.homeAwaitingViewModel.selectedOption = .email
-                                        print("Emailed clicked")
-                                        print()
-                                        print(reader.size.width/3 - 10)
                                         homeAwaitingViewModel.getEmailsData()
                                         self.homeAwaitingViewModel.isEmailSelected = true
                                         self.homeAwaitingViewModel.isPrintSelected = false
                                         self.homeAwaitingViewModel.isOntlineSelected = false
-                                       
                                     }
                                     .overlay(
                                         Group{
@@ -205,12 +197,12 @@ struct HomeAwaitingView: View {
                                             }
                                         }
                                     )
+                                
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(self.homeAwaitingViewModel.isPrintSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
                                     .frame(width: max(reader.size.width/3 - 10, 50), height: 50)
                                     .onTapGesture {
                                         self.homeAwaitingViewModel.selectedOption = .print
-                                        print("print clicked")
                                         self.homeAwaitingViewModel.isEmailSelected = false
                                         self.homeAwaitingViewModel.isPrintSelected = true
                                         self.homeAwaitingViewModel.isOntlineSelected = false
@@ -227,7 +219,6 @@ struct HomeAwaitingView: View {
                                                         RoundedRectangle(cornerRadius: 8)
                                                             .fill(themesviewModel.currentTheme.tabBackground)
                                                     )
-                                                
                                                 VStack{
                                                     Text("Intact")
                                                         .font(.custom(.poppinsMedium, size: 14, relativeTo: .title))
@@ -242,7 +233,6 @@ struct HomeAwaitingView: View {
                                     .frame(width: max(reader.size.width/3 - 10, 50), height: 50)
                                     .onTapGesture {
                                         self.homeAwaitingViewModel.selectedOption = .outline
-                                        print("outline clicked")
                                         self.homeAwaitingViewModel.isEmailSelected = false
                                         self.homeAwaitingViewModel.isPrintSelected = false
                                         self.homeAwaitingViewModel.isOntlineSelected = true
@@ -279,9 +269,9 @@ struct HomeAwaitingView: View {
                             .padding([.leading,.trailing,],5)
                             .padding(.bottom , 10)
                         }
-                        .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top ?? 30)
-//                        .frame(height: reader.size.height * 0.16)
+                        .frame(height: reader.size.height * 0.17)
                         .background(themesviewModel.currentTheme.colorPrimary)
+                        .padding(.top , 5)
                         
                         HStack{
                             if let selectedOption = homeAwaitingViewModel.selectedOption {
@@ -293,12 +283,11 @@ struct HomeAwaitingView: View {
                                     Text("")
                                 case .outline:
                                     Spacer()
-                                    
                                         ScrollView(.horizontal, showsIndicators: false) {
-                                            HStack(spacing: 12) { // Adjust spacing as needed
+                                            HStack(spacing: 16) { // Adjust spacing as needed
                                                 RoundedRectangle(cornerRadius: 25)
                                                     .fill(self.homeAwaitingViewModel.isDraftsSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
-                                                    .frame(width: 100, height: 50) // Add fixed width for consistent layout
+                                                    .frame(width: 110, height: 50) // Add fixed width for consistent layout
                                                     .onTapGesture {
                                                         self.homeAwaitingViewModel.outlineSelectedOption = .draft
                                                         self.homeAwaitingViewModel.isDraftsSelected = true
@@ -307,17 +296,16 @@ struct HomeAwaitingView: View {
                                                         self.homeAwaitingViewModel.istLetersSelected = false
                                                         self.homeAwaitingViewModel.istCardsSelected = false
                                                         self.homeAwaitingViewModel.getDraftsData()
-//                                                        homeAwaitingViewModel.error = "Draft Mails fetched successfully"
                                                     }
                                                     .overlay(
                                                         Text("Drafts")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                            .font(.custom(.poppinsBold, size: 16))
                                                             .foregroundColor(self.homeAwaitingViewModel.isDraftsSelected ? themesviewModel.currentTheme.textColor : themesviewModel.currentTheme.inverseTextColor)
                                                     )
                                                 
                                                 RoundedRectangle(cornerRadius: 25)
                                                     .fill(self.homeAwaitingViewModel.istDraftselected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
-                                                    .frame(width: 100, height: 50)
+                                                    .frame(width: 110, height: 50)
                                                     .onTapGesture {
                                                         self.homeAwaitingViewModel.outlineSelectedOption = .tDraft
                                                         self.homeAwaitingViewModel.isDraftsSelected = false
@@ -326,17 +314,16 @@ struct HomeAwaitingView: View {
                                                         self.homeAwaitingViewModel.istLetersSelected = false
                                                         self.homeAwaitingViewModel.istCardsSelected = false
                                                         self.homeAwaitingViewModel.getTDraftsData()
-//                                                        homeAwaitingViewModel.error = "tDraft Mails fetched successfully"
                                                     }
                                                     .overlay(
                                                         Text("tDrafts")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                            .font(.custom(.poppinsBold, size: 16))
                                                             .foregroundColor(self.homeAwaitingViewModel.istDraftselected ? themesviewModel.currentTheme.textColor : themesviewModel.currentTheme.inverseTextColor)
                                                     )
                                                 
                                                 RoundedRectangle(cornerRadius: 25)
                                                     .fill(self.homeAwaitingViewModel.isScheduledSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
-                                                    .frame(width: 100, height: 50)
+                                                    .frame(width: 110, height: 50)
                                                     .onTapGesture {
                                                         self.homeAwaitingViewModel.outlineSelectedOption = .schedule
                                                         self.homeAwaitingViewModel.isDraftsSelected = false
@@ -345,52 +332,18 @@ struct HomeAwaitingView: View {
                                                         self.homeAwaitingViewModel.istLetersSelected = false
                                                         self.homeAwaitingViewModel.istCardsSelected = false
                                                         self.homeAwaitingViewModel.getScheduleEmailsData()
-//                                                        homeAwaitingViewModel.error = "scheduled mails fetched successfully"
                                                     }
                                                     .overlay(
                                                         Text("Scheduled")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                            .font(.custom(.poppinsBold, size: 16))
                                                             .foregroundColor(self.homeAwaitingViewModel.isScheduledSelected ? themesviewModel.currentTheme.textColor : themesviewModel.currentTheme.inverseTextColor)
                                                     )
-                                                
-                                                RoundedRectangle(cornerRadius: 25)
-                                                    .fill(self.homeAwaitingViewModel.istLetersSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
-                                                    .frame(width: 100, height: 50)
-                                                    .onTapGesture {
-                                                        self.homeAwaitingViewModel.outlineSelectedOption = .schedule
-                                                        self.homeAwaitingViewModel.isDraftsSelected = false
-                                                        self.homeAwaitingViewModel.istDraftselected = false
-                                                        self.homeAwaitingViewModel.isScheduledSelected = false
-                                                        self.homeAwaitingViewModel.istLetersSelected = true
-                                                        self.homeAwaitingViewModel.istCardsSelected = false
-                                                    }
-                                                    .overlay(
-                                                        Text("tLetters")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                            .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                                                    )
-                                                
-                                                RoundedRectangle(cornerRadius: 25)
-                                                    .fill(self.homeAwaitingViewModel.istCardsSelected ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.tabBackground)
-                                                    .frame(width: 100, height: 50)
-                                                    .onTapGesture {
-                                                        self.homeAwaitingViewModel.outlineSelectedOption = .schedule
-                                                        self.homeAwaitingViewModel.isDraftsSelected = false
-                                                        self.homeAwaitingViewModel.istDraftselected = false
-                                                        self.homeAwaitingViewModel.isScheduledSelected = false
-                                                        self.homeAwaitingViewModel.istLetersSelected = false
-                                                        self.homeAwaitingViewModel.istCardsSelected = true
-                                                    }
-                                                    .overlay(
-                                                        Text("tCards")
-                                                            .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                                            .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                                                    )
                                             }
-                                            .padding(.horizontal)
+                                            
                                         }
                                         .background(themesviewModel.currentTheme.tabBackground)
                                         .cornerRadius(25)
+                                        .padding(.horizontal , 20)
                                     
                                 }
                             }
@@ -409,7 +362,6 @@ struct HomeAwaitingView: View {
                                 Spacer()
                                 
                                 Button {
-                                    print("cancel works")
                                     selectedIndices = []
                                     homeAwaitingViewModel.selectedThreadIDs = []
                                     beforeLongPress = true
@@ -426,27 +378,22 @@ struct HomeAwaitingView: View {
                             
                             HStack {
                                 Text("Select All")
-                                    .font(.custom("Poppins-Bold", size: 16))
+                                    .font(.custom(.poppinsBold, size: 16))
                                     .foregroundColor(themesviewModel.currentTheme.textColor)
                                     .fontWeight(.bold)
                                     .padding(.leading, 16)
 
                                 Button(action: {
-                                    print("select All clicked")
                                     if homeAwaitingViewModel.isEmailSelected{
-                                        print("homeAwaitingViewModel.isEmailSelected")
                                         if selectedIndices.count == homeAwaitingViewModel.emailData.count {
                                             selectedIndices.removeAll()
                                             isSelectAll = false
                                             selectedIndices = []
                                             homeAwaitingViewModel.selectedThreadIDs = []
-                                            print("homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs )")
                                         } else {
                                             selectedIndices = Set(homeAwaitingViewModel.emailData.compactMap { $0.threadID })
                                             isSelectAll = true
                                             homeAwaitingViewModel.selectedThreadIDs = Array(selectedIndices)
-                                            //                                        homeAwaitingViewModel.selectedThreadIDs = Array(selectedIndices)
-                                            print("homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs )")
                                         }
                                     }
                                     
@@ -456,27 +403,23 @@ struct HomeAwaitingView: View {
                                             isSelectAll = false
                                             selectedIndices = []
                                             homeAwaitingViewModel.selectedThreadIDs = []
-                                            print("homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs )")
                                         } else {
                                             selectedIndices = Set(homeAwaitingViewModel.draftsData.compactMap { $0.threadID })
                                             isSelectAll = true
                                             homeAwaitingViewModel.selectedThreadIDs = Array(selectedIndices)
-                                            //                                        homeAwaitingViewModel.selectedThreadIDs = Array(selectedIndices)
-                                            print("homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs )")
                                         }
                                     }
+                                    
                                     else if homeAwaitingViewModel.istDraftselected{
                                         if selectedIndices.count == homeAwaitingViewModel.tDraftsData.count {
                                             selectedIndices.removeAll()
                                             isSelectAll = false
                                             selectedIndices = []
                                             homeAwaitingViewModel.selectedThreadIDs = []
-                                            print("homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs )")
                                         } else {
                                             selectedIndices = Set(homeAwaitingViewModel.tDraftsData.compactMap { $0.threadID })
                                             isSelectAll = true
                                             homeAwaitingViewModel.selectedThreadIDs = Array(selectedIndices)
-                                            print("homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs )")
                                         }
                                     }
                                     
@@ -486,13 +429,10 @@ struct HomeAwaitingView: View {
                                             isSelectAll = false
                                             selectedIndices = []
                                             homeAwaitingViewModel.selectedThreadIDs = []
-                                            print("removeAll homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs )")
                                         } else {
                                             selectedIndices = Set(homeAwaitingViewModel.scheduleData.compactMap { $0.threadID })
                                             isSelectAll = true
                                             homeAwaitingViewModel.selectedThreadIDs = Array(selectedIndices)
-                                            //                                        homeAwaitingViewModel.selectedThreadIDs = Array(selectedIndices)
-                                            print("insert all homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs )")
                                         }
                                     }
                                                                         
@@ -633,26 +573,23 @@ struct HomeAwaitingView: View {
                                                                 .onTapGesture {
                                                                     if let threadID = data.threadID,
                                                                        let index = homeAwaitingViewModel.emailData.firstIndex(where: { $0.threadID == threadID }) {
-                                                                        print("thread id:", threadID)
                                                                         homeAwaitingViewModel.emailData[index].starred = (homeAwaitingViewModel.emailData[index].starred == 1) ? 0 : 1
                                                                         homeAwaitingViewModel.getStarredEmail(selectedEmail: threadID)
                                                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.001) {
                                                                             homeAwaitingViewModel.isLoading = false
                                                                         }
                                                                     } else {
-                                                                        print("threadID is nil")
                                                                     }
                                                                 }
                                                         }
                                                         .frame(height: 34)
                                                     }
+                                                    .padding(.horizontal , 10)
                                                     .padding(.top , 10)
                                                     .onTapGesture {
                                                         if homeAwaitingViewModel.beforeLongPress {
                                                             EmailStarred = data.starred ?? 0
                                                             markAs = data.readReceiptStatus ?? 0
-                                                            print("onTapGesture markAs \(markAs)")
-                                                            print("onTapGesture EmailStarred  \(EmailStarred)")
                                                             HomeawaitingViewVisible = true
                                                             homeAwaitingViewModel.selectedID = data.threadID
                                                             homeAwaitingViewModel.passwordHint = data.passwordHint
@@ -667,37 +604,42 @@ struct HomeAwaitingView: View {
                                                                     homeAwaitingViewModel.beforeLongPress = false
                                                                     selectView = true
                                                                     selectedIndices.insert(data.threadID ?? 0)
-                                                                    print("unchecked button selected threadId \(data.threadID)")
                                                                     homeAwaitingViewModel.selectedID = data.threadID
-                                                                    print("homeAwaitingViewModel.selectedID \(homeAwaitingViewModel.selectedID)")
                                                                     homeAwaitingViewModel.selectedThreadIDs.append(data.threadID ?? 0)
                                                                     EmailStarred = data.starred ?? 0
-                                                                    print("EmailStarred  \(EmailStarred)")
                                                                     markAs = data.readReceiptStatus ?? 0
-                                                                    print("markAs  \(markAs)")
                                                                     emailId = data.threadID ?? 0
                                                                 }
                                                             }
                                                     )
                                                     .swipeActions(edge: .leading) {
                                                         Button {
-                                                            print("Deleting row")
-                                                            homeAwaitingViewModel.selectedThreadIDs.append(data.threadID ?? 0)
-                                                            homeAwaitingViewModel.deleteEmailFromAwaiting(threadIDS: homeAwaitingViewModel.selectedThreadIDs)
+                                                            homeAwaitingViewModel.selectedThreadIDs = []
+                                                            showingDeleteAlert = true
+                                                            if let id = data.threadID, !homeAwaitingViewModel.selectedThreadIDs.contains(id) {
+                                                                homeAwaitingViewModel.selectedThreadIDs.append(id)
+                                                            }
+                                                            print("homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs)")
                                                         } label: {
                                                             deleteIcon
                                                                 .foregroundStyle(.white)
                                                         }
-                                                        .tint(Color.themeColor)
+                                                        .tint(Color(red: 1.0, green: 0.5, blue: 0.5))
                                                     }
                                                     .swipeActions(edge: .trailing) {
                                                         Button {
-                                                            isSheetVisible = true
+//                                                            isSheetVisible = true
+                                                            isMoreSheetvisible.toggle()
+                                                            EmailStarred = data.starred ?? 0
+                                                            markAs = data.readReceiptStatus ?? 0
+                                                            emailId = data.threadID ?? 0
+                                                            HomeawaitingViewVisible = true
+                                                            
                                                         } label: {
                                                             moreIcon
                                                                 .foregroundStyle(.white)
                                                         }
-                                                        .tint(Color(red:255/255, green: 128/255, blue: 128/255))
+                                                        .tint(Color(red: 80/255, green: 165/255, blue: 242/255))
                                                     }
                                                     Divider()
                                                         .frame(maxWidth: .infinity)
@@ -717,29 +659,24 @@ struct HomeAwaitingView: View {
                                                 VStack {
                                                     HStack{
                                                         Button(action: {
-                                                            print("selected check image")
                                                             if let threadId = data.threadID {
                                                                 if selectedIndices.contains(threadId) {
                                                                     selectedIndices.remove(threadId)
                                                                     homeAwaitingViewModel.selectedThreadIDs.removeAll { $0 == threadId }
                                                                 } else {
                                                                     selectedIndices.insert(threadId)
-                                                                    print("selected threadId \(threadId)")
                                                                     homeAwaitingViewModel.selectedThreadIDs.append(threadId)
-                                                                    print("single check homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs)")
                                                                     markAs = data.readReceiptStatus ?? 0
-                                                                    print("check markAs  \(markAs)")
-                                                                    emailId = threadId
-                                                                    print("emailId threadId \(emailId)")
+                                                                    
                                                                     homeAwaitingViewModel.selectedID = threadId
-                                                                    if let thread = homeAwaitingViewModel.emailData.first(where: { $0.threadID == threadId }) {
-                                                                        let labelIDs = thread.labels?.compactMap { $0.labelId } ?? []
-                                                                        isCheckedLabelID = labelIDs
-                                                                    }
-                                                                    print("check homeAwaitingViewModel.selectedID   \(homeAwaitingViewModel.selectedID)")
+                                                                }
+                                                                emailId = homeAwaitingViewModel.selectedThreadIDs.last ?? 0
+                                                                
+                                                                if let thread = homeAwaitingViewModel.emailData.first(where: { $0.threadID == emailId }) {
+                                                                    let labelIDs = thread.labels?.compactMap { $0.labelId } ?? []
+                                                                    isCheckedLabelID = labelIDs
                                                                 }
                                                                 isSelectAll = selectedIndices.count == homeAwaitingViewModel.emailData.count
-                                                                print("homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs)")
                                                             }
                                                         }) {
                                                             Image(selectedIndices.contains(data.threadID ?? -1) ?  "selected" : "contactW")
@@ -815,7 +752,6 @@ struct HomeAwaitingView: View {
                                                                 .onTapGesture {
                                                                     if let threadID = data.threadID,
                                                                        let index = homeAwaitingViewModel.emailData.firstIndex(where: { $0.threadID == threadID }) {
-                                                                        print("thread id:", threadID)
                                                                         // Toggle the 'starred' status between 1 and 0
                                                                         homeAwaitingViewModel.emailData[index].starred = (homeAwaitingViewModel.emailData[index].starred == 1) ? 0 : 1
                                                                         homeAwaitingViewModel.getStarredEmail(selectedEmail: threadID)
@@ -846,16 +782,10 @@ struct HomeAwaitingView: View {
                                             
                                             .onAppear{
                                                 HomeawaitingViewVisible = true
-                                                isCheckedLabelID
-                                                //                                                self.isCheckedLabelID = response.email?.flatMap { $0.labels }.compactMap { $0.labelId } ?? []
                                                 if let thread = homeAwaitingViewModel.emailData.first(where: { $0.threadID == emailId }) {
                                                     let labelIDs = thread.labels?.compactMap { $0.labelId } ?? []
-                                                    print("labelIDs: \(labelIDs)")
                                                     isCheckedLabelID = labelIDs
-                                                    print("isCheckedLabelID: \(isCheckedLabelID)")
                                                 }
-                                                
-                                                print("HomeawaitingViewVisible  \(HomeawaitingViewVisible)")
                                             }
                                             
                                             HStack{
@@ -901,7 +831,6 @@ struct HomeAwaitingView: View {
                                                 Spacer()
                                                 
                                                 Button {
-                                                    print("emailId \(emailId)")
                                                     if markAs == 0 {
                                                         mailFullViewModel.markEmailAsRead(emailId: homeAwaitingViewModel.selectedThreadIDs)
                                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
@@ -911,7 +840,6 @@ struct HomeAwaitingView: View {
                                                         }
                                                     }
                                                     else {
-                                                        print("homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs)")
                                                         mailFullViewModel.markEmailAsUnRead(emailId: homeAwaitingViewModel.selectedThreadIDs)
                                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                                                             homeAwaitingViewModel.getEmailsData()
@@ -1014,7 +942,6 @@ struct HomeAwaitingView: View {
                                                                 homeAwaitingViewModel.beforeLongPress = false
                                                                 selectView = true
                                                                 selectedIndices.insert(draftData.threadID ?? 0)
-                                                                print("unchecked button selected threadId \(draftData.threadID)")
                                                                 homeAwaitingViewModel.selectedThreadIDs.append(draftData.threadID ?? 0)
                                                             }) {
                                                                 Image("unchecked")
@@ -1028,7 +955,7 @@ struct HomeAwaitingView: View {
                                                             VStack(alignment: .leading){
                                                                 if draftData.status?.rawValue ?? "" == "draft"{
                                                                     if let recipient = draftData.recipients.first(where: { $0.type == "to" }) {
-                                                                        Text(recipient.user.firstname ?? "")
+                                                                        Text(recipient.user.firstname)
                                                                             .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
                                                                             .foregroundColor(themesviewModel.currentTheme.textColor)
                                                                     }
@@ -1051,9 +978,7 @@ struct HomeAwaitingView: View {
                                                                 if homeAwaitingViewModel.beforeLongPress {
                                                                     homeAwaitingViewModel.selectedID = draftData.threadID
                                                                     homeAwaitingViewModel.passwordHint = draftData.passwordHint
-                                                                    print("before isdraftemail true  \(homeAwaitingViewModel.isdraftEmail)")
                                                                     homeAwaitingViewModel.isdraftEmail = true
-                                                                    print("After isdraftemail true  \(homeAwaitingViewModel.isdraftEmail)")
                                                                 }
                                                             }
                                                             .gesture(
@@ -1063,9 +988,7 @@ struct HomeAwaitingView: View {
                                                                             beforeLongPress = false
                                                                             homeAwaitingViewModel.beforeLongPress = false
                                                                             selectView = true
-                                                                            print("selectedCheck \(selectedCheck)")
                                                                             selectedIndices.insert(draftData.threadID ?? 0)
-                                                                            print("long tap gesture selected threadId \(draftData.threadID)")
                                                                             homeAwaitingViewModel.selectedThreadIDs.append(draftData.threadID ?? 0)
                                                                         }
                                                                     }
@@ -1095,16 +1018,13 @@ struct HomeAwaitingView: View {
                                                     VStack(alignment: .leading) {
                                                         HStack{
                                                             Button(action: {
-                                                                print("selected check image")
                                                                 if let threadId = draftData.threadID {
                                                                     if selectedIndices.contains(threadId) {
                                                                         selectedIndices.remove(threadId)
                                                                         homeAwaitingViewModel.selectedThreadIDs.removeAll { $0 == threadId }
                                                                     } else {
                                                                         selectedIndices.insert(threadId)
-                                                                        print("selected threadId \(threadId)")
                                                                         homeAwaitingViewModel.selectedThreadIDs.append(threadId)
-                                                                        print("single check homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs)")
                                                                     }
                                                                     isSelectAll = selectedIndices.count == homeAwaitingViewModel.draftsData.count
                                                                 }
@@ -1123,12 +1043,9 @@ struct HomeAwaitingView: View {
                                                                 VStack(alignment: .leading){
                                                                     if draftData.status?.rawValue ?? "" == "draft"{
                                                                         if let recipient = draftData.recipients.first(where: { $0.type == "to" }) {
-                                                                            Text(recipient.user.firstname ?? "")
+                                                                            Text(recipient.user.firstname)
                                                                                 .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
                                                                                 .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                                                .onTapGesture {
-                                                                                    print("recipient.user.firstname \(recipient.user.firstname ?? "")")
-                                                                                }
                                                                         }
                                                                         
                                                                         else {
@@ -1194,7 +1111,6 @@ struct HomeAwaitingView: View {
                                                 
                                                 HStack{
                                                     Button(action: {
-                                                        print("delete clicked")
                                                         showingDeleteAlert = true
                                                     }){
                                                         Image("delete")
@@ -1233,7 +1149,6 @@ struct HomeAwaitingView: View {
                                                             homeAwaitingViewModel.beforeLongPress = false
                                                             selectView = true
                                                             selectedIndices.insert(tdraftData.threadID ?? 0)
-                                                            print("unchecked button selected threadId \(tdraftData.threadID ?? 0)")
                                                             homeAwaitingViewModel.selectedThreadIDs.append(tdraftData.threadID ?? 0)
                                                             
                                                         }) {
@@ -1248,7 +1163,7 @@ struct HomeAwaitingView: View {
                                                         VStack(alignment: .leading){
                                                             if tdraftData.status?.rawValue ?? "" == "draft"{
                                                                 if let recipient = tdraftData.recipients.first(where: { $0.type == "to" }) {
-                                                                    Text(recipient.user.firstname ?? "")
+                                                                    Text(recipient.user.firstname)
                                                                         .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
                                                                         .foregroundColor(themesviewModel.currentTheme.textColor)
                                                                 }
@@ -1305,7 +1220,6 @@ struct HomeAwaitingView: View {
                                                                         homeAwaitingViewModel.beforeLongPress = false
                                                                         selectView = true
                                                                         selectedIndices.insert(tdraftData.threadID ?? 0)
-                                                                        print("longTap gesture selected threadId \(tdraftData.threadID ?? 0)")
                                                                         homeAwaitingViewModel.selectedThreadIDs.append(tdraftData.threadID ?? 0)
                                                                     }
                                                                 }
@@ -1333,16 +1247,13 @@ struct HomeAwaitingView: View {
                                                         VStack(alignment: .leading) {
                                                             HStack{
                                                                 Button(action: {
-                                                                    print("selected check image")
                                                                     if let threadId = tdraftData.threadID {
                                                                         if selectedIndices.contains(threadId) {
                                                                             selectedIndices.remove(threadId)
                                                                             homeAwaitingViewModel.selectedThreadIDs.removeAll { $0 == threadId }
                                                                         } else {
                                                                             selectedIndices.insert(threadId)
-                                                                            print("selected threadId \(threadId)")
                                                                             homeAwaitingViewModel.selectedThreadIDs.append(threadId)
-                                                                            print("single check homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs)")
                                                                         }
                                                                         isSelectAll = selectedIndices.count == homeAwaitingViewModel.tDraftsData.count
                                                                     }
@@ -1363,12 +1274,9 @@ struct HomeAwaitingView: View {
                                                                 VStack(alignment: .leading){
                                                                     if tdraftData.status?.rawValue ?? "" == "draft"{
                                                                         if let recipient = tdraftData.recipients.first(where: { $0.type == "to" }) {
-                                                                            Text(recipient.user.firstname ?? "")
+                                                                            Text(recipient.user.firstname)
                                                                                 .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
                                                                                 .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                                                .onTapGesture {
-                                                                                    print("recipient.user.firstname \(recipient.user.firstname ?? "")")
-                                                                                }
                                                                         }
                                                                         
                                                                         else {
@@ -1463,7 +1371,6 @@ struct HomeAwaitingView: View {
                                                     
                                                     HStack{
                                                         Button(action: {
-                                                            print("delete clicked")
                                                             showingDeleteAlert = true
                                                         }){
                                                             Image("delete")
@@ -1505,7 +1412,6 @@ struct HomeAwaitingView: View {
                                                             homeAwaitingViewModel.beforeLongPress = false
                                                             selectView = true
                                                             selectedIndices.insert(scheduleddata.threadID ?? 0)
-                                                            print("unchecked button selected threadId \(scheduleddata.threadID ?? 0)")
                                                             homeAwaitingViewModel.selectedThreadIDs.append(scheduleddata.threadID ?? 0)
                                                         }) {
                                                             Image("unchecked")
@@ -1520,7 +1426,7 @@ struct HomeAwaitingView: View {
                                                         VStack(alignment: .leading){
                                                             if scheduleddata.status?.rawValue ?? "" == "scheduled"{
                                                                 if let recipient = scheduleddata.recipients.first(where: { $0.type == "to" }) {
-                                                                    Text(recipient.user.firstname ?? "")
+                                                                    Text(recipient.user.firstname)
                                                                         .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
                                                                         .foregroundColor(themesviewModel.currentTheme.textColor)
                                                                 }
@@ -1578,7 +1484,6 @@ struct HomeAwaitingView: View {
                                                                         homeAwaitingViewModel.beforeLongPress = false
                                                                         selectView = true
                                                                         selectedIndices.insert(scheduleddata.threadID ?? 0)
-                                                                        print("longtap gesture selected threadId \(scheduleddata.threadID ?? 0)")
                                                                         homeAwaitingViewModel.selectedThreadIDs.append(scheduleddata.threadID ?? 0)
                                                                     }
                                                                 }
@@ -1608,17 +1513,13 @@ struct HomeAwaitingView: View {
                                                         VStack(alignment: .leading) {
                                                             HStack{
                                                                 Button(action: {
-                                                                    
-                                                                    print("selected check image")
                                                                     if let threadId = scheduleddata.threadID {
                                                                         if selectedIndices.contains(threadId) {
                                                                             selectedIndices.remove(threadId)
                                                                             homeAwaitingViewModel.selectedThreadIDs.removeAll { $0 == threadId }
                                                                         } else {
                                                                             selectedIndices.insert(threadId)
-                                                                            print("selected threadId \(threadId)")
                                                                             homeAwaitingViewModel.selectedThreadIDs.append(threadId)
-                                                                            print("single check homeAwaitingViewModel.selectedThreadIDs  \(homeAwaitingViewModel.selectedThreadIDs)")
                                                                         }
                                                                         isSelectAll = selectedIndices.count == homeAwaitingViewModel.scheduleData.count
                                                                     }
@@ -1638,11 +1539,10 @@ struct HomeAwaitingView: View {
                                                                 VStack(alignment: .leading){
                                                                     if scheduleddata.status?.rawValue ?? "" == "scheduled"{
                                                                         if let recipient = scheduleddata.recipients.first(where: { $0.type == "to" }) {
-                                                                            Text(recipient.user.firstname ?? "")
+                                                                            Text(recipient.user.firstname)
                                                                                 .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
                                                                                 .foregroundColor(themesviewModel.currentTheme.textColor)
                                                                                 .onTapGesture {
-                                                                                    print("recipient.user.firstname \(recipient.user.firstname ?? "")")
                                                                                 }
                                                                         }
                                                                         
@@ -1738,7 +1638,6 @@ struct HomeAwaitingView: View {
                                                     
                                                     HStack{
                                                         Button(action: {
-                                                            print("delete clicked")
                                                             showingDeleteAlert = true
                                                         }){
                                                             Image("delete")
@@ -1799,22 +1698,14 @@ struct HomeAwaitingView: View {
                     if homeAwaitingViewModel.beforeLongPress{
                         TabViewNavigator()
                             .frame(height: 40)
-                            .padding(.bottom, 10)
+                            .padding(.bottom, 20)
                     }
-                    
-//                    Spacer()
-                    
-
-                    
-                    
                 }
                 .toast(message: $homeAwaitingViewModel.error)
                 .navigationBarBackButtonHidden(true)
                 .onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                        print("on appears")
                         homeAwaitingViewModel.getEmailsData()
-                        print("homeAwaitingViewModel.isLoading  \(homeAwaitingViewModel.isLoading)")
                     }
 
                     DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
@@ -1857,7 +1748,7 @@ struct HomeAwaitingView: View {
                             .padding(.trailing)
                             .padding(.bottom)
                     }
-                    .padding(.bottom, 50)
+                    .padding(.bottom, 100)
                 }
                 if isQuickAccessVisible {
                     ZStack {
@@ -1916,8 +1807,6 @@ struct HomeAwaitingView: View {
                         // Centered DeleteNoteAlert
                         DeleteAlert(isPresented: $showingDeleteAlert) {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.001) {
-                                print("delete alert")
-                                print("before homeAwaitingViewModel.selectedThreadIDs \(homeAwaitingViewModel.selectedThreadIDs)")
                                 homeAwaitingViewModel.deleteEmailFromAwaiting(threadIDS: homeAwaitingViewModel.selectedThreadIDs)
                                 showingDeleteAlert = false
                                 beforeLongPress = true
@@ -1946,9 +1835,9 @@ struct HomeAwaitingView: View {
                                     homeAwaitingViewModel.selectedThreadIDs.contains(item.threadID ?? 0)
                                 }
                             }
-                            print("After homeAwaitingViewModel.selectedThreadIDs \(homeAwaitingViewModel.selectedThreadIDs)")
-                            selectedIndices.removeAll()
 
+                            
+                            selectedIndices.removeAll()
                         }
                     }
                     .transition(.scale)
@@ -1963,7 +1852,6 @@ struct HomeAwaitingView: View {
                             .edgesIgnoringSafeArea(.all)
                             .onTapGesture {
                                 withAnimation {
-                                    print("Tapped isMoveSheetvisible")
                                     isMoveSheetvisible = false
                                 }
                             }
@@ -2010,7 +1898,6 @@ struct HomeAwaitingView: View {
                             .edgesIgnoringSafeArea(.all)
                             .onTapGesture {
                                 withAnimation {
-                                    print("Tapped isTagsheetvisible")
                                     isTagsheetvisible = false
                                 }
                             }
@@ -2065,6 +1952,7 @@ struct HomeAwaitingView: View {
                             Spacer()
 
                             MoreSheet(snoozetime: $snoozeTime, isMoreSheetVisible: $isMoreSheetvisible, emailId: emailId, passwordHash: passwordHash, isTagsheetvisible: $isTagsheetvisible, isSnoozeSheetvisible: $issnoozesheetvisible ,StarreEmail: $EmailStarred ,markedAs: $markAs , HomeawaitingViewVisible: $HomeawaitingViewVisible, isMoveSheetvisible: $isMoveSheetvisible)
+                            
                             .offset(y: dragOffset)
                             .gesture(
                                 DragGesture()
@@ -2101,51 +1989,36 @@ struct HomeAwaitingView: View {
             }
             .sheet(isPresented: $isSheetVisible, content: {
                 EmailOptionsView( replyAction: {
-                    // Perform reply action
-                    print("Reply tapped")
                     dismissSheet()
                 },
                                   replyAllAction: {
-                    // Perform reply all action
-                    print("Reply all tapped")
                     dismissSheet()
                 },
                                   forwardAction: {
-                    // Perform forward action
-                    print("Forward tapped")
                     dismissSheet()
                 },
                                   markAsReadAction: {
-                    print("read")
                     dismissSheet()
                 },
                                   markAsUnReadAction: {
-                    print("unread")
                     dismissSheet()
                 },
                                   createLabelAction: {
-                    print("label")
                     dismissSheet()
                 },
                                   moveToFolderAction: {
-                    print("move folder")
                     dismissSheet()
                 },
                                   starAction: {
-                    print("star")
                     homeAwaitingViewModel.getStarredEmail(selectedEmail: homeAwaitingViewModel.selectedID ?? 0)
                     dismissSheet()
                 },
                                   snoozeAction: {
                     if let index = homeAwaitingViewModel.emailData.firstIndex(where: { $0.threadID == homeAwaitingViewModel.selectedID}) {
                         homeAwaitingViewModel.emailData[index].threadID
-                        print("homeAwaitingViewModel.emailData[index].threadID \(homeAwaitingViewModel.emailData[index].threadID)")
-                            print("hey its snooze")
-                            //                    dismissSheet()
                         }
                 },
                                   trashAction: {
-                    print("trash acti")
                     dismissSheet()
                 }
                 )
@@ -2154,25 +2027,16 @@ struct HomeAwaitingView: View {
             })
             .sheet(isPresented: $isMultiSelectionSheetVisible, content: {
                 MultiEmailOptionsView(markAsReadAction: {
-                    print("read")
                 }, markAsUnReadAction: {
-                    print("Unread")
                 }, createLabelAction: {
-                    print("label")
                 }, moveToFolderAction: {
-                    print("move")
                 }, snoozeAction: {
-                    print("snooze")
                 }, trashAction: {
-                    print("trash")
                 })
                 .presentationDetents([.medium])
                 .presentationDragIndicator(.hidden)
             })
             .sheet(isPresented: $isMoveToFolder, content: {
-                //                MoveToFolderView()
-                //                    .presentationDetents([.medium])
-                //                    .presentationDragIndicator(.hidden)
             })
             .sheet(isPresented: $isCreateLabel, content: {
                 CreateLabelView()
@@ -2182,17 +2046,14 @@ struct HomeAwaitingView: View {
             .onChange(of: homeAwaitingViewModel.isEmailScreen || isMoreSheetvisible || isMoveSheetvisible || isTagsheetvisible) { newValue in
                 if newValue == false {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                        print("queue Api calls")
                         homeAwaitingViewModel.getEmailsData()
                         selectedIndices = []
                         homeAwaitingViewModel.selectedThreadIDs = []
-                        print("queue Api calls")
                     }
                 }
                 else if newValue == false && homeAwaitingViewModel.istDraftselected {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                         homeAwaitingViewModel.getTDraftsData()
-                        print("tDrafts Api calls")
                     }
                 }
             }
@@ -2200,7 +2061,6 @@ struct HomeAwaitingView: View {
                 if newValue == false {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                         homeAwaitingViewModel.getDraftsData()
-                        print("drafts Api calls")
                     }
                 }
             }
@@ -2208,7 +2068,6 @@ struct HomeAwaitingView: View {
                 if newValue == false {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                         homeAwaitingViewModel.getScheduleEmailsData()
-                        print("drafts getScheduleEmailsData calls")
                     }
                 }
             }
@@ -2236,26 +2095,7 @@ struct HomeAwaitingView: View {
             
         }
     }
-    
-    
-//    private func selectEmail(data: HomeEmailsDataModel) {
-//        if let index = homeAwaitingViewModel.emailData.firstIndex(where: { $0.threadID == data.threadID }) {
-//            homeAwaitingViewModel.emailData[index].isSelected.toggle()
-//            if homeAwaitingViewModel.emailData[index].isSelected {
-//                homeAwaitingViewModel.selectedThreadIDs.append(data.threadID ?? 0)
-//            } else {
-//                homeAwaitingViewModel.selectedThreadIDs.removeAll { $0 == data.threadID }
-//            }
-//        }
-//    }
-    
-//    private func selectAllEmails() {
-//        let allSelected = homeAwaitingViewModel.emailData.allSatisfy { $0.isSelected }
-//        homeAwaitingViewModel.emailData.indices.forEach { index in
-//            homeAwaitingViewModel.emailData[index].isSelected = !allSelected
-//        }
-//        homeAwaitingViewModel.selectedThreadIDs = allSelected ? [] : homeAwaitingViewModel.emailData.compactMap { $0.threadID }
-//    }
+
     private func dismissSheet() {
         presentationMode.wrappedValue.dismiss()
     }
@@ -2283,7 +2123,7 @@ struct HomeAwaitingView: View {
 private var deleteIcon: Image {
     Image(
         size: CGSize(width: 60, height: 40),
-        label: Text("Delete").font(.custom(.poppinsLight, size: 10, relativeTo: .title))
+        label: Text("Delete")
     ) { ctx in
         ctx.draw(
             Image(systemName: "trash"),
@@ -2291,7 +2131,8 @@ private var deleteIcon: Image {
             anchor: .top
         )
         ctx.draw(
-            Text("Delete"),
+            Text("Delete")
+            .font(.custom(.poppinsLight, size: 10, relativeTo: .title)),
             at: CGPoint(x: 30, y: 20),
             anchor: .top
         )
@@ -2301,7 +2142,7 @@ private var deleteIcon: Image {
 private var moreIcon: Image {
     Image(
         size: CGSize(width: 60, height: 40),
-        label: Text("More").font(.custom(.poppinsLight, size: 10, relativeTo: .title))
+        label: Text("More")
     ) { ctx in
         ctx.draw(
             Image("more 1"),
@@ -2309,7 +2150,8 @@ private var moreIcon: Image {
             anchor: .top
         )
         ctx.draw(
-            Text("More"),
+            Text("More")
+                .font(.custom(.poppinsLight, size: 10, relativeTo: .title)),
             at: CGPoint(x: 30, y: 20),
             anchor: .top
         )

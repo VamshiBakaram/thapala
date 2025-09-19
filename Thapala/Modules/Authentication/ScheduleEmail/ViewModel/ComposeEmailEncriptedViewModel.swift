@@ -31,11 +31,6 @@ class ComposeEmailEncriptedViewModel:ObservableObject{
     }
 }
 
-//struct PasswordEncriptData{
-//    var passwordHint:String
-//    var isPasswordProtected:Bool
-//    var passwordHash:String
-//}
 
 class ComposeEmailData{
     var passwordHint:String = ""

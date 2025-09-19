@@ -9,12 +9,10 @@ import SwiftUI
 class LabelledMailsViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var error: String?
-    @Published var selectedLabelID: [Int] = [] // bottom tag
+    @Published var selectedLabelID: [Int] = []
     @Published var selectedLabelNames: [String] = []
     @Published var labelledMailsDataModel:[LabelledMailsDataModel] = []
-//    init() {
-//        self.getLabelledEmailData()
-//    }
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     
     func getLabelledEmailData() {
         self.isLoading = true
@@ -37,7 +35,7 @@ class LabelledMailsViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

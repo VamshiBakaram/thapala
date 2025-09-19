@@ -10,7 +10,7 @@ import SwiftUI
 struct InsertFileFromRecordsView: View {
     
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @State private var selectedTab: String = "Work"
     let folderItems = ["My files", "My mails", "My pictures", "My videos"]
 
@@ -100,7 +100,6 @@ struct InsertFileFromRecordsView: View {
                 }
                 .padding(.horizontal)
                 .padding(.bottom)
-//                Spacer()
             }
             .background(themesviewModel.currentTheme.windowBackground)
         
@@ -132,7 +131,7 @@ struct TabButton: View {
 }
 
 struct FolderView: View {
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     var title: String
 
     var body: some View {

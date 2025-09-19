@@ -10,7 +10,7 @@ import SwiftUI
 struct MailComposeView: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject var mailComposeViewModel = MailComposeViewModel()
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
     @State var id:Int = 0
     @State var emailByIdData:EmailsByIdModel?
@@ -27,7 +27,7 @@ struct MailComposeView: View {
             VStack {
                 HStack {
                     Button(action: {
-//                        self.mailComposeViewModel.resetComposeEmailData()
+                        mailComposeViewModel.to = tCodeText
                         mailComposeViewModel.saveDraftData()
                         self.presentationMode.wrappedValue.dismiss()
                     }) {
@@ -47,8 +47,6 @@ struct MailComposeView: View {
                     .padding(.trailing,10)
                     
                     Button(action: {
-//                        mailComposeViewModel.sendEmail()
-                        print("on click of send: ")
                         mailComposeViewModel.to = tCodeText
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                             mailComposeViewModel.sendEmail()
@@ -86,35 +84,34 @@ struct MailComposeView: View {
                                 Text("To:")
                                     .foregroundColor(themesviewModel.currentTheme.textColor)
                                     .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
-                                
+
                                 ZStack(alignment: .leading) {
-                                    VStack {
-                                        if tCodeText.isEmpty {
-                                            Text("Enter tcode")
-                                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                                        }
-                                        
-                                        TextField("", text: $tCodeText)
+                                    if tCodeText.isEmpty {
+                                        Text("Enter tcode")
                                             .foregroundColor(themesviewModel.currentTheme.textColor)
-                                            .onChange(of: tCodeText) { newValue in
-                                                if let intValue = Int(newValue) {
-                                                    if !mailComposeViewModel.tcodeinfo.isEmpty {
-                                                        mailComposeViewModel.tcodeinfo[0].tCode = String(intValue)
-                                                    }
-                                                } else {
-                                                    if !mailComposeViewModel.tcodeinfo.isEmpty {
-                                                        mailComposeViewModel.tcodeinfo[0].tCode = nil
-                                                    }
+                                            .padding(.leading, 10)
+                                    }
+
+                                    TextField("", text: $tCodeText)
+                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                        .padding(.leading, 10)
+                                        .onChange(of: tCodeText) { newValue in
+                                            if let intValue = Int(newValue) {
+                                                if !mailComposeViewModel.tcodeinfo.isEmpty {
+                                                    mailComposeViewModel.tcodeinfo[0].tCode = String(intValue)
                                                 }
-                                                if isThreeNumbers(newValue) {
-                                                    mailComposeViewModel.suggest = true
-                                                    mailComposeViewModel.getSerachTcode(searchKey: newValue)
-                                                } else {
-                                                    mailComposeViewModel.suggest = false
+                                            } else {
+                                                if !mailComposeViewModel.tcodeinfo.isEmpty {
+                                                    mailComposeViewModel.tcodeinfo[0].tCode = nil
                                                 }
                                             }
-                                    }
-                                    Spacer()
+                                            if isThreeNumbers(newValue) {
+                                                mailComposeViewModel.suggest = true
+                                                mailComposeViewModel.getSerachTcode(searchKey: newValue)
+                                            } else {
+                                                mailComposeViewModel.suggest = false
+                                            }
+                                        }
                                 }
                             }
                             .overlay(
@@ -128,7 +125,6 @@ struct MailComposeView: View {
                                         }
                                     Button(action: {
                                         mailComposeViewModel.isArrow.toggle()
-                                        print("arrow clicked")
                                     }, label: {
                                         Image(mailComposeViewModel.isArrow ? "dropup" : "dropdown")
                                             .renderingMode(.template)
@@ -401,7 +397,8 @@ struct MailComposeView: View {
                                }
                                Spacer()
                            }
-                .padding([.leading,.trailing],20)
+                            .padding([.leading,.trailing],20)
+                            .padding(.bottom , 10)
             }
             .background(themesviewModel.currentTheme.windowBackground)
             .sheet(isPresented: $isInsertTcode, content: {

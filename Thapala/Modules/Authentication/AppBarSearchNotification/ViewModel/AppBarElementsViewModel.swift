@@ -22,7 +22,7 @@ class AppBarElementsViewModel: ObservableObject{
     @Published var isEmailView: Bool = false
     @Published var selectedemailID: Int?
     @Published var isSearch: Bool = false
-    
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     
     func getMailsData(keyWord: String , searchfor: String) {
         self.isLoading = true
@@ -45,7 +45,7 @@ class AppBarElementsViewModel: ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -73,7 +73,7 @@ class AppBarElementsViewModel: ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

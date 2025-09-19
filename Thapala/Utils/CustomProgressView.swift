@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 struct CustomProgressView: View {
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     
     var body: some View {
         ZStack {

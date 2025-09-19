@@ -50,7 +50,6 @@ struct PasswordProtectedAccessView: View {
                         HStack{
                             Spacer()
                             Button(action: {
-                                print("eye clicked")
                             }, label: {
                                 Image(systemName: "eye")
                             })

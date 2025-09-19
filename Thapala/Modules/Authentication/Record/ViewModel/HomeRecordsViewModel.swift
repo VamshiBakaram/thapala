@@ -26,12 +26,12 @@ class HomeRecordsViewModel:ObservableObject{
     @Published var workRecordsResponse: [WorkRecordsResponse] = []
     @Published var defaultRecordsData: [DefaultRecord] = []
     @Published var recordsData: [FolderRecord] = []
-    @Published var FilesData: [FileRecord] = []
+    @Published var filesData: [FileRecord] = []
     @Published var emailsData: [EmailRecord] = []
     @Published var ismoresheet: Bool = false
     @Published var downloadedFileURL: URL?
     @Published var attachmentDataIn: [AttachmentDataModel] = []
-    @Published var mainRecords: [MainRecord] = []
+    @Published var mainRecordsData: [MainRecord] = []
     @Published var folderID: Int = 0
     @Published var fileType: String = ""
     @Published var subfoldertype: String = ""
@@ -40,8 +40,7 @@ class HomeRecordsViewModel:ObservableObject{
     @Published var selectedId: Int? = nil
     @Published var setPin: String = ""
     @Published var password: String = ""
-//    @Published var viewtype: Bool = true
-        
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     
     func getMainRecordsData() {
         self.isLoading = true
@@ -54,7 +53,7 @@ class HomeRecordsViewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.mainRecords = response.mainRecords
+                    self.mainRecordsData = response.mainRecords
                     self.error = response.message
                 }
             case .failure(let error):
@@ -64,7 +63,7 @@ class HomeRecordsViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -84,7 +83,7 @@ class HomeRecordsViewModel:ObservableObject{
                     self.isLoading = false
                     self.defaultRecordsData = response.defaultRecords
                     self.recordsData = response.records
-                    self.FilesData = response.files
+                    self.filesData = response.files
                     self.emailsData = response.emails
                 }
             case .failure(let error):
@@ -94,7 +93,7 @@ class HomeRecordsViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -114,13 +113,9 @@ class HomeRecordsViewModel:ObservableObject{
                     self.isLoading = false
                     self.defaultRecordsData = response.defaultRecords
                     self.recordsData = response.records.filter { $0.parentId == selectedTabID }
-                    self.FilesData = response.files
+                    self.filesData = response.files
                     self.emailsData = response.emails
-                    
-                    print("Fetched \(self.recordsData.count) folders")
-                    if let first = self.recordsData.first {
-                        print("First folder: \(first.folderName), parentId: \(first.parentId), id: \(first.id)")
-                    }
+
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -129,7 +124,7 @@ class HomeRecordsViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -149,7 +144,7 @@ class HomeRecordsViewModel:ObservableObject{
                     self.isLoading = false
                     self.defaultRecordsData = response.defaultRecords
                     self.recordsData = response.records
-                    self.FilesData = response.files
+                    self.filesData = response.files
                     self.emailsData = response.emails
                 }
             case .failure(let error):
@@ -159,7 +154,7 @@ class HomeRecordsViewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -190,11 +185,8 @@ class HomeRecordsViewModel:ObservableObject{
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -222,11 +214,8 @@ class HomeRecordsViewModel:ObservableObject{
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -273,14 +262,11 @@ class HomeRecordsViewModel:ObservableObject{
                     try fileManager.removeItem(at: destinationURL)
                 }
                 try fileManager.copyItem(at: localURL, to: destinationURL)
-                print("✅ File saved at: \(destinationURL)")
                 DispatchQueue.main.async {
                     if ["jpg", "jpeg", "png"].contains(fileExtension) {
                         self.saveImageToPhotoLibrary(fileURL: destinationURL)
                     }
-//                    else if ["mp4", "mov", "m4v", "3gp", "asf", "avi", "f4v", "flv" , "hevc" , "m2ts" , "m2v" , "m4v" , "mjpeg" , "mpg" , "mts" , "mxf" , "ogv" , "rm" , "swf" , "ts" , "vob" , "webm" , "wmv" , "wtv"].contains(fileExtension) {
-//                        self.saveVideoToPhotoLibrary(fileURL: destinationURL)
-//                    }
+                    
                     else if ["mp4", "mov", "m4v", "3gp"].contains(fileExtension) {
                         self.saveVideoToPhotoLibrary(fileURL: destinationURL)
                     }
@@ -289,7 +275,6 @@ class HomeRecordsViewModel:ObservableObject{
                         }
                     
                     else {
-                        print("showUnsupportedFormatAlert")
                         self.showUnsupportedFormatAlert(for: destinationURL)
                     }
                 }
@@ -420,7 +405,7 @@ class HomeRecordsViewModel:ObservableObject{
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -453,11 +438,8 @@ class HomeRecordsViewModel:ObservableObject{
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -488,18 +470,14 @@ class HomeRecordsViewModel:ObservableObject{
             DispatchQueue.main.async {
                 self.isLoading = false
                 switch result {
-                case .success(let response):
-                    print("Upload successful: \(response.message)")
+                case .success(let response): break
                     // You can set a success message or handle response further here.
                 case .failure(let error):
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -507,7 +485,8 @@ class HomeRecordsViewModel:ObservableObject{
     }
 
     func uploadImages(_ images: [UIImage]) {
-        let url = URL(string: "http://128.199.21.237:8080/api/v1/attachments")!
+        let url = URL(string: "\(EndPoint.attachmentsReplyMail)")!
+//        let url = URL(string: "http://128.199.21.237:8080/api/v1/attachments")!
         var request = URLRequest(url: url)
         let sessionManager = SessionManager()
         request.httpMethod = "POST"
@@ -520,15 +499,12 @@ class HomeRecordsViewModel:ObservableObject{
         
         let task = URLSession.shared.uploadTask(with: request, from: body) { responseData, response, error in
             if let error = error {
-                print("Error uploading images: \(error)")
                 return
             }
 
             if let response = response as? HTTPURLResponse, let responseData = responseData {
-                print("Status code: \(response.statusCode)")
                 do {
                     let attachmentResponse = try JSONDecoder().decode(AttachmentModel.self, from: responseData)
-                    print("Response: \(attachmentResponse)")
                     DispatchQueue.main.async {
                         self.handleAttachmentResponse(attachmentResponse)
                         if let attachments = attachmentResponse.attachments {
@@ -547,7 +523,6 @@ class HomeRecordsViewModel:ObservableObject{
                         
                     }
                 } catch {
-                    print("Failed to decode response: \(error)")
                 }
             }
         }

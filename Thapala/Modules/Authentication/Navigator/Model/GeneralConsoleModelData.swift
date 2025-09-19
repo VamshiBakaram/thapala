@@ -223,7 +223,7 @@ struct Trash: Encodable {
 }
 
 // country codes
-struct Countrycode: Decodable, Hashable {
+struct countryCode: Decodable, Hashable {
     let name: String
     let dial_code: String
     let code: String

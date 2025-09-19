@@ -11,7 +11,7 @@ struct draftView: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject var mailComposeViewModel = MailComposeViewModel()
     @ObservedObject var mailFullViewModel = MailFullViewModel()
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
     @Binding var isdraftViewVisible: Bool
     @State var id:Int = 0
@@ -32,7 +32,6 @@ struct draftView: View {
             VStack {
                 HStack {
                     Button(action: {
-//                        self.mailComposeViewModel.resetComposeEmailData()
                         mailComposeViewModel.saveDraftData()
                         self.presentationMode.wrappedValue.dismiss()
                     }) {
@@ -52,7 +51,6 @@ struct draftView: View {
                     .padding(.trailing,10)
                     
                     Button(action: {
-                        print("on click of send: \(mailComposeViewModel.sendEmail())")
                         mailComposeViewModel.sendEmail()
                         presentationMode.wrappedValue.dismiss()// This will pop the current view
                     }) {
@@ -101,7 +99,6 @@ struct draftView: View {
                                                 text: $to // Bind directly to local state
                                             )
                                             .foregroundColor(themesviewModel.currentTheme.textColor)
-                                            //                                        .background(themesviewModel.currentTheme.attachmentBGColor)
                                             .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
                                         }
                                         // Display suggestions
@@ -117,9 +114,6 @@ struct draftView: View {
                                                         mailComposeViewModel.suggest = false
                                                     }) {
                                                         Text(tCode.tCode ?? "Unknown")
-                                                        
-                                                        //                                                                                    .foregroundColor(.black)
-                                                        // Ensure text is visible
                                                     }                                                }
                                                 .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                 .frame(height: min(CGFloat(data.count * 40), 200)) // Dynamically adjust height
@@ -147,7 +141,6 @@ struct draftView: View {
                                             }
                                         Button(action: {
                                             mailComposeViewModel.isArrow.toggle()
-                                            print("arrow clicked")
                                         }, label: {
                                             Image(mailComposeViewModel.isArrow ? "dropup" : "dropdown")
                                                 .renderingMode(.template)
@@ -315,20 +308,6 @@ struct draftView: View {
                                         .padding(.vertical, 8)
                                 }
                             }
-                            
-                            //                        ZStack(alignment: .leading) {
-                            //                            TextEditor(text: $composeText)
-                            //                                .foregroundColor(themesviewModel.currentTheme.textColor)
-                            //                                .padding(4)
-                            //                                .font(.custom(.poppinsLight, size: 14))
-                            //                            if composeText.isEmpty {
-                            //                                Text("Compose email")
-                            //                                    .font(.custom(.poppinsLight, size: 14))
-                            //                                    .foregroundColor(themesviewModel.currentTheme.textColor)
-                            //                                    .padding(.horizontal, 4)
-                            //                                    .padding(.vertical, 8)
-                            //                            }
-                            //                        }
                             Spacer()
                             if mailComposeViewModel.attachmentDataIn.count != 0{
                                 Rectangle()
@@ -430,21 +409,10 @@ struct draftView: View {
                     .presentationDetents([.medium])
                     .presentationDragIndicator(.hidden)
             })
-//            .fileImporter(isPresented: $isFilePickerPresented, allowedContentTypes: [.image, .pdf, .plainText], allowsMultipleSelection: true) { result in
-//                switch result {
-//                case .success(let urls):
-//                    mailComposeViewModel.selectedFiles.append(contentsOf: urls)
-//                    mailComposeViewModel.uploadFiles(fileURLs: urls)
-//                case .failure(let error):
-//                    print("Failed to select files: \(error.localizedDescription)")
-//                }
-//            }
             
             .toast(message: $mailComposeViewModel.error)
                 .onAppear {
-                    print("draft view appears")
                     if mailComposeViewModel.detailedEmailData.isEmpty {
-                        print("getFullEmail(emailId: id)")
                         mailComposeViewModel.getFullEmail(emailId: id)
                     }
                     
@@ -456,14 +424,9 @@ struct draftView: View {
                             mailComposeViewModel.composeEmail = composeText
                             subject = diary.subject ?? ""
                             attachmentsData = diary.attachments ?? []
-                            print("composeText \(composeText)")
-                            print("subject \(subject)")
-                            print("attachmentsData \(attachmentsData)")
-                            //                    selectedIconIndex = diary.theme
                             if let recipients = diary.recipients {
                                 if let toRecipient = recipients.first(where: { $0.type == "to" }) {
                                     to = toRecipient.user?.tCode ?? ""
-                                    print("emailByIdData.to \(to))")
                                 }
                                 
                             }
@@ -481,7 +444,6 @@ struct draftView: View {
                         DeleteTrashAlert(isPresented: $showingDeleteAlert) {
                             mailFullViewModel.deleteEmailFromAwaiting(emailId: [id])
                             self.isdraftViewVisible = false
-                            print("Note deleted")
                         }
                         .transition(.scale)
                     }
@@ -523,7 +485,7 @@ struct draftView: View {
 
 struct DeleteTrashAlert: View {
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Binding var isPresented: Bool
     var onDelete: () -> Void    
     var body: some View {

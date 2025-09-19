@@ -11,11 +11,8 @@ import UIKit
 class MailFullViewModel: ObservableObject {
     @Published var error: String?
     @Published var isLoading = false
-//    @Published var composeText: String = ""
     @Published var backToAwaiting: Bool = false
     @Published var attachFromFolder: Bool = false
-//    @Published var emailByIdData: EmailsByIdModel?
-//    @Published var attachmentsData: [Attachment] = []
     @Published var isEmailOptions: Bool = false
     @Published var isUploadFromFolder: Bool = false
     @Published var isCreateLabel: Bool = false
@@ -25,6 +22,7 @@ class MailFullViewModel: ObservableObject {
     @Published var replyViewModel: ReplyEmailViewModel? = nil
     @Published var detailedEmailData: [DetailedEmailData] = []
     @Published var  selectedDateTime: Date? = nil
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     
     func getFullEmail(emailId: Int, passwordHash: String, completion: @escaping (Result<EmailsByIdModel, NetworkError>) -> Void) {
         self.isLoading = true
@@ -55,7 +53,7 @@ class MailFullViewModel: ObservableObject {
                     case .error(error: let message):
                         self.error = message
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -85,44 +83,13 @@ class MailFullViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
         }
     }
     
-//    func getEmailsData() {
-//        self.isLoading = true
-//        let endUrl = "\(EndPoint.allEmails)status=awaited"
-//        NetworkManager.shared.request(type: HomeEmailsModel.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
-//            guard let self = self else { return }
-//            switch result {
-//            case .success(let response):
-//                DispatchQueue.main.async {
-//                    self.isLoading = false
-//                    self.error = response.message ?? ""
-////                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-////                        self.emailData = response.data ?? []
-////                        self.emailFullData = response
-////                    })
-//                }
-//            case .failure(let error):
-//                DispatchQueue.main.async {
-//                    self.isLoading = false
-//                    switch error {
-//                    case .error(error: let error):
-//                        DispatchQueue.main.async {
-//                            self.error = error
-//                        }
-//                    case .sessionExpired(error: _):
-//                        self.error = "Please try again later"
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     func markEmailAsUnRead(emailId: [Int]) {
         self.isLoading = true
         let params = IdsPayload (
@@ -135,9 +102,6 @@ class MailFullViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.error = response.message ?? ""
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-//                        self.getEmailsData()
-//                    })
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -148,7 +112,7 @@ class MailFullViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -167,9 +131,6 @@ class MailFullViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.error = response.message ?? ""
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-//                        self.getEmailsData()
-//                    })
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -180,7 +141,7 @@ class MailFullViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -221,7 +182,6 @@ func convertHTMLToAttributedString(html: String) -> NSAttributedString? {
     do {
         return try NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding: String.Encoding.utf8.rawValue], documentAttributes: nil)
     } catch {
-        print("Error converting HTML to NSAttributedString: \(error)")
         return nil
     }
 }
