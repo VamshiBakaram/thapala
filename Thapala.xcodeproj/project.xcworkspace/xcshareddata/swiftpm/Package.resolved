@@ -1,5 +1,5 @@
 {
-  "originHash" : "918d3f5a4a846de81617b7b37734a29a8c153a91dcccc984a066239a5499517c",
+  "originHash" : "d7afa52145ff2c80568cc2136f08dbf79de26bc8e150f32dcd4a6b4f84679eb4",
   "pins" : [
     {
       "identity" : "clocktimepicker",
@@ -11,27 +11,9 @@
       }
     },
     {
-      "identity" : "cryptoswift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/krzyzanowskim/CryptoSwift",
-      "state" : {
-        "revision" : "e45a26384239e028ec87fbcc788f513b67e10d8f",
-        "version" : "1.9.0"
-      }
-    },
-    {
-      "identity" : "kingfisher",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/onevcat/Kingfisher.git",
-      "state" : {
-        "revision" : "2015fda791daa72c8058619545a593bf8c1dd59f",
-        "version" : "8.5.0"
-      }
-    },
-    {
       "identity" : "socket.io-client-swift",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/socketio/socket.io-client-swift",
+      "location" : "https://github.com/socketio/socket.io-client-swift.git",
       "state" : {
         "branch" : "master",
         "revision" : "42da871d9369f290d6ec4930636c40672143905b"
@@ -47,12 +29,21 @@
       }
     },
     {
-      "identity" : "swiftdate",
+      "identity" : "swift-bcrypt",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/malcommac/SwiftDate.git",
+      "location" : "https://github.com/ptoffy/swift-bcrypt.git",
       "state" : {
-        "revision" : "5d943224c3bb173e6ecf27295611615eba90c80e",
-        "version" : "7.0.0"
+        "revision" : "eac59288b8acbd97927d815a1b1638eb30fb0495",
+        "version" : "0.1.0"
+      }
+    },
+    {
+      "identity" : "waterfallgrid",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/paololeonardi/WaterfallGrid.git",
+      "state" : {
+        "revision" : "c7c08652c3540adf8e48409c351879b4caea7e89",
+        "version" : "1.1.0"
       }
     }
   ],

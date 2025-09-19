@@ -29,26 +29,11 @@ struct DatebookItem: Codable {
     let status: String?
     let reminder: Int?
     let theme: String?
-    let labels: [String]
+    let labels: [Int]
     let isDeleted: Int
-    let deletedAt: String?
+    let deletedAt: Int?
     let createdAt: String
     let updatedAt: String
-    
-    // Date formatters to handle the timestamps if needed
-//    var startDate: Date? {
-//        if let start = startDateTime {
-//            return Date(timeIntervalSince1970: TimeInterval(start))
-//        }
-//        return nil
-//    }
-//    
-//    var endDate: Date? {
-//        if let end = endDateTime {
-//            return Date(timeIntervalSince1970: TimeInterval(end))
-//        }
-//        return nil
-//    }
 }
 
 

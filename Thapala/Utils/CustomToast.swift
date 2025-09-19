@@ -15,7 +15,7 @@ extension View {
 }
 
 struct ToastModifier: ViewModifier {
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var message: String?
     let duration: TimeInterval
     
@@ -38,7 +38,7 @@ struct ToastModifier: ViewModifier {
                                 .shadow(color: Color.black.opacity(0.2), radius: 6, x: 0, y: 2)
                         )
                         .frame(maxWidth: 350)
-                        .padding(.bottom, 30) // safe bottom margin
+                        .padding(.bottom, 80) // safe bottom margin
                         .accessibilityLabel(Text(message))
                         .onTapGesture {
                             withAnimation {

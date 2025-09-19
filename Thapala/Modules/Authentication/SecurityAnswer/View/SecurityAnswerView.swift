@@ -56,7 +56,6 @@ struct SecurityAnswerView: View {
                     .padding()
 
                 VStack(spacing: 8) {
-                  //  FloatingTextField(text: $securityAnswerViewModel.securityAnswer, placeHolder: "Security Answer", allowedCharacter: .defaultType)
                     GreyBgFloatingTextField(text: $securityAnswerViewModel.securityAnswer, placeHolder: "Security Answer", allowedCharacter: .defaultType, textColorCode: Color.white)
                         .padding(.horizontal)
                         .padding(.top,25)

@@ -14,10 +14,15 @@ class StarredEmailViewModel: ObservableObject {
     @Published var isEmailScreen: Bool = false
     @Published var passwordHint: String? = ""
     @Published var selectedID: Int? = nil
-    
-    init() {
-        self.getStarredEmailData(selectedTabItem: "awaited")
-    }
+    @Published var isawaitedMailsSelected: Bool = true
+    @Published var ispostBoxMailsSelected: Bool = false
+    @Published var isConveyMailsSelected: Bool = false
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
+    @Published var selectedThreadIDs: [Int] = []
+//
+//    init() {
+//        self.getStarredEmailData(selectedTabItem: "awaited")
+//    }
 
     func  getStarredEmailData(selectedTabItem: String) {
         self.isLoading = true
@@ -30,9 +35,6 @@ class StarredEmailViewModel: ObservableObject {
                     self.isLoading = false
                     self.error = response.message ?? ""
                         self.starredEmailData = response.data ?? []
-                        // Print entire response in console
-//                        print("API Response: \(response)")
-//                        print("Parsed Data: \(self.starredEmailData)")
                     
                 }
             case .failure(let error):
@@ -42,11 +44,9 @@ class StarredEmailViewModel: ObservableObject {
                     case .error(error: let error):
                         DispatchQueue.main.async {
                             self.error = error
-//                            print("API Error: \(error)") // Print error message
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
-//                        print("Session Expired")
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -61,11 +61,9 @@ class StarredEmailViewModel: ObservableObject {
             switch result {
             case .success(let response):
                 DispatchQueue.main.async {
-//                    self.isLoading = false
                     self.error = response.message ?? ""
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
                         self.starredemail = response.message ?? ""
-                        print("starred email, response")
                     })
                 }
             case .failure(let error):
@@ -77,7 +75,7 @@ class StarredEmailViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

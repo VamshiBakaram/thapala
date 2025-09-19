@@ -9,10 +9,10 @@ import SwiftUI
 import ClockTimePicker
 
 struct BottomSnoozeView: View {
-    @ObservedObject var homePlannerViewModel = HomePlannerViewModel()
+    @StateObject var homePlannerViewModel = HomePlannerViewModel()
     @StateObject var mailFullViewModel = MailFullViewModel()
     @StateObject private var homeAwaitingViewModel = HomeAwaitingViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Binding var isBottomSnoozeViewVisible: Bool
     @Binding var SnoozeTime: Int
     @State var comment: String = ""
@@ -24,10 +24,7 @@ struct BottomSnoozeView: View {
     @State var id:Int = 0
     var body: some View {
         
-        ZStack {
-            VStack {
-                if isBottomSnoozeViewVisible {
-                    VStack(spacing: 16) {
+            VStack(spacing: 16) {
                         VStack(alignment: .leading) {
                             HStack {
                                 Text("Reminder")
@@ -44,7 +41,6 @@ struct BottomSnoozeView: View {
                                         SnoozeTime = Int(selectedDateTime.timeIntervalSince1970)
 //                                        homeAwaitingViewModel.snoozedEmail(selectedEmail: selectedID)
                                         homeAwaitingViewModel.snoozedEmail(snoozedAt: SnoozeTime, selectedThreadID: [selectedID])
-                                        print("SnoozeTime  \(SnoozeTime ?? 0)")
                                         self.isBottomSnoozeViewVisible = false
                                     }
                                     
@@ -66,7 +62,6 @@ struct BottomSnoozeView: View {
                             
                             HStack {
                                 Button(action: {
-                                    print("")
                                 }, label: {
                                     Text("Tomorrow")
                                         .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -76,7 +71,6 @@ struct BottomSnoozeView: View {
                                 Spacer()
                                 
                                 Button(action: {
-                                    print("")
                                 }, label: {
                                     Text("8:00 AM")
                                         .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -87,7 +81,6 @@ struct BottomSnoozeView: View {
                             
                             HStack {
                                 Button(action: {
-                                    print("")
                                 }, label: {
                                     Text("Next Week")
                                         .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -97,7 +90,6 @@ struct BottomSnoozeView: View {
                                 Spacer()
                                 
                                 Button(action: {
-                                    print("")
                                 }, label: {
                                     Text("8:00 AM")
                                         .foregroundColor(themesviewModel.currentTheme.textColor)
@@ -111,9 +103,6 @@ struct BottomSnoozeView: View {
                                     .foregroundColor(themesviewModel.currentTheme.textColor)
                                     .frame(width: 24, height: 24)
                                     .padding(.leading, 16)
-                                    .onTapGesture {
-                                        print("Timer clicked")
-                                    }
                                 
                                 Button(action: {
                                     isDatePickerVisible = true
@@ -130,7 +119,7 @@ struct BottomSnoozeView: View {
                         .background(themesviewModel.currentTheme.windowBackground)
                         .cornerRadius(16)
                         .shadow(radius: 10)
-                    }
+                    
 
                     .overlay(
                         Group {
@@ -175,23 +164,13 @@ struct BottomSnoozeView: View {
                             }
                         }
                     )
-                }
+                
             }
             .onAppear {
                 options.withHands = true
-                print("snooze sheet appears")
-                print("selectedID   \(selectedID)")
+
             }
-        }
-        .background(
-            Color.black.opacity(0.4)
-                .edgesIgnoringSafeArea(.all)
-                .onTapGesture {
-                    withAnimation {
-                        isBottomSnoozeViewVisible = false // Dismiss the sheet
-                    }
-                }
-        )
+
 
         
     }

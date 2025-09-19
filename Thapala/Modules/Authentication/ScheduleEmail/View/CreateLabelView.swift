@@ -15,7 +15,6 @@ struct CreateLabelView: View {
     var body: some View {
             ZStack{
                 Color(red: 255/255, green: 255/255, blue: 255/255)
-                   // .opacity(0.3)
                     .ignoresSafeArea()
                 VStack{
                     HStack{
@@ -24,7 +23,6 @@ struct CreateLabelView: View {
                             .padding([.leading,.top],20)
                         Spacer()
                         Button {
-                            print("Done")
                           
                         } label: {
                             Text("Done")
@@ -56,7 +54,6 @@ struct CreateLabelView: View {
                     .foregroundColor(Color.themeColor)
                     .padding(.leading,20)
                     .onTapGesture {
-                        print("H clicked")
                         createLabelViewModel.moveToCreateNewlabelView = true
                     }
                     

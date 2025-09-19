@@ -41,7 +41,6 @@ struct MoveToFolderView: View {
             Spacer()
             Button {
                 moveSelectedItem()
-              //  presentationMode.wrappedValue.dismiss()
             } label: {
                 Text("Move")
                     .font(.custom(.poppinsRegular, size: 14))

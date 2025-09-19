@@ -21,6 +21,8 @@ class PicktCodeViewModel: ObservableObject {
     
     @Published var generateTCodeData:String = ""
     @Published var createTCodeData:String = ""
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
+
     
     init() {
             generateTCode()
@@ -83,7 +85,6 @@ class PicktCodeViewModel: ObservableObject {
                     self.isLoading = false
                     self.error = response.message ?? ""
                     self.generateTCodeData = response.tCode ?? ""
-                    print(self.generateTCodeData)
                     self.tCode.append(self.generateTCodeData )
                     self.tCode.removeAll()
                     for character in self.generateTCodeData{
@@ -102,7 +103,7 @@ class PicktCodeViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -132,7 +133,6 @@ class PicktCodeViewModel: ObservableObject {
                             self.isNavigatePassword = false
                         })
                     }
-                    print("Final.tCode",self.tCode)
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -141,7 +141,7 @@ class PicktCodeViewModel: ObservableObject {
                     case .error(error: let message):
                         self.error = message
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -157,9 +157,7 @@ class PicktCodeViewModel: ObservableObject {
             case .success(let response):
                 DispatchQueue.main.async {
                     self.createTCodeData = response.message ?? ""
-                    print("self.createTCodeData",self.createTCodeData)
                     self.isNavigatePassword = true
-                    print("Finally.tCode",self.tCode)
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -168,7 +166,7 @@ class PicktCodeViewModel: ObservableObject {
                     case .error(error: let message):
                         self.error = message
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

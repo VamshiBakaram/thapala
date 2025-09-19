@@ -16,7 +16,6 @@ class BlueprintViewModel:ObservableObject{
     @Published var isLettersSelected = false
     @Published var isCardsSelected = false
     @Published var emailEditor:String = ""
-//    @Published var isPlusBtn:Bool = false
     @Published var isSchedule:Bool = false
     @Published var ccTCodes: [tCode] = []
     @Published var bccTCodes: [tCode] = []
@@ -34,6 +33,7 @@ class BlueprintViewModel:ObservableObject{
     @Published var beforeLongPress: Bool = true
     @Published var isLoading = false
     @Published var userdatum: [Userdatum] = []
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     
     func saveToTdraft(To: [String] ,CC: [String] ,BCC: [String] ,Subject: String ,Body: String) {
         isLoading = true
@@ -45,7 +45,7 @@ class BlueprintViewModel:ObservableObject{
         )
         let endPoint = "\(EndPoint.saveToDraft)"
         if let jsonData = try? JSONEncoder().encode(params),
-           let jsonString = String(data: jsonData, encoding: .utf8) {
+           let _ = String(data: jsonData, encoding: .utf8) {
         }
         NetworkManager.shared.request(type: SaveDraftResponse.self,endPoint: endPoint,httpMethod: .post, parameters: params, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -55,14 +55,12 @@ class BlueprintViewModel:ObservableObject{
                 case .success(let response):
                     self.userdatum = response.userData
                     self.error = response.message
-                    print("success message: \(response.message)")
                 case .failure(let error):
                     switch error {
-                    case .error(let message):
+                    case .error(_):
                         self.error = "Add atleast One Tcode"
-                        print("Error: \(message)")
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -76,15 +74,14 @@ class BlueprintViewModel:ObservableObject{
     
     func resetComposeEmailData(){
         ComposeEmailData.shared.isPasswordProtected = false
-        ComposeEmailData.shared.isScheduleCreated = false
+//        ComposeEmailData.shared.isScheduleCreated = false
         ComposeEmailData.shared.passwordHash = ""
         ComposeEmailData.shared.passwordHint = ""
-        ComposeEmailData.shared.timeStap = 0.0
+//        ComposeEmailData.shared.timeStap = 0.0
     }
     
     func scheduleSend() {
         self.isSchedule = true
-        print("Schedule clicked")
     }
     
 

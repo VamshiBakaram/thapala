@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct NotificationAppBarView: View {
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @StateObject var appBarElementsViewModel = AppBarElementsViewModel()
     @Environment(\.presentationMode) var presentationMode
     @State private var toastMessage: String? = nil

@@ -12,7 +12,7 @@ import SwiftUI
 struct HomeDirectoryView: View {
     @EnvironmentObject private var sessionManager: SessionManager
     @StateObject var homeDirectoryViewModel = HomeDirectoryViewModel()
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
     @Binding var isHomeDirectoryVisible: Bool
     let imageUrl: String
@@ -90,7 +90,6 @@ struct HomeDirectoryView: View {
                         
                         
                         Button(action: {
-                            print("line.3.horizontal button pressed")
                             withAnimation {
                                 isMenuVisible.toggle()
                             }
@@ -104,7 +103,6 @@ struct HomeDirectoryView: View {
                         .padding(.trailing , 30)
                         
                     }
-//                    .padding(.top, 10) // ADD SOME SPACE INSIDE
                     
                     
                     ScrollView(.horizontal,showsIndicators: false){
@@ -115,7 +113,6 @@ struct HomeDirectoryView: View {
                                         .fill(directoryView ? themesviewModel.currentTheme.attachmentBGColor : themesviewModel.currentTheme.customButtonColor)
                                         .frame(width: max(reader.size.width/3 - 10, 50), height: 50)
                                         .onTapGesture {
-                                            print("Emailed clicked")
                                             homeDirectoryViewModel.GetDirectoryList()
                                             selectedGroupID = nil
                                             directoryView = true
@@ -185,9 +182,8 @@ struct HomeDirectoryView: View {
                                                                 .padding(.leading , 5)
                                                             
                                                             Button(action: {
-                                                                print("clicked on dots")
                                                                 threeDotsView = true
-                                                                homeDirectoryViewModel.RenameGroupName = item.groupName
+                                                                homeDirectoryViewModel.renameGroupName = item.groupName
                                                                 homeDirectoryViewModel.groupID = item.id
                                                             }) {
                                                                 Image("dots")
@@ -222,13 +218,13 @@ struct HomeDirectoryView: View {
                     HStack {
                         Image(systemName: "magnifyingglass")
                             .renderingMode(.template)
-                            .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                            .foregroundColor(themesviewModel.currentTheme.allBlack)
                             .frame(width: 24, height: 24)
                             .padding(.leading, 12)
 
                         Text("Search by tcode or Name")
                             .font(.custom(.poppinsRegular, size: 14))
-                            .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                            .foregroundColor(themesviewModel.currentTheme.allBlack)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.leading, 8)
                     }
@@ -246,7 +242,7 @@ struct HomeDirectoryView: View {
                         Image("createGroup")
                             .renderingMode(.template)
                             .frame(width: 24, height: 24)
-                            .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                            .foregroundColor(themesviewModel.currentTheme.allBlack)
                     }
                     .padding()
                     .background(themesviewModel.currentTheme.attachmentBGColor)
@@ -257,7 +253,7 @@ struct HomeDirectoryView: View {
                             HStack(alignment: .top) {
                                 ScrollView {
                                     VStack(alignment: .leading, spacing: 10) {
-                                        ForEach(homeDirectoryViewModel.DirectoryData, id: \.userId) { item in
+                                        ForEach(homeDirectoryViewModel.directoryData, id: \.userId) { item in
                                             HStack {
                                                 let image = item.profile ?? ""
                                                 AsyncImage(url: URL(string: image)) { phase in
@@ -270,9 +266,6 @@ struct HomeDirectoryView: View {
                                                             .frame(width: 40, height: 40)
                                                             .background(themesviewModel.currentTheme.colorAccent)
                                                             .clipShape(Circle())
-//                                                            .overlay(
-//                                                                Circle().stroke(isblocked ? Color.red : Color.clear, lineWidth: 2)
-//                                                            )
                                                             .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
                                                             .padding(.leading, 20)
                                                             .contentShape(Rectangle())
@@ -283,9 +276,6 @@ struct HomeDirectoryView: View {
                                                             .scaledToFill()
                                                             .aspectRatio(contentMode: .fit)
                                                             .clipShape(Circle())
-//                                                            .overlay(
-//                                                                Circle().stroke(isblocked ? Color.red : Color.clear, lineWidth: 2)
-//                                                            )
                                                             .padding(.leading, 20)
                                                             .contentShape(Rectangle())
                                                         
@@ -297,9 +287,6 @@ struct HomeDirectoryView: View {
                                                             .frame(width: 40, height: 40)
                                                             .background(themesviewModel.currentTheme.colorAccent)
                                                             .clipShape(Circle())
-//                                                            .overlay(
-//                                                                Circle().stroke(isblocked ? Color.red : Color.clear, lineWidth: 2)
-//                                                            )
                                                             .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
                                                             .padding(.leading, 20)
                                                             .contentShape(Rectangle())
@@ -312,18 +299,17 @@ struct HomeDirectoryView: View {
                                                 
                                                 Text(item.firstname)
                                                     .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                    .font(.custom("Poppins-SemiBold", size: 14)) // Update font name and size
+                                                    .font(.custom(.poppinsSemiBold, size: 14)) // Update font name and size
                                                     .padding(.leading, 8)
                                                 Text(item.lastname)
                                                     .foregroundColor(themesviewModel.currentTheme.textColor)
-                                                    .font(.custom("Poppins-SemiBold", size: 14)) // Update font name and size
+                                                    .font(.custom(.poppinsSemiBold, size: 14)) // Update font name and size
                                                 Spacer()
                                             }
                                             .onTapGesture{
                                                 homeDirectoryViewModel.GetProfileByID(selectId: item.id)
                                                 isProfileDialogue.toggle()
                                                 id = item.id
-                                                print("let check the id     \(id)")
                                                 
                                                 isProfileDialogue = true
                                             }
@@ -407,12 +393,12 @@ struct HomeDirectoryView: View {
                                         
                                         Text(item.user?.firstName ?? "")
                                             .foregroundColor(themesviewModel.currentTheme.textColor)
-                                            .font(.custom("Poppins-SemiBold", size: 14))
+                                            .font(.custom(.poppinsSemiBold, size: 14))
                                             .padding(.leading, 8)
                                         
                                         Text(item.user?.lastName ?? "")
                                             .foregroundColor(themesviewModel.currentTheme.textColor)
-                                            .font(.custom("Poppins-SemiBold", size: 14))
+                                            .font(.custom(.poppinsSemiBold, size: 14))
                                         
                                         Spacer()
                                     }
@@ -420,7 +406,6 @@ struct HomeDirectoryView: View {
                                         homeDirectoryViewModel.GetProfileByID(selectId: item.id)
                                         isProfileDialogue.toggle()
                                         id = item.id
-                                        print("let check the id     \(id)")
                                         
                                         isProfileDialogue = true
                                     }
@@ -496,11 +481,11 @@ struct HomeDirectoryView: View {
                                         
                                         Text(item.firstname)
                                             .foregroundColor(themesviewModel.currentTheme.textColor)
-                                            .font(.custom("Poppins-SemiBold", size: 14)) // Update font name and size
+                                            .font(.custom(.poppinsSemiBold, size: 14)) // Update font name and size
                                             .padding(.leading, 8)
                                         Text(item.lastname)
                                             .foregroundColor(themesviewModel.currentTheme.textColor)
-                                            .font(.custom("Poppins-SemiBold", size: 14)) // Update font name and size
+                                            .font(.custom(.poppinsSemiBold, size: 14)) // Update font name and size
                                         Spacer()
                                     }
                                     
@@ -508,8 +493,6 @@ struct HomeDirectoryView: View {
                                         homeDirectoryViewModel.GetProfileByID(selectId: item.id)
                                         isProfileDialogue.toggle()
                                         id = item.id
-                                        print("let check the id     \(id)")
-                                        
                                         isProfileDialogue = true
                                     }
                                     .padding(.vertical, 5)
@@ -543,26 +526,22 @@ struct HomeDirectoryView: View {
                 
             .edgesIgnoringSafeArea(.top)
             .onAppear {
-                    print("View appeared")
                     homeDirectoryViewModel.getStatesAndCities()
-                if homeDirectoryViewModel.DirectoryData.isEmpty {
+                if homeDirectoryViewModel.directoryData.isEmpty {
                     homeDirectoryViewModel.GetDirectoryList()
                     if homeDirectoryViewModel.groupList.isEmpty {
-                        print("GetGroupList Data")
                         homeDirectoryViewModel.GetGroupList()
                     }
                 }
 
                 // Delay execution to ensure data is loaded before processing
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { // 500ms delay
-                    if !homeDirectoryViewModel.DirectoryData.isEmpty {
+                    if !homeDirectoryViewModel.directoryData.isEmpty {
                         // Map all titles into an array
-                        let allTitles = homeDirectoryViewModel.DirectoryData.map { $0.firstname }
+                        let allTitles = homeDirectoryViewModel.directoryData.map { $0.firstname }
                         firstname = allTitles.joined(separator: ", ")
-//                        print("firstname \(firstname)")
                         
-                        let profiles = homeDirectoryViewModel.DirectoryData.map { $0.profile }
-                        print("firstname \(firstname) , profiles \(profiles)")
+                        let profiles = homeDirectoryViewModel.directoryData.map { $0.profile }
                     }
                     
                     if !homeDirectoryViewModel.groupList.isEmpty {
@@ -570,38 +549,19 @@ struct HomeDirectoryView: View {
                             .compactMap { $0.groupName }
                             .flatMap { $0.components(separatedBy: ",") }
                             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-
-                        print("groupNamesArray: \(groupNamesArray)")
-
-                        for (index, group) in groupNamesArray.enumerated() {
-                            print("Group \(index + 1): \(group)")
-                        }
-                    }
-
-                    else {
-                        print("DirectoryData is empty or invalid")
                     }
                 }
             }
                 
             .onChange(of: homeDirectoryViewModel.groupitems) { newValue in
                 if newValue == false {
-                        print("DirectoryViewModel.groups \(homeDirectoryViewModel.groupitems)")
                         homeDirectoryViewModel.GetGroupList()
-                        print("onchange of  homeDirectoryViewModel.groups")
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                         if !homeDirectoryViewModel.groupList.isEmpty {
                             groupNamesArray = homeDirectoryViewModel.groupList
                                 .compactMap { $0.groupName }
                                 .flatMap { $0.components(separatedBy: ",") }
                                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-
-                            print("groupNamesArray: \(groupNamesArray)")
-
-                            for (index, group) in groupNamesArray.enumerated() {
-                                print("Group \(index + 1): \(group)")
-                            }
-
                         }
                         
                     }
@@ -658,7 +618,7 @@ struct HomeDirectoryView: View {
                                   }
                               }
                         VStack {
-                            if let diary = homeDirectoryViewModel.DirectoryData.first(where: { $0.id == id }) {
+                            if let diary = homeDirectoryViewModel.directoryData.first(where: { $0.id == id }) {
                                 HStack{
                                     let image = diary.profile ?? ""
                                     AsyncImage(url: URL(string: image)) { phase in
@@ -709,7 +669,6 @@ struct HomeDirectoryView: View {
                                         .padding([.top , .bottom], 10)
                                         .padding(.trailing, 10)
                                         .onTapGesture {
-                                            print("diary.profile \(diary.profile ?? "")")
                                             withAnimation {
                                                 isProfileDialogue = false // Close dialog on tap
                                             }
@@ -721,7 +680,7 @@ struct HomeDirectoryView: View {
                                 VStack {
                                 
                                 Text("\(diary.firstname) \(diary.lastname)")
-                                    .font(.custom("Poppins-SemiBold", size: 14))
+                                        .font(.custom(.poppinsSemiBold, size: 14))
                                     .foregroundColor(themesviewModel.currentTheme.textColor)
                                     .padding(.leading, 8)
                                 
@@ -777,7 +736,6 @@ struct HomeDirectoryView: View {
                                     
                                     Button(action: {
                                         homeDirectoryViewModel.AddContact(contacts: diary.userId)
-                                        print("diary.userId  \(diary.userId)")
                                         isProfileDialogue = false
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                             homeDirectoryViewModel.GetGroupList()
@@ -814,20 +772,9 @@ struct HomeDirectoryView: View {
                                     Button(action: {
                                         isProfileDialogue = false
                                         let blockedUserIDs = homeDirectoryViewModel.blockedUsers.compactMap { $0.currentUserBlockedUsers }.flatMap { $0 }
-                                        print("Currently blocked user IDs: \(blockedUserIDs)")
-
                                         let isBlocked = homeDirectoryViewModel.blockedUsers.contains { $0.currentUserBlockedUsers?.contains(diary.userId) ?? false }
-                                        print("Checking if user ID \(diary.userId) is blocked: \(isBlocked)")
-
-                                        if isBlocked {
-                                            print("Unblock works")
                                             showingBlockAlert = true
-                                        } else {
-                                            print("Block works")
-                                            showingBlockAlert = true
-//                                            homeDirectoryViewModel.blockContact(id: diary.userId, type: "block")
-                                        }
-                                        isblocked.toggle()
+                                            isblocked.toggle()
                                         
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                             homeDirectoryViewModel.GetDirectoryList()
@@ -885,7 +832,6 @@ struct HomeDirectoryView: View {
                                     Button {
                                         homeDirectoryViewModel.selectCountry(at: index)
                                         homeDirectoryViewModel.country = homeDirectoryViewModel.countryCodes[index].countryName
-                                        print("country name  \(homeDirectoryViewModel.country)")
                                     } label: {
                                         Text(homeDirectoryViewModel.countryCodes[index].countryName)
                                     }
@@ -919,7 +865,6 @@ struct HomeDirectoryView: View {
                                     Button {
                                         homeDirectoryViewModel.selectState(at: index)
                                         homeDirectoryViewModel.state = homeDirectoryViewModel.allStates[index].stateName
-                                        print("state name  \(homeDirectoryViewModel.state)")
                                     } label: {
                                         Text(homeDirectoryViewModel.allStates[index].stateName)
                                     }
@@ -955,7 +900,6 @@ struct HomeDirectoryView: View {
                                     Button {
                                         homeDirectoryViewModel.selectCity(at: index)
                                         homeDirectoryViewModel.city = homeDirectoryViewModel.citiesInSelectedState[index]
-                                        print("city name  \(homeDirectoryViewModel.city)")
                                     } label: {
                                         Text(homeDirectoryViewModel.citiesInSelectedState[index])
                                     }
@@ -987,7 +931,6 @@ struct HomeDirectoryView: View {
                             HStack {
                                 Spacer()
                                 Button(action: {
-                                    print("Button clicked!")
                                     homeDirectoryViewModel.selectedCountryIndex = nil
                                     homeDirectoryViewModel.selectedStateIndex = nil
                                     homeDirectoryViewModel.selectedCityIndex = nil
@@ -1024,16 +967,12 @@ struct HomeDirectoryView: View {
                                         homeDirectoryViewModel.error = "Please Enter The City"
                                     }
                                     else {
-                                        print("click on search")
                                         isSearchDialogVisible = false
                                         directoryView = false
                                         serachView = true
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                             homeDirectoryViewModel.GetsearchData(country: homeDirectoryViewModel.country , state: homeDirectoryViewModel.state, city: homeDirectoryViewModel.city)
                                         }
-//                                    homeDirectoryViewModel.selectedCountryIndex = nil
-//                                    homeDirectoryViewModel.selectedStateIndex = nil
-//                                    homeDirectoryViewModel.selectedCityIndex = nil
                                     }
                                 }) {
                                     Text("Search")
@@ -1058,7 +997,6 @@ struct HomeDirectoryView: View {
                     }
                     .zIndex(1) // Ensure this is on top of other views
                     .onTapGesture {
-                        print("zstack prints")
                         homeDirectoryViewModel.getStatesAndCities()
                         
                     }
@@ -1091,10 +1029,8 @@ struct HomeDirectoryView: View {
                                 ForEach(groupNamesArray, id: \.self) { groupName in
                                     HStack {
                                         Button(action: {
-                                            print("Clicked on group: \(groupName)")
                                             if let data = homeDirectoryViewModel.groupList.first(where: {$0.groupName == groupName}) {
                                                 homeDirectoryViewModel.movetoGroups(GroupdID: data.id, userIDs: [id])
-                                                print("data.id  \(data.id)   , user id \(id)")
                                                 moveToNewGroup = false
                                             }
                                            
@@ -1117,9 +1053,7 @@ struct HomeDirectoryView: View {
                             .animation(.easeInOut, value: moveToNewGroup) // Animate ZStack change
                         }
                         .onAppear {
-                            print("id \(id)")
                             homeDirectoryViewModel.GetGroupList()
-                            print("groupNamesArray  \(groupNamesArray)")
                         }
                     }
                     
@@ -1135,7 +1069,7 @@ struct HomeDirectoryView: View {
                             }
                         
                         VStack(alignment: .leading, spacing: 10) {
-                            if let diary = homeDirectoryViewModel.DirectoryData.first(where: { $0.id == id }) {
+                            if let diary = homeDirectoryViewModel.directoryData.first(where: { $0.id == id }) {
                                 HStack {
                                     Text("Report Your Guidance")
                                         .font(.custom(.poppinsSemiBold, size: 18))
@@ -1180,7 +1114,7 @@ struct HomeDirectoryView: View {
                                     .padding(.leading , 16)
                                 
                                 HStack {
-                                    Text("\(sessionManager.userName) \(sessionManager.LastName)")
+                                    Text("\(sessionManager.userName) \(sessionManager.lastName)")
                                         .foregroundColor(themesviewModel.currentTheme.textColor)
                                         .padding(.leading, 16)   // text’s left inside padding
                                         .padding(.vertical, 10)  // top & bottom inside padding
@@ -1225,9 +1159,6 @@ struct HomeDirectoryView: View {
                                 HStack {
                                     Spacer()
                                     Button(action: {
-                                        print("click on submit")
-                                        print("homeDirectoryViewModel.reportissue \(homeDirectoryViewModel.reportissue)")
-                                        print("diary.tCode  \(diary.tCode)")
                                         homeDirectoryViewModel.reportContact(descriptions: homeDirectoryViewModel.reportissue, tcode: diary.tCode)
                                         reportView = false
                                     }) {
@@ -1275,21 +1206,20 @@ struct HomeDirectoryView: View {
                                     HStack {
                                         Text("Rename")
                                             .font(.custom(.poppinsRegular, size: 14))
-                                            .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                            .foregroundColor(themesviewModel.currentTheme.allBlack)
                                         Spacer()
                                     }
                                     .padding(.leading, 16)
                                 }
 
                                 Button(action: {
-                                    print("clicked on delete icon")
                                     threeDotsView = false
                                     showingDeleteAlert = true
                                 }) {
                                     HStack {
                                         Text("Delete")
                                             .font(.custom(.poppinsRegular, size: 14))
-                                            .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                            .foregroundColor(themesviewModel.currentTheme.allBlack)
                                         Spacer()
                                     }
                                     .padding(.leading, 16)
@@ -1302,7 +1232,7 @@ struct HomeDirectoryView: View {
                                     HStack {
                                         Text("Details")
                                             .font(.custom(.poppinsRegular, size: 14))
-                                            .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                            .foregroundColor(themesviewModel.currentTheme.allBlack)
                                         Spacer()
                                     }
                                     .padding(.leading, 16)
@@ -1349,14 +1279,14 @@ struct HomeDirectoryView: View {
                                     
                                 }
 
-                            floatingTextField(placeHolder : "Group name*", text:  $homeDirectoryViewModel.RenameGroupName)
+                            floatingTextField(placeHolder : "Group name*", text:  $homeDirectoryViewModel.renameGroupName)
                                 .padding(.top , 15)
                             
                             HStack {
                                 Spacer()
                                 Button(action: {
                                     isRenameDialogVisible = false
-                                    homeDirectoryViewModel.RenameGroup(id: homeDirectoryViewModel.groupID, groupname: homeDirectoryViewModel.RenameGroupName)
+                                    homeDirectoryViewModel.RenameGroup(id: homeDirectoryViewModel.groupID, groupname: homeDirectoryViewModel.renameGroupName)
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                         homeDirectoryViewModel.GetGroupList()
                                     }
@@ -1499,12 +1429,6 @@ struct HomeDirectoryView: View {
                                         }
                                     
                                 }
-
-                            
-                            
-//                            floatingtextfield(text: $homeDirectoryViewModel.groupName, placeHolder: "Group name*", allowedCharacter: .defaultType)
-//                                .padding(.horizontal, 10)
-//                                .foregroundColor(themesviewModel.currentTheme.textColor)
                             
                             floatingTextField(placeHolder : "Group name*", text:  $homeDirectoryViewModel.groupName)
                                 .padding(.top , 15)
@@ -1512,15 +1436,12 @@ struct HomeDirectoryView: View {
                             HStack {
                                 Spacer()
                                 Button(action: {
-                                    print("$homeDirectoryViewModel.groupName \(homeDirectoryViewModel.groupName)")
                                     homeDirectoryViewModel.createGRoup(groupname: homeDirectoryViewModel.groupName)
                                     isContactsDialogVisible = false
                                     homeDirectoryViewModel.groupitems = true
-                                    print("before homeDirectoryViewModel.groupitems \(homeDirectoryViewModel.groupitems)")
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                         homeDirectoryViewModel.GetGroupList()
                                         homeDirectoryViewModel.groupitems = false
-                                        print("After Dispatch homeDirectoryViewModel.groupitems \(homeDirectoryViewModel.groupitems)")
                                     }
                                 }) {
                                     Text("Create")
@@ -1555,7 +1476,6 @@ struct HomeDirectoryView: View {
                         // Centered DeleteNoteAlert
                         if isblocked {
                             blockAlert(isPresented: $showingBlockAlert , AlertText: "Are you sure that you want to Block this user?") {
-                                    print("delete alert")
                                     homeDirectoryViewModel.blockContact(id: id, type: "block")
                                     self.showingBlockAlert = false
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -1566,7 +1486,6 @@ struct HomeDirectoryView: View {
                         }
                         else {
                             blockAlert(isPresented: $showingBlockAlert , AlertText: "Are you sure that you want to UnBlock this user?") {
-                                    print("delete alert")
                                     homeDirectoryViewModel.blockContact(id: id, type: "unblock")
                                     self.showingBlockAlert = false
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -1604,7 +1523,6 @@ struct HomeDirectoryView: View {
             
             .zIndex(0)
             .onTapGesture {
-                print("main view zstack clicked")
                 isSearchDialogVisible = false
                 homeDirectoryViewModel.getStatesAndCities()
             }
@@ -1638,7 +1556,7 @@ struct DirectoryView_Previews: PreviewProvider {
 
 struct blockAlert: View {
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @Binding var isPresented: Bool
     var AlertText: String
     var onDelete: () -> Void

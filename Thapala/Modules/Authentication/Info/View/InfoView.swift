@@ -10,8 +10,8 @@ import SwiftUI
 struct InfoView: View {
     @State private var selectedTab: String = "info"
     @State private var expandedSections: Set<String> = []
-    @ObservedObject var infoViewViewModel = InfoViewViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @StateObject var infoViewViewModel = InfoViewViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Environment(\.presentationMode) var presentationMode
     @State var titles: String = ""
     @State var descriptions: String = ""
@@ -24,39 +24,42 @@ struct InfoView: View {
     @State private var expandedIndices: [String: Int?] = [:]  // Dictionary to track expanded index per category
     @State private var isQuickAccessVisible = false
     @State private var isMenuVisible = false
-
+    
     var body: some View {
         GeometryReader{ reader in
             ZStack {
+               
                 VStack {
+                    if infoViewViewModel.isInfoView {
                     // Top tab buttons
-                    HStack {
-                        Button {
-                            withAnimation {
-                                isMenuVisible.toggle()
-                            }
-                        } label: {
-                            Image(systemName: "arrow.backward")
-//                                .foregroundColor(themesviewModel.currentTheme.iconColor)
-                            
-                        }
-                        .foregroundColor(themesviewModel.currentTheme.iconColor)
-                        .padding(.leading, 20)
                         
-                        Spacer()
-                    }
+                        HStack {
+                            Button {
+                                withAnimation {
+                                    isMenuVisible.toggle()
+                                }
+                            } label: {
+                                Image(systemName: "arrow.backward")
+                                    .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                
+                            }
+                            Text("Info")
+                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                .font(.custom(.poppinsSemiBold, size: 16))
+                                .padding(.leading , 10)
+                            Spacer()
+                        }
+                        .padding(.leading, 20)
+                        .padding(.top, 12)
                     
                     
                     Spacer()
                     HStack {
                         Button(action: { selectedTab = "info" ;
                             infoViewViewModel.getInfoData(selectedOption: selectedTab)
-                            print("titles \(titles)")
-                            print("descriptions\(descriptions)")
-                            //                    print("infoViewViewModel.guides[0].description \(infoViewViewModel.guides.)")
                         }) {
                             Text("Info")
-                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                .foregroundColor(themesviewModel.currentTheme.allBlack)
                                 .padding()
                                 .frame(maxWidth: .infinity)
                                 .background(selectedTab == "info" ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
@@ -65,13 +68,11 @@ struct InfoView: View {
                         
                         Button(action: { selectedTab = "FAQ";
                             infoViewViewModel.getFaqData()
-                            print("selected FAQ TAB \(selectedTab)")
                             faqItems = infoViewViewModel.faqcontent  // Update state immediately
-                            print("FAQ Items Count: \(faqItems.count)") // Check if data is updating
                         }) {
                             
                             Text("FAQ's")
-                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                .foregroundColor(themesviewModel.currentTheme.allBlack)
                                 .padding()
                                 .frame(maxWidth: .infinity)
                                 .background(selectedTab == "FAQ" ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
@@ -79,11 +80,10 @@ struct InfoView: View {
                         }
                         
                         Button(action: { selectedTab = "Guide" ;
-                            print("selected guide TAB \(selectedTab)")
                             infoViewViewModel.getGuideData()
                         }) {
                             Text("Guides")
-                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                .foregroundColor(themesviewModel.currentTheme.allBlack)
                                 .padding()
                                 .frame(maxWidth: .infinity)
                                 .background(selectedTab == "Guide" ? themesviewModel.currentTheme.customEditTextColor : themesviewModel.currentTheme.customButtonColor)
@@ -103,11 +103,10 @@ struct InfoView: View {
                                                 .foregroundColor(themesviewModel.currentTheme.iconColor)
                                             Text(infoItems[index].title)
                                                 .font(.system(size: 16, weight: .medium))
-                                                .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                                .foregroundColor(themesviewModel.currentTheme.allBlack)
                                             Spacer()
                                         }
                                         .padding()
-                                        //                                .frame(maxWidth: .infinity)
                                         .background(themesviewModel.currentTheme.attachmentBGColor)
                                         .onTapGesture {
                                             withAnimation(.easeInOut(duration: 0.3)) {
@@ -118,10 +117,10 @@ struct InfoView: View {
                                         // Description (Only show when expanded)
                                         if expandedIndex == index {
                                             HTMLTextView(htmlContent: infoItems[index].description)
-                                                .foregroundColor(Color.purple)
-                                                .frame(maxWidth: .infinity , minHeight: 500)
+                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                .frame(maxWidth: .infinity , minHeight: 300)
                                                 .padding(.horizontal)
-                                                .padding(.bottom, 10)
+                                                .padding([.top , .bottom] , 10)
                                                 .transition(.asymmetric(
                                                     insertion: .scale(scale: 0.95).combined(with: .opacity),
                                                     removal: .scale(scale: 0.95).combined(with: .opacity)
@@ -131,9 +130,9 @@ struct InfoView: View {
                                     .padding(.horizontal,16)
                                     if index < infoItems.count - 1 {
                                         Rectangle()
-                                            .fill(themesviewModel.currentTheme.AllGray) // Background color of divider
+                                            .fill(themesviewModel.currentTheme.allGray) // Background color of divider
                                             .frame(height: 1) // Set divider thickness
-                                            .overlay(Divider().background(Color.white)) // Add gray line inside
+                                            .overlay(Divider().background(themesviewModel.currentTheme.strokeColor)) // Add gray line inside
                                             .padding(.horizontal,16)
                                     }
                                 }
@@ -160,7 +159,7 @@ struct InfoView: View {
                                                         .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                     Text(category.content[index].title)
                                                         .font(.system(size: 16, weight: .medium))
-                                                        .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                                        .foregroundColor(themesviewModel.currentTheme.allBlack)
                                                     Spacer()
                                                 }
                                                 .padding()
@@ -177,15 +176,16 @@ struct InfoView: View {
                                                 
                                                 if expandedIndices[category.heading] == index {
                                                     HTMLTextView(htmlContent: category.content[index].description)
-                                                        .frame(maxWidth: .infinity, minHeight: 200)
+                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                        .frame(maxWidth: .infinity, minHeight: 100)
                                                         .padding(.horizontal)
-                                                        .padding(.bottom, 10)
+                                                        .padding([.top , .bottom] , 10)
                                                 }
                                                 if index < category.content.count - 1 {
                                                     Rectangle()
                                                         .fill(Color.white) // Background color of divider
                                                         .frame(height: 1) // Set divider thickness
-                                                        .overlay(Divider().background(Color.white)) // Add gray line inside
+                                                        .overlay(Divider().background(themesviewModel.currentTheme.strokeColor))
                                                 }
                                             }
                                         }
@@ -217,11 +217,10 @@ struct InfoView: View {
                                                         .foregroundColor(themesviewModel.currentTheme.iconColor)
                                                     Text(category.content[index].title)
                                                         .font(.system(size: 16, weight: .medium))
-                                                        .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                                        .foregroundColor(themesviewModel.currentTheme.allBlack)
                                                     Spacer()
                                                 }
                                                 .padding()
-                                                //.frame(maxWidth: .infinity)
                                                 .background(themesviewModel.currentTheme.attachmentBGColor)
                                                 .onTapGesture {
                                                     withAnimation(.easeInOut(duration: 0.3)) {
@@ -231,15 +230,16 @@ struct InfoView: View {
                                                 // Description (Only show when expanded)
                                                 if expandedIndex == index {
                                                     HTMLTextView(htmlContent: category.content[index].description)
+                                                        .foregroundColor(themesviewModel.currentTheme.textColor)
                                                         .frame(maxWidth: .infinity, minHeight: 200)
                                                         .padding(.horizontal)
-                                                        .padding(.bottom, 10)
+                                                        .padding([.top , .bottom] , 10)
                                                 }
                                                 if index < category.content.count - 1 {
                                                     Rectangle()
                                                         .fill(Color.white) // Background color of divider
                                                         .frame(height: 1) // Set divider thickness
-                                                        .overlay(Divider().background(Color.white)) // Add gray line inside
+                                                        .overlay(Divider().background(themesviewModel.currentTheme.strokeColor))
                                                 }
                                             }
                                         }
@@ -249,84 +249,49 @@ struct InfoView: View {
                             }
                         }
                     }
-                    
-                    VStack {
-                        //                        Spacer().frame(height: 100)
-                        HStack {
-                            Spacer()
-                            RoundedRectangle(cornerRadius: 30)
-                                .fill(themesviewModel.currentTheme.colorPrimary)
-                                .frame(width: 150, height: 48)
-                                .overlay(
-                                    HStack {
-                                        Text("New Email")
-                                            .font(.custom(.poppinsBold, size: 14))
-                                            .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
-                                            .padding(.trailing, 8)
-                                            .onTapGesture {
-                                                infoViewViewModel.isComposeEmail = true
-                                            }
-                                        Spacer()
-                                            .frame(width: 1, height: 24)
-                                            .background(themesviewModel.currentTheme.inverseIconColor)
-                                        Image("dropdown 1")
-                                            .foregroundColor(themesviewModel.currentTheme.iconColor)
-                                            .onTapGesture {
-                                                isQuickAccessVisible = true
-                                            }
-                                    }
-                                )
-                                .padding(.trailing, 20)
-                                .padding(.bottom, 20)
-                        }
-                    }
+
                     
                     
                     TabViewNavigator()
                         .frame(height: 40)
                         .padding(.bottom , 10)
+                  }
                 }
                 .background(themesviewModel.currentTheme.windowBackground)
                 
                 .onAppear {
                     if infoViewViewModel.content.isEmpty {
-                        print("Api prints")
                         infoViewViewModel.getInfoData(selectedOption: selectedTab )
                     }
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                         if selectedTab == "info" {
-                            print("on Appear info TAB")
                             infoItems = infoViewViewModel.content
                         }
                         
                     }
                     
                 }
+                
+
                 .onChange(of: selectedTab) { newTab in
                     if newTab == "FAQ" {
-                        print("FAQ Appears")
                         infoViewViewModel.getFaqData() // Fetch FAQ data when tab is selected
                     }
                 }
                 .onReceive(infoViewViewModel.$faqcontent) { newContent in
                     if selectedTab == "FAQ" {
                         faqItems = newContent
-                        print("on Appear FAQ TAB")
-                        print("FAQ Items Count: \(faqItems.count)")
                     }
                 }
                 .onChange(of: selectedTab) { newTab in
                     if newTab == "Guide" {
-                        print("Guide Appears")
                         infoViewViewModel.getGuideData() // Fetch FAQ data when tab is selected
                     }
                 }
                 .onReceive(infoViewViewModel.$guideitems) { newContent in
                     if selectedTab == "Guide" {
                         guideItems = newContent
-                        print("on Appear Guide TAB")
-                        print("FAQ Items Count: \(guideItems.count)")
                     }
                 }
                 if isQuickAccessVisible {
@@ -341,6 +306,45 @@ struct InfoView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing) // Align at the bottom right
                         .padding([.bottom, .trailing], 20)
                 }
+                
+                    if infoViewViewModel.isInfoView {
+                        VStack {
+                            Spacer() // Pushes content to the bottom
+                            HStack {
+                                Spacer() // Pushes button to the trailing edge
+
+                                RoundedRectangle(cornerRadius: 30)
+                                    .fill(themesviewModel.currentTheme.colorPrimary)
+                                    .frame(width: 150, height: 48)
+                                    .overlay(
+                                        HStack {
+                                            Text("New Email")
+                                                .font(.custom(.poppinsBold, size: 14))
+                                                .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+                                                .padding(.trailing, 8)
+                                                .onTapGesture {
+                                                    infoViewViewModel.isComposeEmail = true
+                                                }
+
+                                            Rectangle()
+                                                .fill(themesviewModel.currentTheme.inverseIconColor)
+                                                .frame(width: 1, height: 24)
+
+                                            Image("dropdown 1")
+                                                .foregroundColor(themesviewModel.currentTheme.iconColor)
+                                                .onTapGesture {
+                                                    isQuickAccessVisible = true
+                                                }
+                                        }
+                                    )
+                                    .padding(.trailing, 20)
+                                    .padding(.bottom, 80)
+                            }
+                        }
+                    }
+
+
+
                 if isMenuVisible{
                     HomeMenuView(isSidebarVisible: $isMenuVisible)
                 }
@@ -355,12 +359,9 @@ struct InfoView: View {
 }
 
 
-
-
 struct HTMLTextView: UIViewRepresentable {
     let htmlContent: String
     var textColor: UIColor = .gray  // default color
-
     func makeUIView(context: Context) -> UITextView {
         let textView = UITextView()
         textView.isEditable = false
@@ -384,7 +385,6 @@ struct HTMLTextView: UIViewRepresentable {
         }
     }
 }
-
 
 
 #Preview {

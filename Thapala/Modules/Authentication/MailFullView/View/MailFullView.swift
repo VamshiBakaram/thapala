@@ -12,7 +12,7 @@ struct MailFullView: View {
     @StateObject var mailComposeViewModel = MailComposeViewModel()
     @StateObject var snoozedMailsViewModel = SnoozedMailsViewModel()
     @StateObject private var homeAwaitingViewModel = HomeAwaitingViewModel()
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
     @Binding var isMailFullViewVisible: Bool
     @State private var emailData: EmailsByIdModel?
@@ -59,8 +59,7 @@ struct MailFullView: View {
                     HStack {
                         Button(action: {
                             presentationMode.wrappedValue.dismiss()
-                        })
-                        {
+                        }) {
                             Image(systemName: "arrow.backward")
                                 .renderingMode(.template)
                                 .foregroundColor(themesviewModel.currentTheme.iconColor)
@@ -172,7 +171,6 @@ struct MailFullView: View {
 
                                                 Spacer()
                                                 Button {
-                                                    print("dots clicked")
                                                     isreplyView = true
                                                 } label: {
                                                     Image("mailreply")
@@ -184,7 +182,6 @@ struct MailFullView: View {
                                                     .frame(width: 10)
                                                 
                                                 Button {
-                                                    print("dots clicked")
                                                     isMoreSheetvisible.toggle()
                                                 } label: {
                                                     Image("maildots")
@@ -217,7 +214,7 @@ struct MailFullView: View {
                                     .scrollContentBackground(.hidden)
                                     .background(themesviewModel.currentTheme.attachmentBGColor)
                                     .cornerRadius(15)
-                                    .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                    .foregroundColor(themesviewModel.currentTheme.allBlack)
                                     .padding(.leading, 10)
                                     .font(.custom(.poppinsLight, size: 14, relativeTo: .title))
                                     .padding(.trailing, 10)
@@ -238,7 +235,6 @@ struct MailFullView: View {
                                                 .font(.custom(.poppinsMedium, size: 14, relativeTo: .title))
                                             Spacer()
                                             Button {
-                                                print("Download clicked")
                                             } label: {
                                                 Text("Download All")
                                                     .underline()
@@ -283,8 +279,6 @@ struct MailFullView: View {
                                         HStack {
                                             Button {
                                                 isreplyView = true
-                                                //                                            mailFullViewModel.isReply = true
-                                                //                                            mailFullViewModel.replyViewModel = replyViewModel
                                                 
                                             } label: {
                                                 Text("Reply")
@@ -335,7 +329,6 @@ struct MailFullView: View {
                         HStack(spacing: 50){
                             Button(action: {
                                 showingDeleteAlert = true
-                                print("click on delete icon")
                             }) {
                                 Image(systemName: "trash")
                                     .frame(width: 25, height: 25)
@@ -347,7 +340,6 @@ struct MailFullView: View {
                             
                             Button(action: {
                                 isMoreSheetvisible.toggle()
-                                print("ellipsis clicked")
                                 EmailStarred = StarreEmail
                             }) {
                                 Image("threeDots")
@@ -364,7 +356,6 @@ struct MailFullView: View {
                     else if PostBoxView {
                         HStack(spacing: 50){
                             Button(action: {
-                                print("click on delete icon")
                                 showingDeleteAlert = true
                             }) {
                                 Image(systemName: "trash")
@@ -387,9 +378,7 @@ struct MailFullView: View {
                             
                             Button(action: {
                                 isMoreSheetvisible.toggle()
-                                print("ellipsis clicked")
                                 EmailStarred = StarreEmail
-                                print("post box EmailStarred \(EmailStarred)")
                             }) {
                                 Image("threeDots")
                                     .renderingMode(.template)
@@ -424,8 +413,6 @@ struct MailFullView: View {
                             
                             Button(action: {
                                 isTagsheetvisible.toggle()
-                                //                            BottomsheetviewModel.isLabelView = true
-                                //                            mailComposeViewModel.isInsertFromRecords = true
                             }) {
                                 Image("Tags")
                                     .renderingMode(.template)
@@ -436,7 +423,6 @@ struct MailFullView: View {
                             Button(action: {
                                 isMoreSheetvisible.toggle()
                                 EmailStarred = StarreEmail
-                                print("EmailStarred \(EmailStarred)")
                             }) {
                                 Image("threeDots")
                                     .renderingMode(.template)
@@ -455,18 +441,7 @@ struct MailFullView: View {
                 .navigationBarBackButtonHidden(true)
                 
                 .onAppear {
-                    print("markAs  \(markAs)")
                     selectedthreadID = [emailId]
-                    
-                    print("All threadIDs: \(homeAwaitingViewModel.emailData.map { $0.threadID })")
-                    print("Looking for emailId: \(emailId)")
-                    if conveyedView{
-                        print("conveyedView is true")
-                    }
-                    if PostBoxView{
-                        print("PostBoxView is true")
-                    }
-                    print("mail full view onAppears")
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                         mailFullViewModel.getFullEmail(emailId: emailId, passwordHash: passwordHash) { result in
                             switch result {
@@ -482,14 +457,11 @@ struct MailFullView: View {
                                 self.threadId = response.email?.last?.threadID ?? 0
                                 let emailBodyData = response.email?.last?.body ?? ""
                                 self.isCheckedLabelID = response.email?.flatMap { $0.labels }.compactMap { $0.labelId } ?? []
-                                print("isCheckedLabelID \(self.isCheckedLabelID)")
                                 self.emailBody = (convertHTMLToAttributedString(html: emailBodyData))?.string ?? ""
                                 if let snoozeTimestamp = response.email?.first?.snoozeAtThread {
                                     let senderDate: TimeInterval = TimeInterval(snoozeTimestamp) ?? 0
                                     let finalDate = convertToDateTime(timestamp: senderDate)
-                                    print("finalDate \(finalDate)")
                                     snoozeatThread = finalDate
-                                    print("snoozeatThread \(snoozeatThread)")
                                 }
                                 
                             case .failure(let error):
@@ -521,10 +493,8 @@ struct MailFullView: View {
                                             self.isCheckedLabelID = email.email?.flatMap { $0.labels }.compactMap { $0.labelId } ?? []
                                         }
                                     }
-                                    print("Email: \(email)")
-                                case .failure(let error):
+                                case .failure(let error): break
                                     // Handle the NetworkError
-                                    print("Error: \(error)")
                                 }
                             }
                         }
@@ -539,7 +509,6 @@ struct MailFullView: View {
                             .edgesIgnoringSafeArea(.all)
                             .onTapGesture {
                                 withAnimation {
-                                    print("Tapped isTagsheetvisible")
                                     isTagsheetvisible = false
                                 }
                             }
@@ -586,7 +555,6 @@ struct MailFullView: View {
                             .edgesIgnoringSafeArea(.all)
                             .onTapGesture {
                                 withAnimation {
-                                    print("Tapped isMoreSheetvisible")
                                     isMoreSheetvisible = false
                                 }
                             }
@@ -634,7 +602,6 @@ struct MailFullView: View {
                             .edgesIgnoringSafeArea(.all)
                             .onTapGesture {
                                 withAnimation {
-                                    print("Tapped isMoveSheetvisible")
                                     isMoveSheetvisible = false
                                 }
                             }
@@ -683,7 +650,6 @@ struct MailFullView: View {
                         DeleteTrashAlert(isPresented: $showingDeleteAlert) {
                             if PostBoxView || conveyedView || SnoozedView || awaitingView{
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                    print("delete alert")
                                     mailFullViewModel.deleteEmailFromAwaiting(emailId: [emailId])
                                     self.isMailFullViewVisible = false
                                 }
@@ -704,7 +670,6 @@ struct MailFullView: View {
 
                                 snoozedMailsViewModel.snoozedMailsDataModel.removeAll { item in
                                     if let id = item.emailId {
-                                        print("delete id \(id)")
                                         return safeIDsToDelete.contains(id)
                                     }
                                     return false
@@ -717,8 +682,7 @@ struct MailFullView: View {
 
                                 homeAwaitingViewModel.emailData.removeAll { item in
                                     if let id = item.threadID {
-                                        print("delete email data")
-                                        print("delete id \(id)")
+
                                         return safeIDsToDelete.contains(id)
                                     }
                                     return false
@@ -771,26 +735,15 @@ struct MailFullView: View {
             .navigationDestination(isPresented: $mailFullViewModel.isCreateLabel) {
                 CreateLabelView().toolbar(.hidden)
             }
-            //        .navigationDestination(isPresented: $mailFullViewModel.isReply) {
-            //            if let replyViewModel = mailFullViewModel.replyViewModel {
-            //                ReplyEmailView(replyEmailViewModel: replyViewModel).toolbar(.hidden)
-            //            }
-            //        }
             .navigationDestination(isPresented: $mailFullViewModel.isReplyAll) {
                 if let replyViewModel = mailFullViewModel.replyViewModel {
                     ReplyEmailView(replyEmailViewModel: replyViewModel, isPresented: $mailFullViewModel.isReplyAll).toolbar(.hidden)
                 }
             }
-            //        .navigationDestination(isPresented: $mailFullViewModel.isForward) {
-            //            if let replyViewModel = mailFullViewModel.replyViewModel {
-            //                ReplyEmailView(replyEmailViewModel: replyViewModel).toolbar(.hidden)
-            //            }
-            //        }
+
             .toast(message: $mailFullViewModel.error)
         }
     }
-//    private func dismissSheet() {
-//    }
 }
 //#Preview {
 //    MailFullView(emailId: 0, passwordHash: "")

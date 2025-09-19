@@ -11,7 +11,7 @@ class HomeDirectoryViewModel: ObservableObject {
     
     @Published var isLoading: Bool = false
     @Published var error: String?
-    @Published var DirectoryData: [Users] = []
+    @Published var directoryData: [Users] = []
     @Published var blockedUsers: [DirectoryUserData] = []
     @Published var profileIdData: [BioData] = []
     @Published var userdata: [user] = []
@@ -28,10 +28,10 @@ class HomeDirectoryViewModel: ObservableObject {
     @Published var state:String = ""
     @Published var city:String = ""
     @Published var groupName: String = ""
-    @Published var RenameGroupName: String = ""
+    @Published var renameGroupName: String = ""
     @Published var groupID: Int = 0
     @Published var searchText = ""
-    @Published var DirectoryUpdate : Bool = false
+    @Published var directoryUpdate : Bool = false
     @Published var beforeLongPress: Bool = true
     @Published var isComposeEmail: Bool = false
     @Published var selectedCountryIndex: Int? = nil
@@ -39,6 +39,7 @@ class HomeDirectoryViewModel: ObservableObject {
     @Published var selectedCityIndex: Int? = nil
     @Published var groupitems: Bool = false
     @Published var reportissue: String = ""
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     var filteredCountries: [SingleCountry] {
         if country.isEmpty {
             return []
@@ -52,7 +53,7 @@ class HomeDirectoryViewModel: ObservableObject {
 
     func GetDirectoryList() {
         self.isLoading = true
-        let endUrl = "\(EndPoint.GetDirectoryList)"
+        let endUrl = "\(EndPoint.getDirectoryList)"
         
         NetworkManager.shared.request(type: DirectoryResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -61,9 +62,8 @@ class HomeDirectoryViewModel: ObservableObject {
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.DirectoryData = response.data.results // Use `response.data` to access `DiaryData`
+                    self.directoryData = response.data.results // Use `response.data` to access `DiaryData`
                     self.blockedUsers = [response.data]
-                    print("check self.blockedUsers \(response.data.currentUserBlockedUsers)")
                     self.error = response.message
                 }
             case .failure(let error):
@@ -73,7 +73,7 @@ class HomeDirectoryViewModel: ObservableObject {
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -82,7 +82,7 @@ class HomeDirectoryViewModel: ObservableObject {
     
     func GetProfileByID(selectId: Int) {
         self.isLoading = true
-        let endUrl = "\(EndPoint.GetProfileByID)\(selectId)"
+        let endUrl = "\(EndPoint.getProfileByID)\(selectId)"
         
         NetworkManager.shared.request(type: ProfileResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -101,7 +101,7 @@ class HomeDirectoryViewModel: ObservableObject {
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -128,11 +128,8 @@ class HomeDirectoryViewModel: ObservableObject {
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -141,7 +138,7 @@ class HomeDirectoryViewModel: ObservableObject {
     
     func GetGroupList() {
         self.isLoading = true
-        let endUrl = "\(EndPoint.GetGroupList)"
+        let endUrl = "\(EndPoint.getGroupList)"
         
         NetworkManager.shared.request(type: GroupResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
@@ -152,7 +149,6 @@ class HomeDirectoryViewModel: ObservableObject {
                     self.isLoading = false
                     self.groupList = response.data
                     self.error = response.message
-                    print("get group list \(self.groupList)")
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -161,7 +157,7 @@ class HomeDirectoryViewModel: ObservableObject {
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -179,7 +175,6 @@ class HomeDirectoryViewModel: ObservableObject {
                     self.isLoading = false
                     self.searchData = response.data.results // Use `response.data` to access `DiaryData`
                     self.error = response.message
-                    print("search APi works  \(response.message)")
                     
                 }
             case .failure(let error):
@@ -189,7 +184,7 @@ class HomeDirectoryViewModel: ObservableObject {
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -198,7 +193,6 @@ class HomeDirectoryViewModel: ObservableObject {
 
     func getStatesAndCities() {
         guard let fileURL = Bundle.main.url(forResource: "countriesToCities", withExtension: "json") else {
-            print("❌ countriesToCities.json not found")
             return
         }
 
@@ -207,15 +201,13 @@ class HomeDirectoryViewModel: ObservableObject {
             let decoded = try JSONDecoder().decode(CountryData.self, from: jsonData)
             DispatchQueue.main.async {
                 self.countryCodes = decoded.countries
-                print("getStatesAndCities function calls")
-                
                 // Select first country and its states by default
                 if let _ = self.countryCodes.first {
                     self.selectCountry(at: -1)
                 }
             }
         } catch {
-            print("❌ Failed to decode JSON: \(error.localizedDescription)")
+//            print(" Failed to decode JSON: \(error.localizedDescription)")
         }
     }
     
@@ -278,9 +270,8 @@ class HomeDirectoryViewModel: ObservableObject {
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -309,9 +300,8 @@ class HomeDirectoryViewModel: ObservableObject {
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -345,9 +335,8 @@ class HomeDirectoryViewModel: ObservableObject {
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -383,7 +372,7 @@ class HomeDirectoryViewModel: ObservableObject {
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -414,7 +403,7 @@ class HomeDirectoryViewModel: ObservableObject {
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -425,7 +414,7 @@ class HomeDirectoryViewModel: ObservableObject {
     
     func RenameGroup(id: Int , groupname: String) {
         self.isLoading = true
-        let url = "\(EndPoint.Renamegroup)\(id)"
+        let url = "\(EndPoint.renameGroup)\(id)"
         
         // Create the request body using the struct
         let requestBody = UpdateGroupRequest(
@@ -449,7 +438,7 @@ class HomeDirectoryViewModel: ObservableObject {
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -478,7 +467,7 @@ class HomeDirectoryViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -488,37 +477,3 @@ class HomeDirectoryViewModel: ObservableObject {
     
    
 }
-
-
-//func converttoIST(dateInput: Any) -> String? {
-//    var date: Date?
-//
-//    if let timestamp = dateInput as? Int {
-//        date = Date(timeIntervalSince1970: TimeInterval(timestamp))
-//    } else if let dateString = dateInput as? String {
-//        let isoDateFormatter = ISO8601DateFormatter()
-//        isoDateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-//
-//        date = isoDateFormatter.date(from: dateString)
-//        if date == nil {
-//            isoDateFormatter.formatOptions = [.withInternetDateTime]
-//            date = isoDateFormatter.date(from: dateString)
-//        }
-//
-//        if date == nil {
-//            print("⚠️ Could not parse dateString: \(dateString)")
-//        }
-//    } else {
-//        return nil
-//    }
-//
-//    guard let date = date else { return nil }
-//
-//    let dateFormatter = DateFormatter()
-//    dateFormatter.timeZone = TimeZone(identifier: "Asia/Kolkata")
-//    dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-//    dateFormatter.dateFormat = "dd-MMM-yyyy h:mm a"
-//
-//    return dateFormatter.string(from: date)
-//}
-

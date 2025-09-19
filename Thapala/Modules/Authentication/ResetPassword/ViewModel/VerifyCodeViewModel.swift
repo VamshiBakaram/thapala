@@ -22,12 +22,12 @@ class VerifyCodeViewModel: ObservableObject {
         self.tCode = tCode
     }
     
-    func borderAlert(){
-        if otpTapBorderColor == false && otherWayTapBorderColor == false{
+    func borderAlert() {
+        if !otpTapBorderColor && !otherWayTapBorderColor {
             self.error = "Please select any of the above options"
-            return
         }
     }
+
     
     func verifyCode() {
         self.isLoading = true

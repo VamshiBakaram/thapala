@@ -22,6 +22,7 @@ class HomeConveyedViewModel:ObservableObject{
     @Published var conveyedEmailData:[ConveyedData] = []
     @Published var conveyedEmailCounaData:Count?
     @Published var selectedThreadIDs: [Int] = []
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     
     func getConveyedEmailData() {
         self.isLoading = true
@@ -34,7 +35,6 @@ class HomeConveyedViewModel:ObservableObject{
                     self.isLoading = false
                         self.error = response.message ?? ""
                     self.conveyedEmailData = response.data ?? []
-                 //   self.conveyedEmailCounaData = response.count
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -45,7 +45,7 @@ class HomeConveyedViewModel:ObservableObject{
                             self.error = error
                         }
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -76,7 +76,7 @@ class HomeConveyedViewModel:ObservableObject{
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -95,7 +95,6 @@ class HomeConveyedViewModel:ObservableObject{
                     self.error = response.message ?? ""
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
                         self.starredemail = [response]
-                        print("starred email, response")
                     })
                 }
             case .failure(let error):
@@ -107,7 +106,7 @@ class HomeConveyedViewModel:ObservableObject{
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

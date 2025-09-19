@@ -11,7 +11,7 @@ struct HomePocketView: View {
     @State private var isQuickAccessVisible = false
     @StateObject var homePocketViewModel = HomePocketViewModel()
     @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     let imageUrl: String
     @State private var isSearchView = false
     @State private var iNotificationAppBarView = false
@@ -46,7 +46,6 @@ struct HomePocketView: View {
                             
                             Spacer()
                             Button(action: {
-                                print("search button pressed")
                                 appBarElementsViewModel.isSearch = true
                             }) {
                                 Image("magnifyingglass")
@@ -57,7 +56,6 @@ struct HomePocketView: View {
                             .padding(.leading,15)
                             
                             Button(action: {
-                                print("bell button pressed")
                                 iNotificationAppBarView = true
                             }) {
                                 Image("notification")
@@ -66,7 +64,6 @@ struct HomePocketView: View {
                             
                             
                             Button(action: {
-                                print("line.3.horizontal button pressed")
                                 withAnimation {
                                     isMenuVisible.toggle()
                                 }

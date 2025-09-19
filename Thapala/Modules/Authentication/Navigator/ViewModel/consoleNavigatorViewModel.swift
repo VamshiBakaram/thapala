@@ -7,30 +7,30 @@
 
 import Foundation
 
-class consoleviewModel:ObservableObject{
+class ConsoleNavigatiorViewModel:ObservableObject{
     @Published var isLoading = false
     @Published var error: String?
-    @Published var GetUserSettings: [UserSetting] = []
-    @Published var GetTotalStorage: [StorageData] = []
+    @Published var userSettings: [UserSetting] = []
+    @Published var getStorageData: [StorageData] = []
     @Published var savesetting: [UserSettings] = []
-    @Published var SecurityQuestions: [securityQuestion] = []
+    @Published var securityQuestions: [securityQuestion] = []
     @Published var contactNumber: String = ""
+    @Published var oldPin: String = ""
+    @Published var newPin: String = ""
+    @Published var newConfirmPin: String = ""
+    @Published var matchPin: String = ""
     @Published var currentPassword: String = ""
-    @Published var NewPassword: String = ""
+    @Published var newPassword: String = ""
+    @Published var ConfirmPassword: String = ""
     @Published var isContactsDialogVisible = false
-    @Published var countryCodes: [Countrycode] = []
-    @Published var selectedCountryCode: CountryCode? = nil
+    @Published var countryCodes: [countryCode] = []
+    @Published var selectedCountryCode: countriesCode? = nil
     @Published var isShowCountryDropdown = false
     @Published var successMessage: String = ""
-    @Published var GetAllNotificationAlerts: [AlertData] = []
-    @Published var updateNotificationAlerts: [AlertSettingsData] = []
+    @Published var getAllNotificationAlerts: [AlertData] = []
+    @Published var updateNotificationAlerts: [alertSettingsData] = []
     @Published var theme: String?
-//    @Published var selectedTheme: String = "light"
-//
-//    var currentTheme: Theme {
-//        ThemeManager.getTheme(AppTheme(rawValue: selectedTheme) ?? .dark)
-//    }
-    
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     //Get User Settings
     
     func handleDropdown() {
@@ -46,7 +46,8 @@ class consoleviewModel:ObservableObject{
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.GetUserSettings = response.settings
+                    self.userSettings = response.settings
+                    self.error = response.message
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -55,7 +56,7 @@ class consoleviewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -64,14 +65,15 @@ class consoleviewModel:ObservableObject{
 
     func getTotalStorage() {
         self.isLoading = true
-        let endUrl = "\(EndPoint.getTotalStorage)"
+        let endUrl = "\(EndPoint.TotalStorage)"
         NetworkManager.shared.request(type: StorageResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.GetTotalStorage = response.data
+                    self.getStorageData = response.data
+                    self.error = response.message
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -80,7 +82,7 @@ class consoleviewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -101,15 +103,13 @@ class consoleviewModel:ObservableObject{
                 switch result {
                 case .success(let response):
                     self.savesetting = response.data
+                    self.error = response.message
                 case .failure(let error):
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -120,14 +120,15 @@ class consoleviewModel:ObservableObject{
     
     func getUserSecurityQuestions() {
         self.isLoading = true
-        let endUrl = "\(EndPoint.ConsolesecurityQuestions)"
+        let endUrl = "\(EndPoint.consoleSecurityQuestions)"
         NetworkManager.shared.request(type: SecurityQuestionsResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.SecurityQuestions = response.data
+                    self.securityQuestions = response.data
+                    self.error = response.message
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -136,7 +137,7 @@ class consoleviewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -155,7 +156,6 @@ class consoleviewModel:ObservableObject{
         // Encode the payload to JSON and log it for debugging
         if let jsonData = try? JSONEncoder().encode(params),
            let jsonString = String(data: jsonData, encoding: .utf8) {
-            print("Request JSON: \(jsonString)")
         }
     
         
@@ -166,7 +166,6 @@ class consoleviewModel:ObservableObject{
                 self.isLoading = false
                 switch result {
                 case .success(let response):
-                    print("Comment added successfully: \(response.message)")
                     self.successMessage = response.message
                     self.error = response.message
                 case .failure(let error):
@@ -174,12 +173,9 @@ class consoleviewModel:ObservableObject{
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                         self.error = message
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -192,14 +188,15 @@ class consoleviewModel:ObservableObject{
     
     func getAllAlertNotifications() {
         self.isLoading = true
-        let endUrl = "\(EndPoint.GetAllAlerts)"
+        let endUrl = "\(EndPoint.getAllAlerts)"
         NetworkManager.shared.request(type: AlertResponse.self, endPoint: endUrl, httpMethod: .get, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    self.GetAllNotificationAlerts = response.data
+                    self.getAllNotificationAlerts = response.data
+                    self.error = response.message
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -208,7 +205,7 @@ class consoleviewModel:ObservableObject{
                     case .error(let errorDescription):
                         self.error = errorDescription
                     case .sessionExpired:
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -250,6 +247,7 @@ class consoleviewModel:ObservableObject{
                     self.isLoading = false
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                         self.updateNotificationAlerts = [response.data]
+                        self.error = response.message
                     }
                 }
             case .failure(let error):
@@ -259,7 +257,7 @@ class consoleviewModel:ObservableObject{
                     case .error(error: let error):
                         self.error = error
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -282,15 +280,13 @@ class consoleviewModel:ObservableObject{
                 switch result {
                 case .success(let response):
                     self.theme = response.theme
+                    self.error = response.message
                 case .failure(let error):
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }

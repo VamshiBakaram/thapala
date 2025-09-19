@@ -7,7 +7,6 @@
 
 import Foundation
 import SocketIO
-
 class SocketManagerService {
     static let shared = SocketManagerService()
     
@@ -40,7 +39,7 @@ class SocketManagerService {
         socket = manager?.defaultSocket
         
         socket?.on(clientEvent: .connect) { [weak self] data, ack in
-            print("✅ Socket connected")
+            print("Socket connected")
             // Now it's safe to join the room
             if let roomId = self?.pendingRoomId, let userId = self?.pendingUserId {
                 self?.joinRoom(roomId: roomId, userId: userId)
@@ -48,7 +47,7 @@ class SocketManagerService {
         }
 
         socket?.on(clientEvent: .disconnect) { data, ack in
-            print("❌ Socket disconnected")
+            print(" Socket disconnected")
         }
 
         socket?.connect()
@@ -66,7 +65,7 @@ class SocketManagerService {
 
     func joinRoom(roomId: String, userId: Int) {
         guard let socket = socket, socket.status == .connected else {
-            print("⚠️ Cannot join room: socket not connected.")
+            print(" Cannot join room: socket not connected.")
             return
         }
 
@@ -75,22 +74,21 @@ class SocketManagerService {
             "userId": userId
         ]
         socket.emit("joinRoom", payload)
-        print("📥 Joined room: \(roomId)")
+        print(" Joined room: \(roomId)")
     }
 
     func sendMessage(messageData: [String: Any]) {
         guard let socket = socket, socket.status == .connected else {
-            print("⚠️ Socket not connected. Cannot send message.")
+            print("Socket not connected. Cannot send message.")
             return
         }
         socket.emit("sendMessage", messageData)
-        print("📤 Sent message: \(messageData)")
+        print(" Sent message: \(messageData)")
     }
 
     func listenForMessages(callback: @escaping ([String: Any]) -> Void) {
         socket?.on("receive_message") { data, ack in
             if let message = data.first as? [String: Any] {
-                print("📩 Received message: \(message)")
                 callback(message)
             }
         }

@@ -13,7 +13,6 @@
 		7B0F7FBD2BD7673300BE2F5A /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0F7FBC2BD7673300BE2F5A /* LoginViewModel.swift */; };
 		7B0F7FC12BD7694200BE2F5A /* CreateAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0F7FC02BD7694200BE2F5A /* CreateAccountView.swift */; };
 		7B0F7FC42BD7699000BE2F5A /* CreateAccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0F7FC32BD7699000BE2F5A /* CreateAccountViewModel.swift */; };
-		7B1852B02BE10D9800FE61FC /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B1852AF2BE10D9800FE61FC /* MainView.swift */; };
 		7B1852B22BE110AB00FE61FC /* NavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B1852B12BE110AB00FE61FC /* NavigationView.swift */; };
 		7B22B3572BD6CAB700020111 /* ThapalaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B22B3562BD6CAB700020111 /* ThapalaApp.swift */; };
 		7B22B35B2BD6CAB800020111 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7B22B35A2BD6CAB800020111 /* Assets.xcassets */; };
@@ -50,15 +49,17 @@
 		7BCFC7522BDF87F600839D05 /* SecurityQuestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCFC7512BDF87F600839D05 /* SecurityQuestionsView.swift */; };
 		7BCFC7562BDF881700839D05 /* SecurityQuestionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCFC7552BDF881700839D05 /* SecurityQuestionsViewModel.swift */; };
 		7BCFC7582BDF882500839D05 /* SecurityQuestionsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCFC7572BDF882500839D05 /* SecurityQuestionsModel.swift */; };
+<<<<<<< HEAD
+=======
+		D305B35D2E44C31300B0AA2D /* Bcrypt in Frameworks */ = {isa = PBXBuildFile; productRef = D305B35C2E44C31300B0AA2D /* Bcrypt */; };
+>>>>>>> 7f6a3866d2bcc9dc1198af83d0c186c8ca4375da
 		D307910D2D9E627900AE0200 /* consoleModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D307910C2D9E627900AE0200 /* consoleModelData.swift */; };
 		D30CE6402DB22F4D009B215F /* WebSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D30CE63F2DB22F4D009B215F /* WebSocketManager.swift */; };
 		D30DAC632E1C01D200F556A7 /* bottomSheetModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D30DAC622E1C01D200F556A7 /* bottomSheetModelData.swift */; };
 		D322C41D2E16A95500332A67 /* BottomSnoozeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D322C41C2E16A95500332A67 /* BottomSnoozeView.swift */; };
-		D323C5E02DD487680064566F /* StarredmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D323C5DF2DD487680064566F /* StarredmailView.swift */; };
 		D3283ADE2C36BE0B00CA88FB /* SaveEmailToDraftsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3283ADD2C36BE0B00CA88FB /* SaveEmailToDraftsModel.swift */; };
-		D3283AEA2CFF08CA0036F139 /* ClockTimePicker in Frameworks */ = {isa = PBXBuildFile; productRef = D3283AE92CFF08CA0036F139 /* ClockTimePicker */; };
+		D32930192E4B44FA00F5A1BF /* WaterfallGrid in Frameworks */ = {isa = PBXBuildFile; productRef = D32930182E4B44FA00F5A1BF /* WaterfallGrid */; };
 		D32A219F2C22AE0000765A23 /* AddNewGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32A219E2C22AE0000765A23 /* AddNewGroupView.swift */; };
-		D32A21A12C22AE3D00765A23 /* AddNewGroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32A21A02C22AE3D00765A23 /* AddNewGroupViewModel.swift */; };
 		D32A21A72C22B43300765A23 /* HomeRecordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32A21A62C22B43300765A23 /* HomeRecordsView.swift */; };
 		D32A21A92C22B44F00765A23 /* HomeRecordsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32A21A82C22B44F00765A23 /* HomeRecordsViewModel.swift */; };
 		D32A21AB2C22E08D00765A23 /* CreateNewFolderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32A21AA2C22E08C00765A23 /* CreateNewFolderView.swift */; };
@@ -67,10 +68,8 @@
 		D32FD1072BFF7310004D8AA0 /* ResetForgotPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32FD1062BFF7310004D8AA0 /* ResetForgotPasswordViewModel.swift */; };
 		D33094212C00C6630016F32F /* SecurityAnswerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33094202C00C6630016F32F /* SecurityAnswerModel.swift */; };
 		D33271EF2DE42E5A0058AA4C /* RecordsModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33271EE2DE42E5A0058AA4C /* RecordsModelData.swift */; };
-		D33271F22DE4806C0058AA4C /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = D33271F12DE4806C0058AA4C /* Kingfisher */; };
 		D333A9852CEB612B00081062 /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D333A9842CEB612B00081062 /* ScheduleView.swift */; };
 		D3391E1E2DB0EC4900135836 /* themesConsoleModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3391E1D2DB0EC4900135836 /* themesConsoleModelData.swift */; };
-		D3391E222DB0ED1A00135836 /* ConsoleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3391E212DB0ED1A00135836 /* ConsoleViewModel.swift */; };
 		D3391E262DB10A4700135836 /* ConsoleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3391E252DB10A4700135836 /* ConsoleViewModel.swift */; };
 		D339CF7C2D352FF20069B9AB /* DateBookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D339CF7B2D352FF20069B9AB /* DateBookModel.swift */; };
 		D33B178F2D93CE250011AED8 /* trashModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33B178E2D93CE250011AED8 /* trashModelData.swift */; };
@@ -106,13 +105,16 @@
 		D368BB332C21A38600AE2C7F /* HomeResidenceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D368BB322C21A38600AE2C7F /* HomeResidenceView.swift */; };
 		D368BB372C21B19700AE2C7F /* HomeResidenceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D368BB362C21B19700AE2C7F /* HomeResidenceViewModel.swift */; };
 		D368BB392C21C74A00AE2C7F /* ResidenceUserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D368BB382C21C74A00AE2C7F /* ResidenceUserProfileView.swift */; };
-		D368BB3B2C21CE5A00AE2C7F /* ResidenceUserProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D368BB3A2C21CE5A00AE2C7F /* ResidenceUserProfileViewModel.swift */; };
 		D369637E2DE5BF5E0034F3E9 /* RecordsThreeDotsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D369637D2DE5BF5E0034F3E9 /* RecordsThreeDotsView.swift */; };
 		D36963802DE5CFC90034F3E9 /* threeDotsModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D369637F2DE5CFC90034F3E9 /* threeDotsModelData.swift */; };
 		D374BE162C7871E600317058 /* MoveToFolderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D374BE152C7871E600317058 /* MoveToFolderView.swift */; };
 		D374BE182C7897DC00317058 /* MoveToFolderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D374BE172C7897DC00317058 /* MoveToFolderViewModel.swift */; };
 		D37614CB2D1415C700951686 /* tDoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37614CA2D1415C700951686 /* tDoView.swift */; };
+<<<<<<< HEAD
 		D37614CE2D142FD800951686 /* SwiftDate in Frameworks */ = {isa = PBXBuildFile; productRef = D37614CD2D142FD800951686 /* SwiftDate */; };
+=======
+		D3795D752C343AE200763373 /* PostboxModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3795D742C343AE200763373 /* PostboxModel.swift */; };
+>>>>>>> 7f6a3866d2bcc9dc1198af83d0c186c8ca4375da
 		D3795D792C3452E400763373 /* BioModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3795D782C3452E400763373 /* BioModelData.swift */; };
 		D37A260C2D15857900EAE1C0 /* DoitModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37A260B2D15857900EAE1C0 /* DoitModel.swift */; };
 		D37B89DC2DB7536800ED8E68 /* themeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37B89DB2DB7536800ED8E68 /* themeManager.swift */; };
@@ -156,6 +158,8 @@
 		D392CF172C25884C00636ACC /* PlannerDetailedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D392CF162C25884C00636ACC /* PlannerDetailedViewModel.swift */; };
 		D392CF192C25A32600636ACC /* AddEventViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D392CF182C25A32600636ACC /* AddEventViewModel.swift */; };
 		D392CF1B2C25A33300636ACC /* AddEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D392CF1A2C25A33300636ACC /* AddEventView.swift */; };
+		D392E2732E42491F00DEDA09 /* ClockTimePicker in Frameworks */ = {isa = PBXBuildFile; productRef = D392E2722E42491F00DEDA09 /* ClockTimePicker */; };
+		D392E2762E42495200DEDA09 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = D392E2752E42495200DEDA09 /* SocketIO */; };
 		D3934D932CB68FCB00BEFEB9 /* ContactsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3934D922CB68FBE00BEFEB9 /* ContactsModel.swift */; };
 		D3934D952CB6901600BEFEB9 /* ContactsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3934D942CB6900E00BEFEB9 /* ContactsViewModel.swift */; };
 		D398A6642CB557F80069CCD7 /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D398A6632CB557EF0069CCD7 /* InfoView.swift */; };
@@ -180,8 +184,6 @@
 		D3C08F872CE8D32C00F2BD50 /* draftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3C08F862CE8D32C00F2BD50 /* draftView.swift */; };
 		D3C8170C2DB79CF900BB0359 /* themesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3C8170B2DB79CF900BB0359 /* themesViewModel.swift */; };
 		D3CB43F42C7DD4F700F1570B /* CreateNewLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CB43F32C7DD4F700F1570B /* CreateNewLabelView.swift */; };
-		D3CCD5102DB236F2007700B9 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = D3CCD50F2DB236F2007700B9 /* SocketIO */; };
-		D3CCD5132DB273B4007700B9 /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D3CCD5122DB273B4007700B9 /* CryptoSwift */; };
 		D3CCD5152DB2904E007700B9 /* socketServiceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CCD5142DB2904E007700B9 /* socketServiceManager.swift */; };
 		D3D47DCE2DA90DE6003B7387 /* GeneralConsoleModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3D47DCD2DA90DE6003B7387 /* GeneralConsoleModelData.swift */; };
 		D3D47DD02DA90E23003B7387 /* consoleNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3D47DCF2DA90E23003B7387 /* consoleNavigatorViewModel.swift */; };
@@ -206,7 +208,6 @@
 		7B0F7FBC2BD7673300BE2F5A /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		7B0F7FC02BD7694200BE2F5A /* CreateAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccountView.swift; sourceTree = "<group>"; };
 		7B0F7FC32BD7699000BE2F5A /* CreateAccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccountViewModel.swift; sourceTree = "<group>"; };
-		7B1852AF2BE10D9800FE61FC /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		7B1852B12BE110AB00FE61FC /* NavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationView.swift; sourceTree = "<group>"; };
 		7B22B3532BD6CAB700020111 /* Thapala.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Thapala.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B22B3562BD6CAB700020111 /* ThapalaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThapalaApp.swift; sourceTree = "<group>"; };
@@ -230,7 +231,6 @@
 		7B8168812BECB61300E825EC /* SuggestTCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestTCodeView.swift; sourceTree = "<group>"; };
 		7B8168832BECB8A700E825EC /* PicktCodeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicktCodeModel.swift; sourceTree = "<group>"; };
 		7BA42B852BD79C9E00D93450 /* VerifyOTPView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyOTPView.swift; sourceTree = "<group>"; };
-		7BABFF072C6B2F5B003C4A6C /* PostBoxEmailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostBoxEmailsView.swift; sourceTree = "<group>"; };
 		7BC5AD4A2BE0E2600017D67F /* PicktCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicktCodeView.swift; sourceTree = "<group>"; };
 		7BC5AD4E2BE0E6D90017D67F /* PicktCodeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicktCodeViewModel.swift; sourceTree = "<group>"; };
 		7BC5AD522BE0F12E0017D67F /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
@@ -246,17 +246,12 @@
 		7BCFC7512BDF87F600839D05 /* SecurityQuestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityQuestionsView.swift; sourceTree = "<group>"; };
 		7BCFC7552BDF881700839D05 /* SecurityQuestionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityQuestionsViewModel.swift; sourceTree = "<group>"; };
 		7BCFC7572BDF882500839D05 /* SecurityQuestionsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityQuestionsModel.swift; sourceTree = "<group>"; };
-		7BFAAF242C64850000A4D021 /* PostBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostBoxView.swift; sourceTree = "<group>"; };
-		7BFAAF282C64872400A4D021 /* PostBoxViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostBoxViewModel.swift; sourceTree = "<group>"; };
-		7BFAAF2A2C64873B00A4D021 /* PostBoxModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostBoxModel.swift; sourceTree = "<group>"; };
 		D307910C2D9E627900AE0200 /* consoleModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = consoleModelData.swift; sourceTree = "<group>"; };
 		D30CE63F2DB22F4D009B215F /* WebSocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketManager.swift; sourceTree = "<group>"; };
 		D30DAC622E1C01D200F556A7 /* bottomSheetModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bottomSheetModelData.swift; sourceTree = "<group>"; };
 		D322C41C2E16A95500332A67 /* BottomSnoozeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSnoozeView.swift; sourceTree = "<group>"; };
-		D323C5DF2DD487680064566F /* StarredmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarredmailView.swift; sourceTree = "<group>"; };
 		D3283ADD2C36BE0B00CA88FB /* SaveEmailToDraftsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveEmailToDraftsModel.swift; sourceTree = "<group>"; };
 		D32A219E2C22AE0000765A23 /* AddNewGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewGroupView.swift; sourceTree = "<group>"; };
-		D32A21A02C22AE3D00765A23 /* AddNewGroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewGroupViewModel.swift; sourceTree = "<group>"; };
 		D32A21A62C22B43300765A23 /* HomeRecordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRecordsView.swift; sourceTree = "<group>"; };
 		D32A21A82C22B44F00765A23 /* HomeRecordsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRecordsViewModel.swift; sourceTree = "<group>"; };
 		D32A21AA2C22E08C00765A23 /* CreateNewFolderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNewFolderView.swift; sourceTree = "<group>"; };
@@ -267,7 +262,6 @@
 		D33271EE2DE42E5A0058AA4C /* RecordsModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsModelData.swift; sourceTree = "<group>"; };
 		D333A9842CEB612B00081062 /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
 		D3391E1D2DB0EC4900135836 /* themesConsoleModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = themesConsoleModelData.swift; sourceTree = "<group>"; };
-		D3391E212DB0ED1A00135836 /* ConsoleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleViewModel.swift; sourceTree = "<group>"; };
 		D3391E252DB10A4700135836 /* ConsoleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleViewModel.swift; sourceTree = "<group>"; };
 		D339CF7B2D352FF20069B9AB /* DateBookModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DateBookModel.swift; path = Thapala/Modules/Authentication/Planner/DateBookModel.swift; sourceTree = SOURCE_ROOT; };
 		D33B178E2D93CE250011AED8 /* trashModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = trashModelData.swift; sourceTree = "<group>"; };
@@ -303,7 +297,6 @@
 		D368BB322C21A38600AE2C7F /* HomeResidenceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeResidenceView.swift; sourceTree = "<group>"; };
 		D368BB362C21B19700AE2C7F /* HomeResidenceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeResidenceViewModel.swift; sourceTree = "<group>"; };
 		D368BB382C21C74A00AE2C7F /* ResidenceUserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResidenceUserProfileView.swift; sourceTree = "<group>"; };
-		D368BB3A2C21CE5A00AE2C7F /* ResidenceUserProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResidenceUserProfileViewModel.swift; sourceTree = "<group>"; };
 		D369637D2DE5BF5E0034F3E9 /* RecordsThreeDotsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsThreeDotsView.swift; sourceTree = "<group>"; };
 		D369637F2DE5CFC90034F3E9 /* threeDotsModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = threeDotsModelData.swift; sourceTree = "<group>"; };
 		D374BE152C7871E600317058 /* MoveToFolderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveToFolderView.swift; sourceTree = "<group>"; };
@@ -352,6 +345,7 @@
 		D392CF162C25884C00636ACC /* PlannerDetailedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlannerDetailedViewModel.swift; sourceTree = "<group>"; };
 		D392CF182C25A32600636ACC /* AddEventViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEventViewModel.swift; sourceTree = "<group>"; };
 		D392CF1A2C25A33300636ACC /* AddEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEventView.swift; sourceTree = "<group>"; };
+		D392E26F2E4245A200DEDA09 /* ClockKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ClockKit.framework; path = System/Library/Frameworks/ClockKit.framework; sourceTree = SDKROOT; };
 		D3934D922CB68FBE00BEFEB9 /* ContactsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsModel.swift; sourceTree = "<group>"; };
 		D3934D942CB6900E00BEFEB9 /* ContactsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsViewModel.swift; sourceTree = "<group>"; };
 		D398A6632CB557EF0069CCD7 /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
@@ -399,11 +393,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D37614CE2D142FD800951686 /* SwiftDate in Frameworks */,
-				D3CCD5132DB273B4007700B9 /* CryptoSwift in Frameworks */,
-				D3283AEA2CFF08CA0036F139 /* ClockTimePicker in Frameworks */,
-				D3CCD5102DB236F2007700B9 /* SocketIO in Frameworks */,
-				D33271F22DE4806C0058AA4C /* Kingfisher in Frameworks */,
+				D392E2732E42491F00DEDA09 /* ClockTimePicker in Frameworks */,
+				D32930192E4B44FA00F5A1BF /* WaterfallGrid in Frameworks */,
+				D305B35D2E44C31300B0AA2D /* Bcrypt in Frameworks */,
+				D392E2762E42495200DEDA09 /* SocketIO in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -463,31 +456,6 @@
 				7B0F7FC32BD7699000BE2F5A /* CreateAccountViewModel.swift */,
 			);
 			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		7B1852AC2BE10D6A00FE61FC /* Main */ = {
-			isa = PBXGroup;
-			children = (
-				7BFAAF222C6484E200A4D021 /* PostBox */,
-				7B1852AD2BE10D7600FE61FC /* MainView */,
-			);
-			path = Main;
-			sourceTree = "<group>";
-		};
-		7B1852AD2BE10D7600FE61FC /* MainView */ = {
-			isa = PBXGroup;
-			children = (
-				7B1852AE2BE10D8E00FE61FC /* View */,
-			);
-			path = MainView;
-			sourceTree = "<group>";
-		};
-		7B1852AE2BE10D8E00FE61FC /* View */ = {
-			isa = PBXGroup;
-			children = (
-				7B1852AF2BE10D9800FE61FC /* MainView.swift */,
-			);
-			path = View;
 			sourceTree = "<group>";
 		};
 		7B22B34A2BD6CAB700020111 = {
@@ -593,7 +561,6 @@
 		7B22B3692BD6CC1800020111 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				7B1852AC2BE10D6A00FE61FC /* Main */,
 				7B22B3642BD6CB9400020111 /* Authentication */,
 				7B1852B12BE110AB00FE61FC /* NavigationView.swift */,
 			);
@@ -813,41 +780,6 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		7BFAAF222C6484E200A4D021 /* PostBox */ = {
-			isa = PBXGroup;
-			children = (
-				7BFAAF272C64850B00A4D021 /* Model */,
-				7BFAAF262C64850500A4D021 /* ViewModel */,
-				7BFAAF232C6484EB00A4D021 /* View */,
-			);
-			path = PostBox;
-			sourceTree = "<group>";
-		};
-		7BFAAF232C6484EB00A4D021 /* View */ = {
-			isa = PBXGroup;
-			children = (
-				7BFAAF242C64850000A4D021 /* PostBoxView.swift */,
-				7BABFF072C6B2F5B003C4A6C /* PostBoxEmailsView.swift */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		7BFAAF262C64850500A4D021 /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-				7BFAAF282C64872400A4D021 /* PostBoxViewModel.swift */,
-			);
-			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		7BFAAF272C64850B00A4D021 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				7BFAAF2A2C64873B00A4D021 /* PostBoxModel.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
 		D32A21A22C22B3F700765A23 /* Record */ = {
 			isa = PBXGroup;
 			children = (
@@ -1004,7 +936,6 @@
 			children = (
 				D355F0242CC148130025391D /* LabeledMailsView.swift */,
 				D355F0222CC143140025391D /* StarredMailsView.swift */,
-				D323C5DF2DD487680064566F /* StarredmailView.swift */,
 				D355F0202CC11F380025391D /* SnoozedMailsView.swift */,
 			);
 			path = View;
@@ -1109,7 +1040,6 @@
 		D368BB2E2C21A33000AE2C7F /* Residence */ = {
 			isa = PBXGroup;
 			children = (
-				D368BB312C21A34900AE2C7F /* Model */,
 				D368BB302C21A34200AE2C7F /* ViewModel */,
 				D368BB2F2C21A33C00AE2C7F /* View */,
 			);
@@ -1130,22 +1060,14 @@
 			isa = PBXGroup;
 			children = (
 				D368BB362C21B19700AE2C7F /* HomeResidenceViewModel.swift */,
-				D368BB3A2C21CE5A00AE2C7F /* ResidenceUserProfileViewModel.swift */,
-				D32A21A02C22AE3D00765A23 /* AddNewGroupViewModel.swift */,
 			);
 			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		D368BB312C21A34900AE2C7F /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		D37B89DD2DB757BC00ED8E68 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D392E26F2E4245A200DEDA09 /* ClockKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1155,16 +1077,8 @@
 			children = (
 				D37CA8DE2C05E450000DE3C5 /* View */,
 				D37CA8DD2C05E449000DE3C5 /* ViewModel */,
-				D37CA8DC2C05E441000DE3C5 /* Model */,
 			);
 			path = HomeScreen;
-			sourceTree = "<group>";
-		};
-		D37CA8DC2C05E441000DE3C5 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		D37CA8DD2C05E449000DE3C5 /* ViewModel */ = {
@@ -1426,7 +1340,7 @@
 		D392CF082C255E6F00636ACC /* Planner */ = {
 			isa = PBXGroup;
 			children = (
-				D392CF0D2C255EBA00636ACC /* Model */,
+				D3C9AD9E2E530A54006BA241 /* Model */,
 				D392CF0C2C255EAE00636ACC /* ViewModel */,
 				D392CF0B2C255E9E00636ACC /* View */,
 			);
@@ -1455,17 +1369,6 @@
 				D392CF182C25A32600636ACC /* AddEventViewModel.swift */,
 			);
 			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		D392CF0D2C255EBA00636ACC /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				D3E75B9A2CEF56E400038827 /* DiaryModel.swift */,
-				D34A1A742CF5AC620020128E /* NoteModel.swift */,
-				D37A260B2D15857900EAE1C0 /* DoitModel.swift */,
-				D339CF7B2D352FF20069B9AB /* DateBookModel.swift */,
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		D398A6612CB557D30069CCD7 /* Info */ = {
@@ -1634,6 +1537,55 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
+<<<<<<< HEAD
+=======
+		D3C9AD9E2E530A54006BA241 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				D339CF7B2D352FF20069B9AB /* DateBookModel.swift */,
+				D3E75B9A2CEF56E400038827 /* DiaryModel.swift */,
+				D34A1A742CF5AC620020128E /* NoteModel.swift */,
+				D37A260B2D15857900EAE1C0 /* DoitModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		D3D757B72C24294A00F127FF /* PostBox */ = {
+			isa = PBXGroup;
+			children = (
+				D3D757BA2C24296500F127FF /* Model */,
+				D3D757B92C24295E00F127FF /* ViewModel */,
+				D3D757B82C24295900F127FF /* View */,
+			);
+			path = PostBox;
+			sourceTree = "<group>";
+		};
+		D3D757B82C24295900F127FF /* View */ = {
+			isa = PBXGroup;
+			children = (
+				D3D757BB2C24297900F127FF /* HomePostboxView.swift */,
+				D3391E272DB1167900135836 /* chatBoxView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		D3D757B92C24295E00F127FF /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				D3D757BF2C2430D200F127FF /* HomePostboxViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		D3D757BA2C24296500F127FF /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				D3795D742C343AE200763373 /* PostboxModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+>>>>>>> 7f6a3866d2bcc9dc1198af83d0c186c8ca4375da
 		D3D757C12C24669F00F127FF /* Conveyed */ = {
 			isa = PBXGroup;
 			children = (
@@ -1681,7 +1633,6 @@
 		D3D94EB92CB536AF00CC3C8F /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				D3391E212DB0ED1A00135836 /* ConsoleViewModel.swift */,
 				D3391E252DB10A4700135836 /* ConsoleViewModel.swift */,
 			);
 			path = ViewModel;
@@ -1745,11 +1696,10 @@
 			);
 			name = Thapala;
 			packageProductDependencies = (
-				D3283AE92CFF08CA0036F139 /* ClockTimePicker */,
-				D37614CD2D142FD800951686 /* SwiftDate */,
-				D3CCD50F2DB236F2007700B9 /* SocketIO */,
-				D3CCD5122DB273B4007700B9 /* CryptoSwift */,
-				D33271F12DE4806C0058AA4C /* Kingfisher */,
+				D392E2722E42491F00DEDA09 /* ClockTimePicker */,
+				D392E2752E42495200DEDA09 /* SocketIO */,
+				D305B35C2E44C31300B0AA2D /* Bcrypt */,
+				D32930182E4B44FA00F5A1BF /* WaterfallGrid */,
 			);
 			productName = Thapala;
 			productReference = 7B22B3532BD6CAB700020111 /* Thapala.app */;
@@ -1780,11 +1730,10 @@
 			);
 			mainGroup = 7B22B34A2BD6CAB700020111;
 			packageReferences = (
-				D3283AE82CFF08CA0036F139 /* XCRemoteSwiftPackageReference "ClockTimePicker" */,
-				D37614CC2D142FD800951686 /* XCRemoteSwiftPackageReference "SwiftDate" */,
-				D3CCD50E2DB236F2007700B9 /* XCRemoteSwiftPackageReference "socket" */,
-				D3CCD5112DB273B4007700B9 /* XCRemoteSwiftPackageReference "CryptoSwift" */,
-				D33271F02DE4806C0058AA4C /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				D392E2712E42491F00DEDA09 /* XCRemoteSwiftPackageReference "ClockTimePicker" */,
+				D392E2742E42495200DEDA09 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */,
+				D305B35B2E44C31300B0AA2D /* XCRemoteSwiftPackageReference "swift-bcrypt" */,
+				D32930172E4B44FA00F5A1BF /* XCRemoteSwiftPackageReference "WaterfallGrid" */,
 			);
 			productRefGroup = 7B22B3542BD6CAB700020111 /* Products */;
 			projectDirPath = "";
@@ -1834,7 +1783,6 @@
 				D37CA8FE2C05E80E000DE3C5 /* NavigatorEditViewModel.swift in Sources */,
 				D3D557122C7628A400B0E64E /* InsertTCodeModel.swift in Sources */,
 				D38E5B562CB64A9700901F91 /* InfoModelData.swift in Sources */,
-				D3391E222DB0ED1A00135836 /* ConsoleViewModel.swift in Sources */,
 				D363A76D2DD3164300D42A2F /* MoveTo.swift in Sources */,
 				D36888F02CC66686002897EA /* StarredEmailModel.swift in Sources */,
 				D37CA8FA2C05E7BD000DE3C5 /* NavigatorEditView.swift in Sources */,
@@ -1849,7 +1797,6 @@
 				D37CA8F22C05E6E4000DE3C5 /* HomeAwaitingViewModel.swift in Sources */,
 				D307910D2D9E627900AE0200 /* consoleModelData.swift in Sources */,
 				D3D557102C76214E00B0E64E /* InsertTCodeView.swift in Sources */,
-				D323C5E02DD487680064566F /* StarredmailView.swift in Sources */,
 				D35FC0582C57B47E00CD088A /* EditProfileView.swift in Sources */,
 				D37A260C2D15857900EAE1C0 /* DoitModel.swift in Sources */,
 				D392CF132C257FF600636ACC /* PlannerAddTaskViewModel.swift in Sources */,
@@ -1895,7 +1842,6 @@
 				D369637E2DE5BF5E0034F3E9 /* RecordsThreeDotsView.swift in Sources */,
 				7B22B3872BD7433200020111 /* FontExtensions.swift in Sources */,
 				D33094212C00C6630016F32F /* SecurityAnswerModel.swift in Sources */,
-				7B1852B02BE10D9800FE61FC /* MainView.swift in Sources */,
 				7B0F7FC12BD7694200BE2F5A /* CreateAccountView.swift in Sources */,
 				D32A21AD2C22E0B700765A23 /* CreateNewFolderViewModel.swift in Sources */,
 				D3A8A15F2E00212E0046D36D /* AppBarElemenetsModelData.swift in Sources */,
@@ -1911,8 +1857,6 @@
 				D34BEDF62CB671FF00C583C2 /* TrashView.swift in Sources */,
 				7B8168822BECB61300E825EC /* SuggestTCodeView.swift in Sources */,
 				D32FD1072BFF7310004D8AA0 /* ResetForgotPasswordViewModel.swift in Sources */,
-				D32A21A12C22AE3D00765A23 /* AddNewGroupViewModel.swift in Sources */,
-				D368BB3B2C21CE5A00AE2C7F /* ResidenceUserProfileViewModel.swift in Sources */,
 				D37CA9002C05F4E2000DE3C5 /* PasswordCreatedSuccessView.swift in Sources */,
 				7B22B36E2BD6CECA00020111 /* LoginView.swift in Sources */,
 				D34BEDFC2CB67FF900C583C2 /* ContactsView.swift in Sources */,
@@ -2230,7 +2174,23 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		D3283AE82CFF08CA0036F139 /* XCRemoteSwiftPackageReference "ClockTimePicker" */ = {
+		D305B35B2E44C31300B0AA2D /* XCRemoteSwiftPackageReference "swift-bcrypt" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ptoffy/swift-bcrypt.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.0;
+			};
+		};
+		D32930172E4B44FA00F5A1BF /* XCRemoteSwiftPackageReference "WaterfallGrid" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/paololeonardi/WaterfallGrid.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.0;
+			};
+		};
+		D392E2712E42491F00DEDA09 /* XCRemoteSwiftPackageReference "ClockTimePicker" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/workingDog/ClockTimePicker.git";
 			requirement = {
@@ -2238,65 +2198,36 @@
 				minimumVersion = 1.1.0;
 			};
 		};
-		D33271F02DE4806C0058AA4C /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+		D392E2742E42495200DEDA09 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 8.3.2;
-			};
-		};
-		D37614CC2D142FD800951686 /* XCRemoteSwiftPackageReference "SwiftDate" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/malcommac/SwiftDate.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 7.0.0;
-			};
-		};
-		D3CCD50E2DB236F2007700B9 /* XCRemoteSwiftPackageReference "socket" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/socketio/socket.io-client-swift";
+			repositoryURL = "https://github.com/socketio/socket.io-client-swift.git";
 			requirement = {
 				branch = master;
 				kind = branch;
 			};
 		};
-		D3CCD5112DB273B4007700B9 /* XCRemoteSwiftPackageReference "CryptoSwift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/krzyzanowskim/CryptoSwift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.8.4;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		D3283AE92CFF08CA0036F139 /* ClockTimePicker */ = {
+		D305B35C2E44C31300B0AA2D /* Bcrypt */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = D3283AE82CFF08CA0036F139 /* XCRemoteSwiftPackageReference "ClockTimePicker" */;
+			package = D305B35B2E44C31300B0AA2D /* XCRemoteSwiftPackageReference "swift-bcrypt" */;
+			productName = Bcrypt;
+		};
+		D32930182E4B44FA00F5A1BF /* WaterfallGrid */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D32930172E4B44FA00F5A1BF /* XCRemoteSwiftPackageReference "WaterfallGrid" */;
+			productName = WaterfallGrid;
+		};
+		D392E2722E42491F00DEDA09 /* ClockTimePicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D392E2712E42491F00DEDA09 /* XCRemoteSwiftPackageReference "ClockTimePicker" */;
 			productName = ClockTimePicker;
 		};
-		D33271F12DE4806C0058AA4C /* Kingfisher */ = {
+		D392E2752E42495200DEDA09 /* SocketIO */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = D33271F02DE4806C0058AA4C /* XCRemoteSwiftPackageReference "Kingfisher" */;
-			productName = Kingfisher;
-		};
-		D37614CD2D142FD800951686 /* SwiftDate */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D37614CC2D142FD800951686 /* XCRemoteSwiftPackageReference "SwiftDate" */;
-			productName = SwiftDate;
-		};
-		D3CCD50F2DB236F2007700B9 /* SocketIO */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D3CCD50E2DB236F2007700B9 /* XCRemoteSwiftPackageReference "socket" */;
+			package = D392E2742E42495200DEDA09 /* XCRemoteSwiftPackageReference "socket.io-client-swift" */;
 			productName = SocketIO;
-		};
-		D3CCD5122DB273B4007700B9 /* CryptoSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D3CCD5112DB273B4007700B9 /* XCRemoteSwiftPackageReference "CryptoSwift" */;
-			productName = CryptoSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

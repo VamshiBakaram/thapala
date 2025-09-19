@@ -18,6 +18,7 @@ class BottomSheetViewModel: ObservableObject {
     @Published var setPin: String = ""
     @Published var password: String = ""
     @Published var lockerVerifyResponse: verifyLockerResponse? = nil
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     
     func getLockerVerify(completion: @escaping (Bool) -> Void) {
         self.isLoading = true
@@ -28,31 +29,25 @@ class BottomSheetViewModel: ObservableObject {
             switch result {
             case .success(let response):
                 DispatchQueue.main.async {
-                    print("success case")
                     self.lockerVerifyResponse = response
                     self.toastmessage = response.message
-                    print("response.message  \(response.message)")
                     self.isLoading = false
                     completion(true)
                     if response.status == 401 {
-                        print("Api 401 case")
                         completion(false)
                         self.toastmessage = response.message
-                        print("response.message  \(response.message)")
                     }
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
-                    print("failure case")
                     self.isLoading = false
                     completion(false)
                     switch error {
                     case .error(let errorDescription):
                         self.toastmessage = errorDescription
-                        print("error case \(self.toastmessage)")
                         completion(false)
                     case .sessionExpired:
-                        self.toastmessage = "Please try again later"
+                        self.toastmessage = self.sessionExpiredErrorMessage
                     }
                 }
             }

@@ -20,10 +20,10 @@ class SessionManager: ObservableObject {
     @AppStorage("token") var token = ""
     @AppStorage("userTcode") var userTcode = ""
     @AppStorage("userName") var userName = ""
-    @AppStorage("LastName") var LastName = ""
+    @AppStorage("lastName") var lastName = ""
     @AppStorage("userId") var userId: Int = 0
     @AppStorage("favoriteEmails") var favoriteEmailsData: Data = Data()
-    @AppStorage("SelectedTheme") var SelectedTheme = ""
+    @AppStorage("selectedTheme") var selectedTheme = ""
     @AppStorage("pin") var pin = ""
     @AppStorage("password") var password = ""
 }

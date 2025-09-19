@@ -27,6 +27,7 @@ class ReplyEmailViewModel:ObservableObject{
     @Published var replyToId: String = ""
     @Published var threadId: String = ""
     @Published var composeEmail: String = ""
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
     
     init(to: String, cc: String, bcc: String, subject: String, body: String,replyToId:String,threadId:String,subSubject:String) {
            self.toAddress = to
@@ -62,7 +63,7 @@ class ReplyEmailViewModel:ObservableObject{
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -79,10 +80,6 @@ class ReplyEmailViewModel:ObservableObject{
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.error = response.message ?? ""
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-//                        self.emailData = response.data ?? []
-//                        self.emailFullData = response
-//                    })
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -93,7 +90,7 @@ class ReplyEmailViewModel:ObservableObject{
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -127,7 +124,6 @@ class ReplyEmailViewModel:ObservableObject{
         }
         
         let endPoint = "\(EndPoint.sendEmail)\(ComposeEmailData.shared.isScheduleCreated)&passwordProtected=\(ComposeEmailData.shared.isPasswordProtected)&reply=\(true)"
-        print("endPoint",endPoint)
         NetworkManager.shared.request(type: SendEmailsModel.self, endPoint: endPoint, httpMethod: .post, parameters: emailParams, isTokenRequired: true,passwordHash: ComposeEmailData.shared.passwordHash, isSessionIdRequited: false) { [weak self]result in
             guard let self = self else { return }
             switch result {
@@ -151,7 +147,7 @@ class ReplyEmailViewModel:ObservableObject{
                     case .error(error: let message):
                         self.error = message
                     case .sessionExpired(error: _ ):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -225,7 +221,8 @@ class ReplyEmailViewModel:ObservableObject{
        }
     
     func uploadFiles(fileURLs: [URL]) {
-        let url = URL(string: "http://128.199.21.237:8080/api/v1/attachments")!
+        let url = URL(string: "\(EndPoint.attachmentsReplyMail)")!
+//        let url = URL(string: "http://128.199.21.237:8080/api/v1/attachments")!
         var request = URLRequest(url: url)
         let sessionManager = SessionManager()
         request.httpMethod = "POST"
@@ -238,21 +235,17 @@ class ReplyEmailViewModel:ObservableObject{
         
         let task = URLSession.shared.uploadTask(with: request, from: data) { responseData, response, error in
             if let error = error {
-                print("Error uploading files: \(error)")
                 return
             }
             
             if let response = response as? HTTPURLResponse, let responseData = responseData {
-                print("Status code: \(response.statusCode)")
                 do {
                     let attachmentResponse = try JSONDecoder().decode(AttachmentModel.self, from: responseData)
-                    print("Response: \(attachmentResponse)")
                     DispatchQueue.main.async {
                         // Handle the response, e.g., update the view model
                         self.handleAttachmentResponse(attachmentResponse)
                     }
                 } catch {
-                    print("Failed to decode response: \(error)")
                 }
             }
         }
@@ -273,7 +266,6 @@ class ReplyEmailViewModel:ObservableObject{
                        let fileData = try Data(contentsOf: fileURL)
                        body.append(fileData)
                    } catch {
-                       print("Error reading file data for \(filename): \(error.localizedDescription)")
                        continue
                    }
             body.append("\r\n".data(using: .utf8)!)

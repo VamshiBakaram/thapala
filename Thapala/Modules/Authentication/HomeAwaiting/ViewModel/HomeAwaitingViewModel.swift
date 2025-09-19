@@ -27,7 +27,6 @@ class HomeAwaitingViewModel: ObservableObject {
     @Published var draftsFullData: HomeDraftsModel?
     @Published var tDraftsData: [HomeDraftsDataModel] = []
     @Published var scheduleData: [HomeDraftsDataModel] = []
-//    @Published var snoozedmail: [SnoozeResponse] = []
     @Published var createLabelData: [Labeldata] = []
     @Published var isLoading: Bool = false
     @Published var threadID: [Int] = []
@@ -41,7 +40,6 @@ class HomeAwaitingViewModel: ObservableObject {
     @Published var isPlusBtn: Bool = false
     @Published var beforeLongPress: Bool = true
     @Published var draftBeforeLongPress: Bool = true
-  //  @Published var isSheet: Bool = false
     @Published var replyViewModel: ReplyEmailViewModel? = nil
     @Published var isReply:Bool = false
     @Published var to = ""
@@ -50,7 +48,7 @@ class HomeAwaitingViewModel: ObservableObject {
     @Published var subject = ""
     @Published var body = ""
     @Published var draftView: Bool = false
-    
+    private let sessionExpiredErrorMessage =  "Session expired. Please log in again."
 
     func getEmailsData() {
         self.isLoading = true
@@ -75,7 +73,7 @@ class HomeAwaitingViewModel: ObservableObject {
                         }
                         
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -109,7 +107,7 @@ class HomeAwaitingViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -125,7 +123,6 @@ class HomeAwaitingViewModel: ObservableObject {
             case .success(let response):
                 DispatchQueue.main.async {
                     self.isLoading = false
-                    print("tDraftData",response)
                     self.tDraftsData = response.data ?? []
                     
                     if !self.tDraftsData.isEmpty {
@@ -144,7 +141,7 @@ class HomeAwaitingViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -178,7 +175,7 @@ class HomeAwaitingViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -218,26 +215,11 @@ class HomeAwaitingViewModel: ObservableObject {
         }
     }
     
-
     var shouldDisplayOpenEnvelope: Bool {
         guard let emailFullData = emailFullData else { return false }
         let selectedEmails = emailFullData.data?.filter { selectedThreadIDs.contains($0.threadID ?? 0) }
         return ((selectedEmails?.contains { $0.readReceiptStatus == 0 }) != nil)
     }
-
-//    func toggleReadStatusForSelectedEmails() {
-//        guard let emailFullData = emailFullData else { return }
-//
-//        let selectedEmails = emailFullData.data!.filter { selectedThreadIDs.contains($0.threadID!) }
-//        for email in selectedEmails {
-//            if email.readReceiptStatus == 0 {
-//                markEmailAsRead(email: [email])
-//            } else {
-//                markEmailAsUnRead(email: [email])
-//            }
-//            self.beforeLongPress = true
-//        }
-//    }
     
     func getStarredEmail(selectedEmail:Int) {
         self.isLoading = true
@@ -247,10 +229,8 @@ class HomeAwaitingViewModel: ObservableObject {
             switch result {
             case .success(let response):
                 DispatchQueue.main.async {
-//                    self.isLoading = false
                     self.error = response.message ?? ""
                         self.starredemail = [response]
-                        print("starred email, response")
                     
                 }
             case .failure(let error):
@@ -262,7 +242,7 @@ class HomeAwaitingViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -272,7 +252,7 @@ class HomeAwaitingViewModel: ObservableObject {
 
     func snoozedEmail(snoozedAt: Int , selectedThreadID : [Int]) {
         self.isLoading = true
-        let url = "\(EndPoint.snoozedmail)"
+        let url = "\(EndPoint.snoozedMail)"
         let params = SnoozeRequest(
             status: true,
             snoozedAt: snoozedAt,
@@ -283,11 +263,7 @@ class HomeAwaitingViewModel: ObservableObject {
             switch result {
             case .success(let response):
                 DispatchQueue.main.async {
-    //                    self.isLoading = false
                     self.error = response.message
-//                        self.snoozedmail = [response]
-                        print("starred email, response")
-                    
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -298,7 +274,7 @@ class HomeAwaitingViewModel: ObservableObject {
                             self.error = error
                         }
                     case .sessionExpired(error: _):
-                        self.error = "Please try again later"
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -314,23 +290,19 @@ class HomeAwaitingViewModel: ObservableObject {
         if let jsonData = try? JSONEncoder().encode(params),
            let jsonString = String(data: jsonData, encoding: .utf8) {
         }
-        NetworkManager.shared.request(type: CreateLabelResponse.self,endPoint: endPoint,httpMethod: .post, parameters: params, isTokenRequired: true) { [weak self] result in
+        NetworkManager.shared.request(type: CreateLabelResponse.self,endPoint: endPoint, httpMethod: .post, parameters: params, isTokenRequired: true) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.isLoading = false
                 switch result {
                 case .success(let response):
-                    response.message.self
                     self.createLabelData = [response.data]
                 case .failure(let error):
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -353,16 +325,13 @@ class HomeAwaitingViewModel: ObservableObject {
                 self.isLoading = false
                 switch result {
                 case .success(let response):
-                    response.message.self
+                    self.error = response.message
                 case .failure(let error):
                     switch error {
                     case .error(let message):
                         self.error = message
-                        print("Error: \(message)")
                     case .sessionExpired:
-                        self.error = "Session expired. Please log in again."
-                    default:
-                        self.error = "An unexpected error occurred."
+                        self.error = self.sessionExpiredErrorMessage
                     }
                 }
             }
@@ -393,16 +362,34 @@ func convertToIST(dateInput: Any) -> String? {
     
     let currentYear = Calendar.current.component(.year, from: Date())
     let dateYear = Calendar.current.component(.year, from: date)
-    
-    // The formats were the same anyway; you can adjust if you want different ones.
-    if dateYear == currentYear {
         dateFormatter.dateFormat = "dd-MMM-yyyy h:mm a"
-    } else {
-        dateFormatter.dateFormat = "dd-MMM-yyyy h:mm a"
-    }
-    
     let formattedDateString = dateFormatter.string(from: date)
     return formattedDateString
+}
+
+// only hours minutes and am/pm
+
+func convertToTime(dateInput: Any) -> String? {
+    let date: Date?
+    
+    if let timestamp = dateInput as? Int {
+        date = Date(timeIntervalSince1970: TimeInterval(timestamp))
+    } else if let dateString = dateInput as? String {
+        let isoDateFormatter = ISO8601DateFormatter()
+        isoDateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        date = isoDateFormatter.date(from: dateString)
+    } else {
+        return nil
+    }
+    
+    guard let date = date else { return nil }
+    
+    let dateFormatter = DateFormatter()
+    dateFormatter.timeZone = TimeZone(identifier: "Asia/Kolkata")
+    dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+    dateFormatter.dateFormat = "h:mm a"
+    
+    return dateFormatter.string(from: date).lowercased()
 }
 
 

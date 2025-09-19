@@ -23,7 +23,6 @@ class PasswordProtectedAccessViewModel:ObservableObject{
             return
         }
         self.isPasswordProtected = true
-      //  getFullEmail(emailId: idEmail, passwordHash: password)
     }
     
     func getFullEmail(emailId:Int,passwordHash:String) {

@@ -9,9 +9,8 @@ import SwiftUI
 struct QuickAccessView: View {
     @Environment(\.presentationMode) var closeView
     @StateObject var homeAwaitingViewModel = HomeAwaitingViewModel()
-    @StateObject var themesviewModel = themesViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Binding var isQuickAccessVisible: Bool
-//    @Binding var homeAwaitingViewModel: Bool
     
     var body: some View {
         ZStack {
@@ -32,8 +31,6 @@ struct QuickAccessView: View {
                     Button {
                         if !homeAwaitingViewModel.isComposeEmail {
                             homeAwaitingViewModel.isComposeEmail = true
-//                            isQuickAccessVisible = true
-                            print("Messages button clicked, isComposeEmail set to true")
                         }
                     } label: {
                         Image("pencil")
@@ -64,7 +61,6 @@ struct QuickAccessView: View {
                         .foregroundColor(themesviewModel.currentTheme.textColor)
                         .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
                     Button {
-                        print("plus clicked")
                     } label: {
                         Image("event")
                             .resizable()
@@ -85,7 +81,6 @@ struct QuickAccessView: View {
                         .foregroundColor(themesviewModel.currentTheme.textColor)
                         .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
                     Button {
-                        print("plus clicked")
                     } label: {
                         Image("chat")
                             .resizable()
@@ -99,18 +94,11 @@ struct QuickAccessView: View {
                     }
                 }
                 Spacer()
-//                Button {
-//                    isQuickAccessVisible = false
-//                } label: {
-//                    Image("close")
-//                }
             }
             .padding(.bottom, 10)
         }
         .frame(width: 220, height: 250)
     }
-//        .frame(width: .infinity, height: .infinity)
-//        .background(Color.black)
 }
 #Preview {
     QuickAccessView(isQuickAccessVisible: .constant(true))

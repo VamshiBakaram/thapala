@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct ReplyEmailView: View {
-    @ObservedObject var replyEmailViewModel:ReplyEmailViewModel
-    @ObservedObject var mailComposeViewModel = MailComposeViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @StateObject var replyEmailViewModel:ReplyEmailViewModel
+    @StateObject var mailComposeViewModel = MailComposeViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject private var sessionManager: SessionManager
     @State private var isFilePickerPresented:Bool = false
@@ -21,11 +21,7 @@ struct ReplyEmailView: View {
         VStack {
             HStack {
                 Button(action: {
-                    print("cancel clicked")
-                    print("before isPresented \(isPresented)")
-//                    isPresented = false
-                    print("After isPresented \(isPresented)")
-                    presentationMode.wrappedValue.dismiss()
+                    isPresented = false
                 }) {
                     Image(systemName: "xmark")
                         .font(.title2)
@@ -69,7 +65,6 @@ struct ReplyEmailView: View {
                 Text("To:")
                     .foregroundColor(themesviewModel.currentTheme.textColor)
                 TextField("", text: $replyEmailViewModel.toAddress)
-                    //.textFieldStyle(RoundedBorderTextFieldStyle())
                     .foregroundColor(themesviewModel.currentTheme.textColor)
                     .frame(height: 40)
                     .padding(.trailing, 8)
@@ -232,19 +227,6 @@ struct ReplyEmailView: View {
                     .padding([.leading,.trailing], 20)
                     .padding(.top, -10)
             }
-//            Rectangle()
-//                .frame(maxWidth: .infinity)
-//                .frame(height: 1)
-//                .foregroundColor(themesviewModel.currentTheme.strokeColor)
-//                .padding([.leading,.trailing], 20)
-//                .padding(.top, -10)
-            
-//            TextEditor(text: $replyEmailViewModel.messageBody)
-//                .scrollContentBackground(.hidden)
-//                .background(.clear)
-//                .font(.custom(.poppinsRegular, size: 14))
-//                .foregroundColor(themesviewModel.currentTheme.textColor)
-//                .padding(.horizontal)
             
             ZStack(alignment: .topLeading) {
                 TextEditor(text: $replyEmailViewModel.messageBody)
@@ -259,7 +241,6 @@ struct ReplyEmailView: View {
                         .foregroundColor(themesviewModel.currentTheme.textColor)
                         .padding(.horizontal, 4)
                         .padding(.vertical, 8)
-//                        .frame(maxWidth: .infinity, alignment: .topTrailing)
                 }
             }
             
@@ -307,15 +288,6 @@ struct ReplyEmailView: View {
                 .presentationDragIndicator(.hidden)
         })
         
-//        .fileImporter(isPresented: $isFilePickerPresented, allowedContentTypes: [.image, .pdf, .plainText], allowsMultipleSelection: true) { result in
-//            switch result {
-//            case .success(let urls):
-//                mailComposeViewModel.selectedFiles.append(contentsOf: urls)
-//                mailComposeViewModel.uploadFiles(fileURLs: urls)
-//            case .failure(let error):
-//                print("Failed to select files: \(error.localizedDescription)")
-//            }
-//        }
         .navigationDestination(isPresented: $mailComposeViewModel.isInsertFromRecords) {
             InsertFileFromRecordsView().toolbar(.hidden)
         }
@@ -325,15 +297,6 @@ struct ReplyEmailView: View {
         .navigationDestination(isPresented: $replyEmailViewModel.backToscreen) {
             HomeAwaitingView(imageUrl: "").toolbar(.hidden)
         }
-//        .fileImporter(isPresented: $isEmailAttachments, allowedContentTypes: [.image, .pdf, .plainText], allowsMultipleSelection: true) { result in
-//            switch result {
-//            case .success(let urls):
-//                replyEmailViewModel.selectedFiles.append(contentsOf: urls)
-//                replyEmailViewModel.uploadFiles(fileURLs: urls)
-//            case .failure(let error):
-//                print("Failed to select files: \(error.localizedDescription)")
-//            }
-//        }
     }
 }
 

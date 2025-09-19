@@ -23,13 +23,15 @@ struct ThapalaApp: App {
                         })
                     })
             }else{
-//                PostBoxView()
                 if sessionManager.isShowLogin {
                     LoginView()
                         .environmentObject(sessionManager)
                 }else{
+//                    HomePlannerView()
+//                     HomeRecordsView(imageUrl: "")
+//                    HomeNavigatorView(imageUrl: "")
                     HomeAwaitingView(imageUrl: "")
-                            .environmentObject(sessionManager)
+                            .environmentObject(sessionManager) // inject once
                 }
             }
         }

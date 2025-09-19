@@ -8,16 +8,17 @@
 
 import SwiftUI
 struct HomeMenuView: View {
-    @ObservedObject var homeMenuViewModel = HomeMenuViewModel()
-    @ObservedObject var homeNavigatorViewModel = HomeNavigatorViewModel()
-    @ObservedObject var homeDirectoryViewModel = HomeDirectoryViewModel()
+    @StateObject var homeMenuViewModel = HomeMenuViewModel()
+    @StateObject var homeNavigatorViewModel = HomeNavigatorViewModel()
+    @StateObject var homeDirectoryViewModel = HomeDirectoryViewModel()
     @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
     @StateObject private var blueprintViewModel = BlueprintViewModel()
-    @ObservedObject var infoViewViewModel = InfoViewViewModel()
-    @ObservedObject var TrashedViewModel = TrashViewModel()
-    @ObservedObject var consoleViewModel = ConsoleViewModel()
-    @ObservedObject var themesviewModel = themesViewModel()
+    @StateObject var infoViewViewModel = InfoViewViewModel()
+    @StateObject var TrashedViewModel = TrashViewModel()
+    @StateObject var consoleViewModel = ConsoleViewModel()
+    @StateObject var themesviewModel = ThemesViewModel()
     @State private var notificationTime: Int?
+    
     let menuData: [HomeMenuData] = [
         .init(image: "queue", menuType: "Queue"),
         .init(image: "postboxW", menuType: "Postbox"),
@@ -25,12 +26,10 @@ struct HomeMenuView: View {
         .init(image: "blueprintW", menuType: "Blueprint"),
         .init(image: "plannerW", menuType: "Planner"),
         .init(image: "pocketW", menuType: "Pocket"),
-        //  .init(image: "directory", menuType: "Directory")
         .init(image: "direct", menuType: "Directory"),
         .init(image: "recordsW", menuType: "Records"),
         .init(image: "navigatorW", menuType: "Navigator")
     ]
-    
     
     let quickAccessData: [HomeMenuData] = [
         .init(image: "contactW", menuType: "Contacts"),
@@ -49,32 +48,38 @@ struct HomeMenuView: View {
     
     @EnvironmentObject private var sessionManager: SessionManager
     @Binding var isSidebarVisible: Bool
-    @State private var selectedOption: HomeMenuData?
+    @State private var selectedOption: HomeMenuData? = .init(image: "queue", menuType: "Queue")
     @State private var path: [HomeMenuData] = []
-//    @State private var isEditProfile: Bool = false
-    //    @State private var isCancel: Bool = false
     @State private var showAlert = false
     @State private var isCancel = false
     @State private var navigateToLoginView = false
     @State private var showEditProfileDialog: Bool = false
     
+    
     var body: some View {
         NavigationStack(path: $path) {
             ZStack {
-                if isSidebarVisible {
-                    Rectangle()
-                        .ignoresSafeArea()
-                        .onTapGesture {
-                            isSidebarVisible.toggle()
-                        }
-                    content
+
+                if let selected = selectedOption {
+                    destinationViewForMenuItem(selected)
                 }
-                if showEditProfileDialog {
-                    EditProfileDialog(
-                        imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person",
-                        name: "\(homeNavigatorViewModel.navigatorBioData?.user?.firstName ?? "") \(homeNavigatorViewModel.navigatorBioData?.user?.lastName ?? "")",
-                        tCode: homeNavigatorViewModel.navigatorBioData?.user?.tCode ?? "",
-                        isVisible: $showEditProfileDialog
+
+                if isSidebarVisible {
+                    HStack {
+                        Spacer()
+                        content
+                            .frame(width: UIScreen.main.bounds.width * 0.75)
+                            .transition(.move(edge: .trailing))
+                    }
+                    .background(
+                        Color.black.opacity(0.3)
+                            .ignoresSafeArea()
+                            .onTapGesture {
+                                withAnimation {
+                                    isSidebarVisible = false
+                                    // no reset — last selectedOption remains
+                                }
+                            }
                     )
                 }
             }
@@ -85,8 +90,21 @@ struct HomeMenuView: View {
                 homeNavigatorViewModel.getNavigatorBio(userId: sessionManager.userId)
             }
             .toast(message: $homeMenuViewModel.error)
+            .overlay {
+                if showEditProfileDialog {
+                    EditProfileDialog(
+                        imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person",
+                        name: "\(homeNavigatorViewModel.navigatorBioData?.user?.firstName ?? "") \(homeNavigatorViewModel.navigatorBioData?.user?.lastName ?? "")",
+                        tCode: homeNavigatorViewModel.navigatorBioData?.user?.tCode ?? "",
+                        isVisible: $showEditProfileDialog
+                    )
+                }
+            }
         }
     }
+
+
+
     
     var content: some View {
         GeometryReader{ reader in
@@ -124,40 +142,43 @@ struct HomeMenuView: View {
                     }
                 }
                 .frame(width: UIScreen.main.bounds.width * 0.75)
-//                .frame(height: UIScreen.main.bounds.height)
-                .background(themesviewModel.currentTheme.colorPrimary)
-//                .ignoresSafeArea(edges: [.bottom])
+                .background(
+                    themesviewModel.currentTheme.colorPrimary
+                        .clipShape(
+                            RoundedCorner(radius: 20, corners: [.topLeft, .bottomLeft])
+                        )
+                )
+
+                .padding(.top , 5)
             }
         }
     }
     
     var profileHeader: some View {
         HStack {
-            AsyncImage(url: URL(string: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "")) { phase in
-                switch phase {
-                case .empty:
-                    Image("person")
-                case .success(let image):
-                    image
-                        .resizable()
-                        .frame(width: 34, height: 34)
-                        .aspectRatio(contentMode: .fit)
-                        .clipShape(Circle())
-                case .failure:
-                    Image("person")
-                        .resizable()
-                        .frame(width: 34, height: 34)
-                @unknown default:
-                    EmptyView()
-                }
-            }
+            Image("contactW")
+                .resizable()
+                .renderingMode(.template)
+                .frame(width: 40, height: 40)
+                .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                .background(
+                    Circle()
+                        .fill(themesviewModel.currentTheme.colorPrimary)
+                )
+                .overlay(
+                    Circle()
+                        .stroke(Color.white, lineWidth: 2) // Border
+                )
+                .clipShape(Circle())
+                .padding(.leading, 16)
             
             VStack(alignment: .leading) {
-                Text(sessionManager.userName)
-                    .font(.custom("Poppins-Regular", size: 18))
+                Text("\(sessionManager.userName) \(sessionManager.lastName)" )
+                    .font(.custom(.poppinsSemiBold, size: 18))
                     .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
+            
                 Text(sessionManager.userTcode)
-                    .font(.custom("Poppins-Light", size: 16))
+                    .font(.custom(.poppinsSemiBold, size: 16))
                     .foregroundColor(themesviewModel.currentTheme.inverseTextColor)
             }
             Image(systemName: "chevron.down")
@@ -266,9 +287,7 @@ struct HomeMenuView: View {
                 message: Text("Are you sure you want to sign out?"),
                 primaryButton: .destructive(Text("Sign Out")) {
                     // Navigate to LoginView
-                    print("clicked on conform to signout")
                     homeMenuViewModel.logout(userID: sessionManager.userId)
-                    print("sessionManager.userId  \(sessionManager.userId)")
                     sessionManager.isShowLogin = true
                 },
                 secondaryButton: .cancel {
@@ -290,13 +309,13 @@ struct HomeMenuView: View {
         case "Conveyed":
             return AnyView(HomeConveyedView(imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person"))
         case "Postbox":
-            return AnyView(HomePostboxView(imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person", selectedID: 0, emailId: 0, passwordHash: ""))
+            return AnyView(HomePostboxView(imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person", selectedID: 0 , passwordHash: ""))
         case "Planner":
             return AnyView(HomePlannerView())
         case "Pocket":
             return AnyView(HomePocketView( imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person"))
         case "Directory":
-            return AnyView(HomeDirectoryView(isHomeDirectoryVisible: $homeDirectoryViewModel.DirectoryUpdate, imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person"))
+            return AnyView(HomeDirectoryView(isHomeDirectoryVisible: $homeDirectoryViewModel.directoryUpdate, imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person"))
         case "Records":
             return AnyView(HomeRecordsView(imageUrl: homeNavigatorViewModel.navigatorBioData?.bio?.profile ?? "person"))
         case "Navigator":
@@ -430,4 +449,19 @@ struct HomeMenuView: View {
 
 #Preview {
     HomeMenuView(isSidebarVisible: .constant(false))
+}
+
+
+struct RoundedCorner: Shape {
+    var radius: CGFloat = .infinity
+    var corners: UIRectCorner = .allCorners
+
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(
+            roundedRect: rect,
+            byRoundingCorners: corners,
+            cornerRadii: CGSize(width: radius, height: radius)
+        )
+        return Path(path.cgPath)
+    }
 }

@@ -14,9 +14,8 @@ struct BlueprintView: View {
     @StateObject var mailComposeViewModel = MailComposeViewModel()
     @StateObject private var appBarElementsViewModel = AppBarElementsViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
-    @ObservedObject private var themesviewModel = themesViewModel()
+    @ObservedObject private var themesviewModel = ThemesViewModel()
     @State private var isQuickAccessVisible = false
-//    @State private var isMailViewActive = false
     @State var isInsertTcode: Bool = false
     @State private var selectedTcode: String = ""
     @State private var selectedCCcode: String = ""
@@ -28,6 +27,8 @@ struct BlueprintView: View {
     var body: some View {
             GeometryReader{ reader in
                 ZStack{
+                    themesviewModel.currentTheme.windowBackground
+                        .ignoresSafeArea(edges: .bottom)
                     VStack{
                         VStack {
                             HStack(spacing:20){
@@ -55,8 +56,6 @@ struct BlueprintView: View {
                                 
                                 Button(action: {
                                     appBarElementsViewModel.isSearch = true
-                                    
-                                    print("After appBarElementsViewModel.isSearch \(appBarElementsViewModel.isSearch)")
                                 }) {
                                     Image("magnifyingglass")
                                         .renderingMode(.template)
@@ -67,7 +66,6 @@ struct BlueprintView: View {
                                 
                                 
                                 Button(action: {
-                                    print("bell button pressed")
                                     iNotificationAppBarView = true
                                 }) {
                                     Image("notification")
@@ -76,7 +74,6 @@ struct BlueprintView: View {
                                 
                                 
                                 Button(action: {
-                                    print("line.3.horizontal button pressed")
                                     withAnimation {
                                         isMenuVisible.toggle()
                                     }
@@ -89,7 +86,7 @@ struct BlueprintView: View {
                                 .padding(.leading,15)
                                 .padding(.trailing , 30)
                             }
-                            .padding(.top , -reader.size.height * 0.01)
+                            .padding(.top ,15)
 
                                     HStack{
                                         RoundedRectangle(cornerRadius: 10)
@@ -192,10 +189,9 @@ struct BlueprintView: View {
                                     .padding(.bottom , 10)
                             
                         }
-                        .frame(height: reader.size.height * 0.16)
-                        .background(themesviewModel.currentTheme.tabBackground)
-                        
-                        
+                        .frame(height: reader.size.height * 0.17)
+                        .background(themesviewModel.currentTheme.colorPrimary)
+                        .padding(.top , 5)
                         
                         if let selectedOption = blueprintViewModel.selectedOption {
                             switch selectedOption {
@@ -208,12 +204,10 @@ struct BlueprintView: View {
                             }
                         }
                         Spacer()
-                        
-                        //                    Spacer().frame(height: 20)
-                        
+                                            
                         TabViewNavigator()
                             .frame(height: 40)
-                            .padding(.bottom , 10)
+                            .padding(.bottom , 30)
                         
                     }
                     .toast(message: $blueprintViewModel.error)
@@ -276,11 +270,7 @@ struct BlueprintView: View {
 
                 .fullScreenCover(isPresented: $blueprintViewModel.isComposeEmail) {
                     MailComposeView().toolbar(.hidden)
-                        .onAppear {
-                            print("MailFullView appeared")
-                        }
                 }
-
             }
 
 
@@ -291,11 +281,6 @@ struct BlueprintView: View {
             HStack {
                 Spacer()
                 Button(action: {
-                    print("to text \(blueprintViewModel.to) ")
-                    print("to cc \(blueprintViewModel.cc) ")
-                    print("to bcc \(blueprintViewModel.bcc) ")
-                    print("to subject \(blueprintViewModel.subject) ")
-                    print("to composeEmail \(blueprintViewModel.composeEmail) ")
                     blueprintViewModel.saveToTdraft(To: [blueprintViewModel.to], CC: [blueprintViewModel.cc], BCC: [blueprintViewModel.bcc], Subject: blueprintViewModel.subject, Body: blueprintViewModel.composeEmail)
                     blueprintViewModel.to = ""
                     blueprintViewModel.cc = ""
@@ -326,7 +311,6 @@ struct BlueprintView: View {
                     selectedBCCcode = ""
                     blueprintViewModel.isArrow = false
                     blueprintViewModel.error = "delete successfully"
-                    print("click on delete button")
                 }) {
                     Image("del")
                         .renderingMode(.template)
@@ -356,7 +340,7 @@ struct BlueprintView: View {
                                 Rectangle()
                                     .frame(maxWidth: .infinity)
                                     .frame(height: 1)
-                                    .foregroundColor(themesviewModel.currentTheme.AllGray)
+                                    .foregroundColor(themesviewModel.currentTheme.allGray)
                             }
                             
                             VStack(spacing: 2) {
@@ -414,7 +398,7 @@ struct BlueprintView: View {
                                                 }) {
                                                     Image(systemName: "xmark")
                                                         .renderingMode(.template)
-                                                        .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                                        .foregroundColor(themesviewModel.currentTheme.allBlack)
                                                 }
                                                 .padding([.leading , .trailing] , 5)
 
@@ -438,7 +422,6 @@ struct BlueprintView: View {
                                             }
                                         Button(action: {
                                             blueprintViewModel.isArrow.toggle()
-                                            print("arrow clicked")
                                         }, label: {
                                             Image(blueprintViewModel.isArrow ? "dropup" : "dropdown")
                                                 .renderingMode(.template)
@@ -486,7 +469,7 @@ struct BlueprintView: View {
                                 Rectangle()
                                     .frame(maxWidth: .infinity)
                                     .frame(height: 1)
-                                    .foregroundColor(themesviewModel.currentTheme.AllGray)
+                                    .foregroundColor(themesviewModel.currentTheme.allGray)
                             }
                
                                 
@@ -519,11 +502,11 @@ struct BlueprintView: View {
                                                             }
                                                         }
                                                         if isThreeNumbers(newValue) {
-                                                            mailComposeViewModel.CCsuggest = true
+                                                            mailComposeViewModel.ccSuggest = true
                                                             mailComposeViewModel.getSerachTcode(searchKey: newValue)
                                                         }
                                                         else {
-                                                            mailComposeViewModel.CCsuggest = false
+                                                            mailComposeViewModel.ccSuggest = false
                                                         }
                                                     }
                                                 
@@ -540,7 +523,7 @@ struct BlueprintView: View {
                                                         }) {
                                                             Image(systemName: "xmark")
                                                                 .renderingMode(.template)
-                                                                .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                                                .foregroundColor(themesviewModel.currentTheme.allBlack)
                                                         }
                                                         .padding([.leading , .trailing] , 5)
 
@@ -564,7 +547,6 @@ struct BlueprintView: View {
                                                     }
                                                 Button(action: {
                                                     blueprintViewModel.isArrow.toggle()
-                                                    print("arrow clicked")
                                                 }, label: {
                                                     Image(blueprintViewModel.isArrow ? "dropup" : "dropdown")
                                                         .renderingMode(.template)
@@ -575,7 +557,7 @@ struct BlueprintView: View {
                                             }
                                         )
 
-                                        if mailComposeViewModel.CCsuggest,
+                                        if mailComposeViewModel.ccSuggest,
                                            let data = mailComposeViewModel.tcodesuggest?.data {
                                             HStack(alignment: .top) {
                                                 VStack(alignment: .leading, spacing: 0) {
@@ -585,7 +567,7 @@ struct BlueprintView: View {
                                                                 selectedCCcode = selectedTCode
                                                                 blueprintViewModel.cc = selectedTCode
                                                             }
-                                                            mailComposeViewModel.CCsuggest = false
+                                                            mailComposeViewModel.ccSuggest = false
                                                         }) {
                                                             Text(tCode.tCode ?? "Unknown")
                                                                 .foregroundColor(.black)
@@ -612,7 +594,7 @@ struct BlueprintView: View {
                                         Rectangle()
                                             .frame(maxWidth: .infinity)
                                             .frame(height: 1)
-                                            .foregroundColor(themesviewModel.currentTheme.AllGray)
+                                            .foregroundColor(themesviewModel.currentTheme.allGray)
                                     }
                                     
                                     VStack(spacing: 10) {
@@ -642,11 +624,11 @@ struct BlueprintView: View {
                                                             }
                                                         }
                                                         if isThreeNumbers(newValue) {
-                                                            mailComposeViewModel.BCCsuggest = true
+                                                            mailComposeViewModel.bccSuggest = true
                                                             mailComposeViewModel.getSerachTcode(searchKey: newValue)
                                                         }
                                                         else {
-                                                            mailComposeViewModel.BCCsuggest = false
+                                                            mailComposeViewModel.bccSuggest = false
                                                         }
                                                     }
                                                 
@@ -663,7 +645,7 @@ struct BlueprintView: View {
                                                         }) {
                                                             Image(systemName: "xmark")
                                                                 .renderingMode(.template)
-                                                                .foregroundColor(themesviewModel.currentTheme.AllBlack)
+                                                                .foregroundColor(themesviewModel.currentTheme.allBlack)
                                                         }
                                                         .padding([.leading , .trailing] , 5)
 
@@ -687,7 +669,6 @@ struct BlueprintView: View {
                                                     }
                                                 Button(action: {
                                                     blueprintViewModel.isArrow.toggle()
-                                                    print("arrow clicked")
                                                 }, label: {
                                                     Image(blueprintViewModel.isArrow ? "dropup" : "dropdown")
                                                         .renderingMode(.template)
@@ -698,7 +679,7 @@ struct BlueprintView: View {
                                             }
                                         )
 
-                                        if mailComposeViewModel.BCCsuggest,
+                                        if mailComposeViewModel.bccSuggest,
                                            let data = mailComposeViewModel.tcodesuggest?.data {
                                             HStack(alignment: .top) {
                                                 VStack(alignment: .leading, spacing: 0) {
@@ -708,7 +689,7 @@ struct BlueprintView: View {
                                                                 selectedBCCcode = selectedTCode
                                                                 blueprintViewModel.bcc = selectedTCode
                                                             }
-                                                            mailComposeViewModel.BCCsuggest = false
+                                                            mailComposeViewModel.bccSuggest = false
                                                         }) {
                                                             Text(tCode.tCode ?? "Unknown")
                                                                 .foregroundColor(.black)
@@ -735,7 +716,7 @@ struct BlueprintView: View {
                                         Rectangle()
                                             .frame(maxWidth: .infinity)
                                             .frame(height: 1)
-                                            .foregroundColor(themesviewModel.currentTheme.AllGray)
+                                            .foregroundColor(themesviewModel.currentTheme.allGray)
                                     }
                                 }
                                 
@@ -760,7 +741,7 @@ struct BlueprintView: View {
                                 Rectangle()
                                     .frame(maxWidth: .infinity)
                                     .frame(height: 1)
-                                    .foregroundColor(themesviewModel.currentTheme.AllGray)
+                                    .foregroundColor(themesviewModel.currentTheme.allGray)
                             }
 
                                 
@@ -850,8 +831,7 @@ struct tCode: Identifiable {
     let id = UUID()
     let code: String
 }
-//
-//
+
 #Preview {
     BlueprintView(imageUrl: "")
         .environmentObject(SessionManager())

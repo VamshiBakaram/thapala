@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct BioView: View {
-    @ObservedObject var themesviewModel = themesViewModel()
+    @ObservedObject var themesviewModel = ThemesViewModel()
     @ObservedObject var homeNavigatorViewModel = HomeNavigatorViewModel()
     @EnvironmentObject private var sessionManager: SessionManager
     @State private var firstName: String = ""
@@ -30,29 +30,6 @@ struct BioView: View {
                 VStack {
                     VStack(alignment: .leading, spacing: 6) {
                         HStack {
-//                            AsyncImage(url: URL(string: imageUrl)) { phase in
-//                                switch phase {
-//                                case .empty:
-//                                    ProgressView()
-//                                case .success(let image):
-//                                    image
-//                                        .resizable()
-//                                        .frame(width: 40, height: 40)
-//                                        .aspectRatio(contentMode: .fit)
-//                                        .clipShape(Circle())
-//                                        .padding(.leading,20)
-//                                case .failure:
-//                                    Image("person")
-//                                        .resizable()
-//                                        .frame(width: 40, height: 40)
-//                                        .aspectRatio(contentMode: .fit)
-//                                        .clipShape(Circle())
-//                                        .background(themesviewModel.currentTheme.iconColor)
-//                                        .padding(.leading,20)
-//                                @unknown default:
-//                                    EmptyView()
-//                                }
-//                            }
                             Image("person")
                                 .resizable()
                                 .frame(width: 40, height: 40)
@@ -205,11 +182,7 @@ struct BioView: View {
             }
         }
         .onAppear{
-
-            
-                print("on appears \(sessionManager.userId)")
                 homeNavigatorViewModel.getNavigatorBio(userId: sessionManager.userId)
-                print("Api prints")
                 homeNavigatorViewModel.getLastestLogin()
                 
 
@@ -229,19 +202,6 @@ struct BioView: View {
                 state = homeNavigatorViewModel.navigatorBioData?.bio?.state ?? "N/A"
                 city = homeNavigatorViewModel.navigatorBioData?.bio?.city ?? "N/A"
                 lastLogin = formatDate(from: homeNavigatorViewModel.lastestData?.data?.first?.lastLogin ?? 0)
-                print("firstName \(firstName)")
-                print("phoneNumber \(phoneNumber)")
-                print("country \(country)")
-                print("AccountcreatedOn \(AccountcreatedOn)")
-                print("tcode \(tcode)")
-                print("birthDate \(birthDate)")
-                print("gender \(gender)")
-                print("motherTongue \(motherTongue)")
-                print("Language \(Language)")
-                print("state \(state)")
-                print("city \(city)")
-                print("lastLogin \(lastLogin)")
-                print("lastLogin \(lastLogin)")
             }
         }
     }
