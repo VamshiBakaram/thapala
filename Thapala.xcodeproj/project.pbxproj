@@ -49,7 +49,10 @@
 		7BCFC7522BDF87F600839D05 /* SecurityQuestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCFC7512BDF87F600839D05 /* SecurityQuestionsView.swift */; };
 		7BCFC7562BDF881700839D05 /* SecurityQuestionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCFC7552BDF881700839D05 /* SecurityQuestionsViewModel.swift */; };
 		7BCFC7582BDF882500839D05 /* SecurityQuestionsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCFC7572BDF882500839D05 /* SecurityQuestionsModel.swift */; };
+<<<<<<< HEAD
+=======
 		D305B35D2E44C31300B0AA2D /* Bcrypt in Frameworks */ = {isa = PBXBuildFile; productRef = D305B35C2E44C31300B0AA2D /* Bcrypt */; };
+>>>>>>> 7f6a3866d2bcc9dc1198af83d0c186c8ca4375da
 		D307910D2D9E627900AE0200 /* consoleModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D307910C2D9E627900AE0200 /* consoleModelData.swift */; };
 		D30CE6402DB22F4D009B215F /* WebSocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D30CE63F2DB22F4D009B215F /* WebSocketManager.swift */; };
 		D30DAC632E1C01D200F556A7 /* bottomSheetModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D30DAC622E1C01D200F556A7 /* bottomSheetModelData.swift */; };
@@ -1814,6 +1817,14 @@
 				D384E2DF2C16FE370044E631 /* SendEmailsModel.swift in Sources */,
 				D33B17912D93CF480011AED8 /* trashViewModel.swift in Sources */,
 				D3D47DCE2DA90DE6003B7387 /* GeneralConsoleModelData.swift in Sources */,
+<<<<<<< HEAD
+<<<<<<< HEAD
+				D32A21B52C22ECA600765A23 /* HomePocketViewModel.swift in Sources */,
+=======
+				7BFAAF292C64872400A4D021 /* PostBoxViewModel.swift in Sources */,
+>>>>>>> 434797578b5597fdc9244ce67f2bcbe3464a757c
+=======
+>>>>>>> 7f6a3866d2bcc9dc1198af83d0c186c8ca4375da
 				7B0F7FB82BD766D400BE2F5A /* FloatingTextField.swift in Sources */,
 				D392CF192C25A32600636ACC /* AddEventViewModel.swift in Sources */,
 				D3C8170C2DB79CF900BB0359 /* themesViewModel.swift in Sources */,

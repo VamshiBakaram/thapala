@@ -726,7 +726,7 @@ struct HomePostboxView: View {
                                   trashAction: {
                     dismissSheet()
                 }
-                )
+              )
                 .presentationDetents([.medium])
                 .presentationDragIndicator(.hidden)
             })
@@ -745,6 +745,80 @@ struct HomePostboxView: View {
     }
     
     var emailsView:some View{
+<<<<<<< HEAD
+        VStack{
+            if homePostboxViewModel.isLoading {
+                CustomProgressView()
+            }
+            else if homePostboxViewModel.postBoxEmailData.isEmpty{
+                Text("No Mails Found.")
+                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                    .font(.custom(.poppinsMedium, size: 25, relativeTo: .title))
+            }else{
+                    VStack{
+                        if homePostboxViewModel.beforeLongPress{
+                            List($homePostboxViewModel.postBoxEmailData) { $data in
+                                VStack {
+//                                ForEach($homePostboxViewModel.postBoxEmailData, id: \.threadId) { $data in
+                                    HStack {
+                                        let image = data.senderProfile ?? "person"
+                                        AsyncImage(url: URL(string: image)) { phase in
+                                            switch phase {
+                                            case .empty:
+                                                Image("contactW")
+                                                    .resizable()
+                                                    .renderingMode(.template)
+                                                    .scaledToFill()
+                                                    .frame(width: 30, height: 30)
+                                                    .background(themesviewModel.currentTheme.colorAccent)
+                                                    .clipShape(Circle())
+                                                    .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                    .padding(.leading, 10)
+                                                    .contentShape(Rectangle())
+                                            case .success(let image):
+                                                image
+                                                    .resizable()
+                                                    .frame(width: 34, height: 34)
+                                                    .padding([.trailing,.leading],5)
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .clipShape(Circle())
+                                            case .failure:
+                                                Image("contactW")
+                                                    .resizable()
+                                                    .renderingMode(.template)
+                                                    .scaledToFill()
+                                                    .frame(width: 30, height: 30)
+                                                    .background(themesviewModel.currentTheme.colorAccent)
+                                                    .clipShape(Circle())
+                                                    .foregroundColor(themesviewModel.currentTheme.inverseIconColor)
+                                                    .padding(.leading, 10)
+                                                    .contentShape(Rectangle())
+                                            @unknown default:
+                                                EmptyView()
+                                            }
+                                        }
+                                        
+                                        VStack(alignment: .leading) {
+                                            HStack {
+                                                Text(data.firstname ?? "")
+                                                    .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                    .font(.custom(.poppinsMedium, size: 16, relativeTo: .title))
+                                                if data.hasDraft == 1 {
+                                                    Text("Draft")
+                                                        .foregroundColor(Color.red)
+                                                        .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                }
+                                            }
+                                            
+                                            Text(data.subject)
+                                                .foregroundColor(themesviewModel.currentTheme.textColor)
+                                                .font(.custom(.poppinsRegular, size: 14, relativeTo: .title))
+                                                .lineLimit(1)
+                                            
+                                            if let labels = data.labels, !labels.isEmpty {
+                                                HStack {
+                                                    Image("Tags")
+=======
         GeometryReader{ reader in
             ZStack(alignment: .bottomTrailing){
                 themesviewModel.currentTheme.windowBackground.opacity(0.1)
@@ -770,6 +844,7 @@ struct HomePostboxView: View {
                                                 switch phase {
                                                 case .empty:
                                                     Image("contactW")
+>>>>>>> 7f6a3866d2bcc9dc1198af83d0c186c8ca4375da
                                                         .resizable()
                                                         .renderingMode(.template)
                                                         .scaledToFill()
